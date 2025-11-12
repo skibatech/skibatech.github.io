@@ -32,8 +32,8 @@
 					<h3>ConfigMgr Health Report</h3>
 					<p>Custom Configuration Manager reporting dashboard for infrastructure monitoring and compliance tracking. Provides real-time visibility into endpoint health, deployment status, and system compliance across the enterprise.</p>
 					<div style="margin: 16px 0;">
-						<img src="/assets/images/configmgr-report-1.png" alt="ConfigMgr Health Report - Disk Space Summary" style="width: 100%; border-radius: 8px; border: 1px solid #333; margin-bottom: 12px;">
-						<img src="/assets/images/configmgr-report-2.png" alt="ConfigMgr Health Report - Component Status" style="width: 100%; border-radius: 8px; border: 1px solid #333;">
+						<img class="lightbox-img" src="/assets/images/configmgr-report-1.png" alt="ConfigMgr Health Report - Disk Space Summary" style="width: 100%; border-radius: 8px; border: 1px solid #333; margin-bottom: 12px; cursor: pointer;">
+						<img class="lightbox-img" src="/assets/images/configmgr-report-2.png" alt="ConfigMgr Health Report - Component Status" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
 					</div>
 					<p><strong>Skills:</strong> Configuration Manager, SQL Reporting Services, Compliance Monitoring, Enterprise Reporting</p>
 				</article>
@@ -41,7 +41,43 @@
 		</section>
 
 		<footer>
-			<div class="container">© SkibaTech</div>
+			<div class='container'>© SkibaTech</div>
 		</footer>
+
+		<div class="lightbox" id="lightbox">
+			<span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+			<div class="lightbox-content">
+				<img id="lightbox-img" src="" alt="">
+			</div>
+		</div>
+
+		<script>
+			const lightboxImgs = document.querySelectorAll('.lightbox-img');
+			const lightbox = document.getElementById('lightbox');
+			const lightboxImg = document.getElementById('lightbox-img');
+
+			lightboxImgs.forEach(img => {
+				img.addEventListener('click', () => {
+					lightboxImg.src = img.src;
+					lightbox.classList.add('active');
+				});
+			});
+
+			function closeLightbox() {
+				lightbox.classList.remove('active');
+			}
+
+			lightbox.addEventListener('click', (e) => {
+				if (e.target === lightbox) {
+					closeLightbox();
+				}
+			});
+
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') {
+					closeLightbox();
+				}
+			});
+		</script>
 	</body>
 </html>
