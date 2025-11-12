@@ -1,19 +1,19 @@
 
 :root{
-  --bg: #0b0d10;
-  --elev: #111418;
-  --text: #e8eaed;
-  --muted:#98a2b3;
+  --bg: #000000;
+  --elev: #000000;
+  --text: #ffffff;
+  --muted: #cccccc;
   --brand:#5b9bff;
   --brand-2:#7df3d4;
-  --card:#0f1216;
-  --border:#1f242b;
-  --shadow: 0 8px 30px rgba(0,0,0,.25);
+  --card:#1a1a1a;
+  --border:#333333;
+  --shadow: 0 8px 30px rgba(0,0,0,.5);
 }
 @media (prefers-color-scheme: light){
   :root{
-    --bg:#ffffff; --elev:#f7f8fa; --text:#0b0d10; --muted:#5f6c7b;
-    --brand:#1b6dff; --brand-2:#17c3b2; --card:#ffffff; --border:#e7e9ee; --shadow: 0 12px 30px rgba(16,24,40,.06);
+    --bg:#000000; --elev:#000000; --text:#ffffff; --muted:#cccccc;
+    --brand:#5b9bff; --brand-2:#7df3d4; --card:#1a1a1a; --border:#333333; --shadow: 0 8px 30px rgba(0,0,0,.5);
   }
 }
 *{box-sizing:border-box}
