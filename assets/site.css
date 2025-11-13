@@ -34,6 +34,7 @@ a:hover{opacity:.9}
 }
 .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
 .brand{font-weight:800; letter-spacing:.3px; display:flex; align-items:center; gap:10px;}
+.brand img{height:32px; width:auto}
 .brand-badge{width:28px; height:28px; border-radius:8px;
   background:conic-gradient(from 180deg,var(--brand),var(--brand-2)); box-shadow:var(--shadow);}
 .nav a{color:var(--text);opacity:.9;margin-left:18px}
