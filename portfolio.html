@@ -42,10 +42,8 @@
 					<p style="font-size:14px; color:var(--muted)">Reference documentation and guides for Configuration Manager implementation.</p>
 					<div class="gallery" data-gallery="configmgr-docs">
 						<div class="gallery-container">
-							<a href="#" target="_blank" style="display:block; text-decoration:none">
-								<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666; cursor:pointer; transition:background 0.2s" onmouseover="this.style.background='#151515'" onmouseout="this.style.background='#0a0a0a'">
-									[PDF Preview]
-								</div>
+							<a href="/assets/docs/ACTIVITY-MaintainBootImages.pdf" target="_blank" style="display:block; text-decoration:none">
+								<img id="doc-preview-img" src="/assets/docs/previews/ACTIVITY-MaintainBootImages-Preview.png" alt="ACTIVITY-MaintainBootImages Preview" style="width:100%; border-radius:8px; border:1px solid #333; cursor:pointer; transition:opacity 0.2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
 							</a>
 						</div>
 						<div class="gallery-controls">
@@ -115,9 +113,9 @@
 					{ src: '/assets/images/configmgr-report-2.png', alt: 'ConfigMgr Health Report - Component Status' }
 				],
 				'configmgr-docs': [
-					{ type: 'pdf', src: '/assets/docs/ACTIVITY-MaintainBootImages.pdf', label: 'Maintain Boot Images' },
-					{ type: 'pdf', src: '#', label: 'Documentation 2' },
-					{ type: 'pdf', src: '#', label: 'Documentation 3' }
+					{ type: 'pdf', src: '/assets/docs/ACTIVITY-MaintainBootImages.pdf', preview: '/assets/docs/previews/ACTIVITY-MaintainBootImages-Preview.png', label: 'Maintain Boot Images' },
+					{ type: 'pdf', src: '#', preview: '', label: 'Documentation 2' },
+					{ type: 'pdf', src: '#', preview: '', label: 'Documentation 3' }
 				]
 			};
 
@@ -140,6 +138,13 @@
 					if (link) {
 						link.href = item.src;
 						link.target = '_blank';
+					}
+					
+					// Update preview image if it exists
+					const previewImg = gallery.querySelector('#doc-preview-img');
+					if (previewImg && item.preview) {
+						previewImg.src = item.preview;
+						previewImg.alt = item.label;
 					}
 				} else {
 					// Image gallery
