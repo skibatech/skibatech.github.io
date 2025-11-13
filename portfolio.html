@@ -135,16 +135,20 @@
 				// Check if it's a PDF gallery
 				if (item.type === 'pdf') {
 					const link = gallery.querySelector('a');
-					if (link) {
+					const previewImg = gallery.querySelector('#doc-preview-img');
+					
+					if (link && item.src && item.src !== '#') {
 						link.href = item.src;
 						link.target = '_blank';
 					}
 					
 					// Update preview image if it exists
-					const previewImg = gallery.querySelector('#doc-preview-img');
 					if (previewImg && item.preview) {
 						previewImg.src = item.preview;
 						previewImg.alt = item.label;
+					} else if (previewImg && !item.preview) {
+						previewImg.src = '/assets/docs/previews/placeholder.png';
+						previewImg.alt = 'Placeholder';
 					}
 				} else {
 					// Image gallery
