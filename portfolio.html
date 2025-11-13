@@ -125,10 +125,11 @@
 			const galleryStates = {};
 			Object.keys(galleries).forEach(name => {
 				galleryStates[name] = 0;
+				updateGallery(name); // Initialize on page load
 			});
 
 			function updateGallery(galleryName) {
-				const gallery = gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
+				const gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
 				const currentIndex = galleryStates[galleryName];
 				const items = galleries[galleryName];
 				const item = items[currentIndex];
@@ -136,16 +137,23 @@
 				// Check if it's a PDF gallery
 				if (item.type === 'pdf') {
 					const link = gallery.querySelector('a');
-					link.href = item.src;
-					link.target = '_blank';
+					if (link) {
+						link.href = item.src;
+						link.target = '_blank';
+					}
 				} else {
 					// Image gallery
 					const img = gallery.querySelector('.gallery-img');
-					img.src = item.src;
-					img.alt = item.alt;
+					if (img) {
+						img.src = item.src;
+						img.alt = item.alt;
+					}
 				}
 				
-				gallery.querySelector('.gallery-current').textContent = currentIndex + 1;
+				const counter = gallery.querySelector('.gallery-current');
+				if (counter) {
+					counter.textContent = currentIndex + 1;
+				}
 			}
 
 			function nextImage(galleryName) {
