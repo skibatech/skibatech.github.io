@@ -38,11 +38,23 @@
 				</article>
 
 				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Coming Soon</h4>
-					<p style="font-size:14px; color:var(--muted)">Additional Configuration Manager project coming soon.</p>
-					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666;">
-						[Placeholder]
+					<h4 style="margin:0 0 8px; font-size:16px">Documentation</h4>
+					<p style="font-size:14px; color:var(--muted)">Reference documentation and guides for Configuration Manager implementation.</p>
+					<div class="gallery" data-gallery="configmgr-docs">
+						<div class="gallery-container">
+							<a href="#" target="_blank" style="display:block; text-decoration:none">
+								<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666; cursor:pointer; transition:background 0.2s" onmouseover="this.style.background='#151515'" onmouseout="this.style.background='#0a0a0a'">
+									[PDF Preview]
+								</div>
+							</a>
+						</div>
+						<div class="gallery-controls">
+							<button class="gallery-nav-btn" onclick="prevImage('configmgr-docs')">‹ Prev</button>
+							<span class="gallery-counter"><span class="gallery-current">1</span> / <span class="gallery-total">3</span></span>
+							<button class="gallery-nav-btn" onclick="nextImage('configmgr-docs')">Next ›</button>
+						</div>
 					</div>
+					<p style="font-size:12px; color:var(--muted)">Click preview to open PDF</p>
 				</article>
 
 				<article class="card">
@@ -51,37 +63,6 @@
 					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666;">
 						[Placeholder]
 					</div>
-				</article>
-			</div>
-
-			<!-- Documentation Section -->
-			<h3 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">Documentation</h3>
-			<div class="grid-3">
-				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Coming Soon</h4>
-					<p style="font-size:14px; color:var(--muted)">Documentation coming soon.</p>
-					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666; cursor:pointer">
-						[PDF Preview]
-					</div>
-					<p style="font-size:12px; color:var(--muted)">Click to view document</p>
-				</article>
-
-				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Coming Soon</h4>
-					<p style="font-size:14px; color:var(--muted)">Documentation coming soon.</p>
-					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666; cursor:pointer">
-						[PDF Preview]
-					</div>
-					<p style="font-size:12px; color:var(--muted)">Click to view document</p>
-				</article>
-
-				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Coming Soon</h4>
-					<p style="font-size:14px; color:var(--muted)">Documentation coming soon.</p>
-					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666; cursor:pointer">
-						[PDF Preview]
-					</div>
-					<p style="font-size:12px; color:var(--muted)">Click to view document</p>
 				</article>
 			</div>
 
@@ -132,6 +113,11 @@
 				configmgr: [
 					{ src: '/assets/images/configmgr-report-1.png', alt: 'ConfigMgr Health Report - Disk Space Summary' },
 					{ src: '/assets/images/configmgr-report-2.png', alt: 'ConfigMgr Health Report - Component Status' }
+				],
+				'configmgr-docs': [
+					{ type: 'pdf', src: '#', label: 'Documentation 1' },
+					{ type: 'pdf', src: '#', label: 'Documentation 2' },
+					{ type: 'pdf', src: '#', label: 'Documentation 3' }
 				]
 			};
 
@@ -142,26 +128,35 @@
 			});
 
 			function updateGallery(galleryName) {
-				const gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
+				const gallery = gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
 				const currentIndex = galleryStates[galleryName];
-				const images = galleries[galleryName];
+				const items = galleries[galleryName];
+				const item = items[currentIndex];
 				
-				const img = gallery.querySelector('.gallery-img');
-				img.src = images[currentIndex].src;
-				img.alt = images[currentIndex].alt;
+				// Check if it's a PDF gallery
+				if (item.type === 'pdf') {
+					const link = gallery.querySelector('a');
+					link.href = item.src;
+					link.target = '_blank';
+				} else {
+					// Image gallery
+					const img = gallery.querySelector('.gallery-img');
+					img.src = item.src;
+					img.alt = item.alt;
+				}
 				
 				gallery.querySelector('.gallery-current').textContent = currentIndex + 1;
 			}
 
 			function nextImage(galleryName) {
-				const images = galleries[galleryName];
-				galleryStates[galleryName] = (galleryStates[galleryName] + 1) % images.length;
+				const items = galleries[galleryName];
+				galleryStates[galleryName] = (galleryStates[galleryName] + 1) % items.length;
 				updateGallery(galleryName);
 			}
 
 			function prevImage(galleryName) {
-				const images = galleries[galleryName];
-				galleryStates[galleryName] = (galleryStates[galleryName] - 1 + images.length) % images.length;
+				const items = galleries[galleryName];
+				galleryStates[galleryName] = (galleryStates[galleryName] - 1 + items.length) % items.length;
 				updateGallery(galleryName);
 			}
 
