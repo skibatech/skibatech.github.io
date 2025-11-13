@@ -128,27 +128,40 @@
 
 			function updateGallery(galleryName) {
 				const gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
+				if (!gallery) return;
+				
 				const currentIndex = galleryStates[galleryName];
 				const items = galleries[galleryName];
 				const item = items[currentIndex];
+				
+				if (!item) return;
 				
 				// Check if it's a PDF gallery
 				if (item.type === 'pdf') {
 					const link = gallery.querySelector('a');
 					const previewImg = gallery.querySelector('#doc-preview-img');
 					
-					if (link && item.src && item.src !== '#') {
-						link.href = item.src;
-						link.target = '_blank';
+					// Always update the link
+					if (link) {
+						if (item.src && item.src !== '#') {
+							link.href = item.src;
+							link.target = '_blank';
+						} else {
+							link.href = '#';
+							link.style.cursor = 'default';
+							link.onclick = (e) => e.preventDefault();
+						}
 					}
 					
 					// Update preview image if it exists
-					if (previewImg && item.preview) {
-						previewImg.src = item.preview;
-						previewImg.alt = item.label;
-					} else if (previewImg && !item.preview) {
-						previewImg.src = '/assets/docs/previews/placeholder.png';
-						previewImg.alt = 'Placeholder';
+					if (previewImg) {
+						if (item.preview) {
+							previewImg.src = item.preview;
+							previewImg.alt = item.label;
+						} else {
+							previewImg.src = '/assets/docs/previews/placeholder.png';
+							previewImg.alt = 'Placeholder';
+						}
 					}
 				} else {
 					// Image gallery
@@ -163,6 +176,8 @@
 				if (counter) {
 					counter.textContent = currentIndex + 1;
 				}
+				
+				console.log(`Updated gallery ${galleryName} to index ${currentIndex}:`, item);
 			}
 
 			function nextImage(galleryName) {
