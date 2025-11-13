@@ -70,6 +70,14 @@ section h2{font-size:24px;margin:0 0 16px}
 .card a{display:inline-block;margin-top:10px}
 .tags{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; padding:0; list-style:none}
 .tag{border:1px solid var(--border); padding:4px 8px; border-radius:999px; font-size:12px; color:var(--muted)}
+.gallery{margin:16px 0}
+.gallery-container{position:relative; display:flex; align-items:center; justify-content:center; gap:16px}
+.gallery-img{width:100%; border-radius:8px; border:1px solid var(--border); cursor:pointer; transition:opacity 0.2s}
+.gallery-img:hover{opacity:0.9}
+.gallery-btn{position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.6); border:none; color:var(--text); font-size:32px; padding:8px 12px; cursor:pointer; border-radius:4px; transition:background 0.2s; z-index:1}
+.gallery-btn:hover{background:rgba(0,0,0,0.8)}
+.gallery-btn.prev{left:8px}
+.gallery-btn.next{right:8px}
 .lightbox-img{cursor: pointer; transition: opacity 0.2s;}
 .lightbox-img:hover{opacity: 0.8}
 .lightbox{display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); animation:fadeIn 0.3s}

@@ -22,8 +22,11 @@
 				<article class="card">
 					<h3>Power BI Dashboard</h3>
 					<p>Interactive business intelligence dashboard showcasing data visualization and reporting capabilities. Demonstrates ability to transform raw operational data into actionable insights for stakeholders.</p>
-					<div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #999;">
-						[Dashboard Screenshot Placeholder]
+					<div class="gallery">
+						<div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #999;">
+							[Dashboard Screenshot Placeholder]
+						</div>
+						<p style="text-align: center; margin: 8px 0; font-size: 12px; color: #999;">1 / 1</p>
 					</div>
 					<p><strong>Skills:</strong> Power BI, Data Modeling, DAX, Business Analytics</p>
 				</article>
@@ -31,9 +34,13 @@
 				<article class="card">
 					<h3>ConfigMgr Health Report</h3>
 					<p>Automated Configuration Manager health monitoring report delivering insights into infrastructure status, disk usage, component health, and backup operations—enabling proactive issue detection and system optimization.</p>
-					<div style="margin: 16px 0;">
-						<img class="lightbox-img" src="/assets/images/configmgr-report-1.png" alt="ConfigMgr Health Report - Disk Space Summary" style="width: 100%; border-radius: 8px; border: 1px solid #333; margin-bottom: 12px; cursor: pointer;">
-						<img class="lightbox-img" src="/assets/images/configmgr-report-2.png" alt="ConfigMgr Health Report - Component Status" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
+					<div class="gallery" data-gallery="configmgr">
+						<div class="gallery-container">
+							<button class="gallery-btn prev" onclick="prevImage('configmgr')">‹</button>
+							<img class="gallery-img lightbox-img" src="/assets/images/configmgr-report-1.png" alt="ConfigMgr Health Report - Disk Space Summary" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
+							<button class="gallery-btn next" onclick="nextImage('configmgr')">›</button>
+						</div>
+						<p style="text-align: center; margin: 8px 0; font-size: 12px; color: #999;"><span class="gallery-current">1</span> / <span class="gallery-total">2</span></p>
 					</div>
 					<p><strong>Skills:</strong> Configuration Manager, Compliance Monitoring, Enterprise Reporting</p>
 				</article>
@@ -52,6 +59,45 @@
 		</div>
 
 		<script>
+			// Gallery data - define images for each gallery
+			const galleries = {
+				configmgr: [
+					{ src: '/assets/images/configmgr-report-1.png', alt: 'ConfigMgr Health Report - Disk Space Summary' },
+					{ src: '/assets/images/configmgr-report-2.png', alt: 'ConfigMgr Health Report - Component Status' }
+				]
+			};
+
+			// Track current index for each gallery
+			const galleryStates = {};
+			Object.keys(galleries).forEach(name => {
+				galleryStates[name] = 0;
+			});
+
+			function updateGallery(galleryName) {
+				const gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
+				const currentIndex = galleryStates[galleryName];
+				const images = galleries[galleryName];
+				
+				const img = gallery.querySelector('.gallery-img');
+				img.src = images[currentIndex].src;
+				img.alt = images[currentIndex].alt;
+				
+				gallery.querySelector('.gallery-current').textContent = currentIndex + 1;
+			}
+
+			function nextImage(galleryName) {
+				const images = galleries[galleryName];
+				galleryStates[galleryName] = (galleryStates[galleryName] + 1) % images.length;
+				updateGallery(galleryName);
+			}
+
+			function prevImage(galleryName) {
+				const images = galleries[galleryName];
+				galleryStates[galleryName] = (galleryStates[galleryName] - 1 + images.length) % images.length;
+				updateGallery(galleryName);
+			}
+
+			// Lightbox functionality
 			const lightboxImgs = document.querySelectorAll('.lightbox-img');
 			const lightbox = document.getElementById('lightbox');
 			const lightboxImg = document.getElementById('lightbox-img');
