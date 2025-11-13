@@ -92,3 +92,13 @@ section h2{font-size:24px;margin:0 0 16px}
 @keyframes fadeIn{from{opacity:0} to{opacity:1}}
 footer{border-top:1px solid var(--border); padding:28px 0; color:var(--muted); text-align:center}
 .i{display:inline-block; width:16px; height:16px; border-radius:3px}
+.blog-layout{display:grid; grid-template-columns:240px 1fr; gap:32px; margin-top:32px}
+.blog-sidebar{position:sticky; top:80px; height:fit-content}
+.blog-nav a{display:block; margin-bottom:8px; font-size:14px; color:var(--text); padding:8px 12px; border-radius:4px; transition:background 0.2s}
+.blog-nav a:hover{background:rgba(91,155,255,0.1)}
+.blog-content{line-height:1.8}
+.blog-content h2{margin-top:32px; margin-bottom:16px; font-size:20px}
+.blog-content p{margin-bottom:16px}
+.blog-content code{background:var(--card); padding:2px 6px; border-radius:3px; font-size:13px}
+.blog-content pre{background:var(--card); border:1px solid var(--border); padding:16px; border-radius:8px; overflow-x:auto; margin:16px 0}
+@media(max-width:768px){.blog-layout{grid-template-columns:1fr; gap:24px} .blog-sidebar{position:static}}
