@@ -40,7 +40,7 @@ a:hover{opacity:.9}
 .nav a{color:var(--text);opacity:.9;margin-left:18px}
 .nav a:hover{opacity:1}
 .hero{padding:72px 0 40px; text-align:center}
-.hero-logo{height:100px; width:auto; margin-bottom:24px; display:block}
+.hero-logo{height:100px; width:auto; margin:0 auto 24px; display:block}
 h1{font-size:44px; line-height:1.1; margin:0 0 12px}
 .sub{color:var(--muted); font-size:18px; margin:0 auto 24px; max-width:760px}
 .cta{display:inline-flex; gap:12px}
