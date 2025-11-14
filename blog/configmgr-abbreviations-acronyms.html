@@ -30,7 +30,10 @@
 
 				<!-- Main Content -->
 				<article class="blog-content">
-					<header>
+					<header style="position:relative">
+						<button id="toggleWidth" onclick="toggleWideView()" style="position:absolute; top:0; right:0; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'">
+							<span id="toggleIcon">⇾</span> <span id="toggleText">Wide View</span>
+						</button>
 						<h1 style="margin:0 0 8px; font-size:28px">Configuration Manager Abbreviations & Acronyms</h1>
 						<p style="color:var(--muted); font-size:14px; margin:0">Published on November 14, 2025 • 3 min read</p>
 					</header>
@@ -92,5 +95,35 @@
 		<footer>
 			<div class='container'>© SkibaTech</div>
 		</footer>
+
+		<script>
+			function toggleWideView() {
+				const sidebar = document.querySelector('.blog-sidebar');
+				const content = document.querySelector('.blog-content');
+				const icon = document.getElementById('toggleIcon');
+				const text = document.getElementById('toggleText');
+				
+				if (sidebar.style.display === 'none') {
+					sidebar.style.display = 'block';
+					content.style.maxWidth = '';
+					icon.textContent = '⇾';
+					text.textContent = 'Wide View';
+					localStorage.setItem('blogWideView', 'false');
+				} else {
+					sidebar.style.display = 'none';
+					content.style.maxWidth = 'none';
+					icon.textContent = '⇽';
+					text.textContent = 'Normal View';
+					localStorage.setItem('blogWideView', 'true');
+				}
+			}
+
+			// Restore preference on load
+			window.addEventListener('DOMContentLoaded', function() {
+				if (localStorage.getItem('blogWideView') === 'true') {
+					toggleWideView();
+				}
+			});
+		</script>
 	</body>
 </html>
