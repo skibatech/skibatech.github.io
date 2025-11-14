@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<meta name='viewport' content='width=device-width,initial-scale=1'>
+		<title>The Practical Modernization of Configuration Manager • SkibaTech Blog</title>
+		<link rel='stylesheet' href='/assets/site.css'>
+	</head>
+	<body>
+		<nav class='nav'>
+			<div class='container nav-inner'>
+				<a class="brand" href='/'><img src="/assets/images/skibatech-narrow-logo.png" alt="SkibaTech"></a>
+				<div><a href='/portfolio.html'>Portfolio</a><a href='/skills.html'>Skills</a><a href='/blog.html'>Blog</a><a href='/contact.html'>Contact</a></div>
+			</div>
+		</nav>
+
+		<section class='container' style='padding-top:40px'>
+			<div class="blog-layout">
+				<!-- Sidebar -->
+				<aside class="blog-sidebar">
+					<h4 style="margin:0 0 16px; font-size:14px; text-transform:uppercase; color:var(--muted)">All Posts</h4>
+					<nav class="blog-nav">
+						<a href="/blog.html" style="display:block; margin-bottom:12px; font-size:14px">← Back to Blog</a>
+						<div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border)">
+							<a href="/blog/practical-modernization-configmgr.html" style="display:block; margin-bottom:8px; font-size:13px; color:var(--brand)">The Practical Modernization of Configuration Manager</a>
+							<a href="/blog/configmgr-abbreviations-acronyms.html" style="display:block; margin-bottom:8px; font-size:13px; color:var(--muted)">ConfigMgr Abbreviations & Acronyms</a>
+						</div>
+					</nav>
+				</aside>
+
+				<!-- Main Content -->
+				<article class="blog-content">
+					<header>
+						<h1 style="margin:0 0 8px; font-size:28px">The Practical Modernization of Configuration Manager</h1>
+						<p style="color:var(--muted); font-size:14px; margin:0">Published on November 14, 2025 • 8 min read</p>
+					</header>
+
+					<div style="margin-top:32px; line-height:1.8">
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Introduction</h2>
+						
+						<p>Configuration Manager is still a supported and viable product—not technically considered legacy by Microsoft. Yet, many technical folks I speak with dismiss it as "old" or "not modern." That perception got me thinking: <strong>Without modifying core code, could there be a way to practically modernize Configuration Manager?</strong></p>
+
+						<p>While Microsoft doesn't officially label Configuration Manager as legacy, they are <a href="https://techcommunity.microsoft.com/blog/configurationmanagerblog/announcing-the-annual-release-cadence-for-microsoft-configuration-manager/4464794" target="_blank">moving to fewer updates per year and not implementing newer improvements</a>, signaling a shift in their investment priorities.</p>
+
+						<p>Before we get into the "just move to Intune" conversation, let's establish something important: <strong>for servers in large enterprises, Configuration Manager is still the way to go</strong> for patching, compliance baselines, and application deployments—if you already have it. While Microsoft pushes Azure Arc and Azure Update Manager as the modern alternative, the reality is more nuanced. Azure Arc is fundamentally just an Azure agent for resources not running in Azure, and Microsoft still doesn't have a true one-size-fits-all server management solution (though I anticipate this will evolve over time). Full disclosure: while I've investigated alternatives in this space, I'm far from an expert on every creative solution available. What I can say with confidence is that for many organizations today, Configuration Manager remains the most practical choice for comprehensive server management.</p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">The Modernization Gap</h2>
+
+						<p>Configuration Manager was built in an era before cloud-first architecture, containerization, and infrastructure-as-code became the industry standard. While it remains actively developed and supported, several gaps make it feel "old" compared to modern tooling:</p>
+
+						<p><strong>CI/CD (Continuous Integration/Continuous Deployment)</strong> - Modern software development practices emphasize automated pipelines where code changes are continuously integrated, tested, and deployed. Configuration Manager's management processes—creating packages, distributing content, updating task sequences—are still largely manual or require custom scripting. There's no native CI/CD pipeline for Configuration Manager configurations themselves.</p>
+
+						<p><strong>Containerization</strong> - Modern applications increasingly run in containers (Docker, Kubernetes) for portability and consistency across environments. Configuration Manager was designed for traditional server and desktop operating systems, not containerized workloads. While you can manage container hosts, managing the containers themselves requires different tooling.</p>
+
+						<p><strong>Python vs. PowerShell</strong> - The automation ecosystem has shifted. While PowerShell remains powerful for Windows administration, Python has become the lingua franca of modern DevOps and automation. Configuration Manager's SDK and automation tooling are heavily PowerShell-centric with limited Python support, creating a barrier for teams standardizing on cross-platform automation languages.</p>
+
+						<p><strong>User Interface</strong> - The Configuration Manager console hasn't fundamentally changed in years. While functional, it lacks the polish and user experience of modern cloud-native management portals. It can feel clunky compared to Intune's web-based interface or Azure's sleek management experience.</p>
+
+						<p><strong>On-Premises Infrastructure</strong> - Modern IT emphasizes cloud-first, reducing on-premises infrastructure footprint. Configuration Manager requires significant infrastructure: SQL servers, site servers, distribution points, and management points. While you can run Configuration Manager entirely in the cloud using IaaS (Infrastructure-as-a-Service) VMs in Azure—which I've successfully implemented—it's still virtual machines, not cloud-native PaaS (Platform-as-a-Service). Even with Cloud Management Gateway (CMG), the core architecture remains rooted in traditional server thinking rather than modern serverless or container-based cloud services.</p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">What Does "Modernization" Actually Mean?</h2>
+
+						<p>"Modern" has become one of those overused buzzwords that means everything and nothing at the same time. Ask five different engineers what "modernization" means and you'll get five different answers—often delivered with immediate distaste if you're not using their preferred "right" tools.</p>
+
+						<p>Here's the uncomfortable truth: <strong>once something is implemented, it's usually not far from being "not modern" anymore.</strong> Technology moves fast. What's cutting-edge today becomes legacy tomorrow. The tools and practices considered modern in 2025 will likely be viewed as outdated by 2030.</p>
+
+						<p>So if "modern" is a moving target that's impossible to catch, what does modernization actually mean in a practical sense?</p>
+
+						<p>I'd argue it's not about chasing the latest trends or forcing every workload into containers because "that's what modern companies do." Instead, practical modernization should focus on:</p>
+
+						<p><strong>Reducing Operational Toil</strong> - Can you automate repetitive tasks? Can you eliminate manual processes that waste time and introduce human error?</p>
+
+						<p><strong>Improving Visibility</strong> - Can you get better insights into what's happening in your environment? Can you make data-driven decisions instead of guessing?</p>
+
+						<p><strong>Increasing Agility</strong> - Can you respond to changes faster? Can you deploy patches, applications, or configurations more quickly when business needs demand it?</p>
+
+						<p><strong>Enabling Self-Service</strong> - Can you empower end users and other teams to solve their own problems without opening tickets to you?</p>
+
+						<p><strong>Integration Over Replacement</strong> - Can you connect your existing tools to modern workflows rather than ripping everything out and starting over?</p>
+
+						<p>Notice what's missing from that list? Specific technologies. Cloud vs. on-prem. Kubernetes vs. VMs. Python vs. PowerShell. Those are implementation details, not outcomes.</p>
+
+						<p><strong>Modernization isn't about the tools you use—it's about what you accomplish with them.</strong> Configuration Manager can absolutely be part of a modern IT operation if you're using it to achieve modern outcomes. The question isn't whether the tool itself is modern; it's whether your approach to using it is.</p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Practical Modernization Strategies</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px">1. Reporting Modernization: Unlock the Data Goldmine</h3>
+
+						<p>One of the biggest untapped areas for modernizing Configuration Manager is connecting <strong>Power BI to your Configuration Manager database</strong>.</p>
+
+						<p>Here's something many people miss: <strong>Configuration Manager's greatest strength isn't just what it does—it's the amount of data it collects.</strong> Even if you're not using it for patching or compliance baselines, it's continuously gathering inventory information, application usage data, hardware configurations, software installations, and user associations across your entire environment.</p>
+
+						<p>Think of the Configuration Manager console as the surface web—it shows you what Microsoft designed you to see through predefined reports and views. But the <strong>SQL database underneath is like the dark web: a massive area of untapped, cross-referenced data</strong> waiting to be explored.</p>
+
+						<p>Power BI can transform this raw data into actionable insights:</p>
+
+						<ul style="line-height:2">
+							<li><strong>Custom dashboards</strong> that answer your organization's specific questions, not just Microsoft's generic reports</li>
+							<li><strong>Cross-collection analysis</strong> that reveals patterns invisible in the console</li>
+							<li><strong>Real-time data visualization</strong> that updates automatically as new inventory comes in</li>
+							<li><strong>Executive-friendly reporting</strong> that translates technical data into business value</li>
+							<li><strong>Self-service analytics</strong> where stakeholders can explore data without opening a ticket</li>
+						</ul>
+
+						<p>The Configuration Manager console was built for ConfigMgr admins. Power BI lets you build reporting for everyone else—security teams, procurement, leadership, application owners—giving each audience exactly the view of the data they need.</p>
+
+						<p>By modernizing how you surface Configuration Manager data, you transform it from an endpoint management tool into an enterprise intelligence platform.</p>
+
+						<p><strong>Want to see this in action?</strong> Check out my <a href="/portfolio.html#powerbi">Custom Application Dashboard</a> example in my portfolio, which connects directly to ConfigMgr database tables to provide real-time visibility into application inventory across devices with interactive filtering capabilities.</p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px">2. Integrate with Modern DevOps Tools</h3>
+
+						<p>If pure modernization—replacing Configuration Manager entirely—isn't practical for your environment, consider a <strong>hybrid approach: running modern technologies alongside Configuration Manager</strong> rather than trying to force Configuration Manager itself to be something it's not.</p>
+
+						<p><strong>Python Integration</strong> - While Configuration Manager's SDK is PowerShell-based, nothing stops you from using Python to interact with the ConfigMgr database, automate reporting, or orchestrate workflows. Python can query the SQL database, process inventory data, trigger actions via REST APIs, and integrate CM data with other modern platforms.</p>
+
+						<p><strong>Apache Kafka for Event Streaming</strong> - Configuration Manager generates a constant stream of events: clients checking in, policies deploying, updates installing, inventory refreshing. By publishing these events to Kafka, you can build real-time monitoring dashboards, trigger automated responses, feed data lakes, or integrate with SIEM platforms—all without modifying Configuration Manager itself.</p>
+
+						<p><strong>Ansible for Orchestration</strong> - Use Ansible to orchestrate workflows that span Configuration Manager and other systems. Ansible can trigger ConfigMgr deployments via PowerShell, coordinate patching windows across CM and non-CM systems, or automate the provisioning of ConfigMgr infrastructure itself.</p>
+
+						<p><strong>The Key Insight: Configuration Manager doesn't have to be your only tool.</strong> Instead of viewing it as an all-or-nothing proposition, treat it as one component in a modern, heterogeneous automation ecosystem. Let ConfigMgr do what it does best (Windows endpoint management), while modern tools handle orchestration, data processing, and cross-platform integration.</p>
+
+						<p>This hybrid approach gives you the modernization benefits your organization is looking for—Python, event streaming, infrastructure-as-code—while preserving the stability and proven capabilities of Configuration Manager.</p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px">3. Cloud Management Gateway (CMG)</h3>
+
+						<p>One of Configuration Manager's most significant modernization features is the <strong>Cloud Management Gateway (CMG)</strong>—a service that fundamentally changes how you think about client connectivity.</p>
+
+						<p>Traditionally, Configuration Manager required devices to be on the corporate network or connected via VPN to communicate with management points and distribution points. This created friction for remote workers, traveling employees, and increasingly distributed workforces.</p>
+
+						<p><strong>CMG solves this by hosting a cloud-based relay in Azure</strong> that sits between internet-connected clients and your on-premises Configuration Manager infrastructure. Clients authenticate to CMG using Azure AD or PKI certificates, then securely communicate with your management points through the encrypted tunnel.</p>
+
+						<p><strong>What This Enables:</strong></p>
+
+						<p><strong>Always-On Management</strong> - Laptops get patches, policies, and applications whether users are at home, in a coffee shop, or at the office—no VPN required.</p>
+
+						<p><strong>Reduced VPN Load</strong> - Offload thousands of ConfigMgr client connections from your VPN infrastructure, freeing capacity for applications that actually need direct network access.</p>
+
+						<p><strong>Modern Work Support</strong> - Embrace remote and hybrid work models without sacrificing endpoint management and security.</p>
+
+						<p><strong>Global Distribution</strong> - Deploy CMG instances in multiple Azure regions to provide low-latency access for geographically distributed teams.</p>
+
+						<p><strong>Cloud-Native Client Experience</strong> - While your infrastructure remains on-premises, your clients interact with Configuration Manager through cloud services—delivering a modern, internet-first management experience.</p>
+
+						<p><strong>The Bottom Line:</strong> CMG lets you modernize the client experience and connectivity model without re-architecting your entire Configuration Manager infrastructure. It's a practical step toward cloud-enabled management that works with your existing investment.</p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px">4. Co-Management with Intune</h3>
+
+						<p>Co-management is Microsoft's bridge strategy between Configuration Manager and Intune—and it's one of the most practical ways to modernize without ripping and replacing your entire infrastructure.</p>
+
+						<p>The concept is simple: <strong>enable both Configuration Manager and Intune to manage the same Windows devices simultaneously</strong>, with the ability to shift specific workloads between them. This gives you the flexibility to leverage the strengths of each platform while gradually transitioning at your own pace.</p>
+
+						<p><strong>Why Co-Management Makes Sense:</strong></p>
+
+						<p><strong>Immediate Cloud Benefits</strong> - You gain cloud-based capabilities like Conditional Access, Windows Autopilot, and remote actions from anywhere—without abandoning your existing ConfigMgr investment.</p>
+
+						<p><strong>Workload Flexibility</strong> - You can choose which management responsibilities stay with ConfigMgr (like application deployment and OS imaging where it excels) and which move to Intune (like compliance policies and device configuration for mobile scenarios).</p>
+
+						<p><strong>Gradual Migration Path</strong> - Instead of a risky "big bang" migration, you can shift workloads incrementally. Start with compliance policies, test thoroughly, then move resource access policies, then Windows Update management—all without disrupting operations.</p>
+
+						<p><strong>Real-World Hybrid Strategy</strong> - Most enterprises aren't purely cloud or purely on-prem. Co-management acknowledges this reality and lets you operate in both worlds simultaneously.</p>
+
+						<p><strong>User Transparency</strong> - End users don't know or care which system is managing their device. They just need their applications, policies, and updates to work—co-management delivers that seamlessly.</p>
+
+						<p>The key insight: <strong>you don't have to choose between Configuration Manager and Intune.</strong> Co-management lets you use the right tool for each specific workload, modernizing your approach while maintaining operational stability.</p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Conclusion</h2>
+
+						<p>Let's be realistic: without a crystal ball, Configuration Manager most likely has fewer days ahead of it than behind it. Microsoft's shift to annual releases and reduced feature investment signals where the industry is heading. The cloud-first future is real.</p>
+
+						<p><strong>But that doesn't mean Configuration Manager isn't useful today.</strong> For organizations with existing investments, complex server environments, and infrastructure that won't magically migrate to the cloud overnight, Configuration Manager remains a practical, proven tool.</p>
+
+						<p>Configuration Manager doesn't have to feel like a legacy system. By embracing modern automation practices, integrating with cloud services where it makes sense, and focusing on practical improvements rather than wholesale replacement, organizations can modernize their approach to endpoint and server management without throwing away proven infrastructure.</p>
+
+						<p>The question isn't "Is Configuration Manager modern?"—it's "How are you using it?"</p>
+
+						<p>Modernization isn't about abandoning tools that work. It's about getting the most value from what you have while preparing for what comes next.</p>
+
+						<p style="margin-top:24px; font-style:italic; color:var(--muted)">(And let's be honest—by the time you finish reading this article, half of what I've called "modern" is probably already passé. Such is technology.)</p>
+					</div>
+
+					<!-- Post Footer -->
+					<footer style="margin-top:48px; padding-top:24px; border-top:1px solid var(--border); color:var(--muted); font-size:14px">
+						<p>Have questions or thoughts? Feel free to reach out at <a href="mailto:maskiba@skibatech.com">maskiba@skibatech.com</a></p>
+					</footer>
+				</article>
+			</div>
+		</section>
+
+		<footer>
+			<div class='container'>© SkibaTech</div>
+		</footer>
+	</body>
+</html>
