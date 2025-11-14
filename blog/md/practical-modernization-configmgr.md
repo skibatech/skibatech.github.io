@@ -16,15 +16,15 @@ Before we get into the "just move to Intune" conversation, let's establish somet
 
 Configuration Manager was built in an era before cloud-first architecture, containerization, and infrastructure-as-code became the industry standard. While it remains actively developed and supported, several gaps make it feel "old" compared to modern tooling:
 
-**CI/CD (Continuous Integration/Continuous Deployment)** - Modern software development practices emphasize automated pipelines where code changes are continuously integrated, tested, and deployed. Configuration Manager's management processes—creating packages, distributing content, updating task sequences—are still largely manual or require custom scripting. There's no native CI/CD pipeline for Configuration Manager configurations themselves.
+- **CI/CD (Continuous Integration/Continuous Deployment)** - Modern software development practices emphasize automated pipelines where code changes are continuously integrated, tested, and deployed. Configuration Manager's management processes—creating packages, distributing content, updating task sequences—are still largely manual or require custom scripting. There's no native CI/CD pipeline for Configuration Manager configurations themselves.
 
-**Containerization** - Modern applications increasingly run in containers (Docker, Kubernetes) for portability and consistency across environments. Configuration Manager was designed for traditional server and desktop operating systems, not containerized workloads. While you can manage container hosts, managing the containers themselves requires different tooling.
+- **Containerization** - Modern applications increasingly run in containers (Docker, Kubernetes) for portability and consistency across environments. Configuration Manager was designed for traditional server and desktop operating systems, not containerized workloads. While you can manage container hosts, managing the containers themselves requires different tooling.
 
-**Python vs. PowerShell** - The automation ecosystem has shifted. While PowerShell remains powerful for Windows administration, Python has become the lingua franca of modern DevOps and automation. Configuration Manager's SDK and automation tooling are heavily PowerShell-centric with limited Python support, creating a barrier for teams standardizing on cross-platform automation languages.
+- **Python vs. PowerShell** - The automation ecosystem has shifted. While PowerShell remains powerful for Windows administration, Python has become the lingua franca of modern DevOps and automation. Configuration Manager's SDK and automation tooling are heavily PowerShell-centric with limited Python support, creating a barrier for teams standardizing on cross-platform automation languages.
 
-**User Interface** - The Configuration Manager console hasn't fundamentally changed in years. While functional, it lacks the polish and user experience of modern cloud-native management portals. It can feel clunky compared to Intune's web-based interface or Azure's sleek management experience.
+- **User Interface** - The Configuration Manager console hasn't fundamentally changed in years. While functional, it lacks the polish and user experience of modern cloud-native management portals. It can feel clunky compared to Intune's web-based interface or Azure's sleek management experience.
 
-**On-Premises Infrastructure** - Modern IT emphasizes cloud-first, reducing on-premises infrastructure footprint. Configuration Manager requires significant infrastructure: SQL servers, site servers, distribution points, and management points. While you can run Configuration Manager entirely in the cloud using IaaS (Infrastructure-as-a-Service) VMs in Azure—which I've successfully implemented—it's still virtual machines, not cloud-native PaaS (Platform-as-a-Service). Even with Cloud Management Gateway (CMG), the core architecture remains rooted in traditional server thinking rather than modern serverless or container-based cloud services.
+- **On-Premises Infrastructure** - Modern IT emphasizes cloud-first, reducing on-premises infrastructure footprint. Configuration Manager requires significant infrastructure: SQL servers, site servers, distribution points, and management points. While you can run Configuration Manager entirely in the cloud using IaaS (Infrastructure-as-a-Service) VMs in Azure—which I've successfully implemented—it's still virtual machines, not cloud-native PaaS (Platform-as-a-Service). Even with Cloud Management Gateway (CMG), the core architecture remains rooted in traditional server thinking rather than modern serverless or container-based cloud services.
 
 ---
 
@@ -38,15 +38,15 @@ So if "modern" is a moving target that's impossible to catch, what does moderniz
 
 I'd argue it's not about chasing the latest trends or forcing every workload into containers because "that's what modern companies do." Instead, practical modernization should focus on:
 
-**Reducing Operational Toil** - Can you automate repetitive tasks? Can you eliminate manual processes that waste time and introduce human error?
+- **Reducing Operational Toil** - Can you automate repetitive tasks? Can you eliminate manual processes that waste time and introduce human error?
 
-**Improving Visibility** - Can you get better insights into what's happening in your environment? Can you make data-driven decisions instead of guessing?
+- **Improving Visibility** - Can you get better insights into what's happening in your environment? Can you make data-driven decisions instead of guessing?
 
-**Increasing Agility** - Can you respond to changes faster? Can you deploy patches, applications, or configurations more quickly when business needs demand it?
+- **Increasing Agility** - Can you respond to changes faster? Can you deploy patches, applications, or configurations more quickly when business needs demand it?
 
-**Enabling Self-Service** - Can you empower end users and other teams to solve their own problems without opening tickets to you?
+- **Enabling Self-Service** - Can you empower end users and other teams to solve their own problems without opening tickets to you?
 
-**Integration Over Replacement** - Can you connect your existing tools to modern workflows rather than ripping everything out and starting over?
+- **Integration Over Replacement** - Can you connect your existing tools to modern workflows rather than ripping everything out and starting over?
 
 Notice what's missing from that list? Specific technologies. Cloud vs. on-prem. Kubernetes vs. VMs. Python vs. PowerShell. Those are implementation details, not outcomes.
 
@@ -80,11 +80,11 @@ By modernizing how you surface Configuration Manager data, you transform it from
 
 If pure modernization—replacing Configuration Manager entirely—isn't practical for your environment, consider a **hybrid approach: running modern technologies alongside Configuration Manager** rather than trying to force Configuration Manager itself to be something it's not.
 
-**Python Integration** - While Configuration Manager's SDK is PowerShell-based, nothing stops you from using Python to interact with the ConfigMgr database, automate reporting, or orchestrate workflows. Python can query the SQL database, process inventory data, trigger actions via REST APIs, and integrate CM data with other modern platforms.
+- **Python Integration** - While Configuration Manager's SDK is PowerShell-based, nothing stops you from using Python to interact with the ConfigMgr database, automate reporting, or orchestrate workflows. Python can query the SQL database, process inventory data, trigger actions via REST APIs, and integrate CM data with other modern platforms.
 
-**Apache Kafka for Event Streaming** - Configuration Manager generates a constant stream of events: clients checking in, policies deploying, updates installing, inventory refreshing. By publishing these events to Kafka, you can build real-time monitoring dashboards, trigger automated responses, feed data lakes, or integrate with SIEM platforms—all without modifying Configuration Manager itself.
+- **Apache Kafka for Event Streaming** - Configuration Manager generates a constant stream of events: clients checking in, policies deploying, updates installing, inventory refreshing. By publishing these events to Kafka, you can build real-time monitoring dashboards, trigger automated responses, feed data lakes, or integrate with SIEM platforms—all without modifying Configuration Manager itself.
 
-**Ansible for Orchestration** - Use Ansible to orchestrate workflows that span Configuration Manager and other systems. Ansible can trigger ConfigMgr deployments via PowerShell, coordinate patching windows across CM and non-CM systems, or automate the provisioning of ConfigMgr infrastructure itself.
+- **Ansible for Orchestration** - Use Ansible to orchestrate workflows that span Configuration Manager and other systems. Ansible can trigger ConfigMgr deployments via PowerShell, coordinate patching windows across CM and non-CM systems, or automate the provisioning of ConfigMgr infrastructure itself.
 
 **The Key Insight: Configuration Manager doesn't have to be your only tool.** Instead of viewing it as an all-or-nothing proposition, treat it as one component in a modern, heterogeneous automation ecosystem. Let ConfigMgr do what it does best (Windows endpoint management), while modern tools handle orchestration, data processing, and cross-platform integration.
 
