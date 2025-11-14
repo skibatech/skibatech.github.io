@@ -100,15 +100,15 @@ Traditionally, Configuration Manager required devices to be on the corporate net
 
 **What This Enables:**
 
-**Always-On Management** - Laptops get patches, policies, and applications whether users are at home, in a coffee shop, or at the office—no VPN required.
+- **Always-On Management** - Laptops get patches, policies, and applications whether users are at home, in a coffee shop, or at the office—no VPN required.
 
-**Reduced VPN Load** - Offload thousands of ConfigMgr client connections from your VPN infrastructure, freeing capacity for applications that actually need direct network access.
+- **Reduced VPN Load** - Offload thousands of ConfigMgr client connections from your VPN infrastructure, freeing capacity for applications that actually need direct network access.
 
-**Modern Work Support** - Embrace remote and hybrid work models without sacrificing endpoint management and security.
+- **Modern Work Support** - Embrace remote and hybrid work models without sacrificing endpoint management and security.
 
-**Global Distribution** - Deploy CMG instances in multiple Azure regions to provide low-latency access for geographically distributed teams.
+- **Global Distribution** - Deploy CMG instances in multiple Azure regions to provide low-latency access for geographically distributed teams.
 
-**Cloud-Native Client Experience** - While your infrastructure remains on-premises, your clients interact with Configuration Manager through cloud services—delivering a modern, internet-first management experience.
+- **Cloud-Native Client Experience** - While your infrastructure remains on-premises, your clients interact with Configuration Manager through cloud services—delivering a modern, internet-first management experience.
 
 **The Bottom Line:** CMG lets you modernize the client experience and connectivity model without re-architecting your entire Configuration Manager infrastructure. It's a practical step toward cloud-enabled management that works with your existing investment.
 
@@ -120,15 +120,15 @@ The concept is simple: **enable both Configuration Manager and Intune to manage 
 
 **Why Co-Management Makes Sense:**
 
-**Immediate Cloud Benefits** - You gain cloud-based capabilities like Conditional Access, Windows Autopilot, and remote actions from anywhere—without abandoning your existing ConfigMgr investment.
+- **Immediate Cloud Benefits** - You gain cloud-based capabilities like Conditional Access, Windows Autopilot, and remote actions from anywhere—without abandoning your existing ConfigMgr investment.
 
-**Workload Flexibility** - You can choose which management responsibilities stay with ConfigMgr (like application deployment and OS imaging where it excels) and which move to Intune (like compliance policies and device configuration for mobile scenarios).
+- **Workload Flexibility** - You can choose which management responsibilities stay with ConfigMgr (like application deployment and OS imaging where it excels) and which move to Intune (like compliance policies and device configuration for mobile scenarios).
 
-**Gradual Migration Path** - Instead of a risky "big bang" migration, you can shift workloads incrementally. Start with compliance policies, test thoroughly, then move resource access policies, then Windows Update management—all without disrupting operations.
+- **Gradual Migration Path** - Instead of a risky "big bang" migration, you can shift workloads incrementally. Start with compliance policies, test thoroughly, then move resource access policies, then Windows Update management—all without disrupting operations.
 
-**Real-World Hybrid Strategy** - Most enterprises aren't purely cloud or purely on-prem. Co-management acknowledges this reality and lets you operate in both worlds simultaneously.
+- **Real-World Hybrid Strategy** - Most enterprises aren't purely cloud or purely on-prem. Co-management acknowledges this reality and lets you operate in both worlds simultaneously.
 
-**User Transparency** - End users don't know or care which system is managing their device. They just need their applications, policies, and updates to work—co-management delivers that seamlessly.
+- **User Transparency** - End users don't know or care which system is managing their device. They just need their applications, policies, and updates to work—co-management delivers that seamlessly.
 
 The key insight: **you don't have to choose between Configuration Manager and Intune.** Co-management lets you use the right tool for each specific workload, modernizing your approach while maintaining operational stability.
 
