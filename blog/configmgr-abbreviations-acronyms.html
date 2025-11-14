@@ -30,11 +30,13 @@
 
 				<!-- Main Content -->
 				<article class="blog-content">
-					<header style="position:relative">
-						<button id="toggleWidth" onclick="toggleWideView()" style="position:absolute; top:0; right:0; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'">
-							<span id="toggleIcon">⇾</span> <span id="toggleText">Wide View</span>
-						</button>
-						<h1 style="margin:0 0 8px; font-size:28px">Configuration Manager Abbreviations & Acronyms</h1>
+					<header>
+						<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px">
+							<h1 style="margin:0; font-size:28px; flex:1; padding-right:16px">Configuration Manager Abbreviations & Acronyms</h1>
+							<button id="toggleWidth" onclick="toggleWideView()" style="background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s; white-space:nowrap; flex-shrink:0" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'">
+								<span id="toggleIcon">⇾</span> <span id="toggleText">Wide</span>
+							</button>
+						</div>
 						<p style="color:var(--muted); font-size:14px; margin:0">Published on November 14, 2025 • 3 min read</p>
 					</header>
 
@@ -99,21 +101,23 @@
 		<script>
 			function toggleWideView() {
 				const sidebar = document.querySelector('.blog-sidebar');
-				const content = document.querySelector('.blog-content');
+				const layout = document.querySelector('.blog-layout');
 				const icon = document.getElementById('toggleIcon');
 				const text = document.getElementById('toggleText');
 				
 				if (sidebar.style.display === 'none') {
-					sidebar.style.display = 'block';
-					content.style.maxWidth = '';
+					// Restore normal view
+					sidebar.style.display = '';
+					layout.style.gridTemplateColumns = '';
 					icon.textContent = '⇾';
-					text.textContent = 'Wide View';
+					text.textContent = 'Wide';
 					localStorage.setItem('blogWideView', 'false');
 				} else {
+					// Enable wide view
 					sidebar.style.display = 'none';
-					content.style.maxWidth = 'none';
+					layout.style.gridTemplateColumns = '1fr';
 					icon.textContent = '⇽';
-					text.textContent = 'Normal View';
+					text.textContent = 'Normal';
 					localStorage.setItem('blogWideView', 'true');
 				}
 			}
