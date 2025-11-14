@@ -68,12 +68,19 @@
 			<h3 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">Microsoft Power BI Dashboards/Reports</h3>
 			<div class="grid-3">
 				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Power BI Dashboard</h4>
-					<p style="font-size:14px">Interactive business intelligence dashboard showcasing data visualization and reporting capabilities. Demonstrates ability to transform raw operational data into actionable insights for stakeholders.</p>
-					<div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #999;">
-						[Dashboard Screenshot Placeholder]
+					<h4 style="margin:0 0 8px; font-size:16px">Custom Application Dashboard</h4>
+					<p style="font-size:14px">Custom Power BI report connecting directly to ConfigMgr database tables to provide real-time visibility into application inventory across devices, including version, install date, and operating system with interactive filtering capabilities.</p>
+					<div class="gallery" data-gallery="powerbi-appdash">
+						<div class="gallery-container">
+							<img class="gallery-img lightbox-img" src="/assets/images/configmgr-powerbi-appdash.png" alt="Power BI - Application Dashboard" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
+						</div>
+						<div class="gallery-controls">
+							<button class="gallery-nav-btn" onclick="prevImage('powerbi-appdash')">‹ Prev</button>
+							<span class="gallery-counter"><span class="gallery-current">1</span> / <span class="gallery-total">1</span></span>
+							<button class="gallery-nav-btn" onclick="nextImage('powerbi-appdash')">Next ›</button>
+						</div>
 					</div>
-					<p style="font-size:12px"><strong>Skills:</strong> Power BI, Data Modeling, DAX, Business Analytics</p>
+					<p style="font-size:12px"><strong>Skills:</strong> Power BI, SQL, Data Modeling, ConfigMgr</p>
 				</article>
 
 				<article class="card">
@@ -116,6 +123,9 @@
 					{ type: 'pdf', src: '/assets/docs/ACTIVITY-MaintainBootImages.pdf', preview: '/assets/docs/previews/ACTIVITY-MaintainBootImages-Preview.png', label: 'Maintain Boot Images' },
 					{ type: 'pdf', src: '#', preview: '', label: 'Documentation 2' },
 					{ type: 'pdf', src: '#', preview: '', label: 'Documentation 3' }
+				],
+				'powerbi-appdash': [
+					{ src: '/assets/images/configmgr-powerbi-appdash.png', alt: 'Power BI - Application Dashboard' }
 				]
 			};
 
