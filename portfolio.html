@@ -23,7 +23,7 @@
 			<div class="grid-3">
 				<article class="card">
 					<h4 style="margin:0 0 8px; font-size:16px">ConfigMgr Health Report</h4>
-					<p style="font-size:14px">Automated Configuration Manager health monitoring report delivering insights into infrastructure status, disk usage, component health, and backup operations—enabling proactive issue detection and system optimization.</p>
+					<p style="font-size:14px">PowerShell driven Configuration Manager health monitoring report delivering insights into infrastructure status, disk usage, component health, and backup operations—enabling proactive issue detection and system optimization.</p>
 					<div class="gallery" data-gallery="configmgr">
 						<div class="gallery-container">
 							<img class="gallery-img lightbox-img" src="/assets/images/configmgr-report-1.png" alt="ConfigMgr Health Report - Disk Space Summary" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
@@ -34,7 +34,7 @@
 							<button class="gallery-nav-btn" onclick="nextImage('configmgr')">Next ›</button>
 						</div>
 					</div>
-					<p style="font-size:12px"><strong>Skills:</strong> Configuration Manager, Compliance Monitoring, Enterprise Reporting</p>
+					<p style="font-size:12px"><strong>Skills:</strong> Configuration Manager, Compliance Monitoring, Enterprise Reporting, PowerShell</p>
 				</article>
 
 				<article class="card">
@@ -52,16 +52,24 @@
 							<button class="gallery-nav-btn" onclick="nextImage('configmgr-docs')">Next ›</button>
 						</div>
 					</div>
-					<p style="font-size:12px; color:var(--muted)">Click preview to open PDF</p>
+					<p style="font-size:12px"><strong>Skills:</strong> Configuration Manager, Documentation, Process Improvement</p>
 				</article>
 
-				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Coming Soon</h4>
-					<p style="font-size:14px; color:var(--muted)">Additional Configuration Manager project coming soon.</p>
-					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666;">
-						[Placeholder]
+			<article class="card">
+				<h4 style="margin:0 0 8px; font-size:16px">Third-Party Tool Integration</h4>
+				<p style="font-size:14px">Integration of third-party tools with Configuration Manager including Patch My PC for automated application updates and Recast Software Right Click Tools for enhanced administrative capabilities.</p>
+				<div class="gallery" data-gallery="thirdparty">
+					<div class="gallery-container">
+						<img class="gallery-img lightbox-img" src="/assets/images/patchmypc-publishingservice.png" alt="Patch My PC Publishing Service Integration" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
 					</div>
-				</article>
+					<div class="gallery-controls">
+						<button class="gallery-nav-btn" onclick="prevImage('thirdparty')">‹ Prev</button>
+						<span class="gallery-counter"><span class="gallery-current">1</span> / <span class="gallery-total">2</span></span>
+						<button class="gallery-nav-btn" onclick="nextImage('thirdparty')">Next ›</button>
+					</div>
+				</div>
+				<p style="font-size:12px"><strong>Skills:</strong> Configuration Manager, Third-Party Integration, Tool Evaluation</p>
+			</article>
 			</div>
 
 			<!-- Microsoft Power BI Section -->
@@ -111,23 +119,25 @@
 		</div>
 
 		<script>
-			// Gallery data - define images for each gallery
-			const galleries = {
-				configmgr: [
-					{ src: '/assets/images/configmgr-report-1.png', alt: 'ConfigMgr Health Report - Disk Space Summary' },
-					{ src: '/assets/images/configmgr-report-2.png', alt: 'ConfigMgr Health Report - Component Status' }
-				],
-				'configmgr-docs': [
-					{ type: 'pdf', src: '/assets/docs/ACTIVITY-MaintainBootImages.pdf', preview: '/assets/docs/previews/ACTIVITY-MaintainBootImages-Preview.png', label: 'Maintain Boot Images' },
-					{ type: 'pdf', src: '#', preview: '', label: 'Documentation 2' },
-					{ type: 'pdf', src: '#', preview: '', label: 'Documentation 3' }
-				],
-				'powerbi-appdash': [
-					{ src: '/assets/images/configmgr-powerbi-appdash.png', alt: 'Power BI - Application Dashboard' }
-				]
-			};
-
-			// Track current index for each gallery
+		// Gallery data - define images for each gallery
+		const galleries = {
+			configmgr: [
+				{ src: '/assets/images/configmgr-report-1.png', alt: 'ConfigMgr Health Report - Disk Space Summary' },
+				{ src: '/assets/images/configmgr-report-2.png', alt: 'ConfigMgr Health Report - Component Status' }
+			],
+			'configmgr-docs': [
+				{ type: 'pdf', src: '/assets/docs/ACTIVITY-MaintainBootImages.pdf', preview: '/assets/docs/previews/ACTIVITY-MaintainBootImages-Preview.png', label: 'Maintain Boot Images' },
+				{ type: 'pdf', src: '#', preview: '', label: 'Documentation 2' },
+				{ type: 'pdf', src: '#', preview: '', label: 'Documentation 3' }
+			],
+			thirdparty: [
+				{ src: '/assets/images/patchmypc-publishingservice.png', alt: 'Patch My PC Publishing Service Integration' },
+				{ src: '/assets/images/recast-rightclicktools.png', alt: 'Recast Software Right Click Tools' }
+			],
+			'powerbi-appdash': [
+				{ src: '/assets/images/configmgr-powerbi-appdash.png', alt: 'Power BI - Application Dashboard' }
+			]
+		};			// Track current index for each gallery
 			const galleryStates = {};
 			Object.keys(galleries).forEach(name => {
 				galleryStates[name] = 0;
