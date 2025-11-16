@@ -57,9 +57,10 @@ section{padding:36px 0}
 section h2{font-size:24px;margin:0 0 16px}
 .grid{display:grid; gap:16px;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
-.grid-3{display:grid; gap:16px; grid-template-columns:repeat(3,minmax(0,1fr));}
+.grid-3{display:grid; gap:16px; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:start}
 @media(max-width:1024px){.grid-3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.grid-3{grid-template-columns:1fr}}
+.grid-3 .card{display:grid; grid-template-rows:auto auto 1fr auto; height:100%}
 .skills-grid{display:grid; gap:24px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin:16px 0;}
 .skills-grid section h4{margin:0 0 12px; font-size:16px; color:var(--text)}
 .skills-grid ul{padding:0; list-style:none; margin:0;}
