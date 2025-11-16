@@ -28,7 +28,7 @@ a{color:var(--brand);text-decoration:none}
 a:hover{opacity:.9}
 .container{max-width:1080px;margin:0 auto;padding:0 24px}
 .nav{
-  position:sticky; top:0; z-index:10;
+  position:sticky; top:0; z-index:100;
   backdrop-filter:saturate(180%) blur(12px);
   background:color-mix(in oklab, var(--bg) 85%, transparent);
   border-bottom:1px solid var(--border);
