@@ -250,33 +250,40 @@
 			</div>
 		</section>
 
-		<footer>
-			<div class='container'>© SkibaTech</div>
-		</footer>
+	<footer>
+		<div class='container'>© SkibaTech</div>
+	</footer>
 
-		<script>
-			let isWide = false;
-
-			function toggleWideView() {
-				const blogLayout = document.querySelector('.blog-layout');
-				const blogContent = document.querySelector('.blog-content');
-				const toggleIcon = document.getElementById('toggleIcon');
-				const toggleText = document.getElementById('toggleText');
-
-				isWide = !isWide;
-
-				if (isWide) {
-					blogLayout.style.gridTemplateColumns = '1fr';
-					blogContent.style.maxWidth = '100%';
-					toggleIcon.textContent = '⇽';
-					toggleText.textContent = 'Normal';
-				} else {
-					blogLayout.style.gridTemplateColumns = '';
-					blogContent.style.maxWidth = '';
-					toggleIcon.textContent = '⇾';
-					toggleText.textContent = 'Wide';
-				}
+	<script>
+		function toggleWideView() {
+			const sidebar = document.querySelector('.blog-sidebar');
+			const layout = document.querySelector('.blog-layout');
+			const icon = document.getElementById('toggleIcon');
+			const text = document.getElementById('toggleText');
+			
+			if (sidebar.style.display === 'none') {
+				// Restore normal view
+				sidebar.style.display = '';
+				layout.style.gridTemplateColumns = '';
+				icon.textContent = '⇾';
+				text.textContent = 'Wide';
+				localStorage.setItem('blogWideView', 'false');
+			} else {
+				// Enable wide view
+				sidebar.style.display = 'none';
+				layout.style.gridTemplateColumns = '1fr';
+				icon.textContent = '⇽';
+				text.textContent = 'Normal';
+				localStorage.setItem('blogWideView', 'true');
 			}
-		</script>
-	</body>
+		}
+
+		// Restore preference on load
+		window.addEventListener('DOMContentLoaded', function() {
+			if (localStorage.getItem('blogWideView') === 'true') {
+				toggleWideView();
+			}
+		});
+	</script>
+</body>
 </html>
