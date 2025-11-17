@@ -137,12 +137,13 @@
 			<article class="card">
 				<h4 style="margin:0 0 8px; font-size:16px">Custom Office Location Map</h4>
 				<p style="font-size:14px">Custom Power BI report using ArcGIS mapping functionality to visualize office locations and related business data across geographic regions, providing interactive location-based analytics and insights for organizational planning and resource allocation.</p>
-				<div class="gallery" data-gallery="powerbi-officeloc">
-						<div class="gallery-container">
-							<img class="gallery-img lightbox-img" src="/assets/images/powerbi-officeloc.png" alt="Power BI - Office Location Map" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
-						</div>
+			<div class="gallery" data-gallery="powerbi-officeloc">
+					<div class="gallery-container">
+						<img class="gallery-img lightbox-img" src="/assets/images/powerbi-officeloc.png" alt="Power BI - Office Location Map" style="width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;">
 					</div>
-					<p style="font-size:12px"><strong>Skills:</strong> Power BI, Data Modeling, ArcGIS</p>
+					<p class="gallery-caption" style="font-size:12px; color:var(--muted); margin:8px 0 0; text-align:center;">Power BI - Office Location Map</p>
+				</div>
+				<p style="font-size:12px"><strong>Skills:</strong> Power BI, Data Modeling, ArcGIS</p>
 				</article>
 
 				<article class="card">
@@ -190,10 +191,14 @@
 				{ src: '/assets/images/patchmypc-publishingservice.png', alt: 'Patch My PC Publishing Service Integration' },
 				{ src: '/assets/images/recast-rightclicktools.png', alt: 'Recast Software Right Click Tools' }
 			],
-			'powerbi-appdash': [
-				{ src: '/assets/images/configmgr-powerbi-appdash.png', alt: 'Power BI - Application Dashboard' }
-			]
-		};			// Track current index for each gallery
+			],
+		'powerbi-appdash': [
+			{ src: '/assets/images/configmgr-powerbi-appdash.png', alt: 'Power BI - Application Dashboard' }
+		],
+		'powerbi-officeloc': [
+			{ src: '/assets/images/powerbi-officeloc.png', alt: 'Power BI - Office Location Map' }
+		]
+	};			// Track current index for each gallery
 			const galleryStates = {};
 			Object.keys(galleries).forEach(name => {
 				galleryStates[name] = 0;
