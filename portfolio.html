@@ -264,29 +264,24 @@
 					container.appendChild(img);
 				}
 				
-				if (img) {
-					img.src = item.src;
-					img.alt = item.alt;
+			if (img) {
+				img.src = item.src;
+				img.alt = item.alt;
+				
+				// Ensure lightbox class is present
+				if (!img.classList.contains('lightbox-img')) {
+					img.classList.add('lightbox-img');
 					
-					// Ensure lightbox click handler is attached
-					if (!img.classList.contains('lightbox-img')) {
-						img.classList.add('lightbox-img');
-					}
-					
-					// Remove any existing click handlers and add new one
-					const newImg = img.cloneNode(true);
-					img.parentNode.replaceChild(newImg, img);
-					
-					newImg.addEventListener('click', () => {
+					// Only add click handler if we just added the class (newly created image)
+					img.addEventListener('click', () => {
 						const lightbox = document.getElementById('lightbox');
 						const lightboxImg = document.getElementById('lightbox-img');
-						lightboxImg.src = newImg.src;
+						lightboxImg.src = img.src;
 						lightbox.classList.add('active');
 					});
 				}
 			}
-			
-			const counter = gallery.querySelector('.gallery-current');
+		}			const counter = gallery.querySelector('.gallery-current');
 			if (counter) {
 				counter.textContent = currentIndex + 1;
 			}
