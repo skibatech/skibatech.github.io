@@ -100,13 +100,13 @@
 		<article class="card">
 			<h4 style="margin:0 0 8px; font-size:16px">Integration & Monitoring Tools</h4>
 			<p style="font-size:14px">Integration of third-party and Microsoft tooling with Configuration Manager including Patch My PC for automated application updates, Recast Software Right Click Tools for enhanced administrative capabilities, and MEM Assessment for environment health scanning and reporting.</p>
-			<div class="gallery" data-gallery="thirdparty">
-				<div class="gallery-container">
-					<a href="/assets/docs/PrereqsCMAssessment.pdf" target="_blank" style="display:block; text-decoration:none">
-						<img id="thirdparty-img" src="/assets/docs/previews/MEMAssessment.png" alt="MEM Assessment Setup" style="width:100%; border-radius:8px; border:1px solid #333; cursor:pointer; transition:opacity 0.2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-					</a>
-				</div>
-					<div class="gallery-controls">
+		<div class="gallery" data-gallery="thirdparty">
+			<div class="gallery-container">
+				<a href="/assets/docs/PrereqsCMAssessment.pdf" target="_blank" style="display:block; text-decoration:none">
+					<img class="gallery-img" src="/assets/docs/previews/MEMAssessment.png" alt="MEM Assessment Setup" style="width:100%; border-radius:8px; border:1px solid #333; cursor:pointer; transition:opacity 0.2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+				</a>
+			</div>
+			<div class="gallery-controls">
 					<button class="gallery-nav-btn" onclick="prevImage('thirdparty')">‹ Prev</button>
 					<span class="gallery-counter"><span class="gallery-current">1</span> / <span class="gallery-total">3</span></span>
 					<button class="gallery-nav-btn" onclick="nextImage('thirdparty')">Next ›</button>
@@ -196,61 +196,78 @@
 				updateGallery(name); // Initialize on page load
 			});
 
-			function updateGallery(galleryName) {
-				const gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
-				if (!gallery) return;
+		function updateGallery(galleryName) {
+			const gallery = document.querySelector(`[data-gallery="${galleryName}"]`);
+			if (!gallery) return;
+			
+			const currentIndex = galleryStates[galleryName];
+			const items = galleries[galleryName];
+			const item = items[currentIndex];
+			
+			if (!item) return;
+			
+			// Check if it's a PDF item
+			if (item.type === 'pdf') {
+				// For PDF items, update or create link and image
+				let container = gallery.querySelector('.gallery-container');
+				let link = container.querySelector('a');
+				let img = container.querySelector('.gallery-img');
 				
-				const currentIndex = galleryStates[galleryName];
-				const items = galleries[galleryName];
-				const item = items[currentIndex];
+				if (!link) {
+					link = document.createElement('a');
+					link.target = '_blank';
+					link.style.cssText = 'display:block; text-decoration:none';
+					container.appendChild(link);
+				}
 				
-				if (!item) return;
+				if (!img) {
+					img = document.createElement('img');
+					img.className = 'gallery-img';
+					img.style.cssText = 'width:100%; border-radius:8px; border:1px solid #333; cursor:pointer; transition:opacity 0.2s';
+					img.onmouseover = function() { this.style.opacity='0.8'; };
+					img.onmouseout = function() { this.style.opacity='1'; };
+					link.appendChild(img);
+				}
 				
-				// Check if it's a PDF gallery
-				if (item.type === 'pdf') {
-					const link = gallery.querySelector('a');
-					const previewImg = gallery.querySelector('#doc-preview-img');
-					
-					// Always update the link
-					if (link) {
-						if (item.src && item.src !== '#') {
-							link.href = item.src;
-							link.target = '_blank';
-						} else {
-							link.href = '#';
-							link.style.cursor = 'default';
-							link.onclick = (e) => e.preventDefault();
-						}
-					}
-					
-					// Update preview image if it exists
-					if (previewImg) {
-						if (item.preview) {
-							previewImg.src = item.preview;
-							previewImg.alt = item.label;
-						} else {
-							previewImg.src = '/assets/docs/previews/placeholder.png';
-							previewImg.alt = 'Placeholder';
-						}
-					}
+				link.href = item.src !== '#' ? item.src : '#';
+				if (item.src === '#') {
+					link.onclick = (e) => e.preventDefault();
+					link.style.cursor = 'default';
 				} else {
-					// Image gallery
-					const img = gallery.querySelector('.gallery-img');
-					if (img) {
-						img.src = item.src;
-						img.alt = item.alt;
-					}
+					link.onclick = null;
+					link.style.cursor = 'pointer';
 				}
 				
-				const counter = gallery.querySelector('.gallery-current');
-				if (counter) {
-					counter.textContent = currentIndex + 1;
+				img.src = item.preview || '/assets/docs/previews/placeholder.png';
+				img.alt = item.label || 'Document Preview';
+			} else {
+				// Image gallery - check if there's a link wrapper
+				const container = gallery.querySelector('.gallery-container');
+				let img = container.querySelector('.gallery-img');
+				const link = container.querySelector('a');
+				
+				if (link && link.href.includes('.pdf')) {
+					// Remove PDF link structure and replace with plain image
+					img = document.createElement('img');
+					img.className = 'gallery-img lightbox-img';
+					img.style.cssText = 'width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;';
+					container.innerHTML = '';
+					container.appendChild(img);
 				}
 				
-				console.log(`Updated gallery ${galleryName} to index ${currentIndex}:`, item);
+				if (img) {
+					img.src = item.src;
+					img.alt = item.alt;
+				}
 			}
-
-			function nextImage(galleryName) {
+			
+			const counter = gallery.querySelector('.gallery-current');
+			if (counter) {
+				counter.textContent = currentIndex + 1;
+			}
+			
+			console.log(`Updated gallery ${galleryName} to index ${currentIndex}:`, item);
+		}			function nextImage(galleryName) {
 				const items = galleries[galleryName];
 				galleryStates[galleryName] = (galleryStates[galleryName] + 1) % items.length;
 				updateGallery(galleryName);
