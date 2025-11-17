@@ -254,6 +254,8 @@
 				let img = container.querySelector('.gallery-img');
 				const link = container.querySelector('a');
 				
+				let needsClickHandler = false;
+				
 				if (link && link.href.includes('.pdf')) {
 					// Remove PDF link structure and replace with plain image
 					img = document.createElement('img');
@@ -261,17 +263,17 @@
 					img.style.cssText = 'width: 100%; border-radius: 8px; border: 1px solid #333; cursor: pointer;';
 					container.innerHTML = '';
 					container.appendChild(img);
+					needsClickHandler = true;
 				}
 				
 			if (img) {
 				img.src = item.src;
 				img.alt = item.alt;
 				
-				// Ensure lightbox class is present
-				if (!img.classList.contains('lightbox-img')) {
+				// Add lightbox click handler if needed
+				if (needsClickHandler || !img.classList.contains('lightbox-img')) {
 					img.classList.add('lightbox-img');
 					
-					// Only add click handler if we just added the class (newly created image)
 					img.addEventListener('click', () => {
 						const lightbox = document.getElementById('lightbox');
 						const lightboxImg = document.getElementById('lightbox-img');
