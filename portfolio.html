@@ -262,6 +262,22 @@
 				if (img) {
 					img.src = item.src;
 					img.alt = item.alt;
+					
+					// Ensure lightbox click handler is attached
+					if (!img.classList.contains('lightbox-img')) {
+						img.classList.add('lightbox-img');
+					}
+					
+					// Remove any existing click handlers and add new one
+					const newImg = img.cloneNode(true);
+					img.parentNode.replaceChild(newImg, img);
+					
+					newImg.addEventListener('click', () => {
+						const lightbox = document.getElementById('lightbox');
+						const lightboxImg = document.getElementById('lightbox-img');
+						lightboxImg.src = newImg.src;
+						lightbox.classList.add('active');
+					});
 				}
 			}
 			
