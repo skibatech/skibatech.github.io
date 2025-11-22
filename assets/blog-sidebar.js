@@ -1,6 +1,11 @@
 // Blog posts data - update this array when adding new posts
 const blogPosts = [
 	{
+		title: 'Microsoft Ignite 2025 – Key Announcements by Technical Area',
+		url: '/blog/msignite-2025-key-announcements.html',
+		date: '2025-11-21'
+	},
+	{
 		title: 'Microsoft Ignite 2025 – Virtual Attendance Schedule',
 		url: '/blog/msignite-2025-favorites-biglist.html',
 		date: '2025-11-16'

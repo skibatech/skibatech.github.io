@@ -1,0 +1,314 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+	<title>Microsoft Ignite 2025 – Key Announcements by Technical Area • SkibaTech Blog</title>
+	<link rel='stylesheet' href='/assets/site.css'>
+	<script src='/assets/blog-sidebar.js' defer></script>
+	</head>
+	<body>
+		<nav class='nav'>
+			<div class='container nav-inner'>
+				<a class="brand" href='/'><img src="/assets/images/skibatech-narrow-logo.png" alt="SkibaTech"></a>
+				<div><a href='/portfolio.html'>Portfolio</a><a href='/skills.html'>Skills</a><a href='/blog.html'>Blog</a><a href='/contact.html'>Contact</a></div>
+			</div>
+		</nav>
+
+	<section class='container' style='padding-top:40px; padding-bottom:40px'>
+		<div class="blog-layout">
+			<!-- Sidebar -->
+			<aside class="blog-sidebar">
+				<!-- Dynamically populated by blog-sidebar.js -->
+			</aside>				<!-- Main Content -->
+				<article class="blog-content">
+					<header>
+						<h1 style="margin:0 0 8px; font-size:28px">Microsoft Ignite 2025 – Key Announcements by Technical Area</h1>
+						<p style="color:var(--muted); font-size:14px; margin:0 0 12px">Published on November 21, 2025 • 15 min read</p>
+						<button id="toggleWidth" onclick="toggleWideView()" style="background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'">
+							<span id="toggleIcon">⇾</span> <span id="toggleText">Wide</span>
+						</button>
+					</header>
+
+					<div style="margin-top:32px; line-height:1.8">
+						<p>This is a comprehensive summary of the most significant announcements from Microsoft Ignite 2025, organized by technical area rather than by session. Many sessions covered overlapping topics, so this structure makes it easier to see the full picture of what's new in each technology domain.</p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Windows 365 & Cloud PCs</h2>
+						
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Windows 365 for Agents</h3>
+						<p style="margin-bottom:12px">Windows 365 for Agents extends agentic capabilities to the Microsoft Cloud, providing a trusted platform with modular UI controls, enterprise-grade security, and flexibility to run on Windows or Linux. Agent makers can build and deploy agents that open apps, process data, and automate tasks on a Cloud PC.</p>
+						<ul style="line-height:2">
+							<li>Serves as execution platform for agents in Microsoft Copilot Studio computer use</li>
+							<li>Powers Researcher with Linux environment support for web browser and terminal execution</li>
+							<li>Now in preview - <a href="https://aka.ms/W365AInterestForm" target="_blank">join the waiting list</a></li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK343</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Windows 365 Reserve</h3>
+						<p style="margin-bottom:12px">Now generally available, Windows 365 Reserve offers a simple, secure, and cost-effective temporary Cloud PC solution for organizations dealing with device delays, loss, theft, ransomware attacks, or hardware/software failures.</p>
+						<ul style="line-height:2">
+							<li>Pre-installed with organizational apps, settings, and security policies via Microsoft Intune</li>
+							<li>Users can securely connect from any device anywhere</li>
+							<li>Easy access revocation when no longer needed</li>
+							<li>Ideal for short-term access needs and emergency situations</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK343</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Windows 365 Cloud Apps</h3>
+						<p style="margin-bottom:12px">Allow administrators to give users access to specific apps delivered from the cloud instead of a full Cloud PC, ideal for streamlined app delivery and VDI modernization.</p>
+						<ul style="line-height:2">
+							<li>Run on Windows 365 Frontline Cloud PCs in shared mode</li>
+							<li>Stream apps like Outlook, Word, or custom apps via Intune</li>
+							<li>User experience sync in shared mode now generally available</li>
+							<li>Persistent app settings and configurations across sessions</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK343</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Microsoft Intune & Endpoint Management</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">New Security Copilot Agents in Intune</h3>
+						<p style="margin-bottom:12px">Three new AI-powered agents now in preview to help IT teams secure, manage, and recover endpoints more efficiently:</p>
+						<ul style="line-height:2">
+							<li><strong>Change Review Agent:</strong> Analyzes change requests in context, checking for risks, conflicts, and compliance</li>
+							<li><strong>Policy Configuration Agent:</strong> Accelerates policy creation by capturing intent from documents or natural language</li>
+							<li><strong>Device Offboarding Agent:</strong> Uses activity signals to suggest which devices should be removed</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1741</a>, <a href="#">BRK329</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Remote Windows Recovery at Scale</h3>
+						<p style="margin-bottom:12px">Industry-first capability enabling remote management of Windows Recovery Environment (WinRE) at scale in Intune:</p>
+						<ul style="line-height:2">
+							<li>Recover Windows devices remotely even if device can't boot or user is not present</li>
+							<li>Now in preview</li>
+							<li>Dramatically reduces downtime and IT support burden</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1741</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Enhanced Admin Controls</h3>
+						<ul style="line-height:2">
+							<li><strong>Admin Tasks:</strong> Centralized, prioritized task list to identify and act on what matters most (preview)</li>
+							<li><strong>Maintenance Windows:</strong> Unified way to schedule updates and minimize disruption (preview January 2026)</li>
+							<li><strong>Deployments with Pause/Resume:</strong> Control options to reduce risk (preview January 2026)</li>
+							<li><strong>Expanded Copilot Support:</strong> Natural language exploration of Autopilot, Endpoint Privilege Management, and Advanced Analytics (generally available)</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1741</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Windows Update & Autopatch</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Autopatch Update Readiness</h3>
+						<p style="margin-bottom:12px">A significant innovation marking a shift from reactive troubleshooting to proactive management:</p>
+						<ul style="line-height:2">
+							<li>Real-time visibility into entire device estate showing which devices are ready for updates</li>
+							<li>Actionable insights with clear remediation guidance</li>
+							<li>Prevents issues before they disrupt work</li>
+							<li>Unified dashboard in Microsoft Intune to identify failing devices, understand why, and remediate within Windows Autopatch</li>
+							<li>Early flagging of compliance issues and policy conflicts</li>
+							<li>Now in preview</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1741</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Artificial Intelligence & Copilot</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Microsoft Agent 365</h3>
+						<p style="margin-bottom:12px">The control plane for agents - extends infrastructure for managing users to agents, helping organizations govern agents responsibly at scale. Available now in Microsoft 365 admin center with the Frontier program.</p>
+						<ul style="line-height:2">
+							<li><strong>Registry:</strong> Complete view of all agents including shadow agents</li>
+							<li><strong>Access Control:</strong> Bring agents under management and limit access with risk-based conditional access</li>
+							<li><strong>Visualization:</strong> Explore connections between agents, people, and data</li>
+							<li><strong>Interoperability:</strong> Equip agents with apps and data to simplify workflows</li>
+							<li><strong>Security:</strong> Protect agents from threats with Microsoft Defender, Entra, and Purview integration</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">KEY01</a>, <a href="#">BRK1710</a>, <a href="#">BRK1700</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Word, Excel, and PowerPoint Agents</h3>
+						<p style="margin-bottom:12px">Dedicated agents in Microsoft 365 Copilot that create high-quality Office content directly from Copilot Chat:</p>
+						<ul style="line-height:2">
+							<li><strong>Excel Agent:</strong> Turns data into charts, summaries, and insights using formulas and logic</li>
+							<li><strong>Word Agent:</strong> Organizes complex information into clear, well-written documents</li>
+							<li><strong>PowerPoint Agent:</strong> Builds presentations with storytelling and visual structure</li>
+							<li>Grounded in web data with Work IQ for organizational knowledge</li>
+							<li>Available through Frontier program</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1710</a>, <a href="#">BRK1700</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Agent Mode in PowerPoint, Excel, and Word</h3>
+						<p style="margin-bottom:12px">Enables iterative co-creation directly within Office apps:</p>
+						<ul style="line-height:2">
+							<li><strong>PowerPoint:</strong> Update existing decks, create slides, format text, add images (Frontier preview)</li>
+							<li><strong>Excel:</strong> Integrated web search, choice between Anthropic and OpenAI reasoning models (Frontier preview)</li>
+							<li><strong>Word:</strong> Work IQ integration for relevant sources from files, emails, meetings (generally available)</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1710</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Model Context Protocol (MCP) on Windows</h3>
+						<p style="margin-bottom:12px">Native support for MCP on Windows enables AI agents to connect with line-of-business apps and automate tasks:</p>
+						<ul style="line-height:2">
+							<li><strong>File Explorer Connector:</strong> Secure access to local files with natural language search</li>
+							<li><strong>System Settings Connector:</strong> Handle complex setting operations (Bluetooth, network, etc.)</li>
+							<li><strong>Agent Workspace:</strong> Isolated, policy-controlled environment where agents interact with software (private preview)</li>
+							<li>Enterprise-grade security and governance with IT admin management via Intune, Entra, and Group Policy</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK329</a>, <a href="#">BRK1700</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Azure Arc & Hybrid Infrastructure</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Azure Arc Overview</h3>
+						<p style="margin-bottom:12px">Extends Azure management to hybrid and multi-cloud environments:</p>
+						<ul style="line-height:2">
+							<li>Unified management plane for resources across Azure, on-premises, and other clouds</li>
+							<li>Consistent deployment, management, and governance</li>
+							<li>Microsoft Entra ID authentication for SQL Server via Azure Arc</li>
+							<li>Improved credential management and reduced vulnerabilities</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK183</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Azure Migrate</h3>
+						<p style="margin-bottom:12px">AI-assisted insights and cloud transformation capabilities:</p>
+						<ul style="line-height:2">
+							<li>AI-powered assessment and recommendations for cloud migration</li>
+							<li>Right-sizing recommendations for cost optimization</li>
+							<li>Dependency mapping and application grouping</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK139</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Windows Server & Azure Infrastructure</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">SQL Server 2025</h3>
+						<p style="margin-bottom:12px">Now generally available with built-in AI and developer-first enhancements:</p>
+						<ul style="line-height:2">
+							<li>Access AI models locally or in the cloud using familiar T-SQL language</li>
+							<li>Simplified data processing with native JSON support and built-in REST APIs</li>
+							<li>Near real-time analytics via database mirroring to Microsoft OneLake in Fabric</li>
+							<li>GitHub Copilot integration in VS Code and SSMS 22</li>
+							<li>New Microsoft Python driver for SQL Server (mssql-python)</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK142</a>, <a href="#">BRK139</a></p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Azure HorizonDB for PostgreSQL</h3>
+						<p style="margin-bottom:12px">New PostgreSQL cloud database service now in private preview:</p>
+						<ul style="line-height:2">
+							<li>Transactions and vector search up to 3x faster than open-source PostgreSQL</li>
+							<li>Scale-out compute to 15 replicas with 192 vCores each</li>
+							<li>Auto-scaling storage up to 128 TB</li>
+							<li>Advanced DiskANN vector indexing for AI workloads</li>
+							<li>AI-readiness with pre-provisioned models</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK142</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Windows Recovery & Resilience</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Point-in-Time Restore (PITR)</h3>
+						<p style="margin-bottom:12px">Comprehensive rollback capability for devices or groups of devices (preview H1 2026):</p>
+						<ul style="line-height:2">
+							<li>Restore to exact state before a problem emerged</li>
+							<li>Restores OS, apps, settings, and local files</li>
+							<li>Recovery within minutes without technical expertise</li>
+						</ul>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Cloud Rebuild</h3>
+						<p style="margin-bottom:12px">Complete PC rebuild capability (preview H1 2026):</p>
+						<ul style="line-height:2">
+							<li>Reinstall completely new Windows 11 OS with appropriate drivers</li>
+							<li>Works with Intune, Windows Autopilot, Windows Backup, and OneDrive</li>
+							<li>Restores data, apps, and PC settings</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1741</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Security Enhancements</h2>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Post Quantum Cryptography (PQC) API</h3>
+						<p style="margin-bottom:12px">Now generally available - allows use of cryptographic algorithms secured against quantum computer attacks:</p>
+						<ul style="line-height:2">
+							<li>Compliance with Commercial National Security Algorithm Suite</li>
+							<li>Reduces exposure to "harvest now, decrypt later" threats</li>
+						</ul>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Hardware-Accelerated BitLocker</h3>
+						<p style="margin-bottom:12px">Now generally available in new devices with supported hardware:</p>
+						<ul style="line-height:2">
+							<li>Offloads cryptographic operations to dedicated crypto engine</li>
+							<li>Hardware-protected keys reduce exposure to CPU/memory issues</li>
+							<li>Improved performance and enhanced security</li>
+						</ul>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Passkey Integration with Windows Hello</h3>
+						<p style="margin-bottom:12px">Passkey manager integration now generally available:</p>
+						<ul style="line-height:2">
+							<li>Select passkey manager of choice</li>
+							<li>Multifactor authentication for web</li>
+							<li>Simple, quick, and secure sign-in</li>
+						</ul>
+						<p style="margin-top:12px; font-size:14px; color:var(--muted)"><strong>Discussed in:</strong> <a href="#">BRK1700</a></p>
+
+						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Pre-Recorded Vendor Sessions</h2>
+						<p style="margin-bottom:16px">Several vendor and Microsoft-sponsored sessions provided valuable insights:</p>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Endpoint Management Modernization</h3>
+						<ul style="line-height:2">
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1488" target="_blank">ODSP1488</a> (Nerdio):</strong> Cloud desktop and endpoint management modernization strategies</li>
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1513" target="_blank">ODSP1513</a> (OneDeploy):</strong> Unified approach for deploying ARM and Intel Copilot+ PCs</li>
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1521" target="_blank">ODSP1521</a> (Robopack):</strong> Standardizing Intune app packaging and updates at scale</li>
+						</ul>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Application Management</h3>
+						<ul style="line-height:2">
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1481" target="_blank">ODSP1481</a> (Rimo3):</strong> Moving from app anxiety to automation confidence</li>
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1435" target="_blank">ODSP1435</a> (Recast Software):</strong> Streamline ConfigMgr, Intune, and AVD Management with Right Click Tools</li>
+						</ul>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Identity & Zero Trust</h3>
+						<ul style="line-height:2">
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1406" target="_blank">ODSP1406</a> (Infoblox):</strong> Enable modern Zero Trust architecture</li>
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1466" target="_blank">ODSP1466</a> (Liquidware):</strong> Replacing Group Policy Preferences with ProfileUnity in Entra ID environments</li>
+						</ul>
+
+						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">AI & Sustainability</h3>
+						<ul style="line-height:2">
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/ODSP1401" target="_blank">ODSP1401</a> (WNS Vuram):</strong> Innovation with AI & Azure Agents</li>
+							<li><strong><a href="https://ignite.microsoft.com/en-US/sessions/OD1319" target="_blank">OD1319</a> (Microsoft):</strong> Windows & Intune enabling the Sustainable Enterprise of the Future</li>
+						</ul>
+
+						<hr style="margin-top:48px; margin-bottom:24px; border:0; border-top:1px solid var(--border)">
+						<p style="color:var(--muted); font-size:14px; line-height:1.8">This summary was compiled from information presented at Microsoft Ignite 2025 and the official <a href="https://news.microsoft.com/ignite-2025-book-of-news" target="_blank">Book of News</a>. For complete details on any announcement, please refer to the official Microsoft documentation and session recordings.</p>
+					</div>
+				</article>
+			</div>
+		</section>
+
+	<footer>
+		<div class='container'>© SkibaTech</div>
+	</footer>
+
+	<script>
+		function toggleWideView() {
+			const sidebar = document.querySelector('.blog-sidebar');
+			const layout = document.querySelector('.blog-layout');
+			const icon = document.getElementById('toggleIcon');
+			const text = document.getElementById('toggleText');
+			
+			if (sidebar.style.display === 'none') {
+				// Restore normal view
+				sidebar.style.display = '';
+				layout.style.gridTemplateColumns = '';
+				icon.textContent = '⇾';
+				text.textContent = 'Wide';
+				localStorage.setItem('blogWideView', 'false');
+			} else {
+				// Enable wide view
+				sidebar.style.display = 'none';
+				layout.style.gridTemplateColumns = '1fr';
+				icon.textContent = '⇽';
+				text.textContent = 'Normal';
+				localStorage.setItem('blogWideView', 'true');
+			}
+		}
+
+		// Restore preference on load
+		window.addEventListener('DOMContentLoaded', function() {
+			if (localStorage.getItem('blogWideView') === 'true') {
+				toggleWideView();
+			}
+		});
+	</script>
+	</body>
+</html>
