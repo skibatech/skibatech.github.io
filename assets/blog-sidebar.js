@@ -1,7 +1,7 @@
 // Blog posts data - update this array when adding new posts
 const blogPosts = [
 	{
-		title: 'What's New in Microsoft Intune – Microsoft Ignite 2025',
+		title: 'What\'s New in Microsoft Intune – Microsoft Ignite 2025',
 		url: '/blog/msignite-2025-whats-new-intune.html',
 		date: '2025-11-24'
 	},
