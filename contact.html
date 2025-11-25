@@ -1,11 +1,30 @@
 <!doctype html>
 <html>
 	<head>
-		<meta charset='utf-8'>
-		<meta name='viewport' content='width=device-width,initial-scale=1'>
-		<title>Contact</title>
-		<link rel='stylesheet' href='/assets/site.css'>
-		<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "70cd0279823440d0b6851d7b87740f33"}'></script><!-- End Cloudflare Web Analytics -->
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+	<title>Contact</title>
+	<link rel='stylesheet' href='/assets/site.css'>
+	<style>
+		.contact-layout {
+			display: grid;
+			grid-template-columns: 240px 1fr;
+			gap: 24px;
+			align-items: start;
+			margin-bottom: 24px;
+		}
+		@media (max-width: 768px) {
+			.contact-layout {
+				grid-template-columns: 1fr;
+				gap: 16px;
+			}
+			.contact-layout img {
+				max-width: 200px;
+				margin: 0 auto;
+			}
+		}
+	</style>
+	<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "70cd0279823440d0b6851d7b87740f33"}'></script><!-- End Cloudflare Web Analytics -->
 	</head>
 	<body>
 		<nav class='nav'>
@@ -13,19 +32,21 @@
 				<a class="brand" href='/'><img src="/assets/images/skibatech-narrow-logo.png" alt="SkibaTech"></a>
 				<div><a href='/portfolio.html'>Portfolio</a><a href='/skills.html'>Skills</a><a href='/blog.html'>Blog</a><a href='/contact.html'>Contact</a></div>
 			</div>
-		</nav>		<section class='container' style='padding-top:40px; padding-bottom:40px'>
-			<h2>Contact</h2>
+	</nav>		<section class='container' style='padding-top:40px; padding-bottom:40px'>
+		<h2>Contact</h2>
 
-			<img src="/assets/images/self.jpg" alt="Mark Skiba" style="float:left; width:240px; height:auto; margin:0 24px 16px 0; border:8px solid #333; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.3)">
+		<div class="contact-layout">
+			<img src="/assets/images/self.jpg" alt="Mark Skiba" style="width:100%; height:auto; border:8px solid #333; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.3)">
 
-			<p>I'm passionate about solving complex infrastructure challenges and automating away operational toil. Whether you're looking to modernize your endpoint management, streamline deployments at scale, or integrate Generative AI into your workflows—I'm here to help turn ambitious ideas into reality.</p>
+			<div>
+				<p>I'm passionate about solving complex infrastructure challenges and automating away operational toil. Whether you're looking to modernize your endpoint management, streamline deployments at scale, or integrate Generative AI into your workflows—I'm here to help turn ambitious ideas into reality.</p>
 
-			<p>With experience spanning Configuration Manager migrations, enterprise automation frameworks, and pragmatic DevOps practices, I bring both strategic vision and hands-on execution to every engagement. I thrive on mentoring teams, improving processes, and building systems that work reliably and efficiently.</p>
+				<p>With experience spanning Configuration Manager migrations, enterprise automation frameworks, and pragmatic DevOps practices, I bring both strategic vision and hands-on execution to every engagement. I thrive on mentoring teams, improving processes, and building systems that work reliably and efficiently.</p>
 
-			<p>If you'd like to discuss your infrastructure goals, explore collaboration opportunities, or simply want to learn more about what I do, <strong>reach out at <a href='mailto:maskiba@skibatech.com'>maskiba@skibatech.com</a></strong>. I'd love to connect.</p>
-		</section>
-
-		<footer>
+				<p>If you'd like to discuss your infrastructure goals, explore collaboration opportunities, or simply want to learn more about what I do, <strong>reach out at <a href='mailto:maskiba@skibatech.com'>maskiba@skibatech.com</a></strong>. I'd love to connect.</p>
+			</div>
+		</div>
+	</section>		<footer>
 			<div class='container'>© SkibaTech</div>
 		</footer>
 	</body>
