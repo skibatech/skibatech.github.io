@@ -1448,6 +1448,12 @@
             
             // Get categories
             const appliedCategories = task.appliedCategories || {};
+            
+            // Debug logging for TEST123
+            if (task.title && task.title.includes('Microsoft Learn')) {
+                console.log('📋 Task:', task.title, '| Applied Categories:', Object.keys(appliedCategories), '| Category Descriptions:', planCategoryDescriptions);
+            }
+            
             const categoryBadges = Object.keys(appliedCategories).map(cat => {
                 const categoryNames = {
                     'category1': planCategoryDescriptions.category1 || 'Pink',
@@ -1503,6 +1509,12 @@
                     'category24': '#e0e0e0',
                     'category25': '#616161'
                 };
+                
+                // Debug: log if this is TEST123
+                if (categoryNames[cat] && categoryNames[cat].includes('TEST')) {
+                    console.log(`🏷️  Label: ${categoryNames[cat]} | Category: ${cat} | Color: ${colors[cat]}`);
+                }
+                
                 return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${categoryNames[cat]}</span>`;
             }).join('');
 
