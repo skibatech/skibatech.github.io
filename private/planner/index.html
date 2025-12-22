@@ -655,94 +655,104 @@
                 Loading task details...
             </div>
             <div id="taskDetailsContent" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label">Task Name *</label>
-                    <input type="text" id="detailTaskName" class="task-input">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Progress</label>
-                    <select id="detailTaskProgress" class="task-input">
-                        <option value="0">Not started</option>
-                        <option value="50">In progress</option>
-                        <option value="100">Completed</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Priority</label>
-                    <select id="detailTaskPriority" class="task-input">
-                        <option value="5">Low</option>
-                        <option value="3">Medium</option>
-                        <option value="1">Important</option>
-                        <option value="0">Urgent</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" id="detailTaskStartDate" class="task-input">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Due Date</label>
-                    <input type="date" id="detailTaskDueDate" class="task-input">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Bucket</label>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <select id="detailTaskBucket" class="task-input" style="flex: 1;"></select>
-                        <button type="button" onclick="showNewBucketInput()" style="padding: 8px 12px; background: #f0f0f0; color: #0078d4; white-space: nowrap;">+ New</button>
+                <div style="display: flex; gap: 20px;">
+                    <!-- Left Column -->
+                    <div style="flex: 1; min-width: 0;">
+                        <div class="form-group">
+                            <label class="form-label">Task Name *</label>
+                            <input type="text" id="detailTaskName" class="task-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Progress</label>
+                            <select id="detailTaskProgress" class="task-input">
+                                <option value="0">Not started</option>
+                                <option value="50">In progress</option>
+                                <option value="100">Completed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Priority</label>
+                            <select id="detailTaskPriority" class="task-input">
+                                <option value="5">Low</option>
+                                <option value="3">Medium</option>
+                                <option value="1">Important</option>
+                                <option value="0">Urgent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="detailTaskStartDate" class="task-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" id="detailTaskDueDate" class="task-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
+                        </div>
                     </div>
-                    <div id="newBucketContainer" style="display: none; margin-top: 8px;">
-                        <input type="text" id="newBucketName" class="task-input" placeholder="Enter new bucket name">
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <button type="button" onclick="createNewBucket()" style="padding: 6px 12px; font-size: 12px;">Create Bucket</button>
-                            <button type="button" onclick="cancelNewBucket()" class="cancel-btn" style="padding: 6px 12px; font-size: 12px;">Cancel</button>
+                    
+                    <!-- Right Column -->
+                    <div style="flex: 0 0 280px;">
+                        <div class="form-group">
+                            <label class="form-label">Bucket</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select id="detailTaskBucket" class="task-input" style="flex: 1;"></select>
+                                <button type="button" onclick="showNewBucketInput()" style="padding: 8px 12px; background: #f0f0f0; color: #0078d4; white-space: nowrap;">+ New</button>
+                            </div>
+                            <div id="newBucketContainer" style="display: none; margin-top: 8px;">
+                                <input type="text" id="newBucketName" class="task-input" placeholder="Enter new bucket name">
+                                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                    <button type="button" onclick="createNewBucket()" style="padding: 6px 12px; font-size: 12px;">Create Bucket</button>
+                                    <button type="button" onclick="cancelNewBucket()" class="cancel-btn" style="padding: 6px 12px; font-size: 12px;">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Labels</label>
+                            <input type="text" id="detailCategorySearch" class="task-input" placeholder="Search for label" oninput="filterCategories('detail')">
+                            <div id="categoriesContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category1">
+                                    <input type="checkbox" id="category1" value="category1" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #e91e63;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category2">
+                                    <input type="checkbox" id="category2" value="category2" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #f44336;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category3">
+                                    <input type="checkbox" id="category3" value="category3" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #ffc107;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category4">
+                                    <input type="checkbox" id="category4" value="category4" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #4caf50;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category5">
+                                    <input type="checkbox" id="category5" value="category5" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #2196f3;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer;" class="category-option" data-category="category6">
+                                    <input type="checkbox" id="category6" value="category6" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #9c27b0;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e0e0e0;">
+                            <a id="openInPlannerLink" href="#" target="_blank" style="color: #0078d4; font-size: 13px; text-decoration: none;">
+                                📋 Open in Microsoft Planner →
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Labels</label>
-                    <input type="text" id="detailCategorySearch" class="task-input" placeholder="Search for label" oninput="filterCategories('detail')">
-                    <div id="categoriesContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category1">
-                            <input type="checkbox" id="category1" value="category1" style="cursor: pointer;">
-                            <span style="width: 12px; height: 12px; border-radius: 2px; background: #e91e63;"></span>
-                            <span class="category-name"></span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category2">
-                            <input type="checkbox" id="category2" value="category2" style="cursor: pointer;">
-                            <span style="width: 12px; height: 12px; border-radius: 2px; background: #f44336;"></span>
-                            <span class="category-name"></span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category3">
-                            <input type="checkbox" id="category3" value="category3" style="cursor: pointer;">
-                            <span style="width: 12px; height: 12px; border-radius: 2px; background: #ffc107;"></span>
-                            <span class="category-name"></span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category4">
-                            <input type="checkbox" id="category4" value="category4" style="cursor: pointer;">
-                            <span style="width: 12px; height: 12px; border-radius: 2px; background: #4caf50;"></span>
-                            <span class="category-name"></span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category5">
-                            <input type="checkbox" id="category5" value="category5" style="cursor: pointer;">
-                            <span style="width: 12px; height: 12px; border-radius: 2px; background: #2196f3;"></span>
-                            <span class="category-name"></span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer;" class="category-option" data-category="category6">
-                            <input type="checkbox" id="category6" value="category6" style="cursor: pointer;">
-                            <span style="width: 12px; height: 12px; border-radius: 2px; background: #9c27b0;"></span>
-                            <span class="category-name"></span>
-                        </label>
-                    </div>
-                </div>
-                <div style="margin: 20px 0; padding-top: 16px; border-top: 1px solid #e0e0e0;">
-                    <a id="openInPlannerLink" href="#" target="_blank" style="color: #0078d4; font-size: 13px; text-decoration: none;">
-                        📋 Open in Microsoft Planner →
-                    </a>
-                </div>
+                
                 <div class="modal-actions">
                     <button class="cancel-btn" onclick="closeTaskDetailsModal()">Cancel</button>
                     <button id="saveTaskBtn" onclick="saveTaskDetails()">Save Changes</button>
