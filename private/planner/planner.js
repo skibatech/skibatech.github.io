@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.2.1';
 
 // Configuration
 const config = {
@@ -574,7 +574,7 @@ function groupTasksBy(tasks, buckets, groupBy) {
                 }
                 break;
             case 'priority':
-                const priorityMap = {0: 'Urgent', 1: 'Important', 5: 'Medium', 9: 'Low'};
+                const priorityMap = {1: 'Urgent', 3: 'Important', 5: 'Medium', 9: 'Low'};
                 key = 'priority-' + task.priority;
                 name = priorityMap[task.priority] || 'No priority';
                 break;
@@ -660,7 +660,7 @@ function renderTask(task) {
     const progressText = task.percentComplete === 0 ? 'Not started' : 
                         task.percentComplete === 100 ? 'Completed' : 'In progress';
     
-    const priorityMap = {0: 'Urgent', 1: 'Important', 5: 'Medium', 9: 'Low'};
+    const priorityMap = {1: 'Urgent', 3: 'Important', 5: 'Medium', 9: 'Low'};
     const priorityText = priorityMap[task.priority] || '';
     
     const startDate = task.startDateTime ? new Date(task.startDateTime).toLocaleDateString() : '';
