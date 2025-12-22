@@ -154,22 +154,22 @@
         .col-due-date { flex: 0 0 100px; }
         .col-progress { flex: 0 0 120px; }
         .col-priority { flex: 0 0 100px; }
-        .col-labels { flex: 0 0 80px; }
+        .col-labels { flex: 0 0 200px; }
 
         .resize-handle {
             position: absolute;
             right: 0;
             top: 0;
             bottom: 0;
-            width: 5px;
+            width: 8px;
             cursor: col-resize;
             user-select: none;
             z-index: 1;
+            background: rgba(0, 120, 212, 0.15);
         }
 
         .resize-handle:hover {
-            background: #0078d4;
-            opacity: 0.5;
+            background: rgba(0, 120, 212, 0.4);
         }
 
         .sortable-header {
@@ -787,7 +787,7 @@
 
     <script>
         // Application Version - Update this with each change
-        const APP_VERSION = '1.0.9';
+        const APP_VERSION = '1.0.10';
 
         // Configuration
         const config = {
@@ -821,7 +821,7 @@
             'col-due-date': 100,
             'col-progress': 120,
             'col-priority': 100,
-            'col-labels': 80
+            'col-labels': 200
         };
 
         function startResize(event, columnClass) {
