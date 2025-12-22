@@ -552,6 +552,7 @@ body.unauthenticated #refreshBtn {
     align-items: center;
     gap: 8px;
     user-select: none;
+    justify-content: flex-start;
 }
 
 .bucket-header.nested:hover {

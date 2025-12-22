@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.4'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.3.5'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
