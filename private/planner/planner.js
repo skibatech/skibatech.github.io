@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.9'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.4.0'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -905,9 +905,14 @@ function applyFilters() {
 }
 
 function renderTask(task) {
-    // Generate task ID from the Planner task ID (use last 4 characters for readability)
-    const shortId = task.id.substring(task.id.length - 4).toUpperCase();
-    const taskDisplayId = `${taskIdPrefix}-${shortId}`;
+    // Generate numeric task ID from the Planner task ID using simple hash
+    let hash = 0;
+    for (let i = 0; i < task.id.length; i++) {
+        hash = ((hash << 5) - hash) + task.id.charCodeAt(i);
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    const numericId = Math.abs(hash) % 10000; // Keep it to 4 digits
+    const taskDisplayId = `${taskIdPrefix}-${numericId.toString().padStart(4, '0')}`;
     
     const progressClass = task.percentComplete === 0 ? 'not-started' : 
                          task.percentComplete === 100 ? 'completed' : 'in-progress';
@@ -1006,8 +1011,7 @@ function renderTask(task) {
                    ${task.percentComplete === 100 ? 'checked' : ''} 
                    onchange="toggleTaskComplete('${task.id}', this.checked, '${task['@odata.etag']}')">
             <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
-                <span style="font-size: 11px; color: #999; font-family: monospace; margin-right: 6px;">${taskDisplayId}</span>
-                ${task.title}
+                <span style="font-size: 11px; color: #999; font-family: monospace; margin-right: 8px; display: inline-block;">${taskDisplayId}</span><span>${task.title}</span>
             </div>
             <div class="task-assignee col-assigned">${assignee}</div>
             <div class="task-date col-start-date">${startDate}</div>
