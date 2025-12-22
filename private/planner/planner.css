@@ -1,0 +1,496 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    padding: 20px;
+}
+
+.header {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    color: #0078d4;
+    font-size: 18px;
+}
+
+.auth-section {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+button {
+    background: #0078d4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+button:hover {
+    background: #106ebe;
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.status {
+    color: #666;
+    font-size: 13px;
+}
+
+.bucket-container {
+    background: white;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.bucket-header {
+    padding: 10px 16px;
+    background: #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.bucket-header:hover {
+    background: #e8e8e8;
+}
+
+.bucket-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #323130;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.task-count {
+    background: #0078d4;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.expand-icon {
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.bucket-header.expanded .expand-icon {
+    transform: rotate(90deg);
+}
+
+.task-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.task-list.expanded {
+    max-height: 5000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.column-headers {
+    display: flex;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    background: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.column-headers > div {
+    padding-right: 12px;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.column-headers > div:first-child {
+    flex: 0 0 30px;
+}
+
+.col-task-name { flex: 0 0 300px; }
+.col-assigned { flex: 0 0 120px; }
+.col-start-date { flex: 0 0 100px; }
+.col-due-date { flex: 0 0 100px; }
+.col-progress { flex: 0 0 120px; }
+.col-priority { flex: 0 0 100px; }
+.col-labels { flex: 0 0 200px; }
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 1;
+    background: rgba(0, 120, 212, 0.15);
+}
+
+.resize-handle:hover {
+    background: rgba(0, 120, 212, 0.4);
+}
+
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sortable-header:hover {
+    color: #0078d4;
+}
+
+.sort-arrow {
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+.sort-arrow.active {
+    opacity: 1;
+    color: #0078d4;
+}
+
+.task-row {
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+}
+
+.task-row > div {
+    padding-right: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-row > input[type="checkbox"] {
+    flex: 0 0 30px;
+}
+
+.task-row:hover {
+    background: #f9f9f9;
+}
+
+.task-row:last-child {
+    border-bottom: none;
+}
+
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.task-title {
+    font-size: 13px;
+    color: #323130;
+    cursor: pointer;
+}
+
+.task-title:hover {
+    color: #0078d4;
+    text-decoration: underline;
+}
+
+.task-assignee {
+    font-size: 13px;
+    color: #666;
+}
+
+.task-date {
+    font-size: 13px;
+    color: #666;
+}
+
+.task-progress {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+}
+
+.progress-dot.not-started {
+    background: #d13438;
+}
+
+.progress-dot.in-progress {
+    background: #ffaa44;
+}
+
+.progress-dot.completed {
+    background: #107c10;
+}
+
+.task-priority {
+    font-size: 11px;
+    color: #666;
+}
+
+.task-labels {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.label-badge {
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    background: #e0e0e0;
+    color: #333;
+}
+
+.add-task-btn {
+    margin: 8px 10px;
+    background: #f0f0f0;
+    color: #0078d4;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.add-task-btn:hover {
+    background: #e0e0e0;
+}
+
+.checklist-item {
+    margin-left: 30px;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.checklist-checkbox {
+    width: 14px;
+    height: 14px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #323130;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #323130;
+}
+
+.task-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+textarea.task-input {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background: #f0f0f0;
+    color: #323130;
+}
+
+.cancel-btn:hover {
+    background: #e0e0e0;
+}
+
+/* Security: Hide content until authenticated */
+body.unauthenticated .bucket-container,
+body.unauthenticated #tasksContainer,
+body.unauthenticated #refreshBtn {
+    display: none !important;
+}
+
+.auth-required {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    margin: 100px auto;
+}
+
+.auth-required h2 {
+    color: #323130;
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.auth-required p {
+    color: #666;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.lock-icon {
+    font-size: 48px;
+    color: #0078d4;
+    margin-bottom: 20px;
+}
+
+.profile-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #0078d4;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+
+.profile-icon:hover {
+    background: #106ebe;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    min-width: 200px;
+    z-index: 1001;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+.profile-info {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #323130;
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    font-size: 12px;
+    color: #666;
+}
+
+.profile-menu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #323130;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-menu-item:hover {
+    background: #f5f5f5;
+}
