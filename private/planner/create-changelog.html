@@ -297,29 +297,40 @@
                 
                 log(`Found ${tasks.length} tasks to update`);
 
-                // Get today's date in ISO format (at midnight UTC)
+                // Get today's date in the format Planner expects (YYYY-MM-DD)
                 const today = new Date();
-                today.setUTCHours(0, 0, 0, 0);
-                const isoDate = today.toISOString();
+                const dateStr = today.toISOString().split('T')[0];
                 
-                log(`Setting all dates to: ${isoDate}`);
+                log(`Setting all dates to: ${dateStr}`);
                 
                 // Update each task
                 for (let i = 0; i < tasks.length; i++) {
                     const task = tasks[i];
                     log(`Updating ${i + 1}/${tasks.length}: ${task.title}`);
 
+                    // First get the task details to get the ETag
+                    const getDetailsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    });
+
+                    if (!getDetailsResponse.ok) {
+                        log(`✗ Failed to get details for: ${task.title}`, 'error');
+                        continue;
+                    }
+
+                    const etag = getDetailsResponse.headers.get('ETag');
+
                     const updateBody = {
-                        startDateTime: isoDate,
-                        dueDateTime: isoDate
+                        startDateTime: dateStr + 'T00:00:00.000Z',
+                        dueDateTime: dateStr + 'T23:59:59.999Z'
                     };
 
-                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
+                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                             'Content-Type': 'application/json',
-                            'If-Match': '*'
+                            'If-Match': etag
                         },
                         body: JSON.stringify(updateBody)
                     });
@@ -328,7 +339,7 @@
                         log(`✓ Updated dates for: ${task.title}`, 'success');
                     } else {
                         const error = await updateResponse.json();
-                        log(`✗ Failed to update: ${task.title} - ${JSON.stringify(error)}`, 'error');
+                        log(`✗ Failed to update: ${task.title}`, 'error');
                     }
 
                     await new Promise(resolve => setTimeout(resolve, 300));
