@@ -445,6 +445,21 @@
                 <option value="dueDate">Due date</option>
                 <option value="priority">Priority</option>
             </select>
+            <label for="filterSelect" style="font-size: 13px; color: #666;">Filter:</label>
+            <select id="filterSelect" onchange="applyFilters()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                <option value="all">All tasks</option>
+                <option value="urgent">Urgent priority</option>
+                <option value="important">Important priority</option>
+                <option value="assigned">Assigned to someone</option>
+                <option value="unassigned">Unassigned</option>
+                <option value="overdue">Overdue</option>
+                <option value="due-today">Due today</option>
+                <option value="due-this-week">Due this week</option>
+            </select>
+            <label style="font-size: 13px; color: #666; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="showCompletedCheckbox" onchange="applyFilters()" checked style="cursor: pointer;">
+                Show completed
+            </label>
             <span class="status" id="status">Not connected</span>
             <button id="connectBtn" onclick="login()">Sign In with Microsoft</button>
             <button id="refreshBtn" onclick="loadTasks()" style="display:none;">Refresh</button>
@@ -585,6 +600,17 @@
         let resizingColumn = null;
         let resizeStartX = 0;
         let resizeStartWidth = 0;
+        let currentFilter = 'all';
+        let showCompleted = true;
+        let columnWidths = {
+            'col-task-name': 300,
+            'col-assigned': 120,
+            'col-start-date': 100,
+            'col-due-date': 100,
+            'col-progress': 120,
+            'col-priority': 100,
+            'col-labels': 80
+        };
 
         function startResize(event, columnClass) {
             event.preventDefault();
@@ -609,6 +635,9 @@
             const diff = event.clientX - resizeStartX;
             const newWidth = Math.max(50, resizeStartWidth + diff);
             
+            // Store the new width
+            columnWidths[resizingColumn] = newWidth;
+            
             // Update all elements with this class
             const elements = document.querySelectorAll('.' + resizingColumn);
             elements.forEach(el => {
@@ -620,6 +649,16 @@
             resizingColumn = null;
             document.removeEventListener('mousemove', handleResize);
             document.removeEventListener('mouseup', stopResize);
+        }
+
+        function applyColumnWidths() {
+            // Apply stored column widths to all elements
+            Object.keys(columnWidths).forEach(columnClass => {
+                const elements = document.querySelectorAll('.' + columnClass);
+                elements.forEach(el => {
+                    el.style.flex = `0 0 ${columnWidths[columnClass]}px`;
+                });
+            });
         }
 
         // Check for OAuth callback
@@ -888,8 +927,8 @@
                 allBuckets = buckets;
                 allTasks = tasks;
 
-                // Render
-                renderTasks(buckets, tasks);
+                // Apply filters and render
+                applyFilters();
                 document.getElementById('status').textContent = 'Connected';
             } catch (error) {
                 console.error('Error loading tasks:', error);
@@ -983,6 +1022,9 @@
                     taskList.classList.add('expanded');
                 }
             });
+            
+            // Apply custom column widths
+            applyColumnWidths();
         }
 
         function groupTasksBy(tasks, buckets, groupBy) {
@@ -1056,9 +1098,64 @@
 
         function changeGroupBy() {
             currentGroupBy = document.getElementById('groupBySelect').value;
-            if (allTasks.length > 0) {
-                renderTasks(allBuckets, allTasks);
-            }
+            applyFilters();
+        }
+
+        function applyFilters() {
+            if (allTasks.length === 0) return;
+            
+            currentFilter = document.getElementById('filterSelect').value;
+            showCompleted = document.getElementById('showCompletedCheckbox').checked;
+            
+            let filteredTasks = allTasks.filter(task => {
+                // Filter by completion status
+                if (!showCompleted && task.percentComplete === 100) {
+                    return false;
+                }
+                
+                // Apply other filters
+                switch(currentFilter) {
+                    case 'all':
+                        return true;
+                    case 'urgent':
+                        return task.priority === 0;
+                    case 'important':
+                        return task.priority === 1;
+                    case 'assigned':
+                        return task.assignments && Object.keys(task.assignments).length > 0;
+                    case 'unassigned':
+                        return !task.assignments || Object.keys(task.assignments).length === 0;
+                    case 'overdue':
+                        if (!task.dueDateTime) return false;
+                        const dueDate = new Date(task.dueDateTime);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const due = new Date(dueDate);
+                        due.setHours(0, 0, 0, 0);
+                        return due < today && task.percentComplete !== 100;
+                    case 'due-today':
+                        if (!task.dueDateTime) return false;
+                        const dueDateToday = new Date(task.dueDateTime);
+                        const todayNow = new Date();
+                        todayNow.setHours(0, 0, 0, 0);
+                        const dueToday = new Date(dueDateToday);
+                        dueToday.setHours(0, 0, 0, 0);
+                        return dueToday.getTime() === todayNow.getTime();
+                    case 'due-this-week':
+                        if (!task.dueDateTime) return false;
+                        const dueDateWeek = new Date(task.dueDateTime);
+                        const todayWeek = new Date();
+                        todayWeek.setHours(0, 0, 0, 0);
+                        const dueWeek = new Date(dueDateWeek);
+                        dueWeek.setHours(0, 0, 0, 0);
+                        const weekFromNow = new Date(todayWeek.getTime() + 7 * 24 * 60 * 60 * 1000);
+                        return dueWeek >= todayWeek && dueWeek <= weekFromNow;
+                    default:
+                        return true;
+                }
+            });
+            
+            renderTasks(allBuckets, filteredTasks);
         }
 
         function renderTask(task) {
@@ -1415,10 +1512,8 @@
             }
             
             sortState[bucketId] = { column, direction };
-            // Re-render with existing data instead of fetching
-            if (allBuckets.length > 0 && allTasks.length > 0) {
-                renderTasks(allBuckets, allTasks);
-            }
+            // Re-render with existing data and filters
+            applyFilters();
         }
 
         function sortTasks(tasks, column, direction) {
