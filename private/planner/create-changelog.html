@@ -211,27 +211,41 @@
 
                     const task = await taskResponse.json();
                     
-                    // Add description
-                    const detailsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
-                        method: 'PATCH',
+                    // Get task details first to get ETag
+                    const detailsGetResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
                         headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                            'Content-Type': 'application/json',
-                            'If-Match': '*'
-                        },
-                        body: JSON.stringify({
-                            description: v.description
-                        })
+                            'Authorization': `Bearer ${accessToken}`
+                        }
                     });
 
-                    if (detailsResponse.ok) {
-                        log(`✓ Created: ${taskName}`, 'success');
+                    if (detailsGetResponse.ok) {
+                        const detailsData = await detailsGetResponse.json();
+                        const etag = detailsGetResponse.headers.get('ETag');
+                        
+                        // Now update with description
+                        const detailsPatchResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`,
+                                'Content-Type': 'application/json',
+                                'If-Match': etag
+                            },
+                            body: JSON.stringify({
+                                description: v.description
+                            })
+                        });
+
+                        if (detailsPatchResponse.ok) {
+                            log(`✓ Created: ${taskName}`, 'success');
+                        } else {
+                            log(`⚠ Task created but failed to add description`, 'error');
+                        }
                     } else {
-                        log(`⚠ Created task but failed to add description`, 'error');
+                        log(`⚠ Task created but couldn't fetch details for description`, 'error');
                     }
 
                     // Small delay to avoid throttling
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                    await new Promise(resolve => setTimeout(resolve, 300));
                 }
 
                 log('========================================', 'success');
