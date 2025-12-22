@@ -560,7 +560,7 @@
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.0.4</span>
+        v<span id="versionDisplay">1.0.5</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
@@ -607,8 +607,8 @@
                 <select id="newTaskBucket" class="task-input"></select>
             </div>
             <div class="form-group">
-                <label class="form-label">Labels</label>
-                <input type="text" id="newCategorySearch" class="task-input" placeholder="Search for label" oninput="filterCategories('new')">
+                <label class="form-label">Strategic Themes</label>
+                <input type="text" id="newCategorySearch" class="task-input" placeholder="Search for theme" oninput="filterCategories('new')">
                 <div id="newCategoriesContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
                     <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category1">
                         <input type="checkbox" id="newCategory1" value="category1" style="cursor: pointer;">
@@ -719,8 +719,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Labels</label>
-                            <input type="text" id="detailCategorySearch" class="task-input" placeholder="Search for label" oninput="filterCategories('detail')">
+                            <label class="form-label">Strategic Themes</label>
+                            <input type="text" id="detailCategorySearch" class="task-input" placeholder="Search for theme" oninput="filterCategories('detail')">
                             <div id="categoriesContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
                                 <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0;" class="category-option" data-category="category1">
                                     <input type="checkbox" id="category1" value="category1" style="cursor: pointer;">
@@ -777,7 +777,7 @@
 
     <script>
         // Application Version - Update this with each change
-        const APP_VERSION = '1.0.4';
+        const APP_VERSION = '1.0.5';
 
         // Configuration
         const config = {
@@ -1279,7 +1279,7 @@
                                 Priority ${sortArrows('priority')}
                                 <div class="resize-handle" onmousedown="startResize(event, 'col-priority')"></div>
                             </div>
-                            <div class="col-labels">Labels</div>
+                            <div class="col-labels">Themes</div>
                         </div>
                         ${groupTasks.map(task => renderTask(task)).join('')}
                         <button class="add-task-btn" onclick="showAddTask('${group.id}', '${group.name.replace(/'/g, "\\'")}')">+ Add task</button>
