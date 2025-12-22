@@ -572,7 +572,7 @@ function renderByAssignedBucket(container, buckets, tasks) {
         const isExpanded = expandedAssignees.has(assigneeId);
         
         const assigneeHeader = document.createElement('div');
-        assigneeHeader.className = 'assignee-header expanded';
+        assigneeHeader.className = 'assignee-header' + (isExpanded ? ' expanded' : '');
         assigneeHeader.style.cursor = 'pointer';
         assigneeHeader.innerHTML = `
             <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
