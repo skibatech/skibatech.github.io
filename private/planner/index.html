@@ -399,6 +399,14 @@
     <div class="header">
         <h1>SkibaTech Engineering - Planner Dashboard</h1>
         <div class="auth-section">
+            <label for="groupBySelect" style="font-size: 13px; color: #666;">Group by:</label>
+            <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                <option value="bucket">Bucket</option>
+                <option value="assigned">Assigned to</option>
+                <option value="progress">Progress</option>
+                <option value="dueDate">Due date</option>
+                <option value="priority">Priority</option>
+            </select>
             <span class="status" id="status">Not connected</span>
             <button id="connectBtn" onclick="login()">Sign In with Microsoft</button>
             <button id="refreshBtn" onclick="loadTasks()" style="display:none;">Refresh</button>
@@ -473,6 +481,9 @@
         let currentBucketName = null;
         let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
         let expandedBuckets = new Set(); // Track which buckets are expanded
+        let currentGroupBy = 'bucket'; // Current grouping field
+        let allBuckets = []; // Store buckets for reference
+        let allTasks = []; // Store tasks for re-grouping
 
         // Check for OAuth callback
         window.addEventListener('DOMContentLoaded', () => {
@@ -733,7 +744,11 @@
                     throw new Error('Failed to load tasks');
                 }
 
-                const tasksData = await tasksResponse.json();
+                conStore for re-grouping
+                allBuckets = buckets;
+                allTasks = tasks;
+
+                // st tasksData = await tasksResponse.json();
                 const tasks = tasksData.value;
 
                 // Render
@@ -746,23 +761,34 @@
             }
         }
 
-        function renderTasks(buckets, tasks) {
-            const container = document.getElementById('tasksContainer');
-            container.innerHTML = '';
-
-            buckets.forEach(bucket => {
-                let bucketTasks = tasks.filter(t => t.bucketId === bucket.id);
-                
-                // Apply sorting if set
-                const sort = sortState[bucket.id];
+        funclet groups;
+            if (currentGroupBy === 'bucket') {
+                groups = buckets.map(bucket => ({
+                    id: bucket.id,
+                    name: bucket.name,
+                    tasks: tasks.filter(t => t.bucketId === bucket.id)
+                }));
+            } else {
+                groups = groupTasksBy(tgroup.id];
                 if (sort) {
-                    bucketTasks = sortTasks(bucketTasks, sort.column, sort.direction);
+                    groupTasks = sortTasks(groupTasks, sort.column, sort.direction);
                 }
                 
                 const bucketDiv = document.createElement('div');
                 bucketDiv.className = 'bucket-container';
-                bucketDiv.setAttribute('data-bucket-id', bucket.id);
+                bucketDiv.setAttribute('data-bucket-id', group.id);
                 
+                const sortArrows = (col) => {
+                    if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
+                    return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
+                };
+                
+                bucketDiv.innerHTML = `
+                    <div class="bucket-header" onclick="toggleBucket(this)">
+                        <div class="bucket-title">
+                            <span class="expand-icon">▶</span>
+                            ${group.name}
+                            <span class="task-count">${group
                 const sortArrows = (col) => {
                     if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
                     return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
@@ -779,41 +805,117 @@
                     <div class="task-list">
                         <div class="column-headers">
                             <div></div>
-                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'title')">
+                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'title')">
                                 Task name ${sortArrows('title')}
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'assigned')">
+                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'assigned')">
                                 Assigned to ${sortArrows('assigned')}
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'startDate')">
+                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'startDate')">
                                 Start date ${sortArrows('startDate')}
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'dueDate')">
+                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'dueDate')">
                                 Due date ${sortArrows('dueDate')}
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'progress')">
+                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'progress')">
                                 Progress ${sortArrows('progress')}
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'priority')">
+                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'priority')">
                                 Priority ${sortArrows('priority')}
                             </div>
                             <div>Labels</div>
                         </div>
-                        ${bucketTasks.map(task => renderTask(task)).join('')}
-                        <button class="add-task-btn" onclick="showAddTask('${bucket.id}', '${bucket.name.replace(/'/g, "\\'")}')">+ Add task</button>
+                        ${groupTasks.map(task => renderTask(task)).join('')}
+                        <button class="add-task-btn" onclick="showAddTask('${group.id}', '${group.name.replace(/'/g, "\\'")}')">+ Add task</button>
                     </div>
                 `;
                 
                 container.appendChild(bucketDiv);
                 
                 // Restore expanded state
-                if (expandedBuckets.has(bucket.id)) {
+                if (expandedBuckets.has(group.id)) {
                     const header = bucketDiv.querySelector('.bucket-header');
                     const taskList = bucketDiv.querySelector('.task-list');
                     header.classList.add('expanded');
                     taskList.classList.add('expanded');
                 }
             });
+        }
+
+        function groupTasksBy(tasks, buckets, groupBy) {
+            const groups = {};
+            
+            tasks.forEach(task => {
+                let key, name;
+                
+                switch(groupBy) {
+                    case 'assigned':
+                        const hasAssignments = task.assignments && Object.keys(task.assignments).length > 0;
+                        key = hasAssignments ? 'assigned' : 'unassigned';
+                        name = hasAssignments ? 'Assigned' : 'Unassigned';
+                        break;
+                    case 'progress':
+                        if (task.percentComplete === 0) {
+                            key = 'not-started';
+                            name = 'Not started';
+                        } else if (task.percentComplete === 100) {
+                            key = 'completed';
+                            name = 'Completed';
+                        } else {
+                            key = 'in-progress';
+                            name = 'In progress';
+                        }
+                        break;
+                    case 'dueDate':
+                        if (!task.dueDateTime) {
+                            key = 'no-due-date';
+                            name = 'No due date';
+                        } else {
+                            const dueDate = new Date(task.dueDateTime);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const due = new Date(dueDate);
+                            due.setHours(0, 0, 0, 0);
+                            
+                            if (due < today) {
+                                key = 'overdue';
+                                name = 'Overdue';
+                            } else if (due.getTime() === today.getTime()) {
+                                key = 'today';
+                                name = 'Due today';
+                            } else if (due <= new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)) {
+                                key = 'this-week';
+                                name = 'Due this week';
+                            } else {
+                                key = 'later';
+                                name = 'Due later';
+                            }
+                        }
+                        break;
+                    case 'priority':
+                        const priorityMap = {0: 'Urgent', 1: 'Important', 3: 'Medium', 5: 'Low'};
+                        key = 'priority-' + task.priority;
+                        name = priorityMap[task.priority] || 'No priority';
+                        break;
+                    default:
+                        key = 'other';
+                        name = 'Other';
+                }
+                
+                if (!groups[key]) {
+                    groups[key] = { id: key, name: name, tasks: [] };
+                }
+                groups[key].tasks.push(task);
+            });
+            
+            return Object.values(groups);
+        }
+
+        function changeGroupBy() {
+            currentGroupBy = document.getElementById('groupBySelect').value;
+            if (allTasks.length > 0) {
+                renderTasks(allBuckets, allTasks);
+            }
         }
 
         function renderTask(task) {
