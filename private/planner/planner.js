@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.1';
+const APP_VERSION = '1.3.2';
 
 // Configuration
 const config = {
@@ -542,8 +542,12 @@ function renderByAssignedBucket(container, buckets, tasks) {
         let assigneeName = 'Unassigned';
         if (task.assignments && Object.keys(task.assignments).length > 0) {
             const assigneeId = Object.keys(task.assignments)[0];
+            // Try to get display name from task details
             if (allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName) {
                 assigneeName = allTaskDetails[task.id].assignments[assigneeId].displayName;
+            } else if (assigneeId) {
+                // Fallback: format the assignee ID if display name not available
+                assigneeName = assigneeId.replace(/[^a-z]/gi, ' ').trim() || 'Assigned';
             }
         }
         
