@@ -545,9 +545,9 @@ function renderByAssignedBucket(container, buckets, tasks) {
             // Try to get display name from task details
             if (allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName) {
                 assigneeName = allTaskDetails[task.id].assignments[assigneeId].displayName;
-            } else if (assigneeId) {
-                // Fallback: format the assignee ID if display name not available
-                assigneeName = assigneeId.replace(/[^a-z]/gi, ' ').trim() || 'Assigned';
+            } else {
+                // Fallback: use "Assigned" rather than trying to format the ID
+                assigneeName = 'Assigned';
             }
         }
         
@@ -712,7 +712,14 @@ function groupTasksBy(tasks, buckets, groupBy) {
 }
 
 function changeView() {
-    currentView = document.getElementById('viewSelect').value;
+    const newView = document.getElementById('viewSelect').value;
+    // For nested view, we need task details to be loaded
+    if (newView === 'byAssignedBucket' && Object.keys(allTaskDetails).length === 0) {
+        // Task details not yet loaded, don't switch views
+        document.getElementById('viewSelect').value = currentView;
+        return;
+    }
+    currentView = newView;
     applyFilters();
 }
 
