@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.1.3';
+const APP_VERSION = '1.1.4';
 
 // Configuration
 const config = {
@@ -808,8 +808,7 @@ function showAddTask(bucketId, bucketName) {
         }
     });
     
-    // Clear search and categories
-    document.getElementById('newCategorySearch').value = '';
+    // Clear categories
     ['newCategory5', 'newCategory4', 'newCategory3', 'newCategory1', 'newCategory7', 'newCategory9', 'newCategory2'].forEach(cat => {
         const checkbox = document.getElementById(cat);
         if (checkbox) checkbox.checked = false;
@@ -1015,8 +1014,7 @@ async function openTaskDetail(taskId) {
             }
         });
         
-        // Clear search and set checkboxes
-        document.getElementById('detailCategorySearch').value = '';
+        // Set checkboxes
         const appliedCategories = task.appliedCategories || {};
         ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
             const checkbox = document.getElementById(cat);
@@ -1167,22 +1165,6 @@ function sortBucket(bucketId, column) {
 function toggleProfileDropdown() {
     const dropdown = document.getElementById('profileDropdown');
     dropdown.classList.toggle('show');
-}
-
-function filterCategories(type) {
-    const searchInput = type === 'new' ? document.getElementById('newCategorySearch') : document.getElementById('detailCategorySearch');
-    const container = type === 'new' ? document.getElementById('newCategoriesContainer') : document.getElementById('categoriesContainer');
-    const searchTerm = searchInput.value.toLowerCase();
-    
-    const options = container.querySelectorAll('.category-option');
-    options.forEach(option => {
-        const categoryName = option.querySelector('.category-name').textContent.toLowerCase();
-        if (categoryName.includes(searchTerm)) {
-            option.style.display = 'flex';
-        } else {
-            option.style.display = 'none';
-        }
-    });
 }
 
 // Close dropdown when clicking outside
