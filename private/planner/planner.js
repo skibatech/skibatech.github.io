@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.6'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.3.7'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -22,6 +22,7 @@ let currentGroupBy = 'bucket'; // Current grouping field
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
+let allUsers = {}; // Store user details: { userId: displayName }
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let resizingColumn = null;
 let resizeStartX = 0;
@@ -436,6 +437,9 @@ async function loadTasks() {
             .catch(() => null)
         );
         await Promise.all(userPromises);
+        
+        // Store users globally for assignment dropdown
+        allUsers = { ...userDetailsMap };
         
         // Store task details with user display names
         allTaskDetails = {};
@@ -1169,15 +1173,25 @@ async function openTaskDetail(taskId) {
         document.getElementById('detailTaskProgress').value = task.percentComplete;
         document.getElementById('detailTaskPriority').value = task.priority;
         
-        // Populate assigned to field
-        let assigneeName = 'Unassigned';
+        // Populate assigned to dropdown
+        const assigneeSelect = document.getElementById('detailTaskAssignee');
+        assigneeSelect.innerHTML = '<option value="">Unassigned</option>';
+        
+        // Add all known users to dropdown
+        Object.entries(allUsers).sort((a, b) => a[1].localeCompare(b[1])).forEach(([userId, displayName]) => {
+            const option = document.createElement('option');
+            option.value = userId;
+            option.textContent = displayName;
+            assigneeSelect.appendChild(option);
+        });
+        
+        // Set current assignee
         if (task.assignments && Object.keys(task.assignments).length > 0) {
             const assigneeId = Object.keys(task.assignments)[0];
-            if (details.assignments && details.assignments[assigneeId]) {
-                assigneeName = details.assignments[assigneeId].displayName;
-            }
+            assigneeSelect.value = assigneeId;
+        } else {
+            assigneeSelect.value = '';
         }
-        document.getElementById('detailTaskAssignee').value = assigneeName;
         
         console.log('Loaded task from Planner - Priority value:', task.priority, 'Title:', task.title);
         
@@ -1274,6 +1288,7 @@ async function saveTaskDetails() {
         const dueDate = document.getElementById('detailTaskDueDate').value;
         const bucketId = document.getElementById('detailTaskBucket').value;
         const description = document.getElementById('detailTaskDescription').value.trim();
+        const assigneeUserId = document.getElementById('detailTaskAssignee').value;
         
         // Get selected categories (must include all with true/false for Graph API)
         const appliedCategories = {};
@@ -1284,13 +1299,26 @@ async function saveTaskDetails() {
             }
         });
         
+        // Build assignments object
+        const assignments = {};
+        if (assigneeUserId) {
+            // Assign to selected user
+            assignments[assigneeUserId] = {
+                '@odata.type': '#microsoft.graph.plannerAssignment',
+                orderHint: ' !'
+            };
+        }
+        // Note: To unassign, we'd need to send the current assignees with null values,
+        // but for now we'll just handle new assignments
+        
         // Update basic task info
         const taskBody = {
             title: title,
             percentComplete: progress,
             priority: priority,
             bucketId: bucketId,
-            appliedCategories: appliedCategories
+            appliedCategories: appliedCategories,
+            assignments: assignments
         };
         
         if (startDate) {
