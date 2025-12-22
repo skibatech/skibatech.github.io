@@ -545,12 +545,7 @@
                     }
                 } catch (error) {
                     console.error('❌ Token exchange failed:', error);
-                    alert('Authentication failed: ' + error.message available to SkibaTech users.');
-                        updateAuthUI(false);
-                    }
-                } catch (error) {
-                    console.error('Token exchange failed:', error);
-                    alert('Authentication failed. Please try again.');
+                    alert('Authentication failed: ' + error.message);
                     sessionStorage.removeItem('pkce_code_verifier');
                 }
             } else {
