@@ -127,9 +127,7 @@
         }
 
         .column-headers {
-            display: grid;
-            grid-template-columns: 30px 2fr 120px 100px 100px 100px 120px 80px;
-            gap: 12px;
+            display: flex;
             padding: 10px;
             font-size: 12px;
             font-weight: 600;
@@ -138,8 +136,40 @@
             border-bottom: 1px solid #e0e0e0;
         }
 
+        .column-headers > div {
+            padding-right: 12px;
+            position: relative;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .column-headers > div:first-child {
-            /* checkbox column */
+            flex: 0 0 30px;
+        }
+
+        .col-task-name { flex: 0 0 300px; }
+        .col-assigned { flex: 0 0 120px; }
+        .col-start-date { flex: 0 0 100px; }
+        .col-due-date { flex: 0 0 100px; }
+        .col-progress { flex: 0 0 120px; }
+        .col-priority { flex: 0 0 100px; }
+        .col-labels { flex: 0 0 80px; }
+
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            cursor: col-resize;
+            user-select: none;
+            z-index: 1;
+        }
+
+        .resize-handle:hover {
+            background: #0078d4;
+            opacity: 0.5;
         }
 
         .sortable-header {
@@ -167,10 +197,18 @@
         .task-row {
             padding: 10px;
             border-bottom: 1px solid #f0f0f0;
-            display: grid;
-            grid-template-columns: 30px 2fr 120px 100px 100px 100px 120px 80px;
-            gap: 12px;
+            display: flex;
             align-items: center;
+        }
+
+        .task-row > div {
+            padding-right: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .task-row > input[type="checkbox"] {
+            flex: 0 0 30px;
         }
 
         .task-row:hover {
@@ -544,6 +582,45 @@
         let currentGroupBy = 'bucket'; // Current grouping field
         let allBuckets = []; // Store buckets for reference
         let allTasks = []; // Store tasks for re-grouping
+        let resizingColumn = null;
+        let resizeStartX = 0;
+        let resizeStartWidth = 0;
+
+        function startResize(event, columnClass) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            resizingColumn = columnClass;
+            resizeStartX = event.clientX;
+            
+            // Get current width
+            const element = document.querySelector('.' + columnClass);
+            if (element) {
+                resizeStartWidth = element.offsetWidth;
+            }
+            
+            document.addEventListener('mousemove', handleResize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function handleResize(event) {
+            if (!resizingColumn) return;
+            
+            const diff = event.clientX - resizeStartX;
+            const newWidth = Math.max(50, resizeStartWidth + diff);
+            
+            // Update all elements with this class
+            const elements = document.querySelectorAll('.' + resizingColumn);
+            elements.forEach(el => {
+                el.style.flex = `0 0 ${newWidth}px`;
+            });
+        }
+
+        function stopResize() {
+            resizingColumn = null;
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+        }
 
         // Check for OAuth callback
         window.addEventListener('DOMContentLoaded', () => {
@@ -865,25 +942,31 @@
                     <div class="task-list">
                         <div class="column-headers">
                             <div></div>
-                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'title')">
+                            <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${group.id}', 'title')">
                                 Task name ${sortArrows('title')}
+                                <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')"></div>
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'assigned')">
+                            <div class="sortable-header col-assigned" onclick="event.stopPropagation(); sortBucket('${group.id}', 'assigned')">
                                 Assigned to ${sortArrows('assigned')}
+                                <div class="resize-handle" onmousedown="startResize(event, 'col-assigned')"></div>
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'startDate')">
+                            <div class="sortable-header col-start-date" onclick="event.stopPropagation(); sortBucket('${group.id}', 'startDate')">
                                 Start date ${sortArrows('startDate')}
+                                <div class="resize-handle" onmousedown="startResize(event, 'col-start-date')"></div>
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'dueDate')">
+                            <div class="sortable-header col-due-date" onclick="event.stopPropagation(); sortBucket('${group.id}', 'dueDate')">
                                 Due date ${sortArrows('dueDate')}
+                                <div class="resize-handle" onmousedown="startResize(event, 'col-due-date')"></div>
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'progress')">
+                            <div class="sortable-header col-progress" onclick="event.stopPropagation(); sortBucket('${group.id}', 'progress')">
                                 Progress ${sortArrows('progress')}
+                                <div class="resize-handle" onmousedown="startResize(event, 'col-progress')"></div>
                             </div>
-                            <div class="sortable-header" onclick="sortBucket('${group.id}', 'priority')">
+                            <div class="sortable-header col-priority" onclick="event.stopPropagation(); sortBucket('${group.id}', 'priority')">
                                 Priority ${sortArrows('priority')}
+                                <div class="resize-handle" onmousedown="startResize(event, 'col-priority')"></div>
                             </div>
-                            <div>Labels</div>
+                            <div class="col-labels">Labels</div>
                         </div>
                         ${groupTasks.map(task => renderTask(task)).join('')}
                         <button class="add-task-btn" onclick="showAddTask('${group.id}', '${group.name.replace(/'/g, "\\'")}')">+ Add task</button>
@@ -997,16 +1080,16 @@
                     <input type="checkbox" class="task-checkbox" 
                            ${task.percentComplete === 100 ? 'checked' : ''} 
                            onchange="toggleTaskComplete('${task.id}', this.checked, '${task['@odata.etag']}')">
-                    <div class="task-title" onclick="openTaskDetail('${task.id}')">${task.title}</div>
-                    <div class="task-assignee">${assignee}</div>
-                    <div class="task-date">${startDate}</div>
-                    <div class="task-date">${dueDate}</div>
-                    <div class="task-progress">
+                    <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">${task.title}</div>
+                    <div class="task-assignee col-assigned">${assignee}</div>
+                    <div class="task-date col-start-date">${startDate}</div>
+                    <div class="task-date col-due-date">${dueDate}</div>
+                    <div class="task-progress col-progress">
                         <span class="progress-dot ${progressClass}"></span>
                         ${progressText}
                     </div>
-                    <div class="task-priority">${priorityText}</div>
-                    <div class="task-labels"></div>
+                    <div class="task-priority col-priority">${priorityText}</div>
+                    <div class="task-labels col-labels"></div>
                 </div>
             `;
         }
@@ -1332,7 +1415,10 @@
             }
             
             sortState[bucketId] = { column, direction };
-            loadTasks(); // Re-render with new sort
+            // Re-render with existing data instead of fetching
+            if (allBuckets.length > 0 && allTasks.length > 0) {
+                renderTasks(allBuckets, allTasks);
+            }
         }
 
         function sortTasks(tasks, column, direction) {
