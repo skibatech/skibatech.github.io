@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.2';
+const APP_VERSION = '1.3.3';
 
 // Configuration
 const config = {
