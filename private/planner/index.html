@@ -560,7 +560,7 @@
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.0.8</span>
+        v<span id="versionDisplay">1.0.9</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
@@ -617,19 +617,9 @@
                         <label class="form-label">Strategic Themes</label>
                         <input type="text" id="newCategorySearch" class="task-input" placeholder="Search for theme" oninput="filterCategories('new')">
                         <div id="newCategoriesContainer" style="border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
-                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category1">
-                                <input type="checkbox" id="newCategory1" value="category1" style="cursor: pointer;">
-                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #f06292;"></span>
-                                <span class="category-name"></span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category2">
-                                <input type="checkbox" id="newCategory2" value="category2" style="cursor: pointer;">
-                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #ef5350;"></span>
-                                <span class="category-name"></span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category3">
-                                <input type="checkbox" id="newCategory3" value="category3" style="cursor: pointer;">
-                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #ffb74d;"></span>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category5">
+                                <input type="checkbox" id="newCategory5" value="category5" style="cursor: pointer;">
+                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #64b5f6;"></span>
                                 <span class="category-name"></span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category4">
@@ -637,19 +627,29 @@
                                 <span style="width: 12px; height: 12px; border-radius: 2px; background: #81c784;"></span>
                                 <span class="category-name"></span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category5">
-                                <input type="checkbox" id="newCategory5" value="category5" style="cursor: pointer;">
-                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #64b5f6;"></span>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category3">
+                                <input type="checkbox" id="newCategory3" value="category3" style="cursor: pointer;">
+                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #ffb74d;"></span>
                                 <span class="category-name"></span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category6">
-                                <input type="checkbox" id="newCategory6" value="category6" style="cursor: pointer;">
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category1">
+                                <input type="checkbox" id="newCategory1" value="category1" style="cursor: pointer;">
+                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #f06292;"></span>
+                                <span class="category-name"></span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category7">
+                                <input type="checkbox" id="newCategory7" value="category7" style="cursor: pointer;">
                                 <span style="width: 12px; height: 12px; border-radius: 2px; background: #a1887f;"></span>
                                 <span class="category-name"></span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; font-size: 12px;" class="category-option" data-category="category9">
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category9">
                                 <input type="checkbox" id="newCategory9" value="category9" style="cursor: pointer;">
                                 <span style="width: 12px; height: 12px; border-radius: 2px; background: #4dd0e1;"></span>
+                                <span class="category-name"></span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; font-size: 12px;" class="category-option" data-category="category2">
+                                <input type="checkbox" id="newCategory2" value="category2" style="cursor: pointer;">
+                                <span style="width: 12px; height: 12px; border-radius: 2px; background: #ef5350;"></span>
                                 <span class="category-name"></span>
                             </label>
                         </div>
@@ -732,19 +732,9 @@
                             <label class="form-label">Strategic Themes</label>
                             <input type="text" id="detailCategorySearch" class="task-input" placeholder="Search for theme" oninput="filterCategories('detail')">
                             <div id="categoriesContainer" style="border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category1">
-                                    <input type="checkbox" id="category1" value="category1" style="cursor: pointer;">
-                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #f06292;"></span>
-                                    <span class="category-name"></span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category2">
-                                    <input type="checkbox" id="category2" value="category2" style="cursor: pointer;">
-                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #ef5350;"></span>
-                                    <span class="category-name"></span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category3">
-                                    <input type="checkbox" id="category3" value="category3" style="cursor: pointer;">
-                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #ffb74d;"></span>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category5">
+                                    <input type="checkbox" id="category5" value="category5" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #64b5f6;"></span>
                                     <span class="category-name"></span>
                                 </label>
                                 <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category4">
@@ -752,19 +742,29 @@
                                     <span style="width: 12px; height: 12px; border-radius: 2px; background: #81c784;"></span>
                                     <span class="category-name"></span>
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category5">
-                                    <input type="checkbox" id="category5" value="category5" style="cursor: pointer;">
-                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #64b5f6;"></span>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category3">
+                                    <input type="checkbox" id="category3" value="category3" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #ffb74d;"></span>
                                     <span class="category-name"></span>
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category6">
-                                    <input type="checkbox" id="category6" value="category6" style="cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category1">
+                                    <input type="checkbox" id="category1" value="category1" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #f06292;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category7">
+                                    <input type="checkbox" id="category7" value="category7" style="cursor: pointer;">
                                     <span style="width: 12px; height: 12px; border-radius: 2px; background: #a1887f;"></span>
                                     <span class="category-name"></span>
                                 </label>
-                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; font-size: 12px;" class="category-option" data-category="category9">
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 12px;" class="category-option" data-category="category9">
                                     <input type="checkbox" id="category9" value="category9" style="cursor: pointer;">
                                     <span style="width: 12px; height: 12px; border-radius: 2px; background: #4dd0e1;"></span>
+                                    <span class="category-name"></span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; cursor: pointer; font-size: 12px;" class="category-option" data-category="category2">
+                                    <input type="checkbox" id="category2" value="category2" style="cursor: pointer;">
+                                    <span style="width: 12px; height: 12px; border-radius: 2px; background: #ef5350;"></span>
                                     <span class="category-name"></span>
                                 </label>
                             </div>
@@ -787,7 +787,7 @@
 
     <script>
         // Application Version - Update this with each change
-        const APP_VERSION = '1.0.8';
+        const APP_VERSION = '1.0.9';
 
         // Configuration
         const config = {
@@ -1580,7 +1580,7 @@
             ).join('');
             
             // Populate category names
-            ['category1', 'category2', 'category3', 'category4', 'category5', 'category6', 'category9'].forEach(cat => {
+            ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
                 const label = document.querySelector(`#newCategoriesContainer .category-option[data-category="${cat}"] .category-name`);
                 if (label) {
                     const defaultNames = {
@@ -1589,7 +1589,7 @@
                         'category3': 'Yellow',
                         'category4': 'Green',
                         'category5': 'Blue',
-                        'category6': 'Bronze',
+                        'category7': 'Bronze',
                         'category9': 'Aqua'
                     };
                     label.textContent = planCategoryDescriptions[cat] || defaultNames[cat];
@@ -1598,7 +1598,7 @@
             
             // Clear search and categories
             document.getElementById('newCategorySearch').value = '';
-            ['newCategory1', 'newCategory2', 'newCategory3', 'newCategory4', 'newCategory5', 'newCategory6', 'newCategory9'].forEach(cat => {
+            ['newCategory5', 'newCategory4', 'newCategory3', 'newCategory1', 'newCategory7', 'newCategory9', 'newCategory2'].forEach(cat => {
                 const checkbox = document.getElementById(cat);
                 if (checkbox) checkbox.checked = false;
             });
@@ -1624,7 +1624,7 @@
             
             // Get selected categories
             const appliedCategories = {};
-            ['newCategory1', 'newCategory2', 'newCategory3', 'newCategory4', 'newCategory5', 'newCategory6', 'newCategory9'].forEach(catId => {
+            ['newCategory5', 'newCategory4', 'newCategory3', 'newCategory1', 'newCategory7', 'newCategory9', 'newCategory2'].forEach(catId => {
                 const checkbox = document.getElementById(catId);
                 if (checkbox && checkbox.checked) {
                     appliedCategories[checkbox.value] = true;
@@ -1786,7 +1786,7 @@
                 ).join('');
                 
                 // Populate categories
-                ['category1', 'category2', 'category3', 'category4', 'category5', 'category6', 'category9'].forEach(cat => {
+                ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
                     const label = document.querySelector(`#categoriesContainer .category-option[data-category="${cat}"] .category-name`);
                     if (label) {
                         const defaultNames = {
@@ -1795,7 +1795,7 @@
                             'category3': 'Yellow',
                             'category4': 'Green',
                             'category5': 'Blue',
-                            'category6': 'Bronze',
+                            'category7': 'Bronze',
                             'category9': 'Aqua'
                         };
                         label.textContent = planCategoryDescriptions[cat] || defaultNames[cat];
@@ -1805,7 +1805,7 @@
                 // Clear search and set checkboxes
                 document.getElementById('detailCategorySearch').value = '';
                 const appliedCategories = task.appliedCategories || {};
-                ['category1', 'category2', 'category3', 'category4', 'category5', 'category6', 'category9'].forEach(cat => {
+                ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
                     const checkbox = document.getElementById(cat);
                     if (checkbox) {
                         checkbox.checked = appliedCategories.hasOwnProperty(cat);
@@ -1858,7 +1858,7 @@
                 
                 // Get selected categories
                 const appliedCategories = {};
-                ['category1', 'category2', 'category3', 'category4', 'category5', 'category6', 'category9'].forEach(cat => {
+                ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
                     const checkbox = document.getElementById(cat);
                     if (checkbox && checkbox.checked) {
                         appliedCategories[cat] = true;
