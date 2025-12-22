@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.4';
+const APP_VERSION = '1.3.4'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -413,11 +413,45 @@ async function loadTasks() {
         );
         const details = await Promise.all(detailsPromises);
         
-        // Store task details (merge task with details to get both assignments and categories)
+        // Collect all unique user IDs from assignments
+        const userIds = new Set();
+        tasks.forEach(task => {
+            if (task.assignments) {
+                Object.keys(task.assignments).forEach(userId => userIds.add(userId));
+            }
+        });
+        
+        // Fetch user details for display names
+        const userDetailsMap = {};
+        const userPromises = Array.from(userIds).map(userId =>
+            fetch(`https://graph.microsoft.com/v1.0/users/${userId}?$select=displayName,id`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            })
+            .then(r => r.ok ? r.json() : null)
+            .then(user => {
+                if (user) {
+                    userDetailsMap[user.id] = user.displayName;
+                }
+            })
+            .catch(() => null)
+        );
+        await Promise.all(userPromises);
+        
+        // Store task details with user display names
         allTaskDetails = {};
         tasks.forEach((task, i) => {
+            const taskWithNames = { ...task };
+            if (task.assignments) {
+                taskWithNames.assignments = {};
+                Object.keys(task.assignments).forEach(userId => {
+                    taskWithNames.assignments[userId] = {
+                        ...task.assignments[userId],
+                        displayName: userDetailsMap[userId] || 'Assigned'
+                    };
+                });
+            }
             allTaskDetails[task.id] = {
-                ...task,
+                ...taskWithNames,
                 details: details[i]
             };
         });
@@ -539,14 +573,13 @@ function renderByAssignedBucket(container, buckets, tasks) {
     const groupedByAssignee = {};
     
     tasks.forEach(task => {
-        // Get proper assignee name from task assignments
+        // Get proper assignee name from enriched task details
         let assigneeName = 'Unassigned';
         if (task.assignments && Object.keys(task.assignments).length > 0) {
             const assigneeId = Object.keys(task.assignments)[0];
-            const assignmentInfo = task.assignments[assigneeId];
-            // The displayName is directly in the assignment object
-            if (assignmentInfo && assignmentInfo.displayName) {
-                assigneeName = assignmentInfo.displayName;
+            // Get display name from allTaskDetails which has enriched user info
+            if (allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName) {
+                assigneeName = allTaskDetails[task.id].assignments[assigneeId].displayName;
             } else {
                 assigneeName = 'Assigned';
             }
