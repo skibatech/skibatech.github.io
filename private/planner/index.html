@@ -142,6 +142,28 @@
             /* checkbox column */
         }
 
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .sortable-header:hover {
+            color: #0078d4;
+        }
+
+        .sort-arrow {
+            font-size: 10px;
+            opacity: 0.5;
+        }
+
+        .sort-arrow.active {
+            opacity: 1;
+            color: #0078d4;
+        }
+
         .task-row {
             padding: 10px;
             border-bottom: 1px solid #f0f0f0;
@@ -449,6 +471,7 @@
         let accessToken = null;
         let currentBucketId = null;
         let currentBucketName = null;
+        let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
 
         // Check for OAuth callback
         window.addEventListener('DOMContentLoaded', () => {
@@ -726,11 +749,22 @@
             const container = document.getElementById('tasksContainer');
             container.innerHTML = '';
 
-            buckets.forEach(bucket => {
-                const bucketTasks = tasks.filter(t => t.bucketId === bucket.id);
+            bucklet bucketTasks = tasks.filter(t => t.bucketId === bucket.id);
+                
+                // Apply sorting if set
+                const sort = sortState[bucket.id];
+                if (sort) {
+                    bucketTasks = sortTasks(bucketTasks, sort.column, sort.direction);
+                }
                 
                 const bucketDiv = document.createElement('div');
                 bucketDiv.className = 'bucket-container';
+                bucketDiv.setAttribute('data-bucket-id', bucket.id);
+                
+                const sortArrows = (col) => {
+                    if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
+                    return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
+                };
                 
                 bucketDiv.innerHTML = `
                     <div class="bucket-header" onclick="toggleBucket(this)">
@@ -743,11 +777,24 @@
                     <div class="task-list">
                         <div class="column-headers">
                             <div></div>
-                            <div>Task name</div>
-                            <div>Assigned to</div>
-                            <div>Start date</div>
-                            <div>Due date</div>
-                            <div>Progress</div>
+                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'title')">
+                                Task name ${sortArrows('title')}
+                            </div>
+                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'assigned')">
+                                Assigned to ${sortArrows('assigned')}
+                            </div>
+                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'startDate')">
+                                Start date ${sortArrows('startDate')}
+                            </div>
+                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'dueDate')">
+                                Due date ${sortArrows('dueDate')}
+                            </div>
+                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'progress')">
+                                Progress ${sortArrows('progress')}
+                            </div>
+                            <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'priority')">
+                                Priority ${sortArrows('priority')}
+                            </div>
                             <div>Priority</div>
                             <div>Labels</div>
                         </div>
@@ -892,6 +939,60 @@
             try {
                 const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
                     method: 'PATCH',
+
+        function sortBucket(bucketId, column) {
+            const currentSort = sortState[bucketId];
+            let direction = 'asc';
+            
+            // Toggle direction if clicking same column
+            if (currentSort && currentSort.column === column) {
+                direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            }
+            
+            sortState[bucketId] = { column, direction };
+            loadTasks(); // Re-render with new sort
+        }
+
+        function sortTasks(tasks, column, direction) {
+            const sorted = [...tasks].sort((a, b) => {
+                let aVal, bVal;
+                
+                switch(column) {
+                    case 'title':
+                        aVal = a.title.toLowerCase();
+                        bVal = b.title.toLowerCase();
+                        break;
+                    case 'assigned':
+                        aVal = (a.assignments && Object.keys(a.assignments).length > 0) ? 1 : 0;
+                        bVal = (b.assignments && Object.keys(b.assignments).length > 0) ? 1 : 0;
+                        break;
+                    case 'startDate':
+                        aVal = a.startDateTime ? new Date(a.startDateTime).getTime() : 0;
+                        bVal = b.startDateTime ? new Date(b.startDateTime).getTime() : 0;
+                        break;
+                    case 'dueDate':
+                        aVal = a.dueDateTime ? new Date(a.dueDateTime).getTime() : 0;
+                        bVal = b.dueDateTime ? new Date(b.dueDateTime).getTime() : 0;
+                        break;
+                    case 'progress':
+                        aVal = a.percentComplete;
+                        bVal = b.percentComplete;
+                        break;
+                    case 'priority':
+                        aVal = a.priority;
+                        bVal = b.priority;
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            return sorted;
+        }
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',
