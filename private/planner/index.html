@@ -472,6 +472,7 @@
         let currentBucketId = null;
         let currentBucketName = null;
         let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
+        let expandedBuckets = new Set(); // Track which buckets are expanded
 
         // Check for OAuth callback
         window.addEventListener('DOMContentLoaded', () => {
@@ -796,7 +797,6 @@
                             <div class="sortable-header" onclick="sortBucket('${bucket.id}', 'priority')">
                                 Priority ${sortArrows('priority')}
                             </div>
-                            <div>Priority</div>
                             <div>Labels</div>
                         </div>
                         ${bucketTasks.map(task => renderTask(task)).join('')}
@@ -805,6 +805,14 @@
                 `;
                 
                 container.appendChild(bucketDiv);
+                
+                // Restore expanded state
+                if (expandedBuckets.has(bucket.id)) {
+                    const header = bucketDiv.querySelector('.bucket-header');
+                    const taskList = bucketDiv.querySelector('.task-list');
+                    header.classList.add('expanded');
+                    taskList.classList.add('expanded');
+                }
             });
         }
 
@@ -845,6 +853,15 @@
             header.classList.toggle('expanded');
             const taskList = header.nextElementSibling;
             taskList.classList.toggle('expanded');
+            
+            // Track expanded state
+            const bucketDiv = header.closest('.bucket-container');
+            const bucketId = bucketDiv.getAttribute('data-bucket-id');
+            if (header.classList.contains('expanded')) {
+                expandedBuckets.add(bucketId);
+            } else {
+                expandedBuckets.delete(bucketId);
+            }
         }
 
         function showAddTask(bucketId, bucketName) {
