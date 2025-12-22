@@ -744,12 +744,12 @@
                     throw new Error('Failed to load tasks');
                 }
 
-                conStore for re-grouping
+                const tasksData = await tasksResponse.json();
+                const tasks = tasksData.value;
+
+                // Store for re-grouping
                 allBuckets = buckets;
                 allTasks = tasks;
-
-                // st tasksData = await tasksResponse.json();
-                const tasks = tasksData.value;
 
                 // Render
                 renderTasks(buckets, tasks);
@@ -761,7 +761,11 @@
             }
         }
 
-        funclet groups;
+        function renderTasks(buckets, tasks) {
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '';
+
+            let groups;
             if (currentGroupBy === 'bucket') {
                 groups = buckets.map(bucket => ({
                     id: bucket.id,
@@ -769,7 +773,14 @@
                     tasks: tasks.filter(t => t.bucketId === bucket.id)
                 }));
             } else {
-                groups = groupTasksBy(tgroup.id];
+                groups = groupTasksBy(tasks, buckets, currentGroupBy);
+            }
+
+            groups.forEach(group => {
+                let groupTasks = group.tasks;
+                
+                // Apply sorting if set
+                const sort = sortState[group.id];
                 if (sort) {
                     groupTasks = sortTasks(groupTasks, sort.column, sort.direction);
                 }
@@ -788,16 +799,7 @@
                         <div class="bucket-title">
                             <span class="expand-icon">▶</span>
                             ${group.name}
-                            <span class="task-count">${group
-                const sortArrows = (col) => {
-                    if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
-                    return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
-                };
-                
-                bucketDiv.innerHTML = `
-                    <div class="bucket-header" onclick="toggleBucket(this)">
-                        <div class="bucket-title">
-                            <span class="expand-icon">▶</span>
+                            <span class="task-count">${groupTasks.length}</span>
                             ${bucket.name}
                             <span class="task-count">${bucketTasks.length}</span>
                         </div>
