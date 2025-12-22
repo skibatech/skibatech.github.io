@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.0'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.4.1'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -426,27 +426,35 @@ async function loadTasks() {
         // Also fetch all plan members for the assignee dropdown
         let planMembers = [];
         try {
-            const groupResponse = await fetch(
+            // Use the roster API to get plan members
+            const rosterResponse = await fetch(
                 `https://graph.microsoft.com/v1.0/planner/plans/${planId}`,
                 { headers: { 'Authorization': `Bearer ${accessToken}` } }
             );
-            if (groupResponse.ok) {
-                const planData = await groupResponse.json();
-                const groupId = planData.owner;
+            if (rosterResponse.ok) {
+                const planData = await rosterResponse.json();
                 
-                const membersResponse = await fetch(
-                    `https://graph.microsoft.com/v1.0/groups/${groupId}/members`,
-                    { headers: { 'Authorization': `Bearer ${accessToken}` } }
-                );
-                if (membersResponse.ok) {
-                    const membersData = await membersResponse.json();
-                    planMembers = membersData.value || [];
-                    // Add all members to userIds for fetching details
-                    planMembers.forEach(member => userIds.add(member.id));
+                // Try to get members from the plan's container
+                if (planData.container && planData.container.containerId) {
+                    const containerId = planData.container.containerId;
+                    const containerType = planData.container.type || 'group';
+                    
+                    // For group containers, fetch group members
+                    if (containerType === 'group') {
+                        const membersResponse = await fetch(
+                            `https://graph.microsoft.com/v1.0/groups/${containerId}/members`,
+                            { headers: { 'Authorization': `Bearer ${accessToken}` } }
+                        );
+                        if (membersResponse.ok) {
+                            const membersData = await membersResponse.json();
+                            planMembers = membersData.value || [];
+                            planMembers.forEach(member => userIds.add(member.id));
+                        }
+                    }
                 }
             }
         } catch (e) {
-            console.log('Could not fetch plan members:', e);
+            console.log('Could not fetch plan members, using assigned users only:', e);
         }
         
         // Fetch user details for display names
@@ -1357,6 +1365,9 @@ async function saveTaskDetails() {
         const description = document.getElementById('detailTaskDescription').value.trim();
         const assigneeUserId = document.getElementById('detailTaskAssignee').value;
         
+        // Get current task to check existing assignments
+        const currentTask = allTasks.find(t => t.id === currentTaskId);
+        
         // Get selected categories (must include all with true/false for Graph API)
         const appliedCategories = {};
         ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
@@ -1368,15 +1379,21 @@ async function saveTaskDetails() {
         
         // Build assignments object
         const assignments = {};
+        
+        // If there are existing assignments, set them to null (to remove)
+        if (currentTask && currentTask.assignments) {
+            Object.keys(currentTask.assignments).forEach(userId => {
+                assignments[userId] = null;
+            });
+        }
+        
+        // If a user is selected, assign to them
         if (assigneeUserId) {
-            // Assign to selected user
             assignments[assigneeUserId] = {
                 '@odata.type': '#microsoft.graph.plannerAssignment',
                 orderHint: ' !'
             };
         }
-        // Note: To unassign, we'd need to send the current assignees with null values,
-        // but for now we'll just handle new assignments
         
         // Update basic task info
         const taskBody = {
@@ -1440,7 +1457,8 @@ async function saveTaskDetails() {
         }
         
         closeTaskDetailsModal();
-        loadTasks();
+        // Just refresh the display without reloading from API to avoid throttling
+        applyFilters();
     } catch (error) {
         console.error('Error saving task:', error);
         alert('Error saving task: ' + error.message);

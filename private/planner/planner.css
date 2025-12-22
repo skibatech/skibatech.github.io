@@ -344,6 +344,9 @@ button:disabled {
     font-weight: 600;
     margin-bottom: 20px;
     color: #323130;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .form-group {
