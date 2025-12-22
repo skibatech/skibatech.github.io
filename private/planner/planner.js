@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.7'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.3.8'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -17,12 +17,13 @@ let currentBucketName = null;
 let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
 let expandedBuckets = new Set(); // Track which buckets are expanded
 let expandedAssignees = new Set(); // Track which assignees are expanded
-let currentView = 'byBucket'; // Current view: byBucket or byAssignedBucket
+let currentView = 'byAssignedBucket'; // Current view: byBucket or byAssignedBucket
 let currentGroupBy = 'bucket'; // Current grouping field
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
 let allUsers = {}; // Store user details: { userId: displayName }
+let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let resizingColumn = null;
 let resizeStartX = 0;
@@ -464,6 +465,12 @@ async function loadTasks() {
         allBuckets = buckets;
         allTasks = tasks;
 
+        // Hide Group By dropdown if starting in nested view
+        const groupByContainer = document.getElementById('groupByContainer');
+        if (groupByContainer && currentView === 'byAssignedBucket') {
+            groupByContainer.style.display = 'none';
+        }
+
         // Apply filters and render
         applyFilters();
         document.getElementById('status').textContent = 'Connected';
@@ -488,7 +495,8 @@ function renderTasks(buckets, tasks) {
 
 function renderByBucket(container, buckets, tasks) {
     if (currentGroupBy === 'bucket') {
-        groups = buckets.map(bucket => ({
+        // Sort buckets alphabetically by name
+        groups = buckets.slice().sort((a, b) => a.name.localeCompare(b.name)).map(bucket => ({
             id: bucket.id,
             name: bucket.name,
             tasks: tasks.filter(t => t.bucketId === bucket.id)
@@ -783,6 +791,13 @@ function changeView() {
         return;
     }
     currentView = newView;
+    
+    // Show/hide Group By dropdown based on view
+    const groupByContainer = document.getElementById('groupByContainer');
+    if (groupByContainer) {
+        groupByContainer.style.display = (currentView === 'byAssignedBucket') ? 'none' : 'inline';
+    }
+    
     applyFilters();
 }
 
@@ -849,6 +864,10 @@ function applyFilters() {
 }
 
 function renderTask(task) {
+    // Generate task ID from the Planner task ID (use last 4 characters for readability)
+    const shortId = task.id.substring(task.id.length - 4).toUpperCase();
+    const taskDisplayId = `${taskIdPrefix}-${shortId}`;
+    
     const progressClass = task.percentComplete === 0 ? 'not-started' : 
                          task.percentComplete === 100 ? 'completed' : 'in-progress';
     const progressText = task.percentComplete === 0 ? 'Not started' : 
@@ -945,7 +964,10 @@ function renderTask(task) {
             <input type="checkbox" class="task-checkbox" 
                    ${task.percentComplete === 100 ? 'checked' : ''} 
                    onchange="toggleTaskComplete('${task.id}', this.checked, '${task['@odata.etag']}')">
-            <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">${task.title}</div>
+            <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
+                <span style="font-size: 11px; color: #999; font-family: monospace; margin-right: 6px;">${taskDisplayId}</span>
+                ${task.title}
+            </div>
             <div class="task-assignee col-assigned">${assignee}</div>
             <div class="task-date col-start-date">${startDate}</div>
             <div class="task-date col-due-date">${dueDate}</div>
@@ -1439,6 +1461,26 @@ function showNewBucketInput() {
 function cancelNewBucket() {
     document.getElementById('newBucketContainer').style.display = 'none';
     document.getElementById('newBucketName').value = '';
+}
+
+function showOptions() {
+    document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
+    document.getElementById('optionsModal').style.display = 'flex';
+}
+
+function closeOptions() {
+    document.getElementById('optionsModal').style.display = 'none';
+}
+
+function saveOptions() {
+    const prefix = document.getElementById('taskIdPrefixInput').value.trim().toUpperCase();
+    if (prefix) {
+        taskIdPrefix = prefix;
+        localStorage.setItem('taskIdPrefix', prefix);
+    }
+    closeOptions();
+    // Refresh display if needed
+    applyFilters();
 }
 
 async function createNewBucket() {

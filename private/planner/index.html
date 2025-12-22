@@ -17,14 +17,16 @@
                 <option value="byBucket">By Bucket</option>
                 <option value="byAssignedBucket">By Assigned To → By Bucket</option>
             </select>
-            <label for="groupBySelect" style="font-size: 13px; color: #666; margin-left: 15px;">Group by:</label>
-            <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
-                <option value="bucket">Bucket</option>
-                <option value="assigned">Assigned to</option>
-                <option value="progress">Progress</option>
-                <option value="dueDate">Due date</option>
-                <option value="priority">Priority</option>
-            </select>
+            <span id="groupByContainer">
+                <label for="groupBySelect" style="font-size: 13px; color: #666; margin-left: 15px;">Group by:</label>
+                <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                    <option value="bucket">Bucket</option>
+                    <option value="assigned">Assigned to</option>
+                    <option value="progress">Progress</option>
+                    <option value="dueDate">Due date</option>
+                    <option value="priority">Priority</option>
+                </select>
+            </span>
             <label for="filterSelect" style="font-size: 13px; color: #666;">Filter:</label>
             <select id="filterSelect" onchange="applyFilters()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
                 <option value="all">All tasks</option>
@@ -50,6 +52,9 @@
                         <div class="profile-name" id="profileName">Loading...</div>
                         <div class="profile-email" id="profileEmail"></div>
                     </div>
+                    <div class="profile-menu-item" onclick="showOptions()">
+                        <span>⚙️</span> Options
+                    </div>
                     <div class="profile-menu-item" onclick="signOut()">
                         <span>🚪</span> Sign out
                     </div>
@@ -68,7 +73,7 @@
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.3.7</span>
+        v<span id="versionDisplay">1.3.8</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
@@ -298,6 +303,27 @@
                     <button class="cancel-btn" onclick="closeTaskDetailsModal()">Cancel</button>
                     <button id="saveTaskBtn" onclick="saveTaskDetails()">Save Changes</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Options Modal -->
+    <div id="optionsModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Options</h2>
+                <span class="close" onclick="closeOptions()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Task ID Prefix</label>
+                    <input type="text" id="taskIdPrefixInput" class="task-input" placeholder="e.g., STE" maxlength="10" style="text-transform: uppercase;">
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">This prefix will be used for task IDs (e.g., STE-1234)</div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeOptions()">Cancel</button>
+                <button onclick="saveOptions()">Save</button>
             </div>
         </div>
     </div>
