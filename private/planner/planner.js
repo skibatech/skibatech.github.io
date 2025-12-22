@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.1'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.4.2'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -17,8 +17,8 @@ let currentBucketName = null;
 let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
 let expandedBuckets = new Set(); // Track which buckets are expanded
 let expandedAssignees = new Set(); // Track which assignees are expanded
-let currentView = 'byAssignedBucket'; // Current view: byBucket or byAssignedBucket
-let currentGroupBy = 'bucket'; // Current grouping field
+let currentView = 'assigned'; // Current view: assigned, bucket, progress, dueDate, priority
+let currentGroupBy = 'bucket'; // Current secondary grouping field (or 'none' for no grouping)
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
@@ -501,12 +501,9 @@ async function loadTasks() {
 
         // Set view dropdown to match current view
         document.getElementById('viewSelect').value = currentView;
-
-        // Hide Group By dropdown if starting in nested view
-        const groupByContainer = document.getElementById('groupByContainer');
-        if (groupByContainer && currentView === 'byAssignedBucket') {
-            groupByContainer.style.display = 'none';
-        }
+        
+        // Initialize Group By dropdown to exclude current view
+        changeView();
 
         // Apply filters and render
         applyFilters();
@@ -522,11 +519,12 @@ function renderTasks(buckets, tasks) {
     const container = document.getElementById('tasksContainer');
     container.innerHTML = '';
 
-    // Check current view and render accordingly
-    if (currentView === 'byAssignedBucket') {
-        renderByAssignedBucket(container, buckets, tasks);
+    // If we have a secondary grouping, render nested hierarchy
+    if (currentGroupBy && currentGroupBy !== 'none') {
+        renderNestedView(container, buckets, tasks, currentView, currentGroupBy);
     } else {
-        renderByBucket(container, buckets, tasks);
+        // Single level grouping
+        renderSingleView(container, buckets, tasks, currentView);
     }
 }
 
@@ -744,6 +742,207 @@ function renderByAssignedBucket(container, buckets, tasks) {
     applyColumnWidths();
 }
 
+function renderSingleView(container, buckets, tasks, viewBy) {
+    let groups = groupTasksBy(tasks, buckets, viewBy);
+    
+    // Sort alphabetically
+    groups = groups.sort((a, b) => {
+        if (a.name === 'Unassigned') return 1;
+        if (b.name === 'Unassigned') return -1;
+        return a.name.localeCompare(b.name);
+    });
+    
+    groups.forEach(group => {
+        renderGroup(container, group, buckets, false);
+    });
+    
+    applyColumnWidths();
+}
+
+function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGroup) {
+    // Group by primary first
+    const primaryGroups = groupTasksBy(tasks, buckets, primaryGroup);
+    
+    // Sort primary groups alphabetically
+    primaryGroups.sort((a, b) => {
+        if (a.name === 'Unassigned') return 1;
+        if (b.name === 'Unassigned') return -1;
+        return a.name.localeCompare(b.name);
+    });
+    
+    // For each primary group, create nested secondary groups
+    primaryGroups.forEach(primaryGrp => {
+        const primaryId = primaryGrp.name.toLowerCase().replace(/\\s+/g, '-');
+        const isExpanded = expandedAssignees.has(primaryId);
+        
+        const primaryDiv = document.createElement('div');
+        primaryDiv.className = 'assignee-container';
+        
+        const primaryHeader = document.createElement('div');
+        primaryHeader.className = 'assignee-header' + (isExpanded ? ' expanded' : '');
+        primaryHeader.style.cursor = 'pointer';
+        primaryHeader.innerHTML = `
+            <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
+            <strong>${primaryGrp.name}</strong> (${primaryGrp.tasks.length} tasks)
+        `;
+        primaryHeader.onclick = (e) => {
+            e.stopPropagation();
+            toggleAssignee(primaryId);
+        };
+        
+        const primaryContent = document.createElement('div');
+        primaryContent.className = 'assignee-content' + (isExpanded ? ' expanded' : '');
+        
+        primaryDiv.appendChild(primaryHeader);
+        primaryDiv.appendChild(primaryContent);
+        
+        // Group the tasks within this primary group by secondary grouping
+        const secondaryGroups = groupTasksBy(primaryGrp.tasks, buckets, secondaryGroup);
+        secondaryGroups.sort((a, b) => a.name.localeCompare(b.name));
+        
+        secondaryGroups.forEach(secondaryGrp => {
+            const bucketId = secondaryGrp.name.toLowerCase().replace(/\\s+/g, '-') + '-' + primaryId;
+            const bucketExpanded = expandedBuckets.has(bucketId);
+            
+            const bucketDiv = document.createElement('div');
+            bucketDiv.className = 'bucket-in-assignee';
+            
+            const bucketHeader = document.createElement('div');
+            bucketHeader.className = 'bucket-header nested' + (bucketExpanded ? ' expanded' : '');
+            bucketHeader.style.cursor = 'pointer';
+            bucketHeader.innerHTML = `
+                <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
+                <span>${secondaryGrp.name}</span> (${secondaryGrp.tasks.length} tasks)
+            `;
+            bucketHeader.onclick = (e) => {
+                e.stopPropagation();
+                toggleNestedBucket(bucketId);
+            };
+            
+            const taskList = document.createElement('div');
+            taskList.className = 'task-list nested' + (bucketExpanded ? ' expanded' : '');
+            
+            // Add column headers
+            const columnHeaders = document.createElement('div');
+            columnHeaders.className = 'column-headers';
+            columnHeaders.innerHTML = `
+                <div></div>
+                <div class="col-task-name">Task name</div>
+                <div class="col-assigned">Assigned to</div>
+                <div class="col-start-date">Start date</div>
+                <div class="col-due-date">Due date</div>
+                <div class="col-progress">Progress</div>
+                <div class="col-priority">Priority</div>
+                <div class="col-labels">Themes</div>
+            `;
+            taskList.appendChild(columnHeaders);
+            
+            // Add tasks
+            secondaryGrp.tasks.forEach(task => {
+                const taskDiv = document.createElement('div');
+                taskDiv.innerHTML = renderTask(task);
+                taskList.appendChild(taskDiv.firstElementChild);
+            });
+            
+            // Add \"Add task\" button
+            const addTaskBtn = document.createElement('button');
+            addTaskBtn.className = 'add-task-btn';
+            addTaskBtn.textContent = '+ Add task';
+            addTaskBtn.onclick = () => {
+                // Find bucket ID if secondary group is bucket
+                if (secondaryGroup === 'bucket') {
+                    const bucket = buckets.find(b => b.name === secondaryGrp.name);
+                    if (bucket) {
+                        showAddTask(bucket.id, bucket.name);
+                    }
+                } else {
+                    showAddTask(null, null);
+                }
+            };
+            taskList.appendChild(addTaskBtn);
+            
+            bucketDiv.appendChild(bucketHeader);
+            bucketDiv.appendChild(taskList);
+            primaryContent.appendChild(bucketDiv);
+        });
+        
+        container.appendChild(primaryDiv);
+    });
+    
+    applyColumnWidths();
+}
+
+function renderGroup(container, group, buckets, isNested = false) {
+    let groupTasks = group.tasks;
+    
+    // Apply sorting if set
+    const sort = sortState[group.id];
+    if (sort) {
+        groupTasks = sortTasks(groupTasks, sort.column, sort.direction);
+    }
+    
+    const bucketDiv = document.createElement('div');
+    bucketDiv.className = 'bucket-container';
+    bucketDiv.setAttribute('data-bucket-id', group.id);
+    
+    const sortArrows = (col) => {
+        if (!sort || sort.column !== col) return '<span class=\"sort-arrow\">▼</span>';
+        return `<span class=\"sort-arrow active\">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
+    };
+    
+    bucketDiv.innerHTML = `
+        <div class=\"bucket-header\" onclick=\"toggleBucket(this)\">
+            <div class=\"bucket-title\">
+                <span class=\"expand-icon\">▶</span>
+                ${group.name}
+                <span class=\"task-count\">${groupTasks.length}</span>
+            </div>
+        </div>
+        <div class=\"task-list\">
+            <div class=\"column-headers\">
+                <div></div>
+                <div class=\"sortable-header col-task-name\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'title')\">
+                    Task name ${sortArrows('title')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-task-name')\"></div>
+                </div>
+                <div class=\"sortable-header col-assigned\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'assigned')\">
+                    Assigned to ${sortArrows('assigned')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-assigned')\"></div>
+                </div>
+                <div class=\"sortable-header col-start-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'startDate')\">
+                    Start date ${sortArrows('startDate')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-start-date')\"></div>
+                </div>
+                <div class=\"sortable-header col-due-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'dueDate')\">
+                    Due date ${sortArrows('dueDate')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-due-date')\"></div>
+                </div>
+                <div class=\"sortable-header col-progress\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'progress')\">
+                    Progress ${sortArrows('progress')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-progress')\"></div>
+                </div>
+                <div class=\"sortable-header col-priority\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'priority')\">
+                    Priority ${sortArrows('priority')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-priority')\"></div>
+                </div>
+                <div class=\"col-labels\">Themes</div>
+            </div>
+            ${groupTasks.map(task => renderTask(task)).join('')}
+            <button class=\"add-task-btn\" onclick=\"showAddTask('${group.id}', '${group.name.replace(/'/g, "\\\\'")}')\">+ Add task</button>
+        </div>
+    `;
+    
+    container.appendChild(bucketDiv);
+    
+    // Restore expanded state
+    if (expandedBuckets.has(group.id)) {
+        const header = bucketDiv.querySelector('.bucket-header');
+        const taskList = bucketDiv.querySelector('.task-list');
+        header.classList.add('expanded');
+        taskList.classList.add('expanded');
+    }
+}
+
 function toggleAssignee(assigneeId) {
     if (expandedAssignees.has(assigneeId)) {
         expandedAssignees.delete(assigneeId);
@@ -833,20 +1032,41 @@ function groupTasksBy(tasks, buckets, groupBy) {
 
 function changeView() {
     const newView = document.getElementById('viewSelect').value;
-    // For nested view, we need task details to be loaded
-    if (newView === 'byAssignedBucket' && Object.keys(allTaskDetails).length === 0) {
-        // Task details not yet loaded, don't switch views
-        document.getElementById('viewSelect').value = currentView;
-        return;
-    }
     currentView = newView;
     
-    // Show/hide Group By dropdown based on view
-    const groupByContainer = document.getElementById('groupByContainer');
-    if (groupByContainer) {
-        groupByContainer.style.display = (currentView === 'byAssignedBucket') ? 'none' : 'inline';
+    // Update Group By dropdown to exclude current view
+    const groupBySelect = document.getElementById('groupBySelect');
+    const currentGroupByValue = groupBySelect.value;
+    
+    // Rebuild Group By options excluding the current view
+    groupBySelect.innerHTML = '<option value="none">None</option>';
+    const options = [
+        { value: 'bucket', label: 'Bucket' },
+        { value: 'assigned', label: 'Assigned to' },
+        { value: 'progress', label: 'Progress' },
+        { value: 'dueDate', label: 'Due date' },
+        { value: 'priority', label: 'Priority' }
+    ];
+    
+    options.forEach(opt => {
+        if (opt.value !== currentView) {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.label;
+            groupBySelect.appendChild(option);
+        }
+    });
+    
+    // Restore previous selection if still valid, otherwise default to bucket or none
+    if (currentGroupByValue !== currentView && currentGroupByValue !== 'none') {
+        groupBySelect.value = currentGroupByValue;
+    } else if (currentView === 'assigned') {
+        groupBySelect.value = 'bucket';
+    } else {
+        groupBySelect.value = 'none';
     }
     
+    currentGroupBy = groupBySelect.value;
     applyFilters();
 }
 

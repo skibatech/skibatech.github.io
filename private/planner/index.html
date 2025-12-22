@@ -17,13 +17,17 @@
                 <div>
                     <label for="viewSelect" style="font-size: 13px; color: #666; margin-right: 8px;">View:</label>
                     <select id="viewSelect" onchange="changeView()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
-                        <option value="byBucket">By Bucket</option>
-                        <option value="byAssignedBucket">By Assigned To → By Bucket</option>
+                        <option value="assigned">By Assigned To</option>
+                        <option value="bucket">By Bucket</option>
+                        <option value="progress">By Progress</option>
+                        <option value="dueDate">By Due Date</option>
+                        <option value="priority">By Priority</option>
                     </select>
                 </div>
                 <div id="groupByContainer">
                     <label for="groupBySelect" style="font-size: 13px; color: #666; margin-right: 8px;">Group by:</label>
                     <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                        <option value="none">None</option>
                         <option value="bucket">Bucket</option>
                         <option value="assigned">Assigned to</option>
                         <option value="progress">Progress</option>
@@ -78,7 +82,7 @@
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.1</span>
+        v<span id="versionDisplay">1.4.2</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
