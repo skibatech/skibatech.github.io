@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 
 // Configuration
 const config = {
@@ -574,7 +574,7 @@ function groupTasksBy(tasks, buckets, groupBy) {
                 }
                 break;
             case 'priority':
-                const priorityMap = {0: 'Urgent', 1: 'Important', 3: 'Medium', 5: 'Low'};
+                const priorityMap = {0: 'Urgent', 1: 'Important', 5: 'Low'};
                 key = 'priority-' + task.priority;
                 name = priorityMap[task.priority] || 'No priority';
                 break;
@@ -660,7 +660,7 @@ function renderTask(task) {
     const progressText = task.percentComplete === 0 ? 'Not started' : 
                         task.percentComplete === 100 ? 'Completed' : 'In progress';
     
-    const priorityMap = {0: 'Urgent', 1: 'Important', 3: 'Medium', 5: 'Low'};
+    const priorityMap = {0: 'Urgent', 1: 'Important', 5: 'Low'};
     const priorityText = priorityMap[task.priority] || '';
     
     const startDate = task.startDateTime ? new Date(task.startDateTime).toLocaleDateString() : '';
@@ -834,7 +834,7 @@ async function createTaskFromModal() {
     const notes = document.getElementById('newTaskNotes').value.trim();
     const bucketId = document.getElementById('newTaskBucket').value;
     
-    // Get selected categories
+    // Get selected categories (only include checked ones for new tasks)
     const appliedCategories = {};
     ['newCategory5', 'newCategory4', 'newCategory3', 'newCategory1', 'newCategory7', 'newCategory9', 'newCategory2'].forEach(catId => {
         const checkbox = document.getElementById(catId);
@@ -1068,12 +1068,12 @@ async function saveTaskDetails() {
         const bucketId = document.getElementById('detailTaskBucket').value;
         const description = document.getElementById('detailTaskDescription').value.trim();
         
-        // Get selected categories
+        // Get selected categories (must include all with true/false for Graph API)
         const appliedCategories = {};
         ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
             const checkbox = document.getElementById(cat);
-            if (checkbox && checkbox.checked) {
-                appliedCategories[cat] = true;
+            if (checkbox) {
+                appliedCategories[cat] = checkbox.checked;
             }
         });
         
