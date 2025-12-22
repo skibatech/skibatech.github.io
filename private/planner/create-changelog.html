@@ -334,14 +334,13 @@
                 
                 log(`Found ${tasks.length} tasks to update`);
 
-                // Get today's date
+                // Get today's date in ISO format with time (00:00:00 UTC)
                 const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                const dateStr = `${year}-${month}-${day}`;
+                const isoDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+                const startDateTime = isoDate + 'T00:00:00.000Z';
+                const dueDateTime = isoDate + 'T23:59:59.999Z';
                 
-                log(`Setting all dates to: ${dateStr}`);
+                log(`Setting dates to: ${isoDate}`);
                 
                 // Update each task
                 for (let i = 0; i < tasks.length; i++) {
@@ -353,30 +352,18 @@
                     const task = tasks[i];
                     log(`Updating ${i + 1}/${tasks.length}: ${task.title}`);
 
-                    // Get task details first for ETag
-                    const detailsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
-                        headers: { 'Authorization': `Bearer ${accessToken}` }
-                    });
-
-                    if (!detailsResponse.ok) {
-                        log(`✗ Failed to get task details`, 'error');
-                        continue;
-                    }
-
-                    const etag = detailsResponse.headers.get('ETag');
-
-                    // Update via details endpoint - dates go here
+                    // Update via task endpoint (not details)
                     const updateBody = {
-                        startDateTime: dateStr,
-                        dueDateTime: dateStr
+                        startDateTime: startDateTime,
+                        dueDateTime: dueDateTime
                     };
 
-                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                             'Content-Type': 'application/json',
-                            'If-Match': etag
+                            'If-Match': '*'
                         },
                         body: JSON.stringify(updateBody)
                     });
