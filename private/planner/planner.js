@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.8'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.3.9'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -423,6 +423,32 @@ async function loadTasks() {
             }
         });
         
+        // Also fetch all plan members for the assignee dropdown
+        let planMembers = [];
+        try {
+            const groupResponse = await fetch(
+                `https://graph.microsoft.com/v1.0/planner/plans/${planId}`,
+                { headers: { 'Authorization': `Bearer ${accessToken}` } }
+            );
+            if (groupResponse.ok) {
+                const planData = await groupResponse.json();
+                const groupId = planData.owner;
+                
+                const membersResponse = await fetch(
+                    `https://graph.microsoft.com/v1.0/groups/${groupId}/members`,
+                    { headers: { 'Authorization': `Bearer ${accessToken}` } }
+                );
+                if (membersResponse.ok) {
+                    const membersData = await membersResponse.json();
+                    planMembers = membersData.value || [];
+                    // Add all members to userIds for fetching details
+                    planMembers.forEach(member => userIds.add(member.id));
+                }
+            }
+        } catch (e) {
+            console.log('Could not fetch plan members:', e);
+        }
+        
         // Fetch user details for display names
         const userDetailsMap = {};
         const userPromises = Array.from(userIds).map(userId =>
@@ -464,6 +490,9 @@ async function loadTasks() {
         // Store for re-grouping
         allBuckets = buckets;
         allTasks = tasks;
+
+        // Set view dropdown to match current view
+        document.getElementById('viewSelect').value = currentView;
 
         // Hide Group By dropdown if starting in nested view
         const groupByContainer = document.getElementById('groupByContainer');
@@ -683,6 +712,18 @@ function renderByAssignedBucket(container, buckets, tasks) {
                 taskDiv.innerHTML = renderTask(task);
                 taskList.appendChild(taskDiv.firstElementChild);
             });
+            
+            // Add "Add task" button
+            const addTaskBtn = document.createElement('button');
+            addTaskBtn.className = 'add-task-btn';
+            addTaskBtn.textContent = '+ Add task';
+            addTaskBtn.onclick = () => {
+                const bucket = buckets.find(b => b.name === bucketName);
+                if (bucket) {
+                    showAddTask(bucket.id, bucket.name);
+                }
+            };
+            taskList.appendChild(addTaskBtn);
             
             bucketDiv.appendChild(bucketHeader);
             bucketDiv.appendChild(taskList);

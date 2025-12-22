@@ -12,21 +12,26 @@
     <div class="header">
         <h1>SkibaTech Engineering - Planner Pro</h1>
         <div class="auth-section">
-            <label for="viewSelect" style="font-size: 13px; color: #666;">View:</label>
-            <select id="viewSelect" onchange="changeView()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
-                <option value="byBucket">By Bucket</option>
-                <option value="byAssignedBucket">By Assigned To → By Bucket</option>
-            </select>
-            <span id="groupByContainer">
-                <label for="groupBySelect" style="font-size: 13px; color: #666; margin-left: 15px;">Group by:</label>
-                <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
-                    <option value="bucket">Bucket</option>
-                    <option value="assigned">Assigned to</option>
-                    <option value="progress">Progress</option>
-                    <option value="dueDate">Due date</option>
-                    <option value="priority">Priority</option>
-                </select>
-            </span>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-right: 15px;">
+                <div>
+                    <label for="viewSelect" style="font-size: 13px; color: #666; margin-right: 8px;">View:</label>
+                    <select id="viewSelect" onchange="changeView()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                        <option value="byBucket">By Bucket</option>
+                        <option value="byAssignedBucket">By Assigned To → By Bucket</option>
+                    </select>
+                </div>
+                <div id="groupByContainer">
+                    <label for="groupBySelect" style="font-size: 13px; color: #666; margin-right: 8px;">Group by:</label>
+                    <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                        <option value="bucket">Bucket</option>
+                        <option value="assigned">Assigned to</option>
+                        <option value="progress">Progress</option>
+                        <option value="dueDate">Due date</option>
+                        <option value="priority">Priority</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="showAddTask(null, null)" style="padding: 8px 16px; background: #0078d4; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; margin-right: 15px;">+ New Task</button>
             <label for="filterSelect" style="font-size: 13px; color: #666;">Filter:</label>
             <select id="filterSelect" onchange="applyFilters()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
                 <option value="all">All tasks</option>
@@ -73,7 +78,7 @@
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.3.8</span>
+        v<span id="versionDisplay">1.3.9</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
