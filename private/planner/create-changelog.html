@@ -16,6 +16,7 @@
     <h1>Create Planner Pro Changelog</h1>
     <p>This will create a "Planner Pro" bucket and add all version history as completed tasks.</p>
     <button onclick="createChangelog()">Create Changelog</button>
+    <button onclick="updateTaskDates()" style="margin-left: 10px; background: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer;">Update Task Dates (Today)</button>
     <div id="log"></div>
 
     <script>
@@ -260,6 +261,83 @@
 
         // Check for OAuth callback on load
         window.onload = handleCallback;
+
+        async function updateTaskDates() {
+            try {
+                if (!accessToken) {
+                    log('No access token, redirecting to login...');
+                    await getAccessToken();
+                    return;
+                }
+
+                log('Fetching Planner Pro bucket...');
+                
+                // Get buckets
+                const bucketsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                const bucketsData = await bucketsResponse.json();
+                const bucket = bucketsData.value.find(b => b.name === 'Planner Pro');
+                
+                if (!bucket) {
+                    log('✗ Planner Pro bucket not found', 'error');
+                    return;
+                }
+
+                log(`✓ Found Planner Pro bucket`);
+                
+                // Get all tasks in bucket
+                const tasksResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/buckets/${bucket.id}/tasks`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                const tasksData = await tasksResponse.json();
+                const tasks = tasksData.value;
+                
+                log(`Found ${tasks.length} tasks to update`);
+
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Update each task
+                for (let i = 0; i < tasks.length; i++) {
+                    const task = tasks[i];
+                    log(`Updating ${i + 1}/${tasks.length}: ${task.title}`);
+
+                    const updateBody = {
+                        startDateTime: new Date(today).toISOString(),
+                        dueDateTime: new Date(today).toISOString()
+                    };
+
+                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                            'If-Match': '*'
+                        },
+                        body: JSON.stringify(updateBody)
+                    });
+
+                    if (updateResponse.ok) {
+                        log(`✓ Updated dates for: ${task.title}`, 'success');
+                    } else {
+                        const error = await updateResponse.json();
+                        log(`✗ Failed to update: ${task.title} - ${JSON.stringify(error)}`, 'error');
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+
+                log('========================================', 'success');
+                log('✓ All tasks updated with today\'s date!', 'success');
+                log('========================================', 'success');
+
+            } catch (error) {
+                log(`✗ Error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
     </script>
 </body>
 </html>
