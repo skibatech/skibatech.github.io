@@ -311,17 +311,30 @@
                     const task = tasks[i];
                     log(`Updating ${i + 1}/${tasks.length}: ${task.title}`);
 
+                    // Get task details first for ETag
+                    const detailsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    });
+
+                    if (!detailsResponse.ok) {
+                        log(`✗ Failed to get task details`, 'error');
+                        continue;
+                    }
+
+                    const etag = detailsResponse.headers.get('ETag');
+
+                    // Update via details endpoint - dates go here
                     const updateBody = {
-                        startDateTime: new Date(dateStr).toISOString(),
-                        dueDateTime: new Date(dateStr).toISOString()
+                        startDateTime: dateStr,
+                        dueDateTime: dateStr
                     };
 
-                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
+                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                             'Content-Type': 'application/json',
-                            'If-Match': '*'
+                            'If-Match': etag
                         },
                         body: JSON.stringify(updateBody)
                     });
