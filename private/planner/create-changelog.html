@@ -297,7 +297,12 @@
                 
                 log(`Found ${tasks.length} tasks to update`);
 
-                const today = new Date().toISOString().split('T')[0];
+                // Get today's date in ISO format (at midnight UTC)
+                const today = new Date();
+                today.setUTCHours(0, 0, 0, 0);
+                const isoDate = today.toISOString();
+                
+                log(`Setting all dates to: ${isoDate}`);
                 
                 // Update each task
                 for (let i = 0; i < tasks.length; i++) {
@@ -305,8 +310,8 @@
                     log(`Updating ${i + 1}/${tasks.length}: ${task.title}`);
 
                     const updateBody = {
-                        startDateTime: new Date(today).toISOString(),
-                        dueDateTime: new Date(today).toISOString()
+                        startDateTime: isoDate,
+                        dueDateTime: isoDate
                     };
 
                     const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
