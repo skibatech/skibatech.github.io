@@ -940,6 +940,30 @@
             try {
                 const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
                     method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': etag
+                    },
+                    body: JSON.stringify({
+                        percentComplete: isComplete ? 100 : 0
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update task');
+                }
+
+                loadTasks();
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Error updating task: ' + error.message);
+            }
+        }
+
+        function openTaskDetail(taskId) {
+            window.open(`https://tasks.office.com/skibatech.com/Home/Task/${taskId}`, '_blank');
+        }
 
         function sortBucket(bucketId, column) {
             const currentSort = sortState[bucketId];
@@ -993,30 +1017,6 @@
             });
             
             return sorted;
-        }
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                        'If-Match': etag
-                    },
-                    body: JSON.stringify({
-                        percentComplete: isComplete ? 100 : 0
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to update task');
-                }
-
-                loadTasks();
-            } catch (error) {
-                console.error('Error updating task:', error);
-                alert('Error updating task: ' + error.message);
-            }
-        }
-
-        function openTaskDetail(taskId) {
-            window.open(`https://tasks.office.com/skibatech.com/Home/Task/${taskId}`, '_blank');
         }
     </script>
 </body>
