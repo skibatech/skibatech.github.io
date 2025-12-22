@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.5'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.3.6'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -597,8 +597,12 @@ function renderByAssignedBucket(container, buckets, tasks) {
         groupedByAssignee[assigneeName][bucketName].push(task);
     });
     
-    // Render by assignee
-    Object.entries(groupedByAssignee).sort().forEach(([assigneeName, bucketMap]) => {
+    // Render by assignee (alphabetically, with Unassigned last)
+    Object.entries(groupedByAssignee).sort((a, b) => {
+        if (a[0] === 'Unassigned') return 1;
+        if (b[0] === 'Unassigned') return -1;
+        return a[0].localeCompare(b[0]);
+    }).forEach(([assigneeName, bucketMap]) => {
         const assigneeDiv = document.createElement('div');
         assigneeDiv.className = 'assignee-container';
         
@@ -645,7 +649,28 @@ function renderByAssignedBucket(container, buckets, tasks) {
             
             const taskList = document.createElement('div');
             taskList.className = 'task-list nested' + (bucketExpanded ? ' expanded' : '');
-            taskList.innerHTML = bucketTasks.map(task => renderTask(task)).join('');
+            
+            // Add column headers
+            const columnHeaders = document.createElement('div');
+            columnHeaders.className = 'column-headers';
+            columnHeaders.innerHTML = `
+                <div></div>
+                <div class="col-task-name">Task name</div>
+                <div class="col-assigned">Assigned to</div>
+                <div class="col-start-date">Start date</div>
+                <div class="col-due-date">Due date</div>
+                <div class="col-progress">Progress</div>
+                <div class="col-priority">Priority</div>
+                <div class="col-labels">Themes</div>
+            `;
+            taskList.appendChild(columnHeaders);
+            
+            // Add tasks
+            bucketTasks.forEach(task => {
+                const taskDiv = document.createElement('div');
+                taskDiv.innerHTML = renderTask(task);
+                taskList.appendChild(taskDiv.firstElementChild);
+            });
             
             bucketDiv.appendChild(bucketHeader);
             bucketDiv.appendChild(taskList);
