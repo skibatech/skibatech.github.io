@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.3';
+const APP_VERSION = '1.3.4';
 
 // Configuration
 const config = {
@@ -413,12 +413,13 @@ async function loadTasks() {
         );
         const details = await Promise.all(detailsPromises);
         
-        // Store task details
+        // Store task details (merge task with details to get both assignments and categories)
         allTaskDetails = {};
         tasks.forEach((task, i) => {
-            if (details[i]) {
-                allTaskDetails[task.id] = details[i];
-            }
+            allTaskDetails[task.id] = {
+                ...task,
+                details: details[i]
+            };
         });
 
         // Store for re-grouping
@@ -538,15 +539,15 @@ function renderByAssignedBucket(container, buckets, tasks) {
     const groupedByAssignee = {};
     
     tasks.forEach(task => {
-        // Get proper assignee name from task details
+        // Get proper assignee name from task assignments
         let assigneeName = 'Unassigned';
         if (task.assignments && Object.keys(task.assignments).length > 0) {
             const assigneeId = Object.keys(task.assignments)[0];
-            // Try to get display name from task details
-            if (allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName) {
-                assigneeName = allTaskDetails[task.id].assignments[assigneeId].displayName;
+            const assignmentInfo = task.assignments[assigneeId];
+            // The displayName is directly in the assignment object
+            if (assignmentInfo && assignmentInfo.displayName) {
+                assigneeName = assignmentInfo.displayName;
             } else {
-                // Fallback: use "Assigned" rather than trying to format the ID
                 assigneeName = 'Assigned';
             }
         }
@@ -606,7 +607,7 @@ function renderByAssignedBucket(container, buckets, tasks) {
             `;
             bucketHeader.onclick = (e) => {
                 e.stopPropagation();
-                toggleBucket(bucketId);
+                toggleNestedBucket(bucketId);
             };
             
             const taskList = document.createElement('div');
@@ -633,7 +634,7 @@ function toggleAssignee(assigneeId) {
     applyFilters();
 }
 
-function toggleBucket(bucketId) {
+function toggleNestedBucket(bucketId) {
     if (expandedBuckets.has(bucketId)) {
         expandedBuckets.delete(bucketId);
     } else {
