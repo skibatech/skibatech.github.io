@@ -432,12 +432,24 @@
                 log(`✓ Found bucket: ${bucket.name} (${bucket.id})`);
                 log(`Deleting bucket and all tasks...`);
 
-                // Delete the bucket
+                // Get bucket with ETag
+                const bucketGetResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/buckets/${bucket.id}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                if (!bucketGetResponse.ok) {
+                    log(`✗ Failed to get bucket for deletion`, 'error');
+                    return;
+                }
+
+                const etag = bucketGetResponse.headers.get('ETag');
+
+                // Delete the bucket with proper ETag
                 const deleteResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/buckets/${bucket.id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
-                        'If-Match': '*'
+                        'If-Match': etag
                     }
                 });
 
