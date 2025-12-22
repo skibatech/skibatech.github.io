@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkibaTech Engineering - Planner Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #0078d4;
+            font-size: 18px;
+        }
+
+        .auth-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        button:hover {
+            background: #106ebe;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .status {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .bucket-container {
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .bucket-header {
+            padding: 10px 16px;
+            background: #f0f0f0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .bucket-header:hover {
+            background: #e8e8e8;
+        }
+
+        .bucket-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #323130;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-count {
+            background: #0078d4;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .expand-icon {
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .bucket-header.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .task-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .task-list.expanded {
+            max-height: 5000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .column-headers {
+            display: grid;
+            grid-template-columns: 30px 2fr 120px 100px 100px 100px 120px 80px;
+            gap: 12px;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .column-headers > div:first-child {
+            /* checkbox column */
+        }
+
+        .task-row {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            display: grid;
+            grid-template-columns: 30px 2fr 120px 100px 100px 100px 120px 80px;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .task-row:hover {
+            background: #f9f9f9;
+        }
+
+        .task-row:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .task-title {
+            font-size: 13px;
+            color: #323130;
+            cursor: pointer;
+        }
+
+        .task-title:hover {
+            color: #0078d4;
+            text-decoration: underline;
+        }
+
+        .task-assignee {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .task-date {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .task-progress {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .progress-dot.not-started {
+            background: #d13438;
+        }
+
+        .progress-dot.in-progress {
+            background: #ffaa44;
+        }
+
+        .progress-dot.completed {
+            background: #107c10;
+        }
+
+        .task-priority {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .task-labels {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .label-badge {
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .add-task-btn {
+            margin: 8px 10px;
+            background: #f0f0f0;
+            color: #0078d4;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .add-task-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .checklist-item {
+            margin-left: 30px;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .checklist-checkbox {
+            width: 14px;
+            height: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #323130;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #323130;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        textarea.task-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            background: #f0f0f0;
+            color: #323130;
+        }
+
+        .cancel-btn:hover {
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SkibaTech Engineering - Planner Dashboard</h1>
+        <div class="auth-section">
+            <span class="status" id="status">Not connected</span>
+            <button id="connectBtn" onclick="login()">Sign In with Microsoft</button>
+            <button id="refreshBtn" onclick="loadTasks()" style="display:none;">Refresh</button>
+        </div>
+    </div>
+
+    <div id="tasksContainer"></div>
+
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add New Task</div>
+            <div class="form-group">
+                <label class="form-label">Task Name *</label>
+                <input type="text" id="newTaskTitle" class="task-input" placeholder="Enter task name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Progress</label>
+                <select id="newTaskProgress" class="task-input">
+                    <option value="0">Not started</option>
+                    <option value="50">In progress</option>
+                    <option value="100">Completed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Priority</label>
+                <select id="newTaskPriority" class="task-input">
+                    <option value="5">Low</option>
+                    <option value="3">Medium</option>
+                    <option value="1">Important</option>
+                    <option value="0">Urgent</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input type="date" id="newTaskStartDate" class="task-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Due Date</label>
+                <input type="date" id="newTaskDueDate" class="task-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea id="newTaskNotes" class="task-input" placeholder="Add task description or notes"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeAddTaskModal()">Cancel</button>
+                <button id="createTaskBtn" onclick="createTaskFromModal()">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            clientId: '14d82eec-204b-4c2f-b7e8-296a70dab67e', // Microsoft Graph Explorer client ID (public client)
+            authority: 'https://login.microsoftonline.com/common',
+            redirectUri: window.location.origin + window.location.pathname,
+            scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read']
+        };
+
+        const planId = 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
+        let accessToken = null;
+        let currentBucketId = null;
+        let currentBucketName = null;
+
+        // Check for OAuth callback
+        window.addEventListener('DOMContentLoaded', () => {
+            handleRedirectCallback();
+        });
+
+        function handleRedirectCallback() {
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            
+            if (params.has('access_token')) {
+                accessToken = params.get('access_token');
+                const expiresIn = params.get('expires_in');
+                
+                // Store token with expiration
+                const expirationTime = Date.now() + (parseInt(expiresIn) * 1000);
+                localStorage.setItem('plannerAccessToken', accessToken);
+                localStorage.setItem('tokenExpiration', expirationTime.toString());
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                updateAuthUI(true);
+                loadTasks();
+            } else {
+                // Check for stored token
+                const storedToken = localStorage.getItem('plannerAccessToken');
+                const expiration = localStorage.getItem('tokenExpiration');
+                
+                if (storedToken && expiration && Date.now() < parseInt(expiration)) {
+                    accessToken = storedToken;
+                    updateAuthUI(true);
+                    loadTasks();
+                } else {
+                    // Token expired, clear it
+                    localStorage.removeItem('plannerAccessToken');
+                    localStorage.removeItem('tokenExpiration');
+                }
+            }
+        }
+
+        function login() {
+            // Use OAuth 2.0 Implicit Flow (works for SPAs)
+            const authUrl = `${config.authority}/oauth2/v2.0/authorize?` +
+                `client_id=${config.clientId}` +
+                `&response_type=token` +
+                `&redirect_uri=${encodeURIComponent(config.redirectUri)}` +
+                `&scope=${encodeURIComponent(config.scopes.join(' '))}` +
+                `&response_mode=fragment` +
+                `&state=12345` +
+                `&nonce=678910`;
+            
+            window.location.href = authUrl;
+        }
+
+        function updateAuthUI(isAuthenticated) {
+            const status = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            if (isAuthenticated) {
+                status.textContent = 'Connected';
+                status.style.color = '#107c10';
+                connectBtn.style.display = 'none';
+                refreshBtn.style.display = 'inline-block';
+            } else {
+                status.textContent = 'Not connected';
+                status.style.color = '#666';
+                connectBtn.style.display = 'inline-block';
+                refreshBtn.style.display = 'none';
+            }
+        }
+
+        async function loadTasks() {
+            if (!accessToken) {
+                alert('Please sign in first');
+                return;
+            }
+
+            try {
+                document.getElementById('status').textContent = 'Loading...';
+
+                // Get buckets
+                const bucketsResponse = await fetch(
+                    `https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    }
+                );
+
+                if (!bucketsResponse.ok) {
+                    if (bucketsResponse.status === 401) {
+                        // Token expired
+                        localStorage.removeItem('plannerAccessToken');
+                        localStorage.removeItem('tokenExpiration');
+                        accessToken = null;
+                        updateAuthUI(false);
+                        alert('Session expired. Please sign in again.');
+                        return;
+                    }
+                    throw new Error('Failed to load buckets');
+                }
+
+                const bucketsData = await bucketsResponse.json();
+                const buckets = bucketsData.value;
+
+                // Get tasks
+                const tasksResponse = await fetch(
+                    `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    }
+                );
+
+                if (!tasksResponse.ok) {
+                    throw new Error('Failed to load tasks');
+                }
+
+                const tasksData = await tasksResponse.json();
+                const tasks = tasksData.value;
+
+                // Render
+                renderTasks(buckets, tasks);
+                document.getElementById('status').textContent = 'Connected';
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('status').textContent = 'Error loading tasks';
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function renderTasks(buckets, tasks) {
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '';
+
+            buckets.forEach(bucket => {
+                const bucketTasks = tasks.filter(t => t.bucketId === bucket.id);
+                
+                const bucketDiv = document.createElement('div');
+                bucketDiv.className = 'bucket-container';
+                
+                bucketDiv.innerHTML = `
+                    <div class="bucket-header" onclick="toggleBucket(this)">
+                        <div class="bucket-title">
+                            <span class="expand-icon">▶</span>
+                            ${bucket.name}
+                            <span class="task-count">${bucketTasks.length}</span>
+                        </div>
+                    </div>
+                    <div class="task-list">
+                        <div class="column-headers">
+                            <div></div>
+                            <div>Task name</div>
+                            <div>Assigned to</div>
+                            <div>Start date</div>
+                            <div>Due date</div>
+                            <div>Progress</div>
+                            <div>Priority</div>
+                            <div>Labels</div>
+                        </div>
+                        ${bucketTasks.map(task => renderTask(task)).join('')}
+                        <button class="add-task-btn" onclick="showAddTask('${bucket.id}', '${bucket.name.replace(/'/g, "\\'")}')">+ Add task</button>
+                    </div>
+                `;
+                
+                container.appendChild(bucketDiv);
+            });
+        }
+
+        function renderTask(task) {
+            const progressClass = task.percentComplete === 0 ? 'not-started' : 
+                                 task.percentComplete === 100 ? 'completed' : 'in-progress';
+            const progressText = task.percentComplete === 0 ? 'Not started' : 
+                                task.percentComplete === 100 ? 'Completed' : 'In progress';
+            
+            const priorityMap = {0: 'Urgent', 1: 'Important', 3: 'Medium', 5: 'Low'};
+            const priorityText = priorityMap[task.priority] || '';
+            
+            const startDate = task.startDateTime ? new Date(task.startDateTime).toLocaleDateString() : '';
+            const dueDate = task.dueDateTime ? new Date(task.dueDateTime).toLocaleDateString() : '';
+            
+            const assignee = task.assignments && Object.keys(task.assignments).length > 0 ? 'Assigned' : '';
+
+            return `
+                <div class="task-row">
+                    <input type="checkbox" class="task-checkbox" 
+                           ${task.percentComplete === 100 ? 'checked' : ''} 
+                           onchange="toggleTaskComplete('${task.id}', this.checked, '${task['@odata.etag']}')">
+                    <div class="task-title" onclick="openTaskDetail('${task.id}')">${task.title}</div>
+                    <div class="task-assignee">${assignee}</div>
+                    <div class="task-date">${startDate}</div>
+                    <div class="task-date">${dueDate}</div>
+                    <div class="task-progress">
+                        <span class="progress-dot ${progressClass}"></span>
+                        ${progressText}
+                    </div>
+                    <div class="task-priority">${priorityText}</div>
+                    <div class="task-labels"></div>
+                </div>
+            `;
+        }
+
+        function toggleBucket(header) {
+            header.classList.toggle('expanded');
+            const taskList = header.nextElementSibling;
+            taskList.classList.toggle('expanded');
+        }
+
+        function showAddTask(bucketId, bucketName) {
+            currentBucketId = bucketId;
+            currentBucketName = bucketName;
+            document.getElementById('addTaskModal').classList.add('show');
+            document.getElementById('newTaskTitle').value = '';
+            document.getElementById('newTaskProgress').value = '0';
+            document.getElementById('newTaskPriority').value = '5';
+            document.getElementById('newTaskStartDate').value = '';
+            document.getElementById('newTaskDueDate').value = '';
+            document.getElementById('newTaskNotes').value = '';
+        }
+
+        function closeAddTaskModal() {
+            document.getElementById('addTaskModal').classList.remove('show');
+        }
+
+        async function createTaskFromModal() {
+            const title = document.getElementById('newTaskTitle').value.trim();
+            if (!title) {
+                alert('Please enter a task name');
+                return;
+            }
+
+            const progress = parseInt(document.getElementById('newTaskProgress').value);
+            const priority = parseInt(document.getElementById('newTaskPriority').value);
+            const startDate = document.getElementById('newTaskStartDate').value;
+            const dueDate = document.getElementById('newTaskDueDate').value;
+            const notes = document.getElementById('newTaskNotes').value.trim();
+
+            try {
+                document.getElementById('createTaskBtn').disabled = true;
+                document.getElementById('createTaskBtn').textContent = 'Creating...';
+
+                const taskBody = {
+                    planId: planId,
+                    bucketId: currentBucketId,
+                    title: title,
+                    percentComplete: progress,
+                    priority: priority
+                };
+
+                if (startDate) {
+                    taskBody.startDateTime = new Date(startDate).toISOString();
+                }
+                if (dueDate) {
+                    taskBody.dueDateTime = new Date(dueDate).toISOString();
+                }
+
+                const response = await fetch('https://graph.microsoft.com/v1.0/planner/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(taskBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create task');
+                }
+
+                const newTask = await response.json();
+
+                // Add notes if provided
+                if (notes) {
+                    await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                            'If-Match': newTask['@odata.etag']
+                        },
+                        body: JSON.stringify({
+                            description: notes
+                        })
+                    });
+                }
+
+                closeAddTaskModal();
+                loadTasks();
+            } catch (error) {
+                console.error('Error creating task:', error);
+                alert('Error creating task: ' + error.message);
+            } finally {
+                document.getElementById('createTaskBtn').disabled = false;
+                document.getElementById('createTaskBtn').textContent = 'Create Task';
+            }
+        }
+
+        async function toggleTaskComplete(taskId, isComplete, etag) {
+            try {
+                const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': etag
+                    },
+                    body: JSON.stringify({
+                        percentComplete: isComplete ? 100 : 0
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update task');
+                }
+
+                loadTasks();
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Error updating task: ' + error.message);
+            }
+        }
+
+        function openTaskDetail(taskId) {
+            window.open(`https://tasks.office.com/skibatech.com/Home/Task/${taskId}`, '_blank');
+        }
+    </script>
+</body>
+</html>
