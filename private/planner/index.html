@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
-    <title>SkibaTech Engineering - Planner Dashboard</title>
+    <title>SkibaTech Engineering - Planner Pro</title>
     <link rel="stylesheet" href="planner.css">
 </head>
 <body class="unauthenticated">
     <div class="header">
-        <h1>SkibaTech Engineering - Planner Dashboard</h1>
+        <h1>SkibaTech Engineering - Planner Pro</h1>
         <div class="auth-section">
             <label for="groupBySelect" style="font-size: 13px; color: #666;">Group by:</label>
             <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
@@ -56,14 +56,14 @@
     <div id="authRequired" class="auth-required">
         <div class="lock-icon">🔒</div>
         <h2>Authentication Required</h2>
-        <p>This is a secure area. Please sign in with your SkibaTech Microsoft account to access the Planner dashboard.</p>
+        <p>This is a secure area. Please sign in with your SkibaTech Microsoft account to access Planner Pro.</p>
         <button onclick="login()">Sign In with Microsoft</button>
     </div>
 
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.1.5</span>
+        v<span id="versionDisplay">1.2.0</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
