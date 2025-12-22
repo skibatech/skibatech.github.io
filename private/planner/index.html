@@ -458,12 +458,32 @@
         async function handleRedirectCallback() {
             const urlParams = new URLSearchParams(window.location.search);
             
+            console.log('🔍 Checking for OAuth callback...', {
+                hasCode: urlParams.has('code'),
+                hasError: urlParams.has('error'),
+                url: window.location.href
+            });
+            
+            if (urlParams.has('error')) {
+                const error = urlParams.get('error');
+                const errorDesc = urlParams.get('error_description');
+                console.error('❌ OAuth error:', error, errorDesc);
+                alert(`Authentication error: ${error}\n${errorDesc}`);
+                return;
+            }
+            
             if (urlParams.has('code')) {
                 const code = urlParams.get('code');
                 const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
                 
+                console.log('✅ Authorization code received', { 
+                    code: code.substring(0, 20) + '...', 
+                    hasVerifier: !!codeVerifier 
+                });
+                
                 if (!codeVerifier) {
-                    console.error('Code verifier not found');
+                    console.error('❌ Code verifier not found in sessionStorage');
+                    alert('Authentication error: Session lost. Please try signing in again.');
                     return;
                 }
                 
@@ -472,6 +492,8 @@
                 
                 // Exchange code for token
                 try {
+                    console.log('🔄 Exchanging code for token...');
+                    
                     const tokenResponse = await fetch(`${config.authority}/oauth2/v2.0/token`, {
                         method: 'POST',
                         headers: {
@@ -488,23 +510,24 @@
                     });
                     
                     if (!tokenResponse.ok) {
+                        const errorData = await tokenResponse.text();
+                        console.error('❌ Token exchange failed:', errorData);
                         throw new Error('Failed to exchange code for token');
                     }
                     
                     const tokenData = await tokenResponse.json();
                     accessToken = tokenData.access_token;
+                    console.log('✅ Access token received');
                     const expiresIn = tokenData.expires_in;
                     
                     // Store token with expiration
                     const expirationTime = Date.now() + (parseInt(expiresIn) * 1000);
                     localStorage.setItem('plannerAccessToken', accessToken);
                     localStorage.setItem('tokenExpiration', expirationTime.toString());
-                    
-                    // Clear code verifier
-                    sessionStorage.removeItem('pkce_code_verifier');
-                    
-                    // Verify user tenant
+                    ole.log('🔍 Verifying user tenant...');
                     const isValid = await verifyUserTenant();
+                    console.log('✅ Tenant verification result:', isValid);
+                    
                     if (isValid) {
                         updateAuthUI(true);
                         loadTasks();
@@ -513,6 +536,11 @@
                         localStorage.removeItem('tokenExpiration');
                         accessToken = null;
                         alert('Access denied. This dashboard is only available to SkibaTech users.');
+                        updateAuthUI(false);
+                    }
+                } catch (error) {
+                    console.error('❌ Token exchange failed:', error);
+                    alert('Authentication failed: ' + error.message available to SkibaTech users.');
                         updateAuthUI(false);
                     }
                 } catch (error) {
