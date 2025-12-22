@@ -571,13 +571,23 @@ function renderByAssignedBucket(container, buckets, tasks) {
         const assigneeId = assigneeName.toLowerCase().replace(/\s+/g, '-');
         const isExpanded = expandedAssignees.has(assigneeId);
         
-        assigneeDiv.innerHTML = `
-            <div class="assignee-header expanded" onclick="toggleAssignee('${assigneeId}')">
-                <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
-                <strong>${assigneeName}</strong> (${Object.values(bucketMap).flat().length} tasks)
-            </div>
-            <div class="assignee-content ${isExpanded ? 'expanded' : ''}">
+        const assigneeHeader = document.createElement('div');
+        assigneeHeader.className = 'assignee-header expanded';
+        assigneeHeader.style.cursor = 'pointer';
+        assigneeHeader.innerHTML = `
+            <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
+            <strong>${assigneeName}</strong> (${Object.values(bucketMap).flat().length} tasks)
         `;
+        assigneeHeader.onclick = (e) => {
+            e.stopPropagation();
+            toggleAssignee(assigneeId);
+        };
+        
+        const assigneeContent = document.createElement('div');
+        assigneeContent.className = 'assignee-content' + (isExpanded ? ' expanded' : '');
+        
+        assigneeDiv.appendChild(assigneeHeader);
+        assigneeDiv.appendChild(assigneeContent);
         
         // Render buckets under this assignee
         Object.entries(bucketMap).sort().forEach(([bucketName, bucketTasks]) => {
@@ -586,20 +596,28 @@ function renderByAssignedBucket(container, buckets, tasks) {
             
             const bucketDiv = document.createElement('div');
             bucketDiv.className = 'bucket-in-assignee';
-            bucketDiv.innerHTML = `
-                <div class="bucket-header nested ${bucketExpanded ? 'expanded' : ''}" onclick="toggleBucket('${bucketId}')">
-                    <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
-                    <span>${bucketName}</span> (${bucketTasks.length} tasks)
-                </div>
-                <div class="task-list nested ${bucketExpanded ? 'expanded' : ''}">
-                    ${bucketTasks.map(task => renderTask(task)).join('')}
-                </div>
-            `;
             
-            assigneeDiv.appendChild(bucketDiv);
+            const bucketHeader = document.createElement('div');
+            bucketHeader.className = 'bucket-header nested' + (bucketExpanded ? ' expanded' : '');
+            bucketHeader.style.cursor = 'pointer';
+            bucketHeader.innerHTML = `
+                <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
+                <span>${bucketName}</span> (${bucketTasks.length} tasks)
+            `;
+            bucketHeader.onclick = (e) => {
+                e.stopPropagation();
+                toggleBucket(bucketId);
+            };
+            
+            const taskList = document.createElement('div');
+            taskList.className = 'task-list nested' + (bucketExpanded ? ' expanded' : '');
+            taskList.innerHTML = bucketTasks.map(task => renderTask(task)).join('');
+            
+            bucketDiv.appendChild(bucketHeader);
+            bucketDiv.appendChild(taskList);
+            assigneeContent.appendChild(bucketDiv);
         });
         
-        assigneeDiv.innerHTML += '</div>';
         container.appendChild(assigneeDiv);
     });
     

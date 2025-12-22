@@ -546,6 +546,11 @@ body.unauthenticated #refreshBtn {
     font-size: 13px;
     font-weight: 500;
     color: #424242;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
 }
 
 .bucket-header.nested:hover {
@@ -560,10 +565,12 @@ body.unauthenticated #refreshBtn {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
+    display: block;
 }
 
 .task-list.nested.expanded {
     max-height: 99999px;
+    display: block;
 }
 
 .collapse-icon {
