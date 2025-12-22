@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.2.1';
+const APP_VERSION = '1.3.0';
 
 // Configuration
 const config = {
@@ -16,6 +16,8 @@ let currentBucketId = null;
 let currentBucketName = null;
 let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
 let expandedBuckets = new Set(); // Track which buckets are expanded
+let expandedAssignees = new Set(); // Track which assignees are expanded
+let currentView = 'byBucket'; // Current view: byBucket or byAssignedBucket
 let currentGroupBy = 'bucket'; // Current grouping field
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
@@ -437,7 +439,15 @@ function renderTasks(buckets, tasks) {
     const container = document.getElementById('tasksContainer');
     container.innerHTML = '';
 
-    let groups;
+    // Check current view and render accordingly
+    if (currentView === 'byAssignedBucket') {
+        renderByAssignedBucket(container, buckets, tasks);
+    } else {
+        renderByBucket(container, buckets, tasks);
+    }
+}
+
+function renderByBucket(container, buckets, tasks) {
     if (currentGroupBy === 'bucket') {
         groups = buckets.map(bucket => ({
             id: bucket.id,
@@ -523,6 +533,90 @@ function renderTasks(buckets, tasks) {
     applyColumnWidths();
 }
 
+function renderByAssignedBucket(container, buckets, tasks) {
+    // Group tasks by assignee, then by bucket
+    const groupedByAssignee = {};
+    
+    tasks.forEach(task => {
+        const assignee = task.assignments ? Object.keys(task.assignments)[0] : 'Unassigned';
+        const assigneeName = allTaskDetails[task.id]?.assignments?.[assignee]?.displayName || 
+                           (task.assignments && task.assignments[assignee]?.displayName) || 
+                           assignee.substring(0, 1).toUpperCase() + assignee.substring(1) || 
+                           'Unassigned';
+        
+        if (!groupedByAssignee[assigneeName]) {
+            groupedByAssignee[assigneeName] = {};
+        }
+        
+        const bucketName = buckets.find(b => b.id === task.bucketId)?.name || 'No Bucket';
+        if (!groupedByAssignee[assigneeName][bucketName]) {
+            groupedByAssignee[assigneeName][bucketName] = [];
+        }
+        
+        groupedByAssignee[assigneeName][bucketName].push(task);
+    });
+    
+    // Render by assignee
+    Object.entries(groupedByAssignee).sort().forEach(([assigneeName, bucketMap]) => {
+        const assigneeDiv = document.createElement('div');
+        assigneeDiv.className = 'assignee-container';
+        
+        const assigneeId = assigneeName.toLowerCase().replace(/\s+/g, '-');
+        const isExpanded = expandedAssignees.has(assigneeId);
+        
+        assigneeDiv.innerHTML = `
+            <div class="assignee-header expanded" onclick="toggleAssignee('${assigneeId}')">
+                <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
+                <strong>${assigneeName}</strong> (${Object.values(bucketMap).flat().length} tasks)
+            </div>
+            <div class="assignee-content ${isExpanded ? 'expanded' : ''}">
+        `;
+        
+        // Render buckets under this assignee
+        Object.entries(bucketMap).sort().forEach(([bucketName, bucketTasks]) => {
+            const bucketId = bucketName.toLowerCase().replace(/\s+/g, '-') + '-' + assigneeId;
+            const bucketExpanded = expandedBuckets.has(bucketId);
+            
+            const bucketDiv = document.createElement('div');
+            bucketDiv.className = 'bucket-in-assignee';
+            bucketDiv.innerHTML = `
+                <div class="bucket-header nested ${bucketExpanded ? 'expanded' : ''}" onclick="toggleBucket('${bucketId}')">
+                    <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
+                    <span>${bucketName}</span> (${bucketTasks.length} tasks)
+                </div>
+                <div class="task-list nested ${bucketExpanded ? 'expanded' : ''}">
+                    ${bucketTasks.map(task => renderTask(task)).join('')}
+                </div>
+            `;
+            
+            assigneeDiv.appendChild(bucketDiv);
+        });
+        
+        assigneeDiv.innerHTML += '</div>';
+        container.appendChild(assigneeDiv);
+    });
+    
+    applyColumnWidths();
+}
+
+function toggleAssignee(assigneeId) {
+    if (expandedAssignees.has(assigneeId)) {
+        expandedAssignees.delete(assigneeId);
+    } else {
+        expandedAssignees.add(assigneeId);
+    }
+    applyFilters();
+}
+
+function toggleBucket(bucketId) {
+    if (expandedBuckets.has(bucketId)) {
+        expandedBuckets.delete(bucketId);
+    } else {
+        expandedBuckets.add(bucketId);
+    }
+    applyFilters();
+}
+
 function groupTasksBy(tasks, buckets, groupBy) {
     const groups = {};
     
@@ -590,6 +684,11 @@ function groupTasksBy(tasks, buckets, groupBy) {
     });
     
     return Object.values(groups);
+}
+
+function changeView() {
+    currentView = document.getElementById('viewSelect').value;
+    applyFilters();
 }
 
 function changeGroupBy() {

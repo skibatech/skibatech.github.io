@@ -12,7 +12,12 @@
     <div class="header">
         <h1>SkibaTech Engineering - Planner Pro</h1>
         <div class="auth-section">
-            <label for="groupBySelect" style="font-size: 13px; color: #666;">Group by:</label>
+            <label for="viewSelect" style="font-size: 13px; color: #666;">View:</label>
+            <select id="viewSelect" onchange="changeView()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                <option value="byBucket">By Bucket</option>
+                <option value="byAssignedBucket">By Assigned To → By Bucket</option>
+            </select>
+            <label for="groupBySelect" style="font-size: 13px; color: #666; margin-left: 15px;">Group by:</label>
             <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
                 <option value="bucket">Bucket</option>
                 <option value="assigned">Assigned to</option>
@@ -63,7 +68,7 @@
     <div id="tasksContainer" style="display:none;"></div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.2.1</span>
+        v<span id="versionDisplay">1.3.0</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
