@@ -973,6 +973,7 @@ async function openTaskDetail(taskId) {
         document.getElementById('detailTaskName').value = task.title;
         document.getElementById('detailTaskProgress').value = task.percentComplete;
         document.getElementById('detailTaskPriority').value = task.priority;
+        console.log('Loaded task from Planner - Priority value:', task.priority, 'Title:', task.title);
         
         // Format dates for input fields
         if (task.startDateTime) {
@@ -1063,6 +1064,7 @@ async function saveTaskDetails() {
         
         const progress = parseInt(document.getElementById('detailTaskProgress').value);
         const priority = parseInt(document.getElementById('detailTaskPriority').value);
+        console.log('Saving task - Priority value being sent to Planner:', priority);
         const startDate = document.getElementById('detailTaskStartDate').value;
         const dueDate = document.getElementById('detailTaskDueDate').value;
         const bucketId = document.getElementById('detailTaskBucket').value;
