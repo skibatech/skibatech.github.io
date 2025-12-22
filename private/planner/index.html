@@ -749,7 +749,8 @@
             const container = document.getElementById('tasksContainer');
             container.innerHTML = '';
 
-            bucklet bucketTasks = tasks.filter(t => t.bucketId === bucket.id);
+            buckets.forEach(bucket => {
+                let bucketTasks = tasks.filter(t => t.bucketId === bucket.id);
                 
                 // Apply sorting if set
                 const sort = sortState[bucket.id];
