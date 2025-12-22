@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
     <title>SkibaTech Engineering - Planner Dashboard</title>
     <style>
         * {
@@ -334,9 +336,44 @@
         .cancel-btn:hover {
             background: #e0e0e0;
         }
+
+        /* Security: Hide content until authenticated */
+        body.unauthenticated .bucket-container,
+        body.unauthenticated #tasksContainer,
+        body.unauthenticated #refreshBtn {
+            display: none !important;
+        }
+
+        .auth-required {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            margin: 100px auto;
+        }
+
+        .auth-required h2 {
+            color: #323130;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .auth-required p {
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .lock-icon {
+            font-size: 48px;
+            color: #0078d4;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
-<body>
+<body class="unauthenticated">
     <div class="header">
         <h1>SkibaTech Engineering - Planner Dashboard</h1>
         <div class="auth-section">
@@ -346,7 +383,14 @@
         </div>
     </div>
 
-    <div id="tasksContainer"></div>
+    <div id="authRequired" class="auth-required">
+        <div class="lock-icon">🔒</div>
+        <h2>Authentication Required</h2>
+        <p>This is a secure area. Please sign in with your SkibaTech Microsoft account to access the Planner dashboard.</p>
+        <button onclick="login()">Sign In with Microsoft</button>
+    </div>
+
+    <div id="tasksContainer" style="display:none;"></div>
 
     <div id="addTaskModal" class="modal">
         <div class="modal-content">
@@ -397,7 +441,8 @@
             clientId: '14d82eec-204b-4c2f-b7e8-296a70dab67e', // Microsoft Graph Explorer client ID (public client)
             authority: 'https://login.microsoftonline.com/common',
             redirectUri: window.location.origin + window.location.pathname,
-            scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read']
+            scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
+            allowedTenants: ['skibatech.com', 'skibatech.onmicrosoft.com'] // Only allow SkibaTech users
         };
 
         const planId = 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
@@ -426,8 +471,19 @@
                 // Clean URL
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
-                updateAuthUI(true);
-                loadTasks();
+                // Verify user tenant
+                verifyUserTenant().then(isValid => {
+                    if (isValid) {
+                        updateAuthUI(true);
+                        loadTasks();
+                    } else {
+                        localStorage.removeItem('plannerAccessToken');
+                        localStorage.removeItem('tokenExpiration');
+                        accessToken = null;
+                        alert('Access denied. This dashboard is only available to SkibaTech users.');
+                        updateAuthUI(false);
+                    }
+                });
             } else {
                 // Check for stored token
                 const storedToken = localStorage.getItem('plannerAccessToken');
@@ -459,21 +515,58 @@
             window.location.href = authUrl;
         }
 
+        async function verifyUserTenant() {
+            try {
+                const response = await fetch('https://graph.microsoft.com/v1.0/me', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (!response.ok) return false;
+                
+                const user = await response.json();
+                const userEmail = user.userPrincipalName || user.mail;
+                
+                // Verify user is from allowed tenant
+                const isAllowed = config.allowedTenants.some(tenant => 
+                    userEmail.toLowerCase().endsWith('@' + tenant.toLowerCase())
+                );
+                
+                if (!isAllowed) {
+                    console.warn('Unauthorized tenant access attempt:', userEmail);
+                }
+                
+                return isAllowed;
+            } catch (error) {
+                console.error('Tenant verification failed:', error);
+                return false;
+            }
+        }
+
         function updateAuthUI(isAuthenticated) {
             const status = document.getElementById('status');
             const connectBtn = document.getElementById('connectBtn');
             const refreshBtn = document.getElementById('refreshBtn');
+            const authRequired = document.getElementById('authRequired');
+            const tasksContainer = document.getElementById('tasksContainer');
             
             if (isAuthenticated) {
                 status.textContent = 'Connected';
                 status.style.color = '#107c10';
                 connectBtn.style.display = 'none';
                 refreshBtn.style.display = 'inline-block';
+                authRequired.style.display = 'none';
+                tasksContainer.style.display = 'block';
+                document.body.classList.remove('unauthenticated');
             } else {
                 status.textContent = 'Not connected';
                 status.style.color = '#666';
                 connectBtn.style.display = 'inline-block';
                 refreshBtn.style.display = 'none';
+                authRequired.style.display = 'block';
+                tasksContainer.style.display = 'none';
+                document.body.classList.add('unauthenticated');
             }
         }
 

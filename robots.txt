@@ -1,0 +1,6 @@
+# Disallow all robots from indexing the private directory
+User-agent: *
+Disallow: /private/
+
+# Sitemap
+Sitemap: https://skibatech.com/sitemap.xml
