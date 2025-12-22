@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Planner Pro Changelog</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #log { margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 200px; background: #f5f5f5; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Create Planner Pro Changelog</h1>
+    <p>This will create a "Planner Pro" bucket and add all version history as completed tasks.</p>
+    <button onclick="createChangelog()">Create Changelog</button>
+    <div id="log"></div>
+
+    <script>
+        const config = {
+            clientId: '073fb8bf-274f-496d-b2a1-648b1a8195b3',
+            authority: 'https://login.microsoftonline.com/skibatech.com',
+            redirectUri: window.location.origin + window.location.pathname,
+            scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All']
+        };
+        const planId = 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
+        let accessToken = null;
+
+        const versions = [
+            { version: "Initial", title: "Planner dashboard with OAuth authentication", description: "Add Planner dashboard with OAuth authentication" },
+            { version: "Security", title: "Security measures", description: "Add security measures to private area: tenant verification, robots.txt, auth-required UI" },
+            { version: "Setup", title: "Update with SkibaTech Azure AD app ID", description: "Update Planner dashboard with SkibaTech Azure AD app ID" },
+            { version: "OAuth", title: "Switch to OAuth PKCE flow", description: "Switch to OAuth authorization code flow with PKCE" },
+            { version: "Debug", title: "Add OAuth debugging", description: "Add OAuth debugging to track authentication flow" },
+            { version: "Fix", title: "Fix JavaScript syntax error", description: "Fix JavaScript syntax error in OAuth callback" },
+            { version: "Fix", title: "Fix duplicate catch blocks", description: "Fix duplicate catch blocks and malformed alert message" },
+            { version: "Fix", title: "Fix multi-tenant error", description: "Fix multi-tenant error: use tenant-specific endpoint" },
+            { version: "Feature", title: "Add sortable columns", description: "Add sortable columns to task list" },
+            { version: "Fix", title: "Fix syntax error", description: "Fix syntax error in renderTasks function" },
+            { version: "Fix", title: "Fix function structure", description: "Fix function structure - move sort functions outside toggleTaskComplete" },
+            { version: "Fix", title: "Remove duplicate Priority column", description: "Remove duplicate Priority column and preserve expanded state when sorting" },
+            { version: "Feature", title: "Add Group By dropdown", description: "Add Group By dropdown with options for Bucket, Assigned to, Progress, Due date, and Priority" },
+            { version: "Fix", title: "Fix corrupted JavaScript", description: "Fix corrupted JavaScript code in renderTasks function" },
+            { version: "Feature", title: "Add inline task details modal", description: "Add inline task details modal with edit capability" },
+            { version: "Fix", title: "Fix bucket undefined error", description: "Fix bucket undefined error by removing duplicate bucket references" },
+            { version: "Feature", title: "Increase modal size", description: "Increase task details modal width to 750px and height to 90vh" },
+            { version: "Feature", title: "Add resizable columns", description: "Add resizable columns with drag handles and fix sorting to work without refetching" },
+            { version: "Fix", title: "Fix column resize persistence", description: "Fix column resize persistence by storing widths and reapplying after render" },
+            { version: "Feature", title: "Add labels/categories", description: "Add labels/categories column display and editor, plus new bucket creation" },
+            { version: "Feature", title: "Add sign out with profile", description: "Add sign out with profile dropdown and update Add Task modal to match Edit Task modal" },
+            { version: "Fix", title: "Fix initials and labels", description: "Fix initials to first+last name only and update labels to show custom names with searchable interface" },
+            { version: "Feature", title: "Two-column layout", description: "Reorganize task details modal with two-column layout" },
+            { version: "Feature", title: "Add strategic theme labels", description: "Add 7 strategic theme labels with matching colors" },
+            { version: "Fix", title: "Fix category mapping", description: "Fix category mapping to match all 25 Planner label colors" },
+            { version: "Fix", title: "Fix category color swatches", description: "Fix category color swatches in task modals - match JavaScript dictionary" },
+            { version: "1.0.0", title: "Version tracking", description: "Add version tracking to dashboard - displays in footer" },
+            { version: "1.0.1", title: "Debug console logging", description: "Add console logging to version initialization for debugging" },
+            { version: "1.0.2", title: "Color fixes and version", description: "Bump version to 1.0.2 - color fixes and version tracking" },
+            { version: "1.0.3", title: "Debug category colors", description: "Add debug logging to identify category color mismatch - 1.0.3" },
+            { version: "1.0.3", title: "Update version", description: "Update version to 1.0.3" },
+            { version: "1.0.4", title: "Pastel color palette", description: "Update all category colors to pastel palette - 1.0.4" },
+            { version: "1.0.5", title: "Rebrand to Strategic Themes", description: "Rebrand Labels to Strategic Themes - 1.0.5" },
+            { version: "1.0.6", title: "UI adjustments", description: "Adjust theme order, remove scrollbar, reduce badge font to 9px - 1.0.6" },
+            { version: "1.0.8", title: "Two-column Add Task modal", description: "Add two-column layout to Add Task modal and fix category7 support - 1.0.8" },
+            { version: "1.0.9", title: "Reorder themes", description: "v1.0.9: Reorder strategic themes to match priority slide (Security first, Bug Fixes last)" },
+            { version: "1.0.10", title: "Wider themes column", description: "v1.0.10: Increase Themes column width to 200px and make resize handles more visible" },
+            { version: "1.1.0", title: "Split into modules", description: "v1.1.0: Split into separate HTML, CSS, and JS files for better maintainability" },
+            { version: "1.1.1", title: "Fix theme unchecking", description: "v1.1.1: Fix theme unchecking bug and priority mapping (Medium now correctly maps to Low=5)" },
+            { version: "1.1.2", title: "Restore priority mapping", description: "v1.1.2: Restore correct Planner priority mapping (Urgent=0, Important=1, Medium=3, Low=5)" },
+            { version: "Debug", title: "Add priority debug logging", description: "Add debug logging for priority values" },
+            { version: "1.1.3", title: "Remove theme search", description: "v1.1.3: Remove theme search boxes - all 7 themes are visible" },
+            { version: "1.1.4", title: "Fix search box references", description: "v1.1.4: Fix broken search box references after removal" },
+            { version: "1.1.5", title: "Update priority mapping", description: "v1.1.5: Correct priority mapping to match Planner (Urgent=0, Important=1, Medium=5, Low=9)" },
+            { version: "1.2.0", title: "Rebrand to Planner Pro", description: "v1.2.0: Rebrand to Planner Pro" },
+            { version: "1.2.1", title: "Final priority fix", description: "v1.2.1: Fix priority mapping (Urgent=1, Important=3, Medium=5, Low=9)" }
+        ];
+
+        async function getAccessToken() {
+            const codeVerifier = generateCodeVerifier();
+            const codeChallenge = await generateCodeChallenge(codeVerifier);
+            sessionStorage.setItem('pkce_code_verifier', codeVerifier);
+
+            const authUrl = `${config.authority}/oauth2/v2.0/authorize?` +
+                `client_id=${config.clientId}` +
+                `&response_type=code` +
+                `&redirect_uri=${encodeURIComponent(config.redirectUri)}` +
+                `&scope=${encodeURIComponent(config.scopes.join(' '))}` +
+                `&code_challenge=${codeChallenge}` +
+                `&code_challenge_method=S256` +
+                `&prompt=select_account`;
+
+            window.location.href = authUrl;
+        }
+
+        function generateCodeVerifier() {
+            const array = new Uint8Array(32);
+            crypto.getRandomValues(array);
+            return base64UrlEncode(array);
+        }
+
+        async function generateCodeChallenge(verifier) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(verifier);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return base64UrlEncode(new Uint8Array(hash));
+        }
+
+        function base64UrlEncode(buffer) {
+            const base64 = btoa(String.fromCharCode(...buffer));
+            return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        }
+
+        async function handleCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            
+            if (code) {
+                const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
+                
+                const tokenResponse = await fetch(`${config.authority}/oauth2/v2.0/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        client_id: config.clientId,
+                        code: code,
+                        redirect_uri: config.redirectUri,
+                        grant_type: 'authorization_code',
+                        code_verifier: codeVerifier
+                    })
+                });
+
+                const tokenData = await tokenResponse.json();
+                accessToken = tokenData.access_token;
+                sessionStorage.removeItem('pkce_code_verifier');
+                
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                log('✓ Authenticated successfully', 'success');
+            }
+        }
+
+        function log(message, className = '') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            if (className) entry.className = className;
+            logDiv.appendChild(entry);
+        }
+
+        async function createChangelog() {
+            try {
+                if (!accessToken) {
+                    log('No access token, redirecting to login...');
+                    await getAccessToken();
+                    return;
+                }
+
+                log('Creating Planner Pro bucket...');
+                
+                // Create bucket
+                const bucketResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/buckets`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: 'Planner Pro',
+                        planId: planId,
+                        orderHint: ' !'
+                    })
+                });
+
+                if (!bucketResponse.ok) {
+                    const error = await bucketResponse.json();
+                    throw new Error(`Failed to create bucket: ${JSON.stringify(error)}`);
+                }
+
+                const bucket = await bucketResponse.json();
+                log(`✓ Created bucket: ${bucket.name}`, 'success');
+
+                // Create tasks
+                for (let i = 0; i < versions.length; i++) {
+                    const v = versions[i];
+                    const taskName = `${v.version} - ${v.title}`;
+                    
+                    log(`Creating task ${i + 1}/${versions.length}: ${taskName}`);
+                    
+                    const taskResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            planId: planId,
+                            bucketId: bucket.id,
+                            title: taskName,
+                            percentComplete: 100
+                        })
+                    });
+
+                    if (!taskResponse.ok) {
+                        const error = await taskResponse.json();
+                        log(`✗ Failed to create task: ${JSON.stringify(error)}`, 'error');
+                        continue;
+                    }
+
+                    const task = await taskResponse.json();
+                    
+                    // Add description
+                    const detailsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                            'If-Match': '*'
+                        },
+                        body: JSON.stringify({
+                            description: v.description
+                        })
+                    });
+
+                    if (detailsResponse.ok) {
+                        log(`✓ Created: ${taskName}`, 'success');
+                    } else {
+                        log(`⚠ Created task but failed to add description`, 'error');
+                    }
+
+                    // Small delay to avoid throttling
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+
+                log('========================================', 'success');
+                log('✓ Changelog creation complete!', 'success');
+                log('========================================', 'success');
+
+            } catch (error) {
+                log(`✗ Error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        // Check for OAuth callback on load
+        window.onload = handleCallback;
+    </script>
+</body>
+</html>
