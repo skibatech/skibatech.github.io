@@ -20,6 +20,7 @@
     <p>This will create a "Planner Pro" bucket and add all version history as completed tasks.</p>
     <button id="createBtn" onclick="createChangelog()">Create Changelog</button>
     <button id="updateBtn" onclick="updateTaskDates()" style="background: #4CAF50; color: white; border: none;">Update Task Dates (Today)</button>
+    <button id="deleteBtn" onclick="deleteBucket()" style="background: #f44336; color: white; border: none;">Delete Bucket</button>
     <button id="stopBtn" onclick="stopOperation()" style="display: none;">Stop Operation</button>
     <div id="log"></div>
     <div class="version">Tools v1.0</div>
@@ -164,6 +165,7 @@
             document.getElementById('stopBtn').style.display = 'none';
             document.getElementById('createBtn').disabled = false;
             document.getElementById('updateBtn').disabled = false;
+            document.getElementById('deleteBtn').disabled = false;
         }
 
         async function createChangelog() {
@@ -401,6 +403,73 @@
                 document.getElementById('stopBtn').style.display = 'none';
                 document.getElementById('createBtn').disabled = false;
                 document.getElementById('updateBtn').disabled = false;
+                document.getElementById('deleteBtn').disabled = false;
+            }
+        }
+
+        async function deleteBucket() {
+            const bucketName = prompt('Enter bucket name to delete (e.g., "Planner Pro"):', 'Planner Pro');
+            if (!bucketName) {
+                log('Delete cancelled', 'error');
+                return;
+            }
+
+            try {
+                shouldStop = false;
+                document.getElementById('stopBtn').style.display = 'inline-block';
+                document.getElementById('createBtn').disabled = true;
+                document.getElementById('updateBtn').disabled = true;
+                document.getElementById('deleteBtn').disabled = true;
+
+                if (!accessToken) {
+                    log('No access token, redirecting to login...');
+                    await getAccessToken();
+                    return;
+                }
+
+                log(`Finding bucket: ${bucketName}...`);
+                
+                // Get all buckets
+                const bucketsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                const bucketsData = await bucketsResponse.json();
+                const bucket = bucketsData.value.find(b => b.name === bucketName);
+                
+                if (!bucket) {
+                    log(`✗ Bucket "${bucketName}" not found`, 'error');
+                    return;
+                }
+
+                log(`✓ Found bucket: ${bucket.name} (${bucket.id})`);
+                log(`Deleting bucket and all tasks...`);
+
+                // Delete the bucket
+                const deleteResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/buckets/${bucket.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'If-Match': '*'
+                    }
+                });
+
+                if (deleteResponse.ok) {
+                    log(`✓ Bucket deleted successfully!`, 'success');
+                } else {
+                    const error = await deleteResponse.json();
+                    log(`✗ Failed to delete bucket: ${JSON.stringify(error)}`, 'error');
+                }
+
+            } catch (error) {
+                log(`✗ Error: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                shouldStop = false;
+                document.getElementById('stopBtn').style.display = 'none';
+                document.getElementById('createBtn').disabled = false;
+                document.getElementById('updateBtn').disabled = false;
+                document.getElementById('deleteBtn').disabled = false;
             }
         }
     </script>
