@@ -465,6 +465,66 @@
         </div>
     </div>
 
+    <div id="taskDetailsModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="detailTaskTitle"></span>
+                <button class="cancel-btn" onclick="closeTaskDetailsModal()" style="padding: 4px 8px; font-size: 18px; line-height: 1;">×</button>
+            </div>
+            <div id="taskDetailsLoading" style="text-align: center; padding: 40px; color: #666;">
+                Loading task details...
+            </div>
+            <div id="taskDetailsContent" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Task Name *</label>
+                    <input type="text" id="detailTaskName" class="task-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Progress</label>
+                    <select id="detailTaskProgress" class="task-input">
+                        <option value="0">Not started</option>
+                        <option value="50">In progress</option>
+                        <option value="100">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select id="detailTaskPriority" class="task-input">
+                        <option value="5">Low</option>
+                        <option value="3">Medium</option>
+                        <option value="1">Important</option>
+                        <option value="0">Urgent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" id="detailTaskStartDate" class="task-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" id="detailTaskDueDate" class="task-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bucket</label>
+                    <select id="detailTaskBucket" class="task-input"></select>
+                </div>
+                <div style="margin: 20px 0; padding-top: 16px; border-top: 1px solid #e0e0e0;">
+                    <a id="openInPlannerLink" href="#" target="_blank" style="color: #0078d4; font-size: 13px; text-decoration: none;">
+                        📋 Open in Microsoft Planner →
+                    </a>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn" onclick="closeTaskDetailsModal()">Cancel</button>
+                    <button id="saveTaskBtn" onclick="saveTaskDetails()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Configuration
         const config = {
@@ -1082,8 +1142,186 @@
             }
         }
 
-        function openTaskDetail(taskId) {
-            window.open(`https://tasks.office.com/skibatech.com/Home/Task/${taskId}`, '_blank');
+        let currentTaskId = null;
+        let currentTaskEtag = null;
+        let currentTaskDetailsEtag = null;
+
+        async function openTaskDetail(taskId) {
+            currentTaskId = taskId;
+            document.getElementById('taskDetailsModal').classList.add('show');
+            document.getElementById('taskDetailsLoading').style.display = 'block';
+            document.getElementById('taskDetailsContent').style.display = 'none';
+            
+            try {
+                // Fetch task basic info
+                const taskResponse = await fetch(
+                    `https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    }
+                );
+                
+                if (!taskResponse.ok) throw new Error('Failed to load task');
+                const task = await taskResponse.json();
+                currentTaskEtag = task['@odata.etag'];
+                
+                // Fetch task details (description, checklist, etc.)
+                const detailsResponse = await fetch(
+                    `https://graph.microsoft.com/v1.0/planner/tasks/${taskId}/details`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    }
+                );
+                
+                if (!detailsResponse.ok) throw new Error('Failed to load task details');
+                const details = await detailsResponse.json();
+                currentTaskDetailsEtag = details['@odata.etag'];
+                
+                // Populate modal
+                document.getElementById('detailTaskTitle').textContent = task.title;
+                document.getElementById('detailTaskName').value = task.title;
+                document.getElementById('detailTaskProgress').value = task.percentComplete;
+                document.getElementById('detailTaskPriority').value = task.priority;
+                
+                // Format dates for input fields
+                if (task.startDateTime) {
+                    const startDate = new Date(task.startDateTime);
+                    document.getElementById('detailTaskStartDate').value = startDate.toISOString().split('T')[0];
+                } else {
+                    document.getElementById('detailTaskStartDate').value = '';
+                }
+                
+                if (task.dueDateTime) {
+                    const dueDate = new Date(task.dueDateTime);
+                    document.getElementById('detailTaskDueDate').value = dueDate.toISOString().split('T')[0];
+                } else {
+                    document.getElementById('detailTaskDueDate').value = '';
+                }
+                
+                document.getElementById('detailTaskDescription').value = details.description || '';
+                
+                // Populate bucket dropdown
+                const bucketSelect = document.getElementById('detailTaskBucket');
+                bucketSelect.innerHTML = allBuckets.map(b => 
+                    `<option value="${b.id}" ${b.id === task.bucketId ? 'selected' : ''}>${b.name}</option>`
+                ).join('');
+                
+                // Set Planner link
+                document.getElementById('openInPlannerLink').href = 
+                    `https://tasks.office.com/skibatech.com/Home/Task/${taskId}`;
+                
+                // Show content
+                document.getElementById('taskDetailsLoading').style.display = 'none';
+                document.getElementById('taskDetailsContent').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading task details:', error);
+                alert('Error loading task details: ' + error.message);
+                closeTaskDetailsModal();
+            }
+        }
+        
+        function closeTaskDetailsModal() {
+            document.getElementById('taskDetailsModal').classList.remove('show');
+            currentTaskId = null;
+            currentTaskEtag = null;
+            currentTaskDetailsEtag = null;
+        }
+        
+        async function saveTaskDetails() {
+            if (!currentTaskId || !currentTaskEtag) {
+                alert('Error: Task information missing');
+                return;
+            }
+            
+            const title = document.getElementById('detailTaskName').value.trim();
+            if (!title) {
+                alert('Please enter a task name');
+                return;
+            }
+            
+            try {
+                document.getElementById('saveTaskBtn').disabled = true;
+                document.getElementById('saveTaskBtn').textContent = 'Saving...';
+                
+                const progress = parseInt(document.getElementById('detailTaskProgress').value);
+                const priority = parseInt(document.getElementById('detailTaskPriority').value);
+                const startDate = document.getElementById('detailTaskStartDate').value;
+                const dueDate = document.getElementById('detailTaskDueDate').value;
+                const bucketId = document.getElementById('detailTaskBucket').value;
+                const description = document.getElementById('detailTaskDescription').value.trim();
+                
+                // Update basic task info
+                const taskBody = {
+                    title: title,
+                    percentComplete: progress,
+                    priority: priority,
+                    bucketId: bucketId
+                };
+                
+                if (startDate) {
+                    taskBody.startDateTime = new Date(startDate).toISOString();
+                } else {
+                    taskBody.startDateTime = null;
+                }
+                
+                if (dueDate) {
+                    taskBody.dueDateTime = new Date(dueDate).toISOString();
+                } else {
+                    taskBody.dueDateTime = null;
+                }
+                
+                const taskResponse = await fetch(
+                    `https://graph.microsoft.com/v1.0/planner/tasks/${currentTaskId}`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                            'If-Match': currentTaskEtag
+                        },
+                        body: JSON.stringify(taskBody)
+                    }
+                );
+                
+                if (!taskResponse.ok) {
+                    throw new Error('Failed to update task');
+                }
+                
+                // Update task details (description)
+                if (currentTaskDetailsEtag) {
+                    const detailsResponse = await fetch(
+                        `https://graph.microsoft.com/v1.0/planner/tasks/${currentTaskId}/details`,
+                        {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`,
+                                'Content-Type': 'application/json',
+                                'If-Match': currentTaskDetailsEtag
+                            },
+                            body: JSON.stringify({
+                                description: description
+                            })
+                        }
+                    );
+                    
+                    if (!detailsResponse.ok) {
+                        console.warn('Failed to update task description');
+                    }
+                }
+                
+                closeTaskDetailsModal();
+                loadTasks();
+            } catch (error) {
+                console.error('Error saving task:', error);
+                alert('Error saving task: ' + error.message);
+            } finally {
+                document.getElementById('saveTaskBtn').disabled = false;
+                document.getElementById('saveTaskBtn').textContent = 'Save Changes';
+            }
         }
 
         function sortBucket(bucketId, column) {
