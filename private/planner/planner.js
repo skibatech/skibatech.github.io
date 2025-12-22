@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.3.0';
+const APP_VERSION = '1.3.1';
 
 // Configuration
 const config = {
@@ -538,11 +538,14 @@ function renderByAssignedBucket(container, buckets, tasks) {
     const groupedByAssignee = {};
     
     tasks.forEach(task => {
-        const assignee = task.assignments ? Object.keys(task.assignments)[0] : 'Unassigned';
-        const assigneeName = allTaskDetails[task.id]?.assignments?.[assignee]?.displayName || 
-                           (task.assignments && task.assignments[assignee]?.displayName) || 
-                           assignee.substring(0, 1).toUpperCase() + assignee.substring(1) || 
-                           'Unassigned';
+        // Get proper assignee name from task details
+        let assigneeName = 'Unassigned';
+        if (task.assignments && Object.keys(task.assignments).length > 0) {
+            const assigneeId = Object.keys(task.assignments)[0];
+            if (allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName) {
+                assigneeName = allTaskDetails[task.id].assignments[assigneeId].displayName;
+            }
+        }
         
         if (!groupedByAssignee[assigneeName]) {
             groupedByAssignee[assigneeName] = {};
@@ -765,7 +768,13 @@ function renderTask(task) {
     const startDate = task.startDateTime ? new Date(task.startDateTime).toLocaleDateString() : '';
     const dueDate = task.dueDateTime ? new Date(task.dueDateTime).toLocaleDateString() : '';
     
-    const assignee = task.assignments && Object.keys(task.assignments).length > 0 ? 'Assigned' : '';
+    const assignee = task.assignments && Object.keys(task.assignments).length > 0 ? 
+        (allTaskDetails[task.id]?.assignments ? 
+            Object.values(allTaskDetails[task.id].assignments)
+                .map(a => a.displayName)
+                .join(', ')
+            : 'Assigned') 
+        : '';
     
     // Get categories
     const appliedCategories = task.appliedCategories || {};
@@ -1071,6 +1080,17 @@ async function openTaskDetail(taskId) {
         document.getElementById('detailTaskName').value = task.title;
         document.getElementById('detailTaskProgress').value = task.percentComplete;
         document.getElementById('detailTaskPriority').value = task.priority;
+        
+        // Populate assigned to field
+        let assigneeName = 'Unassigned';
+        if (task.assignments && Object.keys(task.assignments).length > 0) {
+            const assigneeId = Object.keys(task.assignments)[0];
+            if (details.assignments && details.assignments[assigneeId]) {
+                assigneeName = details.assignments[assigneeId].displayName;
+            }
+        }
+        document.getElementById('detailTaskAssignee').value = assigneeName;
+        
         console.log('Loaded task from Planner - Priority value:', task.priority, 'Title:', task.title);
         
         // Format dates for input fields
