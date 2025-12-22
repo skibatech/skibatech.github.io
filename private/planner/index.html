@@ -455,24 +455,56 @@
             handleRedirectCallback();
         });
 
-        function handleRedirectCallback() {
-            const hash = window.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
+        async function handleRedirectCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
             
-            if (params.has('access_token')) {
-                accessToken = params.get('access_token');
-                const expiresIn = params.get('expires_in');
+            if (urlParams.has('code')) {
+                const code = urlParams.get('code');
+                const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
                 
-                // Store token with expiration
-                const expirationTime = Date.now() + (parseInt(expiresIn) * 1000);
-                localStorage.setItem('plannerAccessToken', accessToken);
-                localStorage.setItem('tokenExpiration', expirationTime.toString());
+                if (!codeVerifier) {
+                    console.error('Code verifier not found');
+                    return;
+                }
                 
-                // Clean URL
+                // Clean URL immediately
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
-                // Verify user tenant
-                verifyUserTenant().then(isValid => {
+                // Exchange code for token
+                try {
+                    const tokenResponse = await fetch(`${config.authority}/oauth2/v2.0/token`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({
+                            client_id: config.clientId,
+                            grant_type: 'authorization_code',
+                            code: code,
+                            redirect_uri: config.redirectUri,
+                            code_verifier: codeVerifier,
+                            scope: config.scopes.join(' ')
+                        })
+                    });
+                    
+                    if (!tokenResponse.ok) {
+                        throw new Error('Failed to exchange code for token');
+                    }
+                    
+                    const tokenData = await tokenResponse.json();
+                    accessToken = tokenData.access_token;
+                    const expiresIn = tokenData.expires_in;
+                    
+                    // Store token with expiration
+                    const expirationTime = Date.now() + (parseInt(expiresIn) * 1000);
+                    localStorage.setItem('plannerAccessToken', accessToken);
+                    localStorage.setItem('tokenExpiration', expirationTime.toString());
+                    
+                    // Clear code verifier
+                    sessionStorage.removeItem('pkce_code_verifier');
+                    
+                    // Verify user tenant
+                    const isValid = await verifyUserTenant();
                     if (isValid) {
                         updateAuthUI(true);
                         loadTasks();
@@ -483,7 +515,11 @@
                         alert('Access denied. This dashboard is only available to SkibaTech users.');
                         updateAuthUI(false);
                     }
-                });
+                } catch (error) {
+                    console.error('Token exchange failed:', error);
+                    alert('Authentication failed. Please try again.');
+                    sessionStorage.removeItem('pkce_code_verifier');
+                }
             } else {
                 // Check for stored token
                 const storedToken = localStorage.getItem('plannerAccessToken');
@@ -501,16 +537,42 @@
             }
         }
 
-        function login() {
-            // Use OAuth 2.0 Implicit Flow (works for SPAs)
+        // PKCE helper functions
+        function generateCodeVerifier() {
+            const array = new Uint8Array(32);
+            crypto.getRandomValues(array);
+            return base64UrlEncode(array);
+        }
+
+        function base64UrlEncode(buffer) {
+            const base64 = btoa(String.fromCharCode(...buffer));
+            return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        }
+
+        async function generateCodeChallenge(verifier) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(verifier);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return base64UrlEncode(new Uint8Array(hash));
+        }
+
+        async function login() {
+            // Use OAuth 2.0 Authorization Code Flow with PKCE (recommended for SPAs)
+            const codeVerifier = generateCodeVerifier();
+            const codeChallenge = await generateCodeChallenge(codeVerifier);
+            
+            // Store code verifier for token exchange
+            sessionStorage.setItem('pkce_code_verifier', codeVerifier);
+            
             const authUrl = `${config.authority}/oauth2/v2.0/authorize?` +
                 `client_id=${config.clientId}` +
-                `&response_type=token` +
+                `&response_type=code` +
                 `&redirect_uri=${encodeURIComponent(config.redirectUri)}` +
                 `&scope=${encodeURIComponent(config.scopes.join(' '))}` +
-                `&response_mode=fragment` +
-                `&state=12345` +
-                `&nonce=678910`;
+                `&response_mode=query` +
+                `&code_challenge=${codeChallenge}` +
+                `&code_challenge_method=S256` +
+                `&state=12345`;
             
             window.location.href = authUrl;
         }
