@@ -297,9 +297,12 @@
                 
                 log(`Found ${tasks.length} tasks to update`);
 
-                // Get today's date in the format Planner expects (YYYY-MM-DD)
+                // Get today's date
                 const today = new Date();
-                const dateStr = today.toISOString().split('T')[0];
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const dateStr = `${year}-${month}-${day}`;
                 
                 log(`Setting all dates to: ${dateStr}`);
                 
@@ -308,29 +311,17 @@
                     const task = tasks[i];
                     log(`Updating ${i + 1}/${tasks.length}: ${task.title}`);
 
-                    // First get the task details to get the ETag
-                    const getDetailsResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
-                        headers: { 'Authorization': `Bearer ${accessToken}` }
-                    });
-
-                    if (!getDetailsResponse.ok) {
-                        log(`✗ Failed to get details for: ${task.title}`, 'error');
-                        continue;
-                    }
-
-                    const etag = getDetailsResponse.headers.get('ETag');
-
                     const updateBody = {
-                        startDateTime: dateStr + 'T00:00:00.000Z',
-                        dueDateTime: dateStr + 'T23:59:59.999Z'
+                        startDateTime: new Date(dateStr).toISOString(),
+                        dueDateTime: new Date(dateStr).toISOString()
                     };
 
-                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                    const updateResponse = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                             'Content-Type': 'application/json',
-                            'If-Match': etag
+                            'If-Match': '*'
                         },
                         body: JSON.stringify(updateBody)
                     });
