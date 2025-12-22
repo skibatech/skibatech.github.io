@@ -524,7 +524,12 @@
                     const expirationTime = Date.now() + (parseInt(expiresIn) * 1000);
                     localStorage.setItem('plannerAccessToken', accessToken);
                     localStorage.setItem('tokenExpiration', expirationTime.toString());
-                    ole.log('🔍 Verifying user tenant...');
+                    
+                    // Clear code verifier
+                    sessionStorage.removeItem('pkce_code_verifier');
+                    
+                    // Verify user tenant
+                    console.log('🔍 Verifying user tenant...');
                     const isValid = await verifyUserTenant();
                     console.log('✅ Tenant verification result:', isValid);
                     
