@@ -1052,6 +1052,9 @@
             const versionDisplay = document.getElementById('versionDisplay');
             if (versionDisplay) {
                 versionDisplay.textContent = APP_VERSION;
+                console.log('✓ Version initialized:', APP_VERSION);
+            } else {
+                console.warn('⚠️ Version display element not found');
             }
         }
 
