@@ -1025,17 +1025,32 @@ function toggleNestedBucket(bucketId) {
 
 function groupTasksBy(tasks, buckets, groupBy) {
     const groups = {};
-    
+    const bucketMap = (buckets || []).reduce((m, b) => { m[b.id] = b.name; return m; }, {});
+
     tasks.forEach(task => {
         let key, name;
-        
-        switch(groupBy) {
-            case 'assigned':
-                const hasAssignments = task.assignments && Object.keys(task.assignments).length > 0;
-                key = hasAssignments ? 'assigned' : 'unassigned';
-                name = hasAssignments ? 'Assigned' : 'Unassigned';
+
+        switch (groupBy) {
+            case 'assigned': {
+                if (task.assignments && Object.keys(task.assignments).length > 0) {
+                    const assigneeId = Object.keys(task.assignments)[0];
+                    key = assigneeId;
+                    // Prefer enriched names from allTaskDetails, then allUsers
+                    const enriched = allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName;
+                    const fromUsers = allUsers[assigneeId];
+                    name = enriched || fromUsers || 'Assigned';
+                } else {
+                    key = 'unassigned';
+                    name = 'Unassigned';
+                }
                 break;
-            case 'progress':
+            }
+            case 'bucket': {
+                key = task.bucketId || 'no-bucket';
+                name = bucketMap[key] || 'Unknown bucket';
+                break;
+            }
+            case 'progress': {
                 if (task.percentComplete === 0) {
                     key = 'not-started';
                     name = 'Not started';
@@ -1047,7 +1062,8 @@ function groupTasksBy(tasks, buckets, groupBy) {
                     name = 'In progress';
                 }
                 break;
-            case 'dueDate':
+            }
+            case 'dueDate': {
                 if (!task.dueDateTime) {
                     key = 'no-due-date';
                     name = 'No due date';
@@ -1057,7 +1073,7 @@ function groupTasksBy(tasks, buckets, groupBy) {
                     today.setHours(0, 0, 0, 0);
                     const due = new Date(dueDate);
                     due.setHours(0, 0, 0, 0);
-                    
+
                     if (due < today) {
                         key = 'overdue';
                         name = 'Overdue';
@@ -1073,22 +1089,25 @@ function groupTasksBy(tasks, buckets, groupBy) {
                     }
                 }
                 break;
-            case 'priority':
-                const priorityMap = {1: 'Urgent', 3: 'Important', 5: 'Medium', 9: 'Low'};
+            }
+            case 'priority': {
+                const priorityMap = { 1: 'Urgent', 3: 'Important', 5: 'Medium', 9: 'Low' };
                 key = 'priority-' + task.priority;
                 name = priorityMap[task.priority] || 'No priority';
                 break;
-            default:
+            }
+            default: {
                 key = 'other';
                 name = 'Other';
+            }
         }
-        
+
         if (!groups[key]) {
             groups[key] = { id: key, name: name, tasks: [] };
         }
         groups[key].tasks.push(task);
     });
-    
+
     return Object.values(groups);
 }
 
