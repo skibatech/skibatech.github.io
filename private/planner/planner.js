@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.11'; // Select-all headers; bulk move to bucket; bulk more options
+const APP_VERSION = '1.4.12'; // Throttle bulk ops to reduce 429s; reinforce select-all and nested sorting
 
 // Configuration
 const config = {
@@ -2086,7 +2086,8 @@ async function bulkAssignSelected() {
                 },
                 body: JSON.stringify({ assignments })
             });
-        }, 4);
+            await sleep(250);
+        }, 2);
         clearSelection();
         loadTasks();
     } catch (err) {
@@ -2118,7 +2119,8 @@ async function bulkMoveSelected() {
                 },
                 body: JSON.stringify({ bucketId: targetBucketId })
             });
-        }, 4);
+            await sleep(250);
+        }, 2);
         clearSelection();
         loadTasks();
     } catch (err) {
@@ -2166,7 +2168,8 @@ async function bulkApplyMoreOptions() {
                 },
                 body: JSON.stringify(body)
             });
-        }, 4);
+            await sleep(250);
+        }, 2);
         hideBulkMoreOptions();
         clearSelection();
         loadTasks();
@@ -2218,7 +2221,8 @@ async function bulkDeleteSelected() {
                     'If-Match': etag
                 }
             });
-        }, 3);
+            await sleep(300);
+        }, 2);
         hideBulkDeleteConfirm();
         clearSelection();
         loadTasks();
