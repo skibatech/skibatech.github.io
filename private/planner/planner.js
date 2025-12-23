@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.13'; // Fix select-all toggle/size; enable nested sorting; minor UX polish
+const APP_VERSION = '1.4.14'; // Add Theme view/group; fix select-all UX; ensure nested headers render controls
 
 // Configuration
 const config = {
@@ -1159,6 +1159,26 @@ function groupTasksBy(tasks, buckets, groupBy) {
                 name = priorityMap[task.priority] || 'No priority';
                 break;
             }
+            case 'theme': {
+                const applied = task.appliedCategories || {};
+                const ordered = [
+                    'category1','category2','category3','category4','category5',
+                    'category7','category9'
+                ];
+                const selected = ordered.find(cat => applied[cat]);
+                if (selected) {
+                    key = selected;
+                    const defaults = {
+                        'category1': 'Pink', 'category2': 'Red', 'category3': 'Yellow',
+                        'category4': 'Green', 'category5': 'Blue', 'category7': 'Bronze', 'category9': 'Aqua'
+                    };
+                    name = planCategoryDescriptions[selected] || defaults[selected] || 'Theme';
+                } else {
+                    key = 'no-theme';
+                    name = 'No theme';
+                }
+                break;
+            }
             default: {
                 key = 'other';
                 name = 'Other';
@@ -1189,7 +1209,8 @@ function changeView() {
         { value: 'assigned', label: 'Assigned to' },
         { value: 'progress', label: 'Progress' },
         { value: 'dueDate', label: 'Due date' },
-        { value: 'priority', label: 'Priority' }
+        { value: 'priority', label: 'Priority' },
+        { value: 'theme', label: 'Theme' }
     ];
     
     options.forEach(opt => {
