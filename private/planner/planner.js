@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.16'; // Add ID header + select-all in grouped buckets; maintain sort/resize
+const APP_VERSION = '1.4.17'; // Nested views: add select-all + sortable/resizable headers; apply sorting
 
 // Configuration
 const config = {
@@ -949,24 +949,47 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             const taskList = document.createElement('div');
             taskList.className = 'task-list nested' + (bucketExpanded ? ' expanded' : '');
             
-            // Add column headers
+            // Add column headers with select-all, sorting, and resizing
             const columnHeaders = document.createElement('div');
             columnHeaders.className = 'column-headers';
+            const sort = sortState[bucketId];
+            const sortArrows = (col) => {
+                if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
+                return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
+            };
             columnHeaders.innerHTML = `
-                <div></div>
-                <div class="sortable-header col-id" style="cursor: pointer;">ID</div>
-                <div class="sortable-header col-task-name" style="cursor: pointer;">Task name</div>
-                <div class="sortable-header col-assigned" style="cursor: pointer;">Assigned to</div>
-                <div class="sortable-header col-start-date" style="cursor: pointer;">Start date</div>
-                <div class="sortable-header col-due-date" style="cursor: pointer;">Due date</div>
-                <div class="sortable-header col-progress" style="cursor: pointer;">Progress</div>
-                <div class="sortable-header col-priority" style="cursor: pointer;">Priority</div>
+                <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
+                <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'id')">ID ${sortArrows('id')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
+                </div>
+                <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'title')">Task name ${sortArrows('title')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')"></div>
+                </div>
+                <div class="sortable-header col-assigned" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'assigned')">Assigned to ${sortArrows('assigned')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-assigned')"></div>
+                </div>
+                <div class="sortable-header col-start-date" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'startDate')">Start date ${sortArrows('startDate')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-start-date')"></div>
+                </div>
+                <div class="sortable-header col-due-date" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'dueDate')">Due date ${sortArrows('dueDate')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-due-date')"></div>
+                </div>
+                <div class="sortable-header col-progress" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'progress')">Progress ${sortArrows('progress')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-progress')"></div>
+                </div>
+                <div class="sortable-header col-priority" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'priority')">Priority ${sortArrows('priority')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-priority')"></div>
+                </div>
                 <div class="col-labels">Themes</div>
             `;
             taskList.appendChild(columnHeaders);
             
-            // Add tasks
-            secondaryGrp.tasks.forEach(task => {
+            // Add tasks (apply sorting if set)
+            let nestedTasks = secondaryGrp.tasks;
+            if (sort) {
+                nestedTasks = sortTasks(nestedTasks, sort.column, sort.direction);
+            }
+            nestedTasks.forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.innerHTML = renderTask(task);
                 taskList.appendChild(taskDiv.firstElementChild);
