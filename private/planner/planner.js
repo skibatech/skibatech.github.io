@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.2'; // Now fetches user displayNames from Graph API
+const APP_VERSION = '1.4.3'; // Now fetches user displayNames from Graph API
 
 // Configuration
 const config = {
@@ -1280,11 +1280,14 @@ function showAddTask(bucketId, bucketName) {
     document.getElementById('newTaskDueDate').value = '';
     document.getElementById('newTaskNotes').value = '';
     
-    // Populate bucket dropdown
+    // Populate bucket dropdown (sorted alphabetically)
     const bucketSelect = document.getElementById('newTaskBucket');
-    bucketSelect.innerHTML = allBuckets.map(b => 
-        `<option value="${b.id}" ${b.id === bucketId ? 'selected' : ''}>${b.name}</option>`
-    ).join('');
+    bucketSelect.innerHTML = allBuckets
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(b => 
+            `<option value="${b.id}" ${b.id === bucketId ? 'selected' : ''}>${b.name}</option>`
+        ).join('');
     
     // Populate category names
     ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
@@ -1507,11 +1510,14 @@ async function openTaskDetail(taskId) {
         
         document.getElementById('detailTaskDescription').value = details.description || '';
         
-        // Populate bucket dropdown
+        // Populate bucket dropdown (sorted alphabetically)
         const bucketSelect = document.getElementById('detailTaskBucket');
-        bucketSelect.innerHTML = allBuckets.map(b => 
-            `<option value="${b.id}" ${b.id === task.bucketId ? 'selected' : ''}>${b.name}</option>`
-        ).join('');
+        bucketSelect.innerHTML = allBuckets
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(b => 
+                `<option value="${b.id}" ${b.id === task.bucketId ? 'selected' : ''}>${b.name}</option>`
+            ).join('');
         
         // Populate categories
         ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'].forEach(cat => {
