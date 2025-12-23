@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.32'; // Fix bulk bucket move to not clear assignee when set to "No change"
+const APP_VERSION = '1.4.33'; // Add Dark Mode / Light Mode toggle
 
 // Configuration
 let config = {
@@ -322,9 +322,44 @@ function toggleSelectAll(el) {
     applyFilters();
 }
 
+// Theme toggle functionality
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeToggleIcon');
+    const themeText = document.getElementById('themeToggleText');
+    
+    if (body.classList.contains('dark-mode')) {
+        body.classList.remove('dark-mode');
+        if (themeIcon) themeIcon.textContent = '🌙';
+        if (themeText) themeText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-mode');
+        if (themeIcon) themeIcon.textContent = '☀️';
+        if (themeText) themeText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const themeIcon = document.getElementById('themeToggleIcon');
+    const themeText = document.getElementById('themeToggleText');
+    
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        if (themeIcon) themeIcon.textContent = '☀️';
+        if (themeText) themeText.textContent = 'Light Mode';
+    } else {
+        if (themeIcon) themeIcon.textContent = '🌙';
+        if (themeText) themeText.textContent = 'Dark Mode';
+    }
+}
+
 // Check for OAuth callback
 window.addEventListener('DOMContentLoaded', () => {
     initializeVersion();
+    initializeTheme();
     handleRedirectCallback();
 });
 

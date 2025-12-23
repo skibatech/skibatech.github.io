@@ -67,6 +67,9 @@
                     <div class="profile-menu-item" onclick="showOptions()">
                         <span>⚙️</span> Options
                     </div>
+                    <div class="profile-menu-item" onclick="toggleTheme()">
+                        <span id="themeToggleIcon">🌙</span> <span id="themeToggleText">Dark Mode</span>
+                    </div>
                     <div class="profile-menu-item" onclick="signOut()">
                         <span>🚪</span> Sign out
                     </div>
@@ -179,7 +182,7 @@
     </div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 998; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.32</span>
+        v<span id="versionDisplay">1.4.33</span>
     </footer>
 
     <div id="addTaskModal" class="modal">

@@ -4,20 +4,56 @@
     box-sizing: border-box;
 }
 
+/* CSS Variables for theming */
+:root {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #fafbfc;
+    --bg-hover: #f9f9f9;
+    --bg-selected: #f5f5f5;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --border-color: #e0e0e0;
+    --border-light: #f0f0f0;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-hover: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #252525;
+    --bg-hover: #333333;
+    --bg-selected: #3a3a3a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
+    --border-color: #404040;
+    --border-light: #333333;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.4);
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     padding: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .header {
-    background: white;
+    background: var(--bg-secondary);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px var(--shadow);
     display: flex;
     justify-content: space-between;
+    transition: background-color 0.3s ease;
+}
     align-items: center;
 }
 
@@ -52,12 +88,12 @@ button:disabled {
 }
 
 .status {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 13px;
 }
 
 .bucket-container {
-    background: white;
+    background: var(--bg-secondary);
     margin-bottom: 8px;
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -122,7 +158,7 @@ button:disabled {
     padding: 10px;
     font-size: 12px;
     font-weight: 600;
-    color: #666;
+    color: var(--text-secondary);
     background: #fafafa;
     border-bottom: 1px solid #e0e0e0;
     align-items: center;
@@ -239,16 +275,16 @@ button:disabled {
 
 .task-id {
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     font-family: monospace;
 }
 
 .task-row:hover {
-    background: #fafbfc;
+    background: var(--bg-tertiary);
 }
 
 .task-row:has(> input[type="checkbox"]:checked) {
-    background: #f5f5f5;
+    background: var(--bg-selected);
 }
 
 .task-row:last-child {
@@ -274,12 +310,12 @@ button:disabled {
 
 .task-assignee {
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .task-date {
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .task-progress {
@@ -287,7 +323,7 @@ button:disabled {
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .progress-dot {
@@ -311,7 +347,7 @@ button:disabled {
 
 .task-priority {
     font-size: 11px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .task-labels {
@@ -344,7 +380,7 @@ button:disabled {
     margin-left: 30px;
     padding: 8px 10px;
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -375,7 +411,7 @@ button:disabled {
 }
 
 .modal-content {
-    background: white;
+    background: var(--bg-secondary);
     padding: 24px;
     border-radius: 8px;
     max-width: 500px;
@@ -444,7 +480,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .auth-required {
-    background: white;
+    background: var(--bg-secondary);
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -460,7 +496,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .auth-required p {
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 24px;
     font-size: 14px;
 }
@@ -500,7 +536,7 @@ body.unauthenticated #refreshBtn {
     position: absolute;
     right: 0;
     top: 40px;
-    background: white;
+    background: var(--bg-secondary);
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
@@ -526,7 +562,7 @@ body.unauthenticated #refreshBtn {
 
 .profile-email {
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .profile-menu-item {
@@ -583,7 +619,7 @@ body.unauthenticated #refreshBtn {
 
 .bucket-in-assignee {
     margin: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     overflow: hidden;
     text-align: left;
