@@ -1,13 +1,13 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.26'; // Move planId and clientId to Options, make them editable and persistent via localStorage
+const APP_VERSION = '1.4.27'; // Move authority, allowed tenants, default view/groupby, show completed to Options
 
 // Configuration
 let config = {
     clientId: localStorage.getItem('plannerClientId') || '073fb8bf-274f-496d-b2a1-648b1a8195b3',
-    authority: 'https://login.microsoftonline.com/skibatech.com', // Tenant-specific endpoint
+    authority: localStorage.getItem('plannerAuthority') || 'https://login.microsoftonline.com/skibatech.com',
     redirectUri: window.location.origin + window.location.pathname,
     scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
-    allowedTenants: ['skibatech.com', 'skibatech.onmicrosoft.com'] // Only allow SkibaTech users
+    allowedTenants: (localStorage.getItem('plannerAllowedTenants') || 'skibatech.com, skibatech.onmicrosoft.com').split(',').map(t => t.trim())
 };
 
 let planId = localStorage.getItem('plannerPlanId') || 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
@@ -17,8 +17,8 @@ let currentBucketName = null;
 let sortState = {}; // Store sort state per bucket: { bucketId: { column: 'name', direction: 'asc' } }
 let expandedBuckets = new Set(); // Track which buckets are expanded
 let expandedAssignees = new Set(); // Track which assignees are expanded
-let currentView = 'assigned'; // Current view: assigned, bucket, progress, dueDate, priority
-let currentGroupBy = 'bucket'; // Current secondary grouping field (or 'none' for no grouping)
+let currentView = localStorage.getItem('plannerDefaultView') || 'assigned'; // Current view: assigned, bucket, progress, dueDate, priority
+let currentGroupBy = localStorage.getItem('plannerDefaultGroupBy') || 'bucket'; // Current secondary grouping field (or 'none' for no grouping)
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
@@ -31,7 +31,7 @@ let resizingColumn = null;
 let resizeStartX = 0;
 let resizeStartWidth = 0;
 let currentFilter = 'all';
-let showCompleted = false;
+let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || false;
 let columnWidths = {
     'col-id': 90,
     'col-task-name': 300,
@@ -2022,6 +2022,11 @@ function cancelNewBucket() {
 function showOptions() {
     document.getElementById('clientIdInput').value = config.clientId;
     document.getElementById('planIdInput').value = planId;
+    document.getElementById('authorityInput').value = config.authority;
+    document.getElementById('allowedTenantsInput').value = config.allowedTenants.join(', ');
+    document.getElementById('defaultViewInput').value = currentView;
+    document.getElementById('defaultGroupByInput').value = currentGroupBy;
+    document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
     document.getElementById('optionsModal').style.display = 'flex';
 }
@@ -2033,6 +2038,11 @@ function closeOptions() {
 function saveOptions() {
     const clientId = document.getElementById('clientIdInput').value.trim();
     const planIdValue = document.getElementById('planIdInput').value.trim();
+    const authority = document.getElementById('authorityInput').value.trim();
+    const allowedTenants = document.getElementById('allowedTenantsInput').value.trim();
+    const defaultView = document.getElementById('defaultViewInput').value;
+    const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
+    const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
     const prefix = document.getElementById('taskIdPrefixInput').value.trim().toUpperCase();
     
     // Save clientId
@@ -2046,6 +2056,30 @@ function saveOptions() {
         planId = planIdValue;
         localStorage.setItem('plannerPlanId', planIdValue);
     }
+    
+    // Save authority
+    if (authority) {
+        config.authority = authority;
+        localStorage.setItem('plannerAuthority', authority);
+    }
+    
+    // Save allowed tenants
+    if (allowedTenants) {
+        config.allowedTenants = allowedTenants.split(',').map(t => t.trim());
+        localStorage.setItem('plannerAllowedTenants', allowedTenants);
+    }
+    
+    // Save default view
+    currentView = defaultView;
+    localStorage.setItem('plannerDefaultView', defaultView);
+    
+    // Save default group by
+    currentGroupBy = defaultGroupBy;
+    localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
+    
+    // Save show completed default
+    showCompleted = showCompletedDefault;
+    localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
     
     // Save prefix
     if (prefix) {
