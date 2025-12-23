@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.21'; // Consolidate bulk edit to right sidebar, remove bottom panel
+const APP_VERSION = '1.4.22'; // Fix individual checkbox selection not showing bulk panel
 
 // Configuration
 const config = {
