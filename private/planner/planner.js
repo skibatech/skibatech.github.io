@@ -25,12 +25,14 @@ let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
 let allUsers = {}; // Store user details: { userId: displayName }
 let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
 let planCategoryDescriptions = {}; // Store custom label names for categories
+let taskSequentialIds = {}; // { taskId: number } assigned by createdDateTime order
 let resizingColumn = null;
 let resizeStartX = 0;
 let resizeStartWidth = 0;
 let currentFilter = 'all';
 let showCompleted = true;
 let columnWidths = {
+    'col-id': 90,
     'col-task-name': 300,
     'col-assigned': 120,
     'col-start-date': 100,
@@ -452,6 +454,16 @@ async function loadTasks() {
         const tasksData = await tasksResponse.json();
         const tasks = tasksData.value;
 
+        // Assign sequential IDs based on createdDateTime (oldest -> 1)
+        taskSequentialIds = {};
+        const ordered = [...tasks].sort((a, b) => {
+            const at = a.createdDateTime ? new Date(a.createdDateTime).getTime() : 0;
+            const bt = b.createdDateTime ? new Date(b.createdDateTime).getTime() : 0;
+            if (at !== bt) return at - bt;
+            return a.id.localeCompare(b.id);
+        });
+        ordered.forEach((t, idx) => { taskSequentialIds[t.id] = idx + 1; });
+
         // Fetch task details for categories
         const details = await mapWithConcurrency(
             tasks,
@@ -764,6 +776,7 @@ function renderByAssignedBucket(container, buckets, tasks) {
             columnHeaders.className = 'column-headers';
             columnHeaders.innerHTML = `
                 <div></div>
+                <div class="col-id">ID</div>
                 <div class="col-task-name">Task name</div>
                 <div class="col-assigned">Assigned to</div>
                 <div class="col-start-date">Start date</div>
@@ -889,6 +902,7 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             columnHeaders.className = 'column-headers';
             columnHeaders.innerHTML = `
                 <div></div>
+                <div class="col-id">ID</div>
                 <div class="col-task-name">Task name</div>
                 <div class="col-assigned">Assigned to</div>
                 <div class="col-start-date">Start date</div>
@@ -962,6 +976,37 @@ function renderGroup(container, group, buckets, isNested = false) {
         </div>
         <div class=\"task-list\">
             <div class=\"column-headers\">
+                <div></div>
+                <div class=\"sortable-header col-id\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'id')\">
+                    ID ${sortArrows('id')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-id')\"></div>
+                </div>
+                <div class=\"sortable-header col-task-name\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'title')\">
+                    Task name ${sortArrows('title')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-task-name')\"></div>
+                </div>
+                <div class=\"sortable-header col-assigned\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'assigned')\">
+                    Assigned to ${sortArrows('assigned')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-assigned')\"></div>
+                </div>
+                <div class=\"sortable-header col-start-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'startDate')\">
+                    Start date ${sortArrows('startDate')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-start-date')\"></div>
+                </div>
+                <div class=\"sortable-header col-due-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'dueDate')\">
+                    Due date ${sortArrows('dueDate')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-due-date')\"></div>
+                </div>
+                <div class=\"sortable-header col-progress\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'progress')\">
+                    Progress ${sortArrows('progress')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-progress')\"></div>
+                </div>
+                <div class=\"sortable-header col-priority\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'priority')\">
+                    Priority ${sortArrows('priority')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-priority')\"></div>
+                </div>
+                <div class=\"col-labels\">Themes</div>
+            </div>
                 <div></div>
                 <div class=\"sortable-header col-task-name\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'title')\">
                     Task name ${sortArrows('title')}
@@ -1214,14 +1259,9 @@ function applyFilters() {
 }
 
 function renderTask(task) {
-    // Generate numeric task ID from the Planner task ID using simple hash
-    let hash = 0;
-    for (let i = 0; i < task.id.length; i++) {
-        hash = ((hash << 5) - hash) + task.id.charCodeAt(i);
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    const numericId = Math.abs(hash) % 10000; // Keep it to 4 digits
-    const taskDisplayId = `${taskIdPrefix}-${numericId.toString().padStart(4, '0')}`;
+    // Use sequential ID assigned by createdDateTime (oldest -> 1)
+    const seq = taskSequentialIds[task.id];
+    const taskDisplayId = seq ? `${taskIdPrefix}-${seq}` : `${taskIdPrefix}-?`;
     
     const progressClass = task.percentComplete === 0 ? 'not-started' : 
                          task.percentComplete === 100 ? 'completed' : 'in-progress';
@@ -1319,8 +1359,9 @@ function renderTask(task) {
             <input type="checkbox" class="task-checkbox" 
                    ${task.percentComplete === 100 ? 'checked' : ''} 
                    onchange="toggleTaskComplete('${task.id}', this.checked, '${task['@odata.etag']}')">
+            <div class="task-id col-id">${taskDisplayId}</div>
             <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
-                <span style="font-size: 11px; color: #999; font-family: monospace; margin-right: 8px; display: inline-block;">${taskDisplayId}</span><span>${task.title}</span>
+                <span>${task.title}</span>
             </div>
             <div class="task-assignee col-assigned">${assignee}</div>
             <div class="task-date col-start-date">${startDate}</div>
@@ -1510,6 +1551,43 @@ async function toggleTaskComplete(taskId, isComplete, etag) {
 let currentTaskId = null;
 let currentTaskEtag = null;
 let currentTaskDetailsEtag = null;
+
+async function createReleaseTask() {
+    if (!accessToken) {
+        alert('Please sign in first');
+        return;
+    }
+    try {
+        // Pick a default bucket: alphabetical by name
+        const bucket = (allBuckets || []).slice().sort((a, b) => a.name.localeCompare(b.name))[0];
+        if (!bucket) {
+            alert('No buckets available to create the release task.');
+            return;
+        }
+        const taskBody = {
+            planId: planId,
+            bucketId: bucket.id,
+            title: `Release v${APP_VERSION}`
+        };
+        const response = await fetchGraph('https://graph.microsoft.com/v1.0/planner/tasks', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(taskBody)
+        });
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error('Failed to create release task: ' + text);
+        }
+        alert(`Release task created for v${APP_VERSION}.`);
+        loadTasks();
+    } catch (err) {
+        console.error('Error creating release task:', err);
+        alert('Error creating release task: ' + err.message);
+    }
+}
 
 async function openTaskDetail(taskId) {
     currentTaskId = taskId;
@@ -1906,6 +1984,10 @@ function sortTasks(tasks, column, direction) {
         let aVal, bVal;
         
         switch(column) {
+            case 'id':
+                aVal = taskSequentialIds[a.id] || 0;
+                bVal = taskSequentialIds[b.id] || 0;
+                break;
             case 'title':
                 aVal = a.title.toLowerCase();
                 bVal = b.title.toLowerCase();

@@ -139,6 +139,7 @@ button:disabled {
     flex: 0 0 30px;
 }
 
+.col-id { flex: 0 0 90px; }
 .col-task-name { flex: 0 0 300px; }
 .col-assigned { flex: 0 0 120px; }
 .col-start-date { flex: 0 0 100px; }
@@ -200,6 +201,12 @@ button:disabled {
 
 .task-row > input[type="checkbox"] {
     flex: 0 0 30px;
+}
+
+.task-id {
+    font-size: 12px;
+    color: #666;
+    font-family: monospace;
 }
 
 .task-row:hover {
