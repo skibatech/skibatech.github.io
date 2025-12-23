@@ -13,12 +13,7 @@
         <h1>SkibaTech Engineering - Planner Pro</h1>
         <div class="auth-section">
             <button onclick="showAddTask(null, null)" style="padding: 8px 16px; background: #0078d4; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; margin-right: 15px;">+ New Task</button>
-            <div id="bulkActionsBar" style="display: none; margin-right: 15px; padding: 8px 12px; background: #fff3cd; border-radius: 4px; font-size: 13px; align-items: center; gap: 10px;">
-                <span id="bulkSelectedCount" style="color: #856404; font-weight: 600;">0 selected</span>
-                <button onclick="bulkMarkComplete()" style="padding: 6px 12px; background: #107c10; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Mark Complete</button>
-                <button onclick="bulkMarkIncomplete()" style="padding: 6px 12px; background: #ffaa44; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Mark Incomplete</button>
-                <button onclick="clearSelection()" style="padding: 6px 12px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Clear</button>
-            </div>
+            
             <div style="display: flex; gap: 15px; align-items: center; margin-right: 15px;">
                 <div>
                     <label for="viewSelect" style="font-size: 13px; color: #666; margin-right: 8px;">View:</label>
@@ -87,8 +82,47 @@
 
     <div id="tasksContainer" style="display:none;"></div>
 
+    <!-- Bulk Action Panel -->
+    <div id="bulkActionPanel" style="
+        display: none;
+        position: fixed;
+        left: 20px;
+        right: 20px;
+        bottom: 60px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        border-radius: 8px;
+        padding: 10px 12px;
+        z-index: 999;
+        font-size: 13px;
+    ">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span id="bulkPanelCount" style="font-weight: 600; color: #374151;">0 selected</span>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label style="color:#6b7280;">Assignee:</label>
+                <select id="bulkAssigneeSelect" style="padding: 6px 10px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white; min-width: 220px;"></select>
+                <button onclick="bulkAssignSelected()" style="padding: 6px 12px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">Apply</button>
+            </div>
+
+            <div style="height:16px; width:1px; background:#e5e7eb;"></div>
+
+            <button onclick="showBulkDeleteConfirm()" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Delete selected…</button>
+            <button onclick="clearSelection()" style="padding: 6px 12px; background: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer;">Clear</button>
+        </div>
+        <div id="bulkDeleteConfirm" style="display:none; margin-top: 10px; padding: 8px; background:#fff7ed; border:1px solid #fde68a; border-radius:6px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span style="color:#9a3412;">Type <strong>DELETE</strong> to confirm deletion:</span>
+                <input id="bulkDeleteInput" type="text" oninput="updateDeleteConfirmState()" style="padding:6px 10px; border:1px solid #ddd; border-radius:4px;">
+                <button id="bulkDeleteConfirmBtn" onclick="bulkDeleteSelected()" disabled style="padding:6px 12px; background:#dc2626; color:white; border:none; border-radius:4px; cursor:not-allowed;">Confirm Delete</button>
+                <button onclick="hideBulkDeleteConfirm()" style="padding:6px 12px; background:#6b7280; color:white; border:none; border-radius:4px; cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 1000; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.9</span>
+        v<span id="versionDisplay">1.4.10</span>
     </footer>
 
     <div id="addTaskModal" class="modal">

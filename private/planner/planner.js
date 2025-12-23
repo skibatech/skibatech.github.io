@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.9'; // Fix checkbox markup; ensure auto-refresh
+const APP_VERSION = '1.4.10'; // Bottom bulk panel with assign/delete; fix sorting/resizing in nested views
 
 // Configuration
 const config = {
@@ -772,18 +772,37 @@ function renderByAssignedBucket(container, buckets, tasks) {
             const taskList = document.createElement('div');
             taskList.className = 'task-list nested' + (bucketExpanded ? ' expanded' : '');
             
-            // Add column headers
+            // Add column headers with sorting + resizing
             const columnHeaders = document.createElement('div');
             columnHeaders.className = 'column-headers';
+            const sort = sortState[bucketId];
+            const sortArrows = (col) => {
+                if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
+                return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
+            };
             columnHeaders.innerHTML = `
                 <div></div>
-                <div class="sortable-header col-id" style="cursor: pointer;">ID</div>
-                <div class="sortable-header col-task-name" style="cursor: pointer;">Task name</div>
-                <div class="sortable-header col-assigned" style="cursor: pointer;">Assigned to</div>
-                <div class="sortable-header col-start-date" style="cursor: pointer;">Start date</div>
-                <div class="sortable-header col-due-date" style="cursor: pointer;">Due date</div>
-                <div class="sortable-header col-progress" style="cursor: pointer;">Progress</div>
-                <div class="sortable-header col-priority" style="cursor: pointer;">Priority</div>
+                <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'id')">ID ${sortArrows('id')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
+                </div>
+                <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'title')">Task name ${sortArrows('title')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')"></div>
+                </div>
+                <div class="sortable-header col-assigned" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'assigned')">Assigned to ${sortArrows('assigned')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-assigned')"></div>
+                </div>
+                <div class="sortable-header col-start-date" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'startDate')">Start date ${sortArrows('startDate')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-start-date')"></div>
+                </div>
+                <div class="sortable-header col-due-date" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'dueDate')">Due date ${sortArrows('dueDate')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-due-date')"></div>
+                </div>
+                <div class="sortable-header col-progress" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'progress')">Progress ${sortArrows('progress')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-progress')"></div>
+                </div>
+                <div class="sortable-header col-priority" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'priority')">Priority ${sortArrows('priority')}
+                    <div class="resize-handle" onmousedown="startResize(event, 'col-priority')"></div>
+                </div>
                 <div class="col-labels">Themes</div>
             `;
             taskList.appendChild(columnHeaders);
@@ -1968,26 +1987,131 @@ function toggleTaskSelection(taskId) {
     } else {
         selectedTasks.add(taskId);
     }
-    updateBulkActionsBar();
+    updateBulkActionPanel();
     applyFilters(); // Re-render to update checkboxes
 }
 
-function updateBulkActionsBar() {
-    const bulkBar = document.getElementById('bulkActionsBar');
-    const countSpan = document.getElementById('bulkSelectedCount');
+function updateBulkActionPanel() {
+    const panel = document.getElementById('bulkActionPanel');
+    const countSpan = document.getElementById('bulkPanelCount');
+    const assigneeSelect = document.getElementById('bulkAssigneeSelect');
+    if (!panel) return;
     
     if (selectedTasks.size > 0) {
-        bulkBar.style.display = 'flex';
-        countSpan.textContent = `${selectedTasks.size} selected`;
+        panel.style.display = 'block';
+        if (countSpan) countSpan.textContent = `${selectedTasks.size} selected`;
+        // Populate assignee dropdown if empty
+        if (assigneeSelect && assigneeSelect.options.length === 0) {
+            assigneeSelect.innerHTML = '<option value="">Unassigned</option>';
+            Object.entries(allUsers).sort((a, b) => a[1].localeCompare(b[1])).forEach(([userId, displayName]) => {
+                const opt = document.createElement('option');
+                opt.value = userId;
+                opt.textContent = displayName;
+                assigneeSelect.appendChild(opt);
+            });
+        }
     } else {
-        bulkBar.style.display = 'none';
+        panel.style.display = 'none';
     }
 }
 
 function clearSelection() {
     selectedTasks.clear();
-    updateBulkActionsBar();
+    updateBulkActionPanel();
     applyFilters();
+}
+
+async function bulkAssignSelected() {
+    const assigneeSelect = document.getElementById('bulkAssigneeSelect');
+    if (!assigneeSelect) return;
+    const assigneeUserId = assigneeSelect.value; // empty for unassigned
+    if (selectedTasks.size === 0) return;
+    
+    try {
+        const taskIds = Array.from(selectedTasks);
+        await mapWithConcurrency(taskIds, async (taskId) => {
+            const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if (!getRes.ok) return;
+            const task = await getRes.json();
+            const etag = task['@odata.etag'];
+            const assignments = {};
+            if (task.assignments) {
+                Object.keys(task.assignments).forEach(uid => { assignments[uid] = null; });
+            }
+            if (assigneeUserId) {
+                assignments[assigneeUserId] = { '@odata.type': '#microsoft.graph.plannerAssignment', orderHint: ' !' };
+            }
+            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': etag
+                },
+                body: JSON.stringify({ assignments })
+            });
+        }, 4);
+        clearSelection();
+        loadTasks();
+    } catch (err) {
+        console.error('Bulk assign error:', err);
+        alert('Error assigning tasks: ' + err.message);
+    }
+}
+
+function showBulkDeleteConfirm() {
+    const el = document.getElementById('bulkDeleteConfirm');
+    if (el) el.style.display = 'block';
+}
+function hideBulkDeleteConfirm() {
+    const el = document.getElementById('bulkDeleteConfirm');
+    const input = document.getElementById('bulkDeleteInput');
+    const btn = document.getElementById('bulkDeleteConfirmBtn');
+    if (el) el.style.display = 'none';
+    if (input) input.value = '';
+    if (btn) btn.disabled = true; btn && (btn.style.cursor = 'not-allowed');
+}
+function updateDeleteConfirmState() {
+    const input = document.getElementById('bulkDeleteInput');
+    const btn = document.getElementById('bulkDeleteConfirmBtn');
+    if (!input || !btn) return;
+    const ok = input.value.trim().toUpperCase() === 'DELETE';
+    btn.disabled = !ok;
+    btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+}
+
+async function bulkDeleteSelected() {
+    if (selectedTasks.size === 0) return;
+    const input = document.getElementById('bulkDeleteInput');
+    if (!input || input.value.trim().toUpperCase() !== 'DELETE') return;
+    try {
+        const taskIds = Array.from(selectedTasks);
+        await mapWithConcurrency(taskIds, async (taskId) => {
+            const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if (!getRes.ok) return;
+            const task = await getRes.json();
+            const etag = task['@odata.etag'];
+            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'If-Match': etag
+                }
+            });
+        }, 3);
+        hideBulkDeleteConfirm();
+        clearSelection();
+        loadTasks();
+    } catch (err) {
+        console.error('Bulk delete error:', err);
+        alert('Error deleting tasks: ' + err.message);
+    }
 }
 
 async function bulkMarkComplete() {
