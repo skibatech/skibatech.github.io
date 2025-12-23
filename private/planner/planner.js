@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.31'; // Fix column reordering: proper sort mapping and view refresh
+const APP_VERSION = '1.4.29'; // Align column header checkboxes with task row checkboxes
 
 // Configuration
 let config = {
@@ -32,8 +32,6 @@ let resizeStartX = 0;
 let resizeStartWidth = 0;
 let currentFilter = 'all';
 let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || false;
-let columnOrder = JSON.parse(localStorage.getItem('columnOrder')) || ['col-id', 'col-task-name', 'col-assigned', 'col-start-date', 'col-due-date', 'col-progress', 'col-priority', 'col-labels'];
-let draggedColumnClass = null;
 let columnWidths = {
     'col-id': 90,
     'col-task-name': 300,
@@ -139,92 +137,6 @@ function applyColumnWidths() {
             el.style.flex = `0 0 ${columnWidths[columnClass]}px`;
         });
     });
-    
-    // Enable drag-drop for column headers
-    enableColumnDragDrop();
-}
-
-// Column drag-and-drop handlers
-function enableColumnDragDrop() {
-    const headers = document.querySelectorAll('.column-headers > div:not(:first-child)');
-    headers.forEach(header => {
-        header.draggable = true;
-        header.addEventListener('dragstart', handleColumnDragStart);
-        header.addEventListener('dragover', handleColumnDragOver);
-        header.addEventListener('drop', handleColumnDrop);
-        header.addEventListener('dragend', handleColumnDragEnd);
-    });
-}
-
-function handleColumnDragStart(e) {
-    const columnClass = Array.from(e.target.classList).find(c => c.startsWith('col-'));
-    draggedColumnClass = columnClass;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleColumnDragOver(e) {
-    if (!draggedColumnClass) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    
-    // Remove drag-over from all elements first
-    document.querySelectorAll('.column-headers > div').forEach(h => {
-        h.classList.remove('drag-over');
-    });
-    
-    // Add to current target
-    const columnClass = Array.from(e.target.classList).find(c => c.startsWith('col-'));
-    if (columnClass && columnClass !== draggedColumnClass) {
-        e.target.classList.add('drag-over');
-    }
-}
-
-function handleColumnDrop(e) {
-    e.preventDefault();
-    if (!draggedColumnClass) return;
-    
-    const targetClass = Array.from(e.target.classList).find(c => c.startsWith('col-'));
-    if (!targetClass || targetClass === draggedColumnClass) {
-        cleanupDragClasses();
-        return;
-    }
-    
-    // Find indices in columnOrder
-    const draggedIndex = columnOrder.indexOf(draggedColumnClass);
-    const targetIndex = columnOrder.indexOf(targetClass);
-    
-    if (draggedIndex === -1 || targetIndex === -1) {
-        cleanupDragClasses();
-        return;
-    }
-    
-    // Swap in columnOrder array
-    [columnOrder[draggedIndex], columnOrder[targetIndex]] = [columnOrder[targetIndex], columnOrder[draggedIndex]];
-    
-    // Save to localStorage
-    localStorage.setItem('columnOrder', JSON.stringify(columnOrder));
-    
-    // Re-render the current view to apply new column order
-    refreshCurrentView();
-    
-    cleanupDragClasses();
-}
-
-function handleColumnDragEnd(e) {
-    cleanupDragClasses();
-}
-
-function cleanupDragClasses() {
-    document.querySelectorAll('.column-headers > div').forEach(h => {
-        h.classList.remove('dragging', 'drag-over');
-    });
-    draggedColumnClass = null;
-}
-
-function refreshCurrentView() {
-    // Re-render the current view with updated columnOrder
-    renderTasks(allBuckets, allTasks);
 }
 
 // Select-all checkbox handler: toggles selection for all rows under the same header
@@ -1121,57 +1033,6 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
     applyColumnWidths();
 }
 
-function generateColumnHeaders(groupId, sort) {
-    const headerLabels = {
-        'col-id': 'ID',
-        'col-task-name': 'Task name',
-        'col-assigned': 'Assigned to',
-        'col-start-date': 'Start date',
-        'col-due-date': 'Due date',
-        'col-progress': 'Progress',
-        'col-priority': 'Priority',
-        'col-labels': 'Themes'
-    };
-    
-    // Map column class to sort parameter name
-    const sortParamMap = {
-        'col-id': 'id',
-        'col-task-name': 'title',
-        'col-assigned': 'assigned',
-        'col-start-date': 'startDate',
-        'col-due-date': 'dueDate',
-        'col-progress': 'progress',
-        'col-priority': 'priority',
-        'col-labels': 'labels'
-    };
-    
-    const sortArrows = (col) => {
-        if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
-        return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
-    };
-    
-    let headerHtml = '<div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>';
-    
-    columnOrder.forEach(colClass => {
-        const label = headerLabels[colClass];
-        if (!label) return;
-        
-        if (colClass === 'col-labels') {
-            headerHtml += `<div class="${colClass}">${label}</div>`;
-        } else {
-            const sortParam = sortParamMap[colClass];
-            headerHtml += `
-                <div class="sortable-header ${colClass}" onclick="event.stopPropagation(); sortBucket('${groupId}', '${sortParam}')">
-                    ${label} ${sortArrows(sortParam)}
-                    <div class="resize-handle" onmousedown="startResize(event, '${colClass}')"></div>
-                </div>
-            `;
-        }
-    });
-    
-    return `<div class="column-headers">${headerHtml}</div>`;
-}
-
 function renderGroup(container, group, buckets, isNested = false) {
     let groupTasks = group.tasks;
     
@@ -1185,11 +1046,13 @@ function renderGroup(container, group, buckets, isNested = false) {
     bucketDiv.className = 'bucket-container';
     bucketDiv.setAttribute('data-bucket-id', group.id);
     
+    const sortArrows = (col) => {
+        if (!sort || sort.column !== col) return '<span class=\"sort-arrow\">▼</span>';
+        return `<span class=\"sort-arrow active\">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
+    };
+    
     // Check if all tasks in this group are selected
     const allSelected = groupTasks.every(t => selectedTasks.has(t.id));
-    
-    // Generate column headers using the helper function
-    const columnHeadersHtml = generateColumnHeaders(group.id, sort);
     
     bucketDiv.innerHTML = `
         <div class=\"bucket-header\" onclick=\"toggleBucket(this)\">
@@ -1200,7 +1063,38 @@ function renderGroup(container, group, buckets, isNested = false) {
             </div>
         </div>
         <div class=\"task-list\">
-            ${columnHeadersHtml}
+            <div class="column-headers">
+                <div><input type="checkbox" class="select-all-checkbox" ${allSelected && groupTasks.length > 0 ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
+                <div class=\"sortable-header col-id\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'id')\">
+                    ID ${sortArrows('id')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-id')\"></div>
+                </div>
+                <div class=\"sortable-header col-task-name\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'title')\">
+                    Task name ${sortArrows('title')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-task-name')\"></div>
+                </div>
+                <div class=\"sortable-header col-assigned\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'assigned')\">
+                    Assigned to ${sortArrows('assigned')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-assigned')\"></div>
+                </div>
+                <div class=\"sortable-header col-start-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'startDate')\">
+                    Start date ${sortArrows('startDate')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-start-date')\"></div>
+                </div>
+                <div class=\"sortable-header col-due-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'dueDate')\">
+                    Due date ${sortArrows('dueDate')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-due-date')\"></div>
+                </div>
+                <div class=\"sortable-header col-progress\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'progress')\">
+                    Progress ${sortArrows('progress')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-progress')\"></div>
+                </div>
+                <div class=\"sortable-header col-priority\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'priority')\">
+                    Priority ${sortArrows('priority')}
+                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-priority')\"></div>
+                </div>
+                <div class=\"col-labels\">Themes</div>
+            </div>
             ${groupTasks.map(task => renderTask(task)).join('')}
             <button class=\"add-task-btn\" onclick=\"showAddTask('${group.id}', '${group.name.replace(/'/g, "\\\\'")}')\">+ Add task</button>
         </div>
@@ -1542,29 +1436,24 @@ function renderTask(task) {
         return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${categoryNames[cat]}</span>`;
     }).join('');
 
-    // Build columns based on columnOrder
-    const columnData = {
-        'col-id': `<div class="task-id col-id">${taskDisplayId}</div>`,
-        'col-task-name': `<div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')"><span>${task.title}</span></div>`,
-        'col-assigned': `<div class="task-assignee col-assigned">${assignee}</div>`,
-        'col-start-date': `<div class="task-date col-start-date">${startDate}</div>`,
-        'col-due-date': `<div class="task-date col-due-date">${dueDate}</div>`,
-        'col-progress': `<div class="task-progress col-progress"><span class="progress-dot ${progressClass}"></span>${progressText}</div>`,
-        'col-priority': `<div class="task-priority col-priority">${priorityText}</div>`,
-        'col-labels': `<div class="task-labels col-labels">${categoryBadges}</div>`
-    };
-    
-    const orderedColumns = columnOrder
-        .filter(col => columnData[col])
-        .map(col => columnData[col])
-        .join('');
-
     return `
         <div class="task-row" data-task-id="${task.id}">
             <input type="checkbox" class="task-checkbox" 
                 ${selectedTasks.has(task.id) ? 'checked' : ''} 
                 onchange="toggleTaskSelection('${task.id}')">
-            ${orderedColumns}
+            <div class="task-id col-id">${taskDisplayId}</div>
+            <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
+                <span>${task.title}</span>
+            </div>
+            <div class="task-assignee col-assigned">${assignee}</div>
+            <div class="task-date col-start-date">${startDate}</div>
+            <div class="task-date col-due-date">${dueDate}</div>
+            <div class="task-progress col-progress">
+                <span class="progress-dot ${progressClass}"></span>
+                ${progressText}
+            </div>
+            <div class="task-priority col-priority">${priorityText}</div>
+            <div class="task-labels col-labels">${categoryBadges}</div>
         </div>
     `;
 }
