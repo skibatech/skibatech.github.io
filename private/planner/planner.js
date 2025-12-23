@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.24'; // Only apply changes that were explicitly selected, not defaults
+const APP_VERSION = '1.4.25'; // Add Assign To field to Create Task, add Delete button to Task Details
 
 // Configuration
 const config = {
@@ -1478,11 +1478,19 @@ function showAddTask(bucketId, bucketName) {
     currentBucketName = bucketName;
     document.getElementById('addTaskModal').classList.add('show');
     document.getElementById('newTaskTitle').value = '';
+    document.getElementById('newTaskAssignee').value = '';
     document.getElementById('newTaskProgress').value = '0';
     document.getElementById('newTaskPriority').value = '5';
     document.getElementById('newTaskStartDate').value = '';
     document.getElementById('newTaskDueDate').value = '';
     document.getElementById('newTaskNotes').value = '';
+    
+    // Populate assignee dropdown
+    const assigneeSelect = document.getElementById('newTaskAssignee');
+    assigneeSelect.innerHTML = '<option value="">Unassigned</option>' + Object.entries(allUsers)
+        .sort((a, b) => a[1].localeCompare(b[1]))
+        .map(([userId, displayName]) => `<option value="${userId}">${displayName}</option>`)
+        .join('');
     
     // Populate bucket dropdown (sorted alphabetically)
     const bucketSelect = document.getElementById('newTaskBucket');
@@ -1528,6 +1536,7 @@ async function createTaskFromModal() {
         return;
     }
 
+    const assigneeId = document.getElementById('newTaskAssignee').value;
     const progress = parseInt(document.getElementById('newTaskProgress').value);
     const priority = parseInt(document.getElementById('newTaskPriority').value);
     const startDate = document.getElementById('newTaskStartDate').value;
@@ -1562,6 +1571,13 @@ async function createTaskFromModal() {
         }
         if (dueDate) {
             taskBody.dueDateTime = new Date(dueDate).toISOString();
+        }
+        
+        // Add assignee if selected
+        if (assigneeId) {
+            taskBody.assignments = {
+                [assigneeId]: { '@odata.type': '#microsoft.graph.plannerAssignment', orderHint: ' !' }
+            };
         }
 
         const response = await fetchGraph('https://graph.microsoft.com/v1.0/planner/tasks', {
@@ -1895,6 +1911,53 @@ async function saveTaskDetails() {
     } finally {
         document.getElementById('saveTaskBtn').disabled = false;
         document.getElementById('saveTaskBtn').textContent = 'Save Changes';
+    }
+}
+
+async function deleteTaskDetail() {
+    if (!currentTaskId) return;
+    
+    const confirmed = confirm('Are you sure you want to delete this task? This action cannot be undone.');
+    if (!confirmed) return;
+    
+    try {
+        document.getElementById('deleteTaskBtn').disabled = true;
+        document.getElementById('deleteTaskBtn').textContent = 'Deleting...';
+        
+        // Get current task etag
+        const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${currentTaskId}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        if (!getRes.ok) {
+            throw new Error('Failed to fetch task for deletion');
+        }
+        
+        const task = await getRes.json();
+        const etag = task['@odata.etag'];
+        
+        // Delete the task
+        const deleteRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${currentTaskId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'If-Match': etag
+            }
+        });
+        
+        if (!deleteRes.ok) {
+            throw new Error('Failed to delete task');
+        }
+        
+        closeTaskDetailsModal();
+        loadTasks();
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        alert('Error deleting task: ' + error.message);
+    } finally {
+        document.getElementById('deleteTaskBtn').disabled = false;
+        document.getElementById('deleteTaskBtn').textContent = 'Delete';
     }
 }
 
