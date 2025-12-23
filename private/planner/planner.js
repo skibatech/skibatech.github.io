@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.20'; // Fix nestedTasks variable initialization order
+const APP_VERSION = '1.4.21'; // Consolidate bulk edit to right sidebar, remove bottom panel
 
 // Configuration
 const config = {
@@ -160,7 +160,7 @@ function toggleSelectAll(el) {
             if (checkbox) checkbox.checked = false;
         }
     });
-    updateBulkActionPanel();
+    updateBulkEditSidebar();
     applyFilters();
 }
 
@@ -2080,15 +2080,15 @@ function toggleTaskSelection(taskId) {
     applyFilters(); // Re-render to update checkboxes
 }
 
-function updateBulkActionPanel() {
-    const panel = document.getElementById('bulkActionPanel');
-    const countSpan = document.getElementById('bulkPanelCount');
+function updateBulkEditSidebar() {
+    const sidebar = document.getElementById('bulkEditSidebar');
+    const countSpan = document.getElementById('bulkSidebarCount');
     const assigneeSelect = document.getElementById('bulkAssigneeSelect');
     const bucketSelect = document.getElementById('bulkBucketSelect');
-    if (!panel) return;
+    if (!sidebar) return;
     
     if (selectedTasks.size > 0) {
-        panel.style.display = 'block';
+        sidebar.style.display = 'block';
         if (countSpan) countSpan.textContent = `${selectedTasks.size} selected`;
         // Populate assignee dropdown if empty
         if (assigneeSelect && assigneeSelect.options.length === 0) {
@@ -2111,13 +2111,13 @@ function updateBulkActionPanel() {
             });
         }
     } else {
-        panel.style.display = 'none';
+        sidebar.style.display = 'none';
     }
 }
 
 function clearSelection() {
     selectedTasks.clear();
-    updateBulkActionPanel();
+    updateBulkEditSidebar();
     applyFilters();
 }
 
@@ -2196,21 +2196,19 @@ async function bulkMoveSelected() {
     }
 }
 
-function showBulkMoreOptions() {
-    const m = document.getElementById('bulkMoreModal');
-    if (m) m.style.display = 'block';
-}
-function hideBulkMoreOptions() {
-    const m = document.getElementById('bulkMoreModal');
-    if (m) m.style.display = 'none';
-}
-
-async function bulkApplyMoreOptions() {
+async function bulkApplyAllChanges() {
     if (selectedTasks.size === 0) return;
     const priorityVal = document.getElementById('bulkPrioritySelect')?.value || '';
     const progressVal = document.getElementById('bulkProgressSelect')?.value || '';
     const startDate = document.getElementById('bulkStartDate')?.value || '';
     const dueDate = document.getElementById('bulkDueDate')?.value || '';
+    
+    // Only proceed if there's at least one change to apply
+    if (!priorityVal && !progressVal && !startDate && !dueDate) {
+        alert('Please select at least one field to change');
+        return;
+    }
+    
     try {
         const taskIds = Array.from(selectedTasks);
         await mapWithConcurrency(taskIds, async (taskId) => {
@@ -2237,11 +2235,10 @@ async function bulkApplyMoreOptions() {
             });
             await sleep(250);
         }, 2);
-        hideBulkMoreOptions();
         clearSelection();
         loadTasks();
     } catch (err) {
-        console.error('Bulk apply options error:', err);
+        console.error('Bulk apply all changes error:', err);
         alert('Error applying bulk edits: ' + err.message);
     }
 }
