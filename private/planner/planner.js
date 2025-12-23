@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.28'; // Default Start Date to today in Create Task
+const APP_VERSION = '1.4.29'; // Align column header checkboxes with task row checkboxes
 
 // Configuration
 let config = {
