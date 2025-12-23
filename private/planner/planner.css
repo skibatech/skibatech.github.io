@@ -139,6 +139,12 @@ button:disabled {
     flex: 0 0 30px;
 }
 
+.select-all-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
 .col-id { flex: 0 0 90px; }
 .col-task-name { flex: 0 0 300px; }
 .col-assigned { flex: 0 0 120px; }

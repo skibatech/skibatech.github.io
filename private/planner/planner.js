@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.12'; // Throttle bulk ops to reduce 429s; reinforce select-all and nested sorting
+const APP_VERSION = '1.4.13'; // Fix select-all toggle/size; enable nested sorting; minor UX polish
 
 // Configuration
 const config = {
@@ -775,6 +775,10 @@ function renderByAssignedBucket(container, buckets, tasks) {
         Object.entries(bucketMap).sort().forEach(([bucketName, bucketTasks]) => {
             const bucketId = bucketName.toLowerCase().replace(/\s+/g, '-') + '-' + assigneeId;
             const bucketExpanded = expandedBuckets.has(bucketId);
+            const sort = sortState[bucketId];
+            if (sort) {
+                bucketTasks = sortTasks(bucketTasks, sort.column, sort.direction);
+            }
             
             const bucketDiv = document.createElement('div');
             bucketDiv.className = 'bucket-in-assignee';
@@ -797,13 +801,12 @@ function renderByAssignedBucket(container, buckets, tasks) {
             // Add column headers with sorting + resizing
             const columnHeaders = document.createElement('div');
             columnHeaders.className = 'column-headers';
-            const sort = sortState[bucketId];
             const sortArrows = (col) => {
                 if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
                 return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
             };
             columnHeaders.innerHTML = `
-                <div><input type="checkbox" class="select-all-checkbox" onchange="toggleSelectAll(this)"></div>
+                <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                 <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'id')">ID ${sortArrows('id')}
                     <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
                 </div>
@@ -1018,7 +1021,7 @@ function renderGroup(container, group, buckets, isNested = false) {
         </div>
         <div class=\"task-list\">
             <div class="column-headers">
-                <div><input type="checkbox" class="select-all-checkbox" onchange="toggleSelectAll(this)"></div>
+                <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                 <div class=\"sortable-header col-id\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'id')\">
                     ID ${sortArrows('id')}
                     <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-id')\"></div>
