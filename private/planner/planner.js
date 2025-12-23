@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.22'; // Fix individual checkbox selection not showing bulk panel
+const APP_VERSION = '1.4.23'; // Consolidate all bulk changes into single Apply button
 
 // Configuration
 const config = {
@@ -2198,13 +2198,15 @@ async function bulkMoveSelected() {
 
 async function bulkApplyAllChanges() {
     if (selectedTasks.size === 0) return;
+    const assigneeUserId = document.getElementById('bulkAssigneeSelect')?.value || '';
+    const bucketId = document.getElementById('bulkBucketSelect')?.value || '';
     const priorityVal = document.getElementById('bulkPrioritySelect')?.value || '';
     const progressVal = document.getElementById('bulkProgressSelect')?.value || '';
     const startDate = document.getElementById('bulkStartDate')?.value || '';
     const dueDate = document.getElementById('bulkDueDate')?.value || '';
     
     // Only proceed if there's at least one change to apply
-    if (!priorityVal && !progressVal && !startDate && !dueDate) {
+    if (!assigneeUserId && !bucketId && !priorityVal && !progressVal && !startDate && !dueDate) {
         alert('Please select at least one field to change');
         return;
     }
@@ -2219,11 +2221,40 @@ async function bulkApplyAllChanges() {
             const task = await getRes.json();
             const etag = task['@odata.etag'];
             const body = {};
+            
+            // Handle assignee
+            if (assigneeUserId) {
+                if (!body.assignments) body.assignments = task.assignments || {};
+                body.assignments[assigneeUserId] = { '@odata.type': '#microsoft.graph.plannerAssignment', orderHint: ' !' };
+                // Remove from other assignees
+                Object.keys(task.assignments || {}).forEach(uid => {
+                    if (uid !== assigneeUserId && uid !== '@odata.type') {
+                        body.assignments[uid] = null;
+                    }
+                });
+            } else if (assigneeUserId === '' && Object.keys(task.assignments || {}).length > 0) {
+                // Unassign all
+                body.assignments = {};
+                Object.keys(task.assignments).forEach(uid => {
+                    if (uid !== '@odata.type') body.assignments[uid] = null;
+                });
+            }
+            
+            // Handle bucket
+            if (bucketId) body.bucketId = bucketId;
+            
+            // Handle priority
             if (priorityVal) body.priority = parseInt(priorityVal);
+            
+            // Handle progress
             if (progressVal) body.percentComplete = parseInt(progressVal);
+            
+            // Handle dates
             if (startDate) body.startDateTime = new Date(startDate).toISOString();
             if (dueDate) body.dueDateTime = new Date(dueDate).toISOString();
+            
             if (Object.keys(body).length === 0) return;
+            
             await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
                 method: 'PATCH',
                 headers: {
