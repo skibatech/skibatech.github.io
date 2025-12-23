@@ -40,6 +40,53 @@ let columnWidths = {
     'col-labels': 200
 };
 
+// Graph request tuning
+const GRAPH_MAX_RETRIES = 5;
+const GRAPH_BASE_DELAY_MS = 500;
+const GRAPH_MAX_CONCURRENT = 6; // Cap concurrent per-item calls (e.g., task details)
+
+function sleep(ms) {
+    return new Promise(res => setTimeout(res, ms));
+}
+
+async function fetchGraph(url, options = {}, attempt = 0) {
+    const res = await fetch(url, options);
+    if (res.status === 429 || res.status === 503) {
+        if (attempt >= GRAPH_MAX_RETRIES) return res;
+        const retryAfter = parseInt(res.headers.get('Retry-After') || '0', 10);
+        const backoff = retryAfter > 0
+            ? retryAfter * 1000
+            : Math.min(16000, GRAPH_BASE_DELAY_MS * Math.pow(2, attempt)) + Math.floor(Math.random() * 250);
+        await sleep(backoff);
+        return fetchGraph(url, options, attempt + 1);
+    }
+    return res;
+}
+
+async function mapWithConcurrency(items, mapper, concurrency = GRAPH_MAX_CONCURRENT) {
+    const results = new Array(items.length);
+    let index = 0;
+    let active = 0;
+    return await new Promise((resolve, reject) => {
+        const next = () => {
+            if (index >= items.length && active === 0) {
+                resolve(results);
+                return;
+            }
+            while (active < concurrency && index < items.length) {
+                const i = index++;
+                active++;
+                Promise.resolve()
+                    .then(() => mapper(items[i], i))
+                    .then(r => { results[i] = r; })
+                    .catch(err => { results[i] = null; console.warn('Mapper error:', err); })
+                    .finally(() => { active--; next(); });
+            }
+        };
+        next();
+    });
+}
+
 function startResize(event, columnClass) {
     event.preventDefault();
     event.stopPropagation();
@@ -349,7 +396,7 @@ async function loadTasks() {
         document.getElementById('status').textContent = 'Loading...';
 
         // Get buckets
-        const bucketsResponse = await fetch(
+        const bucketsResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`,
             {
                 headers: {
@@ -375,7 +422,7 @@ async function loadTasks() {
         const buckets = bucketsData.value;
 
         // Get plan details for category descriptions
-        const planDetailsResponse = await fetch(
+        const planDetailsResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/plans/${planId}/details`,
             {
                 headers: {
@@ -389,7 +436,7 @@ async function loadTasks() {
         }
 
         // Get tasks
-        const tasksResponse = await fetch(
+        const tasksResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
             {
                 headers: {
@@ -406,14 +453,16 @@ async function loadTasks() {
         const tasks = tasksData.value;
 
         // Fetch task details for categories
-        const detailsPromises = tasks.map(task => 
-            fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
-                headers: { 'Authorization': `Bearer ${accessToken}` }
-            })
-            .then(r => r.ok ? r.json() : null)
-            .catch(() => null)
+        const details = await mapWithConcurrency(
+            tasks,
+            async (task) => {
+                const r = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (!r.ok) return null;
+                return r.json();
+            }
         );
-        const details = await Promise.all(detailsPromises);
         
         // Collect all unique user IDs from assignments
         const userIds = new Set();
@@ -427,7 +476,7 @@ async function loadTasks() {
         let planMembers = [];
         try {
             // Use the roster API to get plan members
-            const rosterResponse = await fetch(
+            const rosterResponse = await fetchGraph(
                 `https://graph.microsoft.com/v1.0/planner/plans/${planId}`,
                 { headers: { 'Authorization': `Bearer ${accessToken}` } }
             );
@@ -441,7 +490,7 @@ async function loadTasks() {
                     
                     // For group containers, fetch group members
                     if (containerType === 'group') {
-                        const membersResponse = await fetch(
+                        const membersResponse = await fetchGraph(
                             `https://graph.microsoft.com/v1.0/groups/${containerId}/members`,
                             { headers: { 'Authorization': `Bearer ${accessToken}` } }
                         );
@@ -457,21 +506,34 @@ async function loadTasks() {
             console.log('Could not fetch plan members, using assigned users only:', e);
         }
         
-        // Fetch user details for display names
+        // Build user details for display names (prefer planMembers to avoid per-user GETs)
         const userDetailsMap = {};
-        const userPromises = Array.from(userIds).map(userId =>
-            fetch(`https://graph.microsoft.com/v1.0/users/${userId}?$select=displayName,id`, {
-                headers: { 'Authorization': `Bearer ${accessToken}` }
-            })
-            .then(r => r.ok ? r.json() : null)
-            .then(user => {
-                if (user) {
-                    userDetailsMap[user.id] = user.displayName;
-                }
-            })
-            .catch(() => null)
-        );
-        await Promise.all(userPromises);
+        planMembers.forEach(m => {
+            if (m && m.id && m.displayName) userDetailsMap[m.id] = m.displayName;
+        });
+        const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);
+        // Fetch remaining users via directoryObjects/getByIds in chunks
+        async function fetchUsersByIds(ids) {
+            const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ids, types: ['user'] })
+            });
+            if (!r.ok) return [];
+            const data = await r.json();
+            return data.value || [];
+        }
+        const chunkSize = 100;
+        for (let i = 0; i < missingUserIds.length; i += chunkSize) {
+            const chunk = missingUserIds.slice(i, i + chunkSize);
+            const users = await fetchUsersByIds(chunk);
+            users.forEach(u => {
+                if (u && u.id && u.displayName) userDetailsMap[u.id] = u.displayName;
+            });
+        }
         
         // Store users globally for assignment dropdown
         allUsers = { ...userDetailsMap };
@@ -1360,7 +1422,7 @@ async function createTaskFromModal() {
             taskBody.dueDateTime = new Date(dueDate).toISOString();
         }
 
-        const response = await fetch('https://graph.microsoft.com/v1.0/planner/tasks', {
+        const response = await fetchGraph('https://graph.microsoft.com/v1.0/planner/tasks', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -1377,7 +1439,7 @@ async function createTaskFromModal() {
 
         // Add notes if provided
         if (notes) {
-            await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
+            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -1403,7 +1465,7 @@ async function createTaskFromModal() {
 
 async function toggleTaskComplete(taskId, isComplete, etag) {
     try {
-        const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+        const response = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -1438,7 +1500,7 @@ async function openTaskDetail(taskId) {
     
     try {
         // Fetch task basic info
-        const taskResponse = await fetch(
+        const taskResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`,
             {
                 headers: {
@@ -1452,7 +1514,7 @@ async function openTaskDetail(taskId) {
         currentTaskEtag = task['@odata.etag'];
         
         // Fetch task details (description, checklist, etc.)
-        const detailsResponse = await fetch(
+        const detailsResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/tasks/${taskId}/details`,
             {
                 headers: {
@@ -1643,7 +1705,7 @@ async function saveTaskDetails() {
             taskBody.dueDateTime = null;
         }
         
-        const taskResponse = await fetch(
+        const taskResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/tasks/${currentTaskId}`,
             {
                 method: 'PATCH',
@@ -1662,7 +1724,7 @@ async function saveTaskDetails() {
         
         // Update task details (description)
         if (currentTaskDetailsEtag) {
-            const detailsResponse = await fetch(
+            const detailsResponse = await fetchGraph(
                 `https://graph.microsoft.com/v1.0/planner/tasks/${currentTaskId}/details`,
                 {
                     method: 'PATCH',
