@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.18'; // Fix select-all uncheck; dock More Options to right side
+const APP_VERSION = '1.4.19'; // Fix select-all checkbox state persistence across re-renders
 
 // Configuration
 const config = {
@@ -658,6 +658,9 @@ function renderByBucket(container, buckets, tasks) {
             return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
         };
 
+        // Check if all tasks in this group are selected
+        const allSelected = groupTasks.every(t => selectedTasks.has(t.id));
+
         // Ensure column widths get applied even for nested renders
         applyColumnWidths();
         
@@ -671,7 +674,7 @@ function renderByBucket(container, buckets, tasks) {
             </div>
             <div class="task-list">
                 <div class="column-headers">
-                    <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
+                    <div><input type="checkbox" class="select-all-checkbox" ${allSelected && groupTasks.length > 0 ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                     <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${group.id}', 'id')">
                         ID ${sortArrows('id')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
@@ -960,8 +963,10 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
                 if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
                 return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
             };
+            // Check if all tasks in this group are selected
+            const allSelected = nestedTasks.every(t => selectedTasks.has(t.id));
             columnHeaders.innerHTML = `
-                <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
+                <div><input type="checkbox" class="select-all-checkbox" ${allSelected && nestedTasks.length > 0 ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                 <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'id')">ID ${sortArrows('id')}
                     <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
                 </div>
@@ -1044,6 +1049,9 @@ function renderGroup(container, group, buckets, isNested = false) {
         return `<span class=\"sort-arrow active\">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
     };
     
+    // Check if all tasks in this group are selected
+    const allSelected = groupTasks.every(t => selectedTasks.has(t.id));
+    
     bucketDiv.innerHTML = `
         <div class=\"bucket-header\" onclick=\"toggleBucket(this)\">
             <div class=\"bucket-title\">
@@ -1054,7 +1062,7 @@ function renderGroup(container, group, buckets, isNested = false) {
         </div>
         <div class=\"task-list\">
             <div class="column-headers">
-                <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
+                <div><input type="checkbox" class="select-all-checkbox" ${allSelected && groupTasks.length > 0 ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                 <div class=\"sortable-header col-id\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'id')\">
                     ID ${sortArrows('id')}
                     <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-id')\"></div>
