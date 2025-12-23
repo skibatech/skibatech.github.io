@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.23'; // Consolidate all bulk changes into single Apply button
+const APP_VERSION = '1.4.24'; // Only apply changes that were explicitly selected, not defaults
 
 // Configuration
 const config = {
@@ -2090,9 +2090,9 @@ function updateBulkEditSidebar() {
     if (selectedTasks.size > 0) {
         sidebar.style.display = 'block';
         if (countSpan) countSpan.textContent = `${selectedTasks.size} selected`;
-        // Populate assignee dropdown if empty
-        if (assigneeSelect && assigneeSelect.options.length === 0) {
-            assigneeSelect.innerHTML = '<option value="">Unassigned</option>';
+        
+        // Populate assignee dropdown if we haven't already
+        if (assigneeSelect && assigneeSelect.options.length === 1) { // Only "No change" option exists
             Object.entries(allUsers).sort((a, b) => a[1].localeCompare(b[1])).forEach(([userId, displayName]) => {
                 const opt = document.createElement('option');
                 opt.value = userId;
@@ -2100,9 +2100,9 @@ function updateBulkEditSidebar() {
                 assigneeSelect.appendChild(opt);
             });
         }
-        // Populate bucket dropdown if empty
-        if (bucketSelect && bucketSelect.options.length === 0) {
-            bucketSelect.innerHTML = '';
+        
+        // Populate bucket dropdown if we haven't already
+        if (bucketSelect && bucketSelect.options.length === 1) { // Only "No change" option exists
             (allBuckets || []).slice().sort((a, b) => a.name.localeCompare(b.name)).forEach(b => {
                 const opt = document.createElement('option');
                 opt.value = b.id;

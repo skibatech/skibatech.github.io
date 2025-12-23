@@ -112,13 +112,17 @@
             <!-- Assignee Section -->
             <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
                 <label class="form-label">Assign to:</label>
-                <select id="bulkAssigneeSelect" class="task-input" style="width: 100%; margin-top: 4px;"></select>
+                <select id="bulkAssigneeSelect" class="task-input" style="width: 100%; margin-top: 4px;">
+                    <option value="">No change</option>
+                </select>
             </div>
             
             <!-- Bucket Section -->
             <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
                 <label class="form-label">Move to bucket:</label>
-                <select id="bulkBucketSelect" class="task-input" style="width: 100%; margin-top: 4px;"></select>
+                <select id="bulkBucketSelect" class="task-input" style="width: 100%; margin-top: 4px;">
+                    <option value="">No change</option>
+                </select>
             </div>
             
             <!-- Priority Section -->
@@ -175,7 +179,7 @@
     </div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 998; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.23</span>
+        v<span id="versionDisplay">1.4.24</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
