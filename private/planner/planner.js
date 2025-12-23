@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.14'; // Add Theme view/group; fix select-all UX; ensure nested headers render controls
+const APP_VERSION = '1.4.15'; // Select-all in grouped buckets; reinforce column widths in grouped view
 
 // Configuration
 const config = {
@@ -654,6 +654,9 @@ function renderByBucket(container, buckets, tasks) {
             if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
             return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
         };
+
+        // Ensure column widths get applied even for nested renders
+        applyColumnWidths();
         
         bucketDiv.innerHTML = `
             <div class="bucket-header" onclick="toggleBucket(this)">
@@ -665,7 +668,7 @@ function renderByBucket(container, buckets, tasks) {
             </div>
             <div class="task-list">
                 <div class="column-headers">
-                    <div></div>
+                    <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                     <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${group.id}', 'title')">
                         Task name ${sortArrows('title')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')"></div>
