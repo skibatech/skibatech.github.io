@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.30'; // Add drag-and-drop column reordering
+const APP_VERSION = '1.4.31'; // Fix column reordering: proper sort mapping and view refresh
 
 // Configuration
 let config = {
@@ -167,6 +167,13 @@ function handleColumnDragOver(e) {
     if (!draggedColumnClass) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
+    
+    // Remove drag-over from all elements first
+    document.querySelectorAll('.column-headers > div').forEach(h => {
+        h.classList.remove('drag-over');
+    });
+    
+    // Add to current target
     const columnClass = Array.from(e.target.classList).find(c => c.startsWith('col-'));
     if (columnClass && columnClass !== draggedColumnClass) {
         e.target.classList.add('drag-over');
@@ -198,8 +205,8 @@ function handleColumnDrop(e) {
     // Save to localStorage
     localStorage.setItem('columnOrder', JSON.stringify(columnOrder));
     
-    // Reorder DOM columns
-    reorderColumnsInDOM(draggedColumnClass, targetClass);
+    // Re-render the current view to apply new column order
+    refreshCurrentView();
     
     cleanupDragClasses();
 }
@@ -215,44 +222,9 @@ function cleanupDragClasses() {
     draggedColumnClass = null;
 }
 
-function reorderColumnsInDOM(draggedClass, targetClass) {
-    // Reorder all column headers
-    const headers = document.querySelectorAll('.column-headers');
-    headers.forEach(headerContainer => {
-        const cols = Array.from(headerContainer.children);
-        const draggedCol = cols.find(c => c.classList.contains(draggedClass));
-        const targetCol = cols.find(c => c.classList.contains(targetClass));
-        
-        if (draggedCol && targetCol) {
-            const draggedIndex = cols.indexOf(draggedCol);
-            const targetIndex = cols.indexOf(targetCol);
-            
-            if (draggedIndex < targetIndex) {
-                targetCol.parentNode.insertBefore(draggedCol, targetCol.nextSibling);
-            } else {
-                targetCol.parentNode.insertBefore(draggedCol, targetCol);
-            }
-        }
-    });
-    
-    // Reorder all task rows
-    const rows = document.querySelectorAll('.task-row');
-    rows.forEach(row => {
-        const cols = Array.from(row.children);
-        const draggedCol = cols.find(c => c.classList.contains(draggedClass));
-        const targetCol = cols.find(c => c.classList.contains(targetClass));
-        
-        if (draggedCol && targetCol) {
-            const draggedIndex = cols.indexOf(draggedCol);
-            const targetIndex = cols.indexOf(targetCol);
-            
-            if (draggedIndex < targetIndex) {
-                targetCol.parentNode.insertBefore(draggedCol, targetCol.nextSibling);
-            } else {
-                targetCol.parentNode.insertBefore(draggedCol, targetCol);
-            }
-        }
-    });
+function refreshCurrentView() {
+    // Re-render the current view with updated columnOrder
+    renderTasks(allBuckets, allTasks);
 }
 
 // Select-all checkbox handler: toggles selection for all rows under the same header
@@ -1161,6 +1133,18 @@ function generateColumnHeaders(groupId, sort) {
         'col-labels': 'Themes'
     };
     
+    // Map column class to sort parameter name
+    const sortParamMap = {
+        'col-id': 'id',
+        'col-task-name': 'title',
+        'col-assigned': 'assigned',
+        'col-start-date': 'startDate',
+        'col-due-date': 'dueDate',
+        'col-progress': 'progress',
+        'col-priority': 'priority',
+        'col-labels': 'labels'
+    };
+    
     const sortArrows = (col) => {
         if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
         return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
@@ -1175,9 +1159,10 @@ function generateColumnHeaders(groupId, sort) {
         if (colClass === 'col-labels') {
             headerHtml += `<div class="${colClass}">${label}</div>`;
         } else {
+            const sortParam = sortParamMap[colClass];
             headerHtml += `
-                <div class="sortable-header ${colClass}" onclick="event.stopPropagation(); sortBucket('${groupId}', '${colClass.replace('col-', '')}')">
-                    ${label} ${sortArrows(colClass.replace('col-', ''))}
+                <div class="sortable-header ${colClass}" onclick="event.stopPropagation(); sortBucket('${groupId}', '${sortParam}')">
+                    ${label} ${sortArrows(sortParam)}
                     <div class="resize-handle" onmousedown="startResize(event, '${colClass}')"></div>
                 </div>
             `;
