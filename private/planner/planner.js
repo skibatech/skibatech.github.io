@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.30'; // Add drag-and-drop column reordering (DOM-based, no rendering changes)
+const APP_VERSION = '1.4.31'; // Fix column drag-drop to swap all columns immediately across all groups
 
 // Configuration
 let config = {
@@ -180,38 +180,50 @@ function handleDrop(e) {
         return;
     }
     
-    // Swap the two column header elements
-    const headerContainer = draggedColumnElement.parentElement;
-    const thisIndex = Array.from(headerContainer.children).indexOf(this);
-    const draggedIndex = Array.from(headerContainer.children).indexOf(draggedColumnElement);
+    // Get the column classes to identify which columns to swap
+    const draggedClass = Array.from(draggedColumnElement.classList).find(c => c.startsWith('col-'));
+    const targetClass = Array.from(this.classList).find(c => c.startsWith('col-'));
     
-    if (draggedIndex < thisIndex) {
-        this.parentElement.insertBefore(draggedColumnElement, this.nextSibling);
-    } else {
-        this.parentElement.insertBefore(draggedColumnElement, this);
+    if (!draggedClass || !targetClass) {
+        cleanupDrag();
+        return;
     }
     
-    // Swap the same columns in all task rows in this task-list
-    const taskList = headerContainer.closest('.task-list');
-    if (taskList) {
-        const taskRows = taskList.querySelectorAll('.task-row');
-        taskRows.forEach(row => {
-            const rowChildren = Array.from(row.children);
-            const rowDraggedIndex = draggedIndex + 1; // Account for checkbox
-            const rowThisIndex = thisIndex + 1;
+    // Swap ALL column headers across ALL task lists on the page
+    document.querySelectorAll('.column-headers').forEach(headerContainer => {
+        const headers = Array.from(headerContainer.children);
+        const draggedHeader = headers.find(h => h.classList.contains(draggedClass));
+        const targetHeader = headers.find(h => h.classList.contains(targetClass));
+        
+        if (draggedHeader && targetHeader) {
+            const draggedIndex = headers.indexOf(draggedHeader);
+            const targetIndex = headers.indexOf(targetHeader);
             
-            if (rowDraggedIndex < rowChildren.length && rowThisIndex < rowChildren.length) {
-                const draggedCol = rowChildren[rowDraggedIndex];
-                const thisCol = rowChildren[rowThisIndex];
-                
-                if (rowDraggedIndex < rowThisIndex) {
-                    thisCol.parentElement.insertBefore(draggedCol, thisCol.nextSibling);
-                } else {
-                    thisCol.parentElement.insertBefore(draggedCol, thisCol);
-                }
+            if (draggedIndex < targetIndex) {
+                targetHeader.parentElement.insertBefore(draggedHeader, targetHeader.nextSibling);
+            } else {
+                targetHeader.parentElement.insertBefore(draggedHeader, targetHeader);
             }
-        });
-    }
+        }
+    });
+    
+    // Swap the same columns in ALL task rows on the page
+    document.querySelectorAll('.task-row').forEach(row => {
+        const draggedCol = row.querySelector('.' + draggedClass);
+        const targetCol = row.querySelector('.' + targetClass);
+        
+        if (draggedCol && targetCol) {
+            const cols = Array.from(row.children);
+            const draggedIndex = cols.indexOf(draggedCol);
+            const targetIndex = cols.indexOf(targetCol);
+            
+            if (draggedIndex < targetIndex) {
+                targetCol.parentElement.insertBefore(draggedCol, targetCol.nextSibling);
+            } else {
+                targetCol.parentElement.insertBefore(draggedCol, targetCol);
+            }
+        }
+    });
     
     // Save the current column order to localStorage
     saveColumnOrder();
