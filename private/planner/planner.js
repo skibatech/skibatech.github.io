@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.10'; // Bottom bulk panel with assign/delete; fix sorting/resizing in nested views
+const APP_VERSION = '1.4.11'; // Select-all headers; bulk move to bucket; bulk more options
 
 // Configuration
 const config = {
@@ -137,6 +137,28 @@ function applyColumnWidths() {
             el.style.flex = `0 0 ${columnWidths[columnClass]}px`;
         });
     });
+}
+
+// Select-all checkbox handler: toggles selection for all rows under the same header
+function toggleSelectAll(el) {
+    const checked = el.checked;
+    // Find nearest task-list container
+    let container = el.closest('.column-headers');
+    if (!container) return;
+    const taskList = container.parentElement; // .task-list
+    if (!taskList) return;
+    const rows = taskList.querySelectorAll('.task-row');
+    rows.forEach(row => {
+        const tid = row.getAttribute('data-task-id');
+        if (!tid) return;
+        if (checked) {
+            selectedTasks.add(tid);
+        } else {
+            selectedTasks.delete(tid);
+        }
+    });
+    updateBulkActionPanel();
+    applyFilters();
 }
 
 // Check for OAuth callback
@@ -781,7 +803,7 @@ function renderByAssignedBucket(container, buckets, tasks) {
                 return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
             };
             columnHeaders.innerHTML = `
-                <div></div>
+                <div><input type="checkbox" class="select-all-checkbox" onchange="toggleSelectAll(this)"></div>
                 <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${bucketId}', 'id')">ID ${sortArrows('id')}
                     <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
                 </div>
@@ -995,8 +1017,8 @@ function renderGroup(container, group, buckets, isNested = false) {
             </div>
         </div>
         <div class=\"task-list\">
-            <div class=\"column-headers\">
-                <div></div>
+            <div class="column-headers">
+                <div><input type="checkbox" class="select-all-checkbox" onchange="toggleSelectAll(this)"></div>
                 <div class=\"sortable-header col-id\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'id')\">
                     ID ${sortArrows('id')}
                     <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-id')\"></div>
@@ -1348,7 +1370,7 @@ function renderTask(task) {
     }).join('');
 
     return `
-        <div class="task-row">
+        <div class="task-row" data-task-id="${task.id}">
                  <input type="checkbox" class="task-checkbox" 
                      ${selectedTasks.has(task.id) ? 'checked' : ''} 
                      onchange="toggleTaskSelection('${task.id}')">
@@ -1995,6 +2017,7 @@ function updateBulkActionPanel() {
     const panel = document.getElementById('bulkActionPanel');
     const countSpan = document.getElementById('bulkPanelCount');
     const assigneeSelect = document.getElementById('bulkAssigneeSelect');
+    const bucketSelect = document.getElementById('bulkBucketSelect');
     if (!panel) return;
     
     if (selectedTasks.size > 0) {
@@ -2008,6 +2031,16 @@ function updateBulkActionPanel() {
                 opt.value = userId;
                 opt.textContent = displayName;
                 assigneeSelect.appendChild(opt);
+            });
+        }
+        // Populate bucket dropdown if empty
+        if (bucketSelect && bucketSelect.options.length === 0) {
+            bucketSelect.innerHTML = '';
+            (allBuckets || []).slice().sort((a, b) => a.name.localeCompare(b.name)).forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.id;
+                opt.textContent = b.name;
+                bucketSelect.appendChild(opt);
             });
         }
     } else {
@@ -2059,6 +2092,87 @@ async function bulkAssignSelected() {
     } catch (err) {
         console.error('Bulk assign error:', err);
         alert('Error assigning tasks: ' + err.message);
+    }
+}
+
+async function bulkMoveSelected() {
+    const bucketSelect = document.getElementById('bulkBucketSelect');
+    if (!bucketSelect || !bucketSelect.value) return;
+    const targetBucketId = bucketSelect.value;
+    if (selectedTasks.size === 0) return;
+    try {
+        const taskIds = Array.from(selectedTasks);
+        await mapWithConcurrency(taskIds, async (taskId) => {
+            const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'GET', headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if (!getRes.ok) return;
+            const task = await getRes.json();
+            const etag = task['@odata.etag'];
+            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': etag
+                },
+                body: JSON.stringify({ bucketId: targetBucketId })
+            });
+        }, 4);
+        clearSelection();
+        loadTasks();
+    } catch (err) {
+        console.error('Bulk move error:', err);
+        alert('Error moving tasks: ' + err.message);
+    }
+}
+
+function showBulkMoreOptions() {
+    const m = document.getElementById('bulkMoreModal');
+    if (m) m.style.display = 'block';
+}
+function hideBulkMoreOptions() {
+    const m = document.getElementById('bulkMoreModal');
+    if (m) m.style.display = 'none';
+}
+
+async function bulkApplyMoreOptions() {
+    if (selectedTasks.size === 0) return;
+    const priorityVal = document.getElementById('bulkPrioritySelect')?.value || '';
+    const progressVal = document.getElementById('bulkProgressSelect')?.value || '';
+    const startDate = document.getElementById('bulkStartDate')?.value || '';
+    const dueDate = document.getElementById('bulkDueDate')?.value || '';
+    try {
+        const taskIds = Array.from(selectedTasks);
+        await mapWithConcurrency(taskIds, async (taskId) => {
+            const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'GET', headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if (!getRes.ok) return;
+            const task = await getRes.json();
+            const etag = task['@odata.etag'];
+            const body = {};
+            if (priorityVal) body.priority = parseInt(priorityVal);
+            if (progressVal) body.percentComplete = parseInt(progressVal);
+            if (startDate) body.startDateTime = new Date(startDate).toISOString();
+            if (dueDate) body.dueDateTime = new Date(dueDate).toISOString();
+            if (Object.keys(body).length === 0) return;
+            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': etag
+                },
+                body: JSON.stringify(body)
+            });
+        }, 4);
+        hideBulkMoreOptions();
+        clearSelection();
+        loadTasks();
+    } catch (err) {
+        console.error('Bulk apply options error:', err);
+        alert('Error applying bulk edits: ' + err.message);
     }
 }
 
