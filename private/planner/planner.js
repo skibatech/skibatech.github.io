@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.7'; // Checkbox for bulk selection instead of completion
+const APP_VERSION = '1.4.8'; // Remove Release button; auto-refresh after edit
 
 // Configuration
 const config = {
@@ -1526,43 +1526,6 @@ let currentTaskId = null;
 let currentTaskEtag = null;
 let currentTaskDetailsEtag = null;
 
-async function createReleaseTask() {
-    if (!accessToken) {
-        alert('Please sign in first');
-        return;
-    }
-    try {
-        // Pick a default bucket: alphabetical by name
-        const bucket = (allBuckets || []).slice().sort((a, b) => a.name.localeCompare(b.name))[0];
-        if (!bucket) {
-            alert('No buckets available to create the release task.');
-            return;
-        }
-        const taskBody = {
-            planId: planId,
-            bucketId: bucket.id,
-            title: `Release v${APP_VERSION}`
-        };
-        const response = await fetchGraph('https://graph.microsoft.com/v1.0/planner/tasks', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(taskBody)
-        });
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error('Failed to create release task: ' + text);
-        }
-        alert(`Release task created for v${APP_VERSION}.`);
-        loadTasks();
-    } catch (err) {
-        console.error('Error creating release task:', err);
-        alert('Error creating release task: ' + err.message);
-    }
-}
-
 async function openTaskDetail(taskId) {
     currentTaskId = taskId;
     document.getElementById('taskDetailsModal').classList.add('show');
@@ -1816,8 +1779,8 @@ async function saveTaskDetails() {
         }
         
         closeTaskDetailsModal();
-        // Just refresh the display without reloading from API to avoid throttling
-        applyFilters();
+        // Reload tasks to refresh the display with updated data
+        loadTasks();
     } catch (error) {
         console.error('Error saving task:', error);
         alert('Error saving task: ' + error.message);
