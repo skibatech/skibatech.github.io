@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.8'; // Remove Release button; auto-refresh after edit
+const APP_VERSION = '1.4.9'; // Fix checkbox markup; ensure auto-refresh
 
 // Configuration
 const config = {
@@ -1330,9 +1330,9 @@ function renderTask(task) {
 
     return `
         <div class="task-row">
-            <input type="checkbox" class="task-checkbox" 
-                   ${selectedTasks.has(task.id) ? 'checked' : ''} 
-                   onchange="toggleTaskSelection('${task.id}')"
+                 <input type="checkbox" class="task-checkbox" 
+                     ${selectedTasks.has(task.id) ? 'checked' : ''} 
+                     onchange="toggleTaskSelection('${task.id}')">
             <div class="task-id col-id">${taskDisplayId}</div>
             <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
                 <span>${task.title}</span>
