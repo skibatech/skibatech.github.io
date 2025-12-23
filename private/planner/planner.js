@@ -1,16 +1,16 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.25'; // Add Assign To field to Create Task, add Delete button to Task Details
+const APP_VERSION = '1.4.26'; // Move planId and clientId to Options, make them editable and persistent via localStorage
 
 // Configuration
-const config = {
-    clientId: '073fb8bf-274f-496d-b2a1-648b1a8195b3', // SkibaTech Planner Dashboard app
+let config = {
+    clientId: localStorage.getItem('plannerClientId') || '073fb8bf-274f-496d-b2a1-648b1a8195b3',
     authority: 'https://login.microsoftonline.com/skibatech.com', // Tenant-specific endpoint
     redirectUri: window.location.origin + window.location.pathname,
     scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
     allowedTenants: ['skibatech.com', 'skibatech.onmicrosoft.com'] // Only allow SkibaTech users
 };
 
-const planId = 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
+let planId = localStorage.getItem('plannerPlanId') || 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
 let accessToken = null;
 let currentBucketId = null;
 let currentBucketName = null;
@@ -2020,6 +2020,8 @@ function cancelNewBucket() {
 }
 
 function showOptions() {
+    document.getElementById('clientIdInput').value = config.clientId;
+    document.getElementById('planIdInput').value = planId;
     document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
     document.getElementById('optionsModal').style.display = 'flex';
 }
@@ -2029,14 +2031,30 @@ function closeOptions() {
 }
 
 function saveOptions() {
+    const clientId = document.getElementById('clientIdInput').value.trim();
+    const planIdValue = document.getElementById('planIdInput').value.trim();
     const prefix = document.getElementById('taskIdPrefixInput').value.trim().toUpperCase();
+    
+    // Save clientId
+    if (clientId) {
+        config.clientId = clientId;
+        localStorage.setItem('plannerClientId', clientId);
+    }
+    
+    // Save planId
+    if (planIdValue) {
+        planId = planIdValue;
+        localStorage.setItem('plannerPlanId', planIdValue);
+    }
+    
+    // Save prefix
     if (prefix) {
         taskIdPrefix = prefix;
         localStorage.setItem('taskIdPrefix', prefix);
     }
+    
     closeOptions();
-    // Refresh display if needed
-    applyFilters();
+    alert('Settings saved. Changes will take effect on next reload.');
 }
 
 async function createNewBucket() {
