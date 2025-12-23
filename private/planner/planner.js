@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.4'; // Throttling/backoff + grouping fixes
+const APP_VERSION = '1.4.6'; // Fix: restore column sorting and resizing
 
 // Configuration
 const config = {
@@ -776,13 +776,13 @@ function renderByAssignedBucket(container, buckets, tasks) {
             columnHeaders.className = 'column-headers';
             columnHeaders.innerHTML = `
                 <div></div>
-                <div class="col-id">ID</div>
-                <div class="col-task-name">Task name</div>
-                <div class="col-assigned">Assigned to</div>
-                <div class="col-start-date">Start date</div>
-                <div class="col-due-date">Due date</div>
-                <div class="col-progress">Progress</div>
-                <div class="col-priority">Priority</div>
+                <div class="sortable-header col-id" style="cursor: pointer;">ID</div>
+                <div class="sortable-header col-task-name" style="cursor: pointer;">Task name</div>
+                <div class="sortable-header col-assigned" style="cursor: pointer;">Assigned to</div>
+                <div class="sortable-header col-start-date" style="cursor: pointer;">Start date</div>
+                <div class="sortable-header col-due-date" style="cursor: pointer;">Due date</div>
+                <div class="sortable-header col-progress" style="cursor: pointer;">Progress</div>
+                <div class="sortable-header col-priority" style="cursor: pointer;">Priority</div>
                 <div class="col-labels">Themes</div>
             `;
             taskList.appendChild(columnHeaders);
@@ -902,13 +902,13 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             columnHeaders.className = 'column-headers';
             columnHeaders.innerHTML = `
                 <div></div>
-                <div class="col-id">ID</div>
-                <div class="col-task-name">Task name</div>
-                <div class="col-assigned">Assigned to</div>
-                <div class="col-start-date">Start date</div>
-                <div class="col-due-date">Due date</div>
-                <div class="col-progress">Progress</div>
-                <div class="col-priority">Priority</div>
+                <div class="sortable-header col-id" style="cursor: pointer;">ID</div>
+                <div class="sortable-header col-task-name" style="cursor: pointer;">Task name</div>
+                <div class="sortable-header col-assigned" style="cursor: pointer;">Assigned to</div>
+                <div class="sortable-header col-start-date" style="cursor: pointer;">Start date</div>
+                <div class="sortable-header col-due-date" style="cursor: pointer;">Due date</div>
+                <div class="sortable-header col-progress" style="cursor: pointer;">Progress</div>
+                <div class="sortable-header col-priority" style="cursor: pointer;">Priority</div>
                 <div class="col-labels">Themes</div>
             `;
             taskList.appendChild(columnHeaders);
@@ -981,33 +981,6 @@ function renderGroup(container, group, buckets, isNested = false) {
                     ID ${sortArrows('id')}
                     <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-id')\"></div>
                 </div>
-                <div class=\"sortable-header col-task-name\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'title')\">
-                    Task name ${sortArrows('title')}
-                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-task-name')\"></div>
-                </div>
-                <div class=\"sortable-header col-assigned\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'assigned')\">
-                    Assigned to ${sortArrows('assigned')}
-                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-assigned')\"></div>
-                </div>
-                <div class=\"sortable-header col-start-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'startDate')\">
-                    Start date ${sortArrows('startDate')}
-                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-start-date')\"></div>
-                </div>
-                <div class=\"sortable-header col-due-date\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'dueDate')\">
-                    Due date ${sortArrows('dueDate')}
-                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-due-date')\"></div>
-                </div>
-                <div class=\"sortable-header col-progress\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'progress')\">
-                    Progress ${sortArrows('progress')}
-                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-progress')\"></div>
-                </div>
-                <div class=\"sortable-header col-priority\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'priority')\">
-                    Priority ${sortArrows('priority')}
-                    <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-priority')\"></div>
-                </div>
-                <div class=\"col-labels\">Themes</div>
-            </div>
-                <div></div>
                 <div class=\"sortable-header col-task-name\" onclick=\"event.stopPropagation(); sortBucket('${group.id}', 'title')\">
                     Task name ${sortArrows('title')}
                     <div class=\"resize-handle\" onmousedown=\"startResize(event, 'col-task-name')\"></div>
