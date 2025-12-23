@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.27'; // Move authority, allowed tenants, default view/groupby, show completed to Options
+const APP_VERSION = '1.4.28'; // Default Start Date to today in Create Task
 
 // Configuration
 let config = {
@@ -1481,7 +1481,11 @@ function showAddTask(bucketId, bucketName) {
     document.getElementById('newTaskAssignee').value = '';
     document.getElementById('newTaskProgress').value = '0';
     document.getElementById('newTaskPriority').value = '5';
-    document.getElementById('newTaskStartDate').value = '';
+    
+    // Set Start Date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newTaskStartDate').value = today;
+    
     document.getElementById('newTaskDueDate').value = '';
     document.getElementById('newTaskNotes').value = '';
     
