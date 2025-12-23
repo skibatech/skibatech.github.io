@@ -17,7 +17,7 @@
             <div style="display: flex; gap: 15px; align-items: center; margin-right: 15px;">
                 <div>
                     <label for="viewSelect" style="font-size: 13px; color: #666; margin-right: 8px;">View:</label>
-                    <select id="viewSelect" onchange="changeView()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                    <select id="viewSelect" onchange="changeView()" class="control-select">
                         <option value="assigned">By Assigned To</option>
                         <option value="bucket">By Bucket</option>
                         <option value="progress">By Progress</option>
@@ -27,8 +27,8 @@
                     </select>
                 </div>
                 <div id="groupByContainer">
-                    <label for="groupBySelect" style="font-size: 13px; color: #666; margin-right: 8px;">Group by:</label>
-                    <select id="groupBySelect" onchange="changeGroupBy()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                    <label for="groupBySelect" style="font-size: 13px; color: var(--text-secondary); margin-right: 8px;">Group by:</label>
+                    <select id="groupBySelect" onchange="changeGroupBy()" class="control-select">
                         <option value="none">None</option>
                         <option value="bucket">Bucket</option>
                         <option value="assigned">Assigned to</option>
@@ -182,7 +182,7 @@
     </div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 998; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.34</span>
+        v<span id="versionDisplay">1.4.35</span>
     </footer>
 
     <div id="addTaskModal" class="modal">

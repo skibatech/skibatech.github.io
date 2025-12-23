@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.34'; // Fix dark mode text contrast and restore title size
+const APP_VERSION = '1.4.35'; // Make View and Group By dropdowns dark in dark mode
 
 // Configuration
 let config = {
