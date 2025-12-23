@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.19'; // Fix select-all checkbox state persistence across re-renders
+const APP_VERSION = '1.4.20'; // Fix nestedTasks variable initialization order
 
 // Configuration
 const config = {
@@ -955,10 +955,16 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             const taskList = document.createElement('div');
             taskList.className = 'task-list nested' + (bucketExpanded ? ' expanded' : '');
             
+            // Prepare tasks for this nested group (apply sorting if set)
+            const sort = sortState[bucketId];
+            let nestedTasks = secondaryGrp.tasks;
+            if (sort) {
+                nestedTasks = sortTasks(nestedTasks, sort.column, sort.direction);
+            }
+            
             // Add column headers with select-all, sorting, and resizing
             const columnHeaders = document.createElement('div');
             columnHeaders.className = 'column-headers';
-            const sort = sortState[bucketId];
             const sortArrows = (col) => {
                 if (!sort || sort.column !== col) return '<span class="sort-arrow">▼</span>';
                 return `<span class="sort-arrow active">${sort.direction === 'asc' ? '▲' : '▼'}</span>`;
@@ -992,11 +998,7 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             `;
             taskList.appendChild(columnHeaders);
             
-            // Add tasks (apply sorting if set)
-            let nestedTasks = secondaryGrp.tasks;
-            if (sort) {
-                nestedTasks = sortTasks(nestedTasks, sort.column, sort.direction);
-            }
+            // Add tasks to the list
             nestedTasks.forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.innerHTML = renderTask(task);
