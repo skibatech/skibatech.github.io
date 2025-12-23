@@ -136,6 +136,24 @@ button:disabled {
     white-space: nowrap;
     display: flex;
     align-items: center;
+    user-select: none;
+}
+
+.column-headers > div:not(:first-child) {
+    cursor: grab;
+}
+
+.column-headers > div:not(:first-child):active {
+    cursor: grabbing;
+}
+
+.column-headers > div.dragging:not(:first-child) {
+    opacity: 0.5;
+    background: #e0e0e0;
+}
+
+.column-headers > div.drag-over:not(:first-child) {
+    border-left: 3px solid #0078d4;
 }
 
 .column-headers > div:first-child {
@@ -226,7 +244,11 @@ button:disabled {
 }
 
 .task-row:hover {
-    background: #f9f9f9;
+    background: #fafbfc;
+}
+
+.task-row:has(> input[type="checkbox"]:checked) {
+    background: #f5f5f5;
 }
 
 .task-row:last-child {
