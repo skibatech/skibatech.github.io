@@ -182,7 +182,7 @@
     </div>
 
     <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 998; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.35</span>
+        v<span id="versionDisplay">1.4.36</span>
     </footer>
 
     <div id="addTaskModal" class="modal">
@@ -419,66 +419,89 @@
 
     <!-- Options Modal -->
     <div id="optionsModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
+        <div class="modal-content" style="max-width: 900px; display: flex; height: 600px;">
+            <div class="modal-header" style="position: absolute; top: 0; left: 0; right: 0; z-index: 10;">
                 <h2>Options</h2>
                 <span class="close" onclick="closeOptions()">&times;</span>
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Client ID</label>
-                    <input type="text" id="clientIdInput" class="task-input" placeholder="Azure App Registration Client ID">
-                    <div style="font-size: 12px; color: #666; margin-top: 4px;">Your Azure AD app client ID</div>
+            <div style="display: flex; width: 100%; margin-top: 50px;">
+                <!-- Left Navigation Panel -->
+                <div style="width: 200px; background: var(--bg-hover); border-right: 1px solid var(--border-color); padding: 16px 0; display: flex; flex-direction: column;">
+                    <div class="options-nav-item active" onclick="switchOptionsTab('views')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent;">
+                        Views
+                    </div>
+                    <div class="options-nav-item" onclick="switchOptionsTab('configuration')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent;">
+                        Configuration
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Plan ID</label>
-                    <input type="text" id="planIdInput" class="task-input" placeholder="Microsoft Planner Plan ID">
-                    <div style="font-size: 12px; color: #666; margin-top: 4px;">The Planner plan ID to use for tasks</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Authority URL</label>
-                    <input type="text" id="authorityInput" class="task-input" placeholder="https://login.microsoftonline.com/tenant">
-                    <div style="font-size: 12px; color: #666; margin-top: 4px;">Azure AD authority endpoint for your tenant</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Allowed Tenants</label>
-                    <input type="text" id="allowedTenantsInput" class="task-input" placeholder="tenant1.com, tenant2.com">
-                    <div style="font-size: 12px; color: #666; margin-top: 4px;">Comma-separated list of allowed tenant domains</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Default View</label>
-                    <select id="defaultViewInput" class="task-input">
-                        <option value="assigned">By Assigned To</option>
-                        <option value="bucket">By Bucket</option>
-                        <option value="progress">By Progress</option>
-                        <option value="dueDate">By Due Date</option>
-                        <option value="priority">By Priority</option>
-                        <option value="theme">By Theme</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Default Group By</label>
-                    <select id="defaultGroupByInput" class="task-input">
-                        <option value="none">None</option>
-                        <option value="bucket">Bucket</option>
-                        <option value="assigned">Assigned to</option>
-                        <option value="progress">Progress</option>
-                        <option value="dueDate">Due date</option>
-                        <option value="priority">Priority</option>
-                        <option value="theme">Theme</option>
-                    </select>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
-                    <input type="checkbox" id="showCompletedDefaultInput" style="cursor: pointer;">
-                    <label class="form-label" style="margin: 0;">Show Completed by Default</label>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Task ID Prefix</label>
-                    <input type="text" id="taskIdPrefixInput" class="task-input" placeholder="e.g., STE" maxlength="10" style="text-transform: uppercase;">
-                    <div style="font-size: 12px; color: #666; margin-top: 4px;">This prefix will be used for task IDs (e.g., STE-1234)</div>
+                
+                <!-- Right Content Panel -->
+                <div style="flex: 1; padding: 20px; overflow-y: auto;">
+                    <!-- Views Tab -->
+                    <div id="viewsTab" class="options-tab" style="display: block;">
+                        <h3 style="margin-bottom: 16px;">Default View & Grouping</h3>
+                        <div class="form-group">
+                            <label class="form-label">Default View</label>
+                            <select id="defaultViewInput" class="task-input">
+                                <option value="assigned">By Assigned To</option>
+                                <option value="bucket">By Bucket</option>
+                                <option value="progress">By Progress</option>
+                                <option value="dueDate">By Due Date</option>
+                                <option value="priority">By Priority</option>
+                                <option value="theme">By Theme</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Default Group By</label>
+                            <select id="defaultGroupByInput" class="task-input">
+                                <option value="none">None</option>
+                                <option value="bucket">Bucket</option>
+                                <option value="assigned">Assigned to</option>
+                                <option value="progress">Progress</option>
+                                <option value="dueDate">Due date</option>
+                                <option value="priority">Priority</option>
+                                <option value="theme">Theme</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="showCompletedDefaultInput" style="cursor: pointer;">
+                            <label class="form-label" style="margin: 0;">Show Completed by Default</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Configuration Tab -->
+                    <div id="configurationTab" class="options-tab" style="display: none;">
+                        <h3 style="margin-bottom: 16px;">Configuration</h3>
+                        <div class="form-group">
+                            <label class="form-label">Client ID</label>
+                            <input type="text" id="clientIdInput" class="task-input" placeholder="Azure App Registration Client ID">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Your Azure AD app client ID</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Plan ID</label>
+                            <input type="text" id="planIdInput" class="task-input" placeholder="Microsoft Planner Plan ID">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">The Planner plan ID to use for tasks</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Authority URL</label>
+                            <input type="text" id="authorityInput" class="task-input" placeholder="https://login.microsoftonline.com/tenant">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Azure AD authority endpoint for your tenant</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Allowed Tenants</label>
+                            <input type="text" id="allowedTenantsInput" class="task-input" placeholder="tenant1.com, tenant2.com">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Comma-separated list of allowed tenant domains</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Task ID Prefix</label>
+                            <input type="text" id="taskIdPrefixInput" class="task-input" placeholder="e.g., STE" maxlength="10" style="text-transform: uppercase;">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">This prefix will be used for task IDs (e.g., STE-1234)</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="modal-actions">
+            
+            <div class="modal-actions" style="position: absolute; bottom: 0; left: 0; right: 0; border-top: 1px solid var(--border-color);">
                 <button class="cancel-btn" onclick="closeOptions()">Cancel</button>
                 <button onclick="saveOptions()">Save</button>
             </div>

@@ -474,6 +474,31 @@ textarea.task-input {
     gap: 10px;
     justify-content: flex-end;
     margin-top: 20px;
+    padding: 16px;
+}
+
+.options-nav-item {
+    transition: background-color 0.2s, border-color 0.2s;
+    color: var(--text-primary);
+}
+
+.options-nav-item:hover {
+    background: var(--bg-selected);
+}
+
+.options-nav-item.active {
+    background: var(--bg-secondary);
+    border-left-color: #0078d4 !important;
+    font-weight: 600;
+}
+
+.options-tab {
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .cancel-btn {

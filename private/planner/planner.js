@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.35'; // Make View and Group By dropdowns dark in dark mode
+const APP_VERSION = '1.4.36'; // Reorganize Options modal with Views/Configuration left panel navigation
 
 // Configuration
 let config = {
@@ -2229,6 +2229,27 @@ function showOptions() {
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
     document.getElementById('optionsModal').style.display = 'flex';
+    switchOptionsTab('views');
+}
+
+function switchOptionsTab(tab) {
+    // Hide all tabs
+    document.getElementById('viewsTab').style.display = 'none';
+    document.getElementById('configurationTab').style.display = 'none';
+    
+    // Remove active class from all nav items
+    document.querySelectorAll('.options-nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Show selected tab and mark nav item as active
+    if (tab === 'views') {
+        document.getElementById('viewsTab').style.display = 'block';
+        document.querySelectorAll('.options-nav-item')[0].classList.add('active');
+    } else if (tab === 'configuration') {
+        document.getElementById('configurationTab').style.display = 'block';
+        document.querySelectorAll('.options-nav-item')[1].classList.add('active');
+    }
 }
 
 function closeOptions() {
