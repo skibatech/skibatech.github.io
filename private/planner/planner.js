@@ -2076,7 +2076,7 @@ function toggleTaskSelection(taskId) {
     } else {
         selectedTasks.add(taskId);
     }
-    updateBulkActionPanel();
+    updateBulkEditSidebar();
     applyFilters(); // Re-render to update checkboxes
 }
 
