@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.6'; // Fix: restore column sorting and resizing
+const APP_VERSION = '1.4.7'; // Checkbox for bulk selection instead of completion
 
 // Configuration
 const config = {
@@ -26,6 +26,7 @@ let allUsers = {}; // Store user details: { userId: displayName }
 let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let taskSequentialIds = {}; // { taskId: number } assigned by createdDateTime order
+let selectedTasks = new Set(); // Track selected tasks for bulk operations
 let resizingColumn = null;
 let resizeStartX = 0;
 let resizeStartWidth = 0;
@@ -1330,8 +1331,8 @@ function renderTask(task) {
     return `
         <div class="task-row">
             <input type="checkbox" class="task-checkbox" 
-                   ${task.percentComplete === 100 ? 'checked' : ''} 
-                   onchange="toggleTaskComplete('${task.id}', this.checked, '${task['@odata.etag']}')">
+                   ${selectedTasks.has(task.id) ? 'checked' : ''} 
+                   onchange="toggleTaskSelection('${task.id}')"
             <div class="task-id col-id">${taskDisplayId}</div>
             <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
                 <span>${task.title}</span>
@@ -1995,4 +1996,95 @@ function sortTasks(tasks, column, direction) {
     });
     
     return sorted;
+}
+
+// Bulk selection and operations
+function toggleTaskSelection(taskId) {
+    if (selectedTasks.has(taskId)) {
+        selectedTasks.delete(taskId);
+    } else {
+        selectedTasks.add(taskId);
+    }
+    updateBulkActionsBar();
+    applyFilters(); // Re-render to update checkboxes
+}
+
+function updateBulkActionsBar() {
+    const bulkBar = document.getElementById('bulkActionsBar');
+    const countSpan = document.getElementById('bulkSelectedCount');
+    
+    if (selectedTasks.size > 0) {
+        bulkBar.style.display = 'flex';
+        countSpan.textContent = `${selectedTasks.size} selected`;
+    } else {
+        bulkBar.style.display = 'none';
+    }
+}
+
+function clearSelection() {
+    selectedTasks.clear();
+    updateBulkActionsBar();
+    applyFilters();
+}
+
+async function bulkMarkComplete() {
+    if (selectedTasks.size === 0) return;
+    
+    const confirmed = confirm(`Mark ${selectedTasks.size} task(s) as complete?`);
+    if (!confirmed) return;
+    
+    try {
+        const promises = Array.from(selectedTasks).map(async (taskId) => {
+            const task = allTasks.find(t => t.id === taskId);
+            if (!task || task.percentComplete === 100) return;
+            
+            return fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': task['@odata.etag']
+                },
+                body: JSON.stringify({ percentComplete: 100 })
+            });
+        });
+        
+        await Promise.all(promises);
+        clearSelection();
+        loadTasks();
+    } catch (err) {
+        console.error('Bulk complete error:', err);
+        alert('Error marking tasks complete: ' + err.message);
+    }
+}
+
+async function bulkMarkIncomplete() {
+    if (selectedTasks.size === 0) return;
+    
+    const confirmed = confirm(`Mark ${selectedTasks.size} task(s) as incomplete?`);
+    if (!confirmed) return;
+    
+    try {
+        const promises = Array.from(selectedTasks).map(async (taskId) => {
+            const task = allTasks.find(t => t.id === taskId);
+            if (!task || task.percentComplete === 0) return;
+            
+            return fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': task['@odata.etag']
+                },
+                body: JSON.stringify({ percentComplete: 0 })
+            });
+        });
+        
+        await Promise.all(promises);
+        clearSelection();
+        loadTasks();
+    } catch (err) {
+        console.error('Bulk incomplete error:', err);
+        alert('Error marking tasks incomplete: ' + err.message);
+    }
 }
