@@ -18,6 +18,8 @@
     --border-light: #f0f0f0;
     --shadow: rgba(0, 0, 0, 0.1);
     --shadow-hover: rgba(0, 0, 0, 0.15);
+    --link-color: #0078d4;
+    --link-hover: #005a9e;
 }
 
 /* Dark Mode Variables */
@@ -27,13 +29,15 @@ body.dark-mode {
     --bg-tertiary: #252525;
     --bg-hover: #333333;
     --bg-selected: #3a3a3a;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --text-muted: #808080;
+    --text-primary: #f0f0f0;
+    --text-secondary: #cccccc;
+    --text-muted: #999999;
     --border-color: #404040;
     --border-light: #333333;
     --shadow: rgba(0, 0, 0, 0.3);
     --shadow-hover: rgba(0, 0, 0, 0.4);
+    --link-color: #4da6ff;
+    --link-hover: #80bfff;
 }
 
 body {
@@ -52,13 +56,12 @@ body {
     box-shadow: 0 2px 4px var(--shadow);
     display: flex;
     justify-content: space-between;
-    transition: background-color 0.3s ease;
-}
     align-items: center;
+    transition: background-color 0.3s ease;
 }
 
 .header h1 {
-    color: #0078d4;
+    color: white;
     font-size: 18px;
 }
 
@@ -117,7 +120,7 @@ button:disabled {
 .bucket-title {
     font-size: 14px;
     font-weight: 600;
-    color: #323130;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -238,7 +241,7 @@ button:disabled {
 }
 
 .sortable-header:hover {
-    color: #0078d4;
+    color: var(--link-color);
 }
 
 .sort-arrow {
@@ -248,7 +251,7 @@ button:disabled {
 
 .sort-arrow.active {
     opacity: 1;
-    color: #0078d4;
+    color: var(--link-color);
 }
 
 .task-row {
@@ -299,12 +302,12 @@ button:disabled {
 
 .task-title {
     font-size: 13px;
-    color: #323130;
+    color: var(--text-primary);
     cursor: pointer;
 }
 
 .task-title:hover {
-    color: #0078d4;
+    color: var(--link-color);
     text-decoration: underline;
 }
 
@@ -361,13 +364,13 @@ button:disabled {
     border-radius: 10px;
     font-size: 9px;
     background: #e0e0e0;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .add-task-btn {
     margin: 8px 10px;
     background: #f0f0f0;
-    color: #0078d4;
+    color: var(--link-color);
     padding: 6px 12px;
     font-size: 12px;
 }
@@ -424,7 +427,7 @@ button:disabled {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 20px;
-    color: #323130;
+    color: var(--text-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -439,7 +442,7 @@ button:disabled {
     margin-bottom: 6px;
     font-size: 13px;
     font-weight: 600;
-    color: #323130;
+    color: var(--text-primary);
 }
 
 .task-input {
@@ -465,7 +468,7 @@ textarea.task-input {
 
 .cancel-btn {
     background: #f0f0f0;
-    color: #323130;
+    color: var(--text-primary);
 }
 
 .cancel-btn:hover {
@@ -490,7 +493,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .auth-required h2 {
-    color: #323130;
+    color: var(--text-primary);
     margin-bottom: 16px;
     font-size: 20px;
 }
@@ -503,7 +506,7 @@ body.unauthenticated #refreshBtn {
 
 .lock-icon {
     font-size: 48px;
-    color: #0078d4;
+    color: var(--link-color);
     margin-bottom: 20px;
 }
 
@@ -556,7 +559,7 @@ body.unauthenticated #refreshBtn {
 .profile-name {
     font-size: 14px;
     font-weight: 600;
-    color: #323130;
+    color: var(--text-primary);
     margin-bottom: 4px;
 }
 
@@ -569,7 +572,7 @@ body.unauthenticated #refreshBtn {
     padding: 10px 16px;
     cursor: pointer;
     font-size: 13px;
-    color: #323130;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 8px;

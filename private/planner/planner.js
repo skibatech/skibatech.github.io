@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.33'; // Add Dark Mode / Light Mode toggle
+const APP_VERSION = '1.4.34'; // Fix dark mode text contrast and restore title size
 
 // Configuration
 let config = {
