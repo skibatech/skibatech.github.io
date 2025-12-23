@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.17'; // Nested views: add select-all + sortable/resizable headers; apply sorting
+const APP_VERSION = '1.4.18'; // Fix select-all uncheck; dock More Options to right side
 
 // Configuration
 const config = {
@@ -151,10 +151,13 @@ function toggleSelectAll(el) {
     rows.forEach(row => {
         const tid = row.getAttribute('data-task-id');
         if (!tid) return;
+        const checkbox = row.querySelector('.task-checkbox');
         if (checked) {
             selectedTasks.add(tid);
+            if (checkbox) checkbox.checked = true;
         } else {
             selectedTasks.delete(tid);
+            if (checkbox) checkbox.checked = false;
         }
     });
     updateBulkActionPanel();
