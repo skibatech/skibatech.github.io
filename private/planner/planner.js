@@ -31,7 +31,7 @@ let resizingColumn = null;
 let resizeStartX = 0;
 let resizeStartWidth = 0;
 let currentFilter = 'all';
-let showCompleted = true;
+let showCompleted = false;
 let columnWidths = {
     'col-id': 90,
     'col-task-name': 300,
