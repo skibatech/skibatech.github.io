@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.29'; // Align column header checkboxes with task row checkboxes
+const APP_VERSION = '1.4.30'; // Add drag-and-drop column reordering (DOM-based, no rendering changes)
 
 // Configuration
 let config = {
@@ -32,6 +32,7 @@ let resizeStartX = 0;
 let resizeStartWidth = 0;
 let currentFilter = 'all';
 let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || false;
+let draggedColumnElement = null; // Store the dragged column header element
 let columnWidths = {
     'col-id': 90,
     'col-task-name': 300,
@@ -135,6 +136,151 @@ function applyColumnWidths() {
         const elements = document.querySelectorAll('.' + columnClass);
         elements.forEach(el => {
             el.style.flex = `0 0 ${columnWidths[columnClass]}px`;
+        });
+    });
+    
+    // Enable drag-and-drop for column headers
+    enableColumnDragDrop();
+}
+
+function enableColumnDragDrop() {
+    // Get all column header divs that aren't the checkbox
+    const columnHeaders = document.querySelectorAll('.column-headers > div:not(:first-child)');
+    columnHeaders.forEach(header => {
+        header.draggable = true;
+        header.addEventListener('dragstart', handleDragStart);
+        header.addEventListener('dragover', handleDragOver);
+        header.addEventListener('drop', handleDrop);
+        header.addEventListener('dragend', handleDragEnd);
+    });
+}
+
+function handleDragStart(e) {
+    draggedColumnElement = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragOver(e) {
+    if (!draggedColumnElement) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    // Add visual feedback when dragging over a valid target
+    if (this !== draggedColumnElement && this.classList.contains('sortable-header')) {
+        this.classList.add('drag-over');
+    }
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    
+    if (!draggedColumnElement || this === draggedColumnElement) {
+        cleanupDrag();
+        return;
+    }
+    
+    // Swap the two column header elements
+    const headerContainer = draggedColumnElement.parentElement;
+    const thisIndex = Array.from(headerContainer.children).indexOf(this);
+    const draggedIndex = Array.from(headerContainer.children).indexOf(draggedColumnElement);
+    
+    if (draggedIndex < thisIndex) {
+        this.parentElement.insertBefore(draggedColumnElement, this.nextSibling);
+    } else {
+        this.parentElement.insertBefore(draggedColumnElement, this);
+    }
+    
+    // Swap the same columns in all task rows in this task-list
+    const taskList = headerContainer.closest('.task-list');
+    if (taskList) {
+        const taskRows = taskList.querySelectorAll('.task-row');
+        taskRows.forEach(row => {
+            const rowChildren = Array.from(row.children);
+            const rowDraggedIndex = draggedIndex + 1; // Account for checkbox
+            const rowThisIndex = thisIndex + 1;
+            
+            if (rowDraggedIndex < rowChildren.length && rowThisIndex < rowChildren.length) {
+                const draggedCol = rowChildren[rowDraggedIndex];
+                const thisCol = rowChildren[rowThisIndex];
+                
+                if (rowDraggedIndex < rowThisIndex) {
+                    thisCol.parentElement.insertBefore(draggedCol, thisCol.nextSibling);
+                } else {
+                    thisCol.parentElement.insertBefore(draggedCol, thisCol);
+                }
+            }
+        });
+    }
+    
+    // Save the current column order to localStorage
+    saveColumnOrder();
+    
+    cleanupDrag();
+}
+
+function handleDragEnd(e) {
+    cleanupDrag();
+}
+
+function cleanupDrag() {
+    document.querySelectorAll('.column-headers > div').forEach(el => {
+        el.classList.remove('dragging', 'drag-over');
+    });
+    draggedColumnElement = null;
+}
+
+function saveColumnOrder() {
+    // Get the order of column classes from the first column header
+    const firstHeader = document.querySelector('.column-headers');
+    if (!firstHeader) return;
+    
+    const columnOrder = Array.from(firstHeader.children)
+        .slice(1) // Skip checkbox
+        .map(col => {
+            // Find the col-* class
+            const colClass = Array.from(col.classList).find(c => c.startsWith('col-'));
+            return colClass || null;
+        })
+        .filter(c => c !== null);
+    
+    localStorage.setItem('savedColumnOrder', JSON.stringify(columnOrder));
+}
+
+function restoreColumnOrder() {
+    const saved = localStorage.getItem('savedColumnOrder');
+    if (!saved) return;
+    
+    const columnOrder = JSON.parse(saved);
+    
+    // For each task-list container, reorganize the columns
+    document.querySelectorAll('.column-headers').forEach(headerContainer => {
+        reorderColumns(headerContainer, columnOrder);
+    });
+}
+
+function reorderColumns(headerContainer, columnOrder) {
+    const taskList = headerContainer.closest('.task-list');
+    if (!taskList) return;
+    
+    // Reorder headers
+    const headers = Array.from(headerContainer.children).slice(1); // Skip checkbox
+    columnOrder.forEach((colClass, index) => {
+        const header = headers.find(h => h.classList.contains(colClass));
+        if (header) {
+            headerContainer.appendChild(header);
+        }
+    });
+    
+    // Reorder task row columns
+    const taskRows = taskList.querySelectorAll('.task-row');
+    taskRows.forEach(row => {
+        const cols = Array.from(row.children).slice(1); // Skip checkbox
+        columnOrder.forEach((colClass, index) => {
+            const col = cols.find(c => c.classList.contains(colClass));
+            if (col) {
+                row.appendChild(col);
+            }
         });
     });
 }
@@ -626,6 +772,9 @@ function renderTasks(buckets, tasks) {
         // Single level grouping
         renderSingleView(container, buckets, tasks, currentView);
     }
+    
+    // Restore previously saved column order
+    restoreColumnOrder();
 }
 
 function renderByBucket(container, buckets, tasks) {
