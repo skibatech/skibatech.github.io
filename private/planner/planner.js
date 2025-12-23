@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.15'; // Select-all in grouped buckets; reinforce column widths in grouped view
+const APP_VERSION = '1.4.16'; // Add ID header + select-all in grouped buckets; maintain sort/resize
 
 // Configuration
 const config = {
@@ -669,6 +669,10 @@ function renderByBucket(container, buckets, tasks) {
             <div class="task-list">
                 <div class="column-headers">
                     <div><input type="checkbox" class="select-all-checkbox" onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
+                    <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${group.id}', 'id')">
+                        ID ${sortArrows('id')}
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
+                    </div>
                     <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${group.id}', 'title')">
                         Task name ${sortArrows('title')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')"></div>
