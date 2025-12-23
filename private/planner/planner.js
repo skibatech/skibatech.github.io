@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.31'; // Fix column drag-drop to swap all columns immediately across all groups
+const APP_VERSION = '1.4.32'; // Fix bulk bucket move to not clear assignee when set to "No change"
 
 // Configuration
 let config = {
@@ -2478,7 +2478,7 @@ async function bulkMoveSelected() {
 
 async function bulkApplyAllChanges() {
     if (selectedTasks.size === 0) return;
-    const assigneeUserId = document.getElementById('bulkAssigneeSelect')?.value || '';
+    const assigneeUserId = document.getElementById('bulkAssigneeSelect')?.value;
     const bucketId = document.getElementById('bulkBucketSelect')?.value || '';
     const priorityVal = document.getElementById('bulkPrioritySelect')?.value || '';
     const progressVal = document.getElementById('bulkProgressSelect')?.value || '';
@@ -2486,9 +2486,13 @@ async function bulkApplyAllChanges() {
     const dueDate = document.getElementById('bulkDueDate')?.value || '';
     
     // Only proceed if there's at least one change to apply
-    if (!assigneeUserId && !bucketId && !priorityVal && !progressVal && !startDate && !dueDate) {
-        alert('Please select at least one field to change');
-        return;
+    // Note: assigneeUserId can be undefined (no change), '' (no change), or a user ID
+    if (assigneeUserId === undefined || assigneeUserId === '') {
+        // If assignee is not changed, check if anything else is being changed
+        if (!bucketId && !priorityVal && !progressVal && !startDate && !dueDate) {
+            alert('Please select at least one field to change');
+            return;
+        }
     }
     
     try {
@@ -2502,8 +2506,8 @@ async function bulkApplyAllChanges() {
             const etag = task['@odata.etag'];
             const body = {};
             
-            // Handle assignee
-            if (assigneeUserId) {
+            // Handle assignee - only if a specific value was chosen (not empty/no change)
+            if (assigneeUserId && assigneeUserId !== '') {
                 if (!body.assignments) body.assignments = task.assignments || {};
                 body.assignments[assigneeUserId] = { '@odata.type': '#microsoft.graph.plannerAssignment', orderHint: ' !' };
                 // Remove from other assignees
@@ -2511,12 +2515,6 @@ async function bulkApplyAllChanges() {
                     if (uid !== assigneeUserId && uid !== '@odata.type') {
                         body.assignments[uid] = null;
                     }
-                });
-            } else if (assigneeUserId === '' && Object.keys(task.assignments || {}).length > 0) {
-                // Unassign all
-                body.assignments = {};
-                Object.keys(task.assignments).forEach(uid => {
-                    if (uid !== '@odata.type') body.assignments[uid] = null;
                 });
             }
             
