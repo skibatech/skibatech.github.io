@@ -630,7 +630,8 @@ body.unauthenticated #refreshBtn {
 
 .assignee-header {
     padding: 12px 16px;
-    background: #e8f4f8;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -638,14 +639,17 @@ body.unauthenticated #refreshBtn {
     font-weight: 600;
     user-select: none;
     font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .assignee-header:hover {
-    background: #d4e8f0;
+    background: var(--bg-hover);
 }
 
 .assignee-header.expanded {
-    background: #d4e8f0;
+    background: var(--bg-hover);
 }
 
 .assignee-content {
@@ -668,24 +672,27 @@ body.unauthenticated #refreshBtn {
 
 .bucket-header.nested {
     padding: 8px 12px;
-    background: #f5f5f5;
+    background: var(--bg-secondary);
     font-size: 13px;
     font-weight: 500;
-    color: #424242;
+    color: var(--text-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
     user-select: none;
     justify-content: flex-start;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .bucket-header.nested:hover {
-    background: #ececec;
+    background: var(--bg-hover);
 }
 
 .bucket-header.nested.expanded {
-    background: #ececec;
+    background: var(--bg-hover);
 }
 
 .task-list.nested {
