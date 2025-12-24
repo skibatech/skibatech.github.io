@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <title>Planner Admin Portal</title>
+    <link rel="stylesheet" href="planner.css">
+    <style>
+        .admin-shell { max-width: 1100px; margin: 0 auto; }
+        .card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px var(--shadow); margin-bottom: 16px; }
+        .card h3 { margin-bottom: 10px; font-size: 15px; }
+        .grid-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+        .muted { color: var(--text-muted); font-size: 12px; }
+        .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; }
+        .status-inline { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+        .pill { padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-tertiary); }
+        .unauth { border: 1px solid #f3c0c0; background: #fff5f5; color: #b00020; padding: 12px 14px; border-radius: 6px; margin-bottom: 12px; }
+    </style>
+</head>
+<body class="unauthenticated">
+    <div class="admin-shell">
+        <div class="header" style="align-items: center;">
+            <div>
+                <h1>Planner Admin Portal</h1>
+                <div class="muted">Manage configuration, admin list, and theme names</div>
+            </div>
+            <div class="status-inline">
+                <span class="pill">v<span id="versionDisplay">-</span></span>
+                <span id="adminStatus" class="status">Not connected</span>
+            </div>
+        </div>
+
+        <div class="card" style="display:flex; gap:10px; align-items:center;">
+            <button id="signInBtn" onclick="login()">Sign In with Microsoft</button>
+            <button id="signOutBtn" style="display:none;" onclick="signOut()">Sign out</button>
+            <button onclick="loadSettingsFromStorage()" class="primary-btn" style="margin-right:auto;">Reload Local Settings</button>
+            <div class="muted">Requires assigned Entra app role <strong>PlannerAdmin</strong> or admin email entry.</div>
+        </div>
+
+        <div id="unauthorizedPanel" class="unauth" style="display:none;">Not authorized for admin actions. If you expect access, ensure you have the PlannerAdmin app role or are listed in Admin Users.</div>
+
+        <div id="adminContent" style="display:none;">
+            <div class="grid-two">
+                <div class="card">
+                    <h3>Configuration</h3>
+                    <div class="form-group">
+                        <label class="form-label">Client ID</label>
+                        <input type="text" id="clientIdInput" class="task-input" placeholder="Azure App Registration Client ID">
+                        <div class="muted">Azure AD app client ID</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Plan ID</label>
+                        <input type="text" id="planIdInput" class="task-input" placeholder="Planner Plan ID">
+                        <div class="muted">Planner plan ID used for tasks</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Admin Group ID (Entra)</label>
+                        <input type="text" id="adminGroupIdInput" class="task-input" placeholder="Object ID of ST-PlannerPro-Admins">
+                        <div class="muted">If set, membership grants admin access. Falls back to Admin Users list if missing or not a member.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Authority URL</label>
+                        <input type="text" id="authorityInput" class="task-input" placeholder="https://login.microsoftonline.com/tenant">
+                        <div class="muted">Azure AD authority endpoint</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Allowed Tenants</label>
+                        <input type="text" id="allowedTenantsInput" class="task-input" placeholder="tenant1.com, tenant2.com">
+                        <div class="muted">Comma-separated allowed tenant domains</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Task ID Prefix</label>
+                        <input type="text" id="taskIdPrefixInput" class="task-input" placeholder="e.g., STE" maxlength="10" style="text-transform: uppercase;">
+                        <div class="muted">Prefix used for task IDs (e.g., STE-1234)</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Admin Users (Emails)</label>
+                        <textarea id="adminUsersInput" class="task-input" placeholder="admin1@skibatech.com, admin2@skibatech.com" style="min-height: 80px;"></textarea>
+                        <div class="muted">Comma-separated admin emails. Leave blank to allow any authenticated user with the PlannerAdmin role.</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Strategic Theme Names</h3>
+                    <div class="muted" style="margin-bottom:8px;">These labels sync to Microsoft Planner categories.</div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 1: Enhance Security & Compliance (Blue)</label>
+                        <input type="text" id="themeNameCategory5" class="task-input" placeholder="Enhance Security & Compliance">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 2: Optimize Efficiency & Automation (Green)</label>
+                        <input type="text" id="themeNameCategory4" class="task-input" placeholder="Optimize Efficiency & Automation">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 3: Improve Documentation (Yellow)</label>
+                        <input type="text" id="themeNameCategory3" class="task-input" placeholder="Improve Documentation">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 4: Streamline Reporting (Pink)</label>
+                        <input type="text" id="themeNameCategory1" class="task-input" placeholder="Streamline Reporting">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 5: Practical Modernization (Brown)</label>
+                        <input type="text" id="themeNameCategory7" class="task-input" placeholder="Practical Modernization">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 6: Develop Capabilities & Cross-Training (Aqua)</label>
+                        <input type="text" id="themeNameCategory9" class="task-input" placeholder="Develop Capabilities & Cross-Training">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Theme 7: Maintain Upgrades & Bug Fixes (Red)</label>
+                        <input type="text" id="themeNameCategory2" class="task-input" placeholder="Maintain Upgrades & Bug Fixes">
+                    </div>
+                </div>
+            </div>
+            <div class="card actions">
+                <button class="cancel-btn" onclick="loadSettingsFromStorage()">Reset Form</button>
+                <button onclick="saveAdminSettings()">Save & Sync</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-core.js"></script>
+</body>
+</html>

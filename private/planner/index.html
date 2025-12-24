@@ -67,6 +67,9 @@
                     <div class="profile-menu-item" onclick="showOptions()">
                         <span>⚙️</span> Options
                     </div>
+                        <div class="profile-menu-item" id="adminModeItem" style="display:none;" onclick="openAdminPortal()">
+                            <span>🛡️</span> Admin Mode
+                        </div>
                     <div class="profile-menu-item" onclick="toggleTheme()">
                         <span id="themeToggleIcon">🌙</span> <span id="themeToggleText">Dark Mode</span>
                     </div>
@@ -434,12 +437,6 @@
                     <div class="options-nav-item active" onclick="switchOptionsTab('views')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent; font-size: 13px;">
                         Views
                     </div>
-                    <div class="options-nav-item" onclick="switchOptionsTab('themes')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent; font-size: 13px;">
-                        Themes
-                    </div>
-                    <div class="options-nav-item" onclick="switchOptionsTab('configuration')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent; font-size: 13px;">
-                        Configuration
-                    </div>
                 </div>
                 
                 <!-- Right Content Panel -->
@@ -473,76 +470,6 @@
                         <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" id="showCompletedDefaultInput" style="cursor: pointer;">
                             <label class="form-label" style="margin: 0;">Show Completed by Default</label>
-                        </div>
-                    </div>
-                    
-                    <!-- Themes Tab -->
-                    <div id="themesTab" class="options-tab" style="display: none;">
-                        <h3 style="margin-bottom: 12px; font-size: 14px;">Strategic Theme Names</h3>
-                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Customize the names for your strategic themes. Each theme has a fixed color.</div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 1: Enhance Security & Compliance (Blue)</label>
-                            <input type="text" id="themeNameCategory5" class="task-input" placeholder="Enhance Security & Compliance">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 2: Optimize Efficiency & Automation (Green)</label>
-                            <input type="text" id="themeNameCategory4" class="task-input" placeholder="Optimize Efficiency & Automation">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 3: Improve Documentation (Yellow)</label>
-                            <input type="text" id="themeNameCategory3" class="task-input" placeholder="Improve Documentation">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 4: Streamline Reporting (Pink)</label>
-                            <input type="text" id="themeNameCategory1" class="task-input" placeholder="Streamline Reporting">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 5: Practical Modernization (Brown)</label>
-                            <input type="text" id="themeNameCategory7" class="task-input" placeholder="Practical Modernization">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 6: Develop Capabilities & Cross-Training (Aqua)</label>
-                            <input type="text" id="themeNameCategory9" class="task-input" placeholder="Develop Capabilities & Cross-Training">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Theme 7: Maintain Upgrades & Bug Fixes (Red)</label>
-                            <input type="text" id="themeNameCategory2" class="task-input" placeholder="Maintain Upgrades & Bug Fixes">
-                        </div>
-                        <div style="font-size: 12px; color: var(--text-muted);">Theme names are synced to Microsoft Planner and stored locally as backup. Changes will appear for all users of the plan.</div>
-                    </div>
-                    
-                    <!-- Configuration Tab -->
-                    <div id="configurationTab" class="options-tab" style="display: none;">
-                        <h3 style="margin-bottom: 16px; font-size: 14px;">Configuration</h3>
-                        <div class="form-group">
-                            <label class="form-label">Client ID</label>
-                            <input type="text" id="clientIdInput" class="task-input" placeholder="Azure App Registration Client ID">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Your Azure AD app client ID</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Plan ID</label>
-                            <input type="text" id="planIdInput" class="task-input" placeholder="Microsoft Planner Plan ID">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">The Planner plan ID to use for tasks</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Authority URL</label>
-                            <input type="text" id="authorityInput" class="task-input" placeholder="https://login.microsoftonline.com/tenant">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Azure AD authority endpoint for your tenant</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Allowed Tenants</label>
-                            <input type="text" id="allowedTenantsInput" class="task-input" placeholder="tenant1.com, tenant2.com">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Comma-separated list of allowed tenant domains</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Task ID Prefix</label>
-                            <input type="text" id="taskIdPrefixInput" class="task-input" placeholder="e.g., STE" maxlength="10" style="text-transform: uppercase;">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">This prefix will be used for task IDs (e.g., STE-1234)</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Admin Users (Emails)</label>
-                            <textarea id="adminUsersInput" class="task-input" placeholder="admin1@skibatech.com, admin2@skibatech.com" style="min-height: 80px;"></textarea>
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Comma-separated list of admin email addresses. Only admins can change themes and configuration. Leave blank to allow all users.</div>
                         </div>
                     </div>
                 </div>
