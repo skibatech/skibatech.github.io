@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.56'; // Fix Group By persistence and order themes in dropdowns
+const APP_VERSION = '1.4.57'; // Fix theme banner sort order - maintain Theme 1-7 sequence
 
 // Configuration
 let config = {
@@ -890,6 +890,19 @@ function renderByBucket(container, buckets, tasks) {
         groups = groupTasksBy(tasks, buckets, currentGroupBy);
     }
 
+    // Sort groups - special handling for themes to maintain order
+    groups = groups.sort((a, b) => {
+        if (currentGroupBy === 'theme') {
+            const themeOrder = ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'];
+            const aIdx = themeOrder.indexOf(a.id);
+            const bIdx = themeOrder.indexOf(b.id);
+            if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+        }
+        if (a.name === 'Unassigned') return 1;
+        if (b.name === 'Unassigned') return -1;
+        return a.name.localeCompare(b.name);
+    });
+
     groups.forEach(group => {
         let groupTasks = group.tasks;
         
@@ -1128,10 +1141,19 @@ function renderByAssignedBucket(container, buckets, tasks) {
 function renderSingleView(container, buckets, tasks, viewBy) {
     let groups = groupTasksBy(tasks, buckets, viewBy);
     
-    // Sort alphabetically
+    // Sort groups - special handling for themes to maintain order
     groups = groups.sort((a, b) => {
         if (a.name === 'Unassigned') return 1;
         if (b.name === 'Unassigned') return -1;
+        
+        // If grouping by theme, sort by theme order
+        if (viewBy === 'theme') {
+            const themeOrder = ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'];
+            const aIdx = themeOrder.indexOf(a.id);
+            const bIdx = themeOrder.indexOf(b.id);
+            if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+        }
+        
         return a.name.localeCompare(b.name);
     });
     
@@ -1146,10 +1168,19 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
     // Group by primary first
     const primaryGroups = groupTasksBy(tasks, buckets, primaryGroup);
     
-    // Sort primary groups alphabetically
+    // Sort primary groups - special handling for themes to maintain order
     primaryGroups.sort((a, b) => {
         if (a.name === 'Unassigned') return 1;
         if (b.name === 'Unassigned') return -1;
+        
+        // If primary group is theme, sort by theme order
+        if (primaryGroup === 'theme') {
+            const themeOrder = ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'];
+            const aIdx = themeOrder.indexOf(a.id);
+            const bIdx = themeOrder.indexOf(b.id);
+            if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+        }
+        
         return a.name.localeCompare(b.name);
     });
     
@@ -1191,7 +1222,16 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
         
         // Group the tasks within this primary group by secondary grouping
         const secondaryGroups = groupTasksBy(primaryGrp.tasks, buckets, secondaryGroup);
-        secondaryGroups.sort((a, b) => a.name.localeCompare(b.name));
+        secondaryGroups.sort((a, b) => {
+            // If secondary group is theme, sort by theme order
+            if (secondaryGroup === 'theme') {
+                const themeOrder = ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'];
+                const aIdx = themeOrder.indexOf(a.id);
+                const bIdx = themeOrder.indexOf(b.id);
+                if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+            }
+            return a.name.localeCompare(b.name);
+        });
         
         secondaryGroups.forEach(secondaryGrp => {
             const bucketId = secondaryGrp.name.toLowerCase().replace(/\\s+/g, '-') + '-' + primaryId;
