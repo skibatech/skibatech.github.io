@@ -291,7 +291,7 @@
     </div>
 
     <div id="taskDetailsModal" class="modal">
-        <div class="modal-content" style="max-width: 750px; max-height: 90vh;">
+        <div class="modal-content" style="max-width: 750px; max-height: 95vh; overflow-y: auto;">
             <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <span id="detailTaskTitle"></span>
                 <button class="cancel-btn" onclick="closeTaskDetailsModal()" style="padding: 4px 8px; font-size: 18px; line-height: 1;">×</button>
@@ -397,23 +397,25 @@
                                 </label>
                             </div>
                         </div>
-                        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e0e0e0;">
-                            <a id="openInPlannerLink" href="#" target="_blank" style="color: #0078d4; font-size: 13px; text-decoration: none;">
-                                📋 Open in Microsoft Planner →
-                            </a>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="form-group" style="margin-top: 16px;">
-                    <label class="form-label">Description</label>
-                    <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
+                <div style="border-top: 1px solid var(--border-color); margin-top: 16px; padding-top: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 100px;"></textarea>
+                    </div>
                 </div>
                 
-                <div class="modal-actions">
-                    <button class="cancel-btn" onclick="closeTaskDetailsModal()">Cancel</button>
-                    <button id="deleteTaskBtn" onclick="deleteTaskDetail()" style="background: #ef4444;">Delete</button>
-                    <button id="saveTaskBtn" onclick="saveTaskDetails()">Save Changes</button>
+                <div class="modal-actions" style="display: flex; justify-content: space-between; align-items: center;">
+                    <a id="openInPlannerLink" href="#" target="_blank" style="color: #0078d4; font-size: 13px; text-decoration: none;">
+                        📋 Open in Microsoft Planner →
+                    </a>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="cancel-btn" onclick="closeTaskDetailsModal()">Cancel</button>
+                        <button id="deleteTaskBtn" onclick="deleteTaskDetail()" style="background: #ef4444;">Delete</button>
+                        <button id="saveTaskBtn" onclick="saveTaskDetails()">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>

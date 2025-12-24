@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.47'; // Fix categoryNames undefined error
+const APP_VERSION = '1.4.48'; // Improve task editor layout: move description under themes, Planner link to footer
 
 // Configuration
 let config = {
