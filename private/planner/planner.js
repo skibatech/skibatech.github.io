@@ -2517,18 +2517,6 @@ async function saveOptions() {
         await loadTasks();
     }
 }
-    if (authority) {
-        config.authority = authority;
-        localStorage.setItem('plannerAuthority', authority);
-    }
-    
-    // Save allowed tenants
-    if (allowedTenants) {
-        config.allowedTenants = allowedTenants.split(',').map(t => t.trim());
-        localStorage.setItem('plannerAllowedTenants', allowedTenants);
-    }
-    }
-}
 
 async function createNewBucket() {
     const bucketName = document.getElementById('newBucketName').value.trim();
