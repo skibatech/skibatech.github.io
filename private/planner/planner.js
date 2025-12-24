@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.55'; // Add dark/light mode to admin portal
+const APP_VERSION = '1.4.56'; // Fix Group By persistence and order themes in dropdowns
 
 // Configuration
 let config = {
@@ -1561,30 +1561,27 @@ function changeView() {
     const groupBySelect = document.getElementById('groupBySelect');
     const currentGroupByValue = groupBySelect.value;
     
-    // Rebuild Group By options excluding the current view
-    groupBySelect.innerHTML = '<option value="none">None</option>';
-    const options = [
-        { value: 'bucket', label: 'Bucket' },
-        { value: 'assigned', label: 'Assigned to' },
-        { value: 'progress', label: 'Progress' },
-        { value: 'dueDate', label: 'Due date' },
-        { value: 'priority', label: 'Priority' },
-        { value: 'theme', label: 'Theme' }
-    ];
-    
-    options.forEach(opt => {
-        if (opt.value !== currentView) {
-            const option = document.createElement('option');
-            option.value = opt.value;
-            option.textContent = opt.label;
-            groupBySelect.appendChild(option);
+    // Hide/show options based on current view
+    Array.from(groupBySelect.options).forEach(opt => {
+        // Always show None, and hide options that match the current view
+        if (opt.value === 'none' || opt.value === newView) {
+            opt.style.display = opt.value === 'none' ? '' : 'none';
+        } else {
+            opt.style.display = '';
         }
     });
     
     // Restore previous selection if still valid, otherwise default to bucket or none
-    if (currentGroupByValue !== currentView && currentGroupByValue !== 'none') {
-        groupBySelect.value = currentGroupByValue;
-    } else if (currentView === 'assigned') {
+    const isCurrentSelectionHidden = currentGroupByValue === newView || currentGroupByValue === 'none';
+    if (!isCurrentSelectionHidden && groupBySelect.querySelector(`option[value="${currentGroupByValue}"]`)) {
+        if (groupBySelect.querySelector(`option[value="${currentGroupByValue}"]`).style.display !== 'none') {
+            groupBySelect.value = currentGroupByValue;
+        } else if (newView === 'assigned') {
+            groupBySelect.value = 'bucket';
+        } else {
+            groupBySelect.value = 'none';
+        }
+    } else if (newView === 'assigned') {
         groupBySelect.value = 'bucket';
     } else {
         groupBySelect.value = 'none';
