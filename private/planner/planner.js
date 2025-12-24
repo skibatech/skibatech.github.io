@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.43'; // Fix theme color header lookup using category ID
+const APP_VERSION = '1.4.44'; // Apply theme colors to nested views and ensure white text
 
 // Configuration
 let config = {
@@ -1110,6 +1110,16 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
         const primaryHeader = document.createElement('div');
         primaryHeader.className = 'assignee-header' + (isExpanded ? ' expanded' : '');
         primaryHeader.style.cursor = 'pointer';
+        
+        // Apply theme color if primary group is 'theme'
+        if (primaryGroup === 'theme') {
+            const themeColor = getThemeColorForCategoryId(primaryGrp.id);
+            if (themeColor) {
+                primaryHeader.style.background = themeColor;
+                primaryHeader.style.color = 'white';
+            }
+        }
+        
         primaryHeader.innerHTML = `
             <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
             <strong>${primaryGrp.name}</strong> (${primaryGrp.tasks.length} tasks)
@@ -1139,6 +1149,16 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             const bucketHeader = document.createElement('div');
             bucketHeader.className = 'bucket-header nested' + (bucketExpanded ? ' expanded' : '');
             bucketHeader.style.cursor = 'pointer';
+            
+            // Apply theme color if secondary group is 'theme'
+            if (secondaryGroup === 'theme') {
+                const themeColor = getThemeColorForCategoryId(secondaryGrp.id);
+                if (themeColor) {
+                    bucketHeader.style.background = themeColor;
+                    bucketHeader.style.color = 'white';
+                }
+            }
+            
             bucketHeader.innerHTML = `
                 <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
                 <span>${secondaryGrp.name}</span> (${secondaryGrp.tasks.length} tasks)
@@ -1285,12 +1305,9 @@ function renderGroup(container, group, buckets, isNested = false) {
     // Get theme color if viewing by theme
     let themeColorStyle = '';
     if (currentView === 'theme') {
-        console.log(`🎨 Rendering theme group: "${group.name}" (group.id: ${group.id}, currentView: ${currentView})`);
         const themeColor = getThemeColorForCategoryId(group.id);
-        console.log(`🎨 Theme color for category ${group.id}:`, themeColor);
         if (themeColor) {
             themeColorStyle = ` style="background: ${themeColor}; color: white;"`;
-            console.log(`🎨 Applied style: ${themeColorStyle}`);
         }
     }
     
