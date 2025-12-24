@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.59'; // Prefix theme names with Theme 1-7 in views
+const APP_VERSION = '1.4.60'; // Move theme toggle to right side of header
 
 // Configuration
 let config = {
