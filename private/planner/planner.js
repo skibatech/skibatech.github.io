@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.58'; // Add dark/light mode toggle to main header
+const APP_VERSION = '1.4.59'; // Prefix theme names with Theme 1-7 in views
 
 // Configuration
 let config = {
@@ -129,6 +129,14 @@ function getThemeDisplayName(categoryId) {
         || planCategoryDescriptions[categoryId]
         || THEME_DEFAULTS[categoryId]
         || 'Theme';
+}
+
+function getThemeDisplayNameWithPrefix(categoryId) {
+    const themeOrder = ['category5', 'category4', 'category3', 'category1', 'category7', 'category9', 'category2'];
+    const themeIdx = themeOrder.indexOf(categoryId);
+    const themeNum = themeIdx !== -1 ? themeIdx + 1 : '';
+    const themeName = getThemeDisplayName(categoryId);
+    return themeNum ? `Theme ${themeNum}: ${themeName}` : themeName;
 }
 
 function startResize(event, columnClass) {
@@ -1196,17 +1204,20 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
         primaryHeader.style.cursor = 'pointer';
         
         // Apply theme color if primary group is 'theme'
+        let primaryDisplayName = primaryGrp.name;
         if (primaryGroup === 'theme') {
             const themeColor = getThemeColorForCategoryId(primaryGrp.id);
             if (themeColor) {
                 primaryHeader.style.background = themeColor;
                 primaryHeader.style.color = 'white';
             }
+            // Use prefixed theme name for display
+            primaryDisplayName = getThemeDisplayNameWithPrefix(primaryGrp.id);
         }
         
         primaryHeader.innerHTML = `
             <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
-            <strong>${primaryGrp.name}</strong> (${primaryGrp.tasks.length} tasks)
+            <strong>${primaryDisplayName}</strong> (${primaryGrp.tasks.length} tasks)
         `;
         primaryHeader.onclick = (e) => {
             e.stopPropagation();
@@ -1244,17 +1255,20 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             bucketHeader.style.cursor = 'pointer';
             
             // Apply theme color if secondary group is 'theme'
+            let secondaryDisplayName = secondaryGrp.name;
             if (secondaryGroup === 'theme') {
                 const themeColor = getThemeColorForCategoryId(secondaryGrp.id);
                 if (themeColor) {
                     bucketHeader.style.background = themeColor;
                     bucketHeader.style.color = 'white';
                 }
+                // Use prefixed theme name for display
+                secondaryDisplayName = getThemeDisplayNameWithPrefix(secondaryGrp.id);
             }
             
             bucketHeader.innerHTML = `
                 <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
-                <span>${secondaryGrp.name}</span> (${secondaryGrp.tasks.length} tasks)
+                <span>${secondaryDisplayName}</span> (${secondaryGrp.tasks.length} tasks)
             `;
             bucketHeader.onclick = (e) => {
                 e.stopPropagation();
@@ -1397,18 +1411,21 @@ function renderGroup(container, group, buckets, isNested = false) {
     
     // Get theme color if viewing by theme
     let themeColorStyle = '';
+    let groupDisplayName = group.name;
     if (currentView === 'theme') {
         const themeColor = getThemeColorForCategoryId(group.id);
         if (themeColor) {
             themeColorStyle = ` style="background: ${themeColor}; color: white;"`;
         }
+        // Use prefixed theme name for display
+        groupDisplayName = getThemeDisplayNameWithPrefix(group.id);
     }
     
     bucketDiv.innerHTML = `
         <div class=\"bucket-header\"${themeColorStyle} onclick=\"toggleBucket(this)\">
             <div class=\"bucket-title\">
                 <span class=\"expand-icon\">▶</span>
-                ${group.name}
+                ${groupDisplayName}
                 <span class=\"task-count\">${groupTasks.length}</span>
             </div>
         </div>
