@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.39'; // Fix Options modal layout and button styling
+const APP_VERSION = '1.4.40'; // Match Add task button color and set default bucket to To Do
 
 // Configuration
 let config = {
@@ -1670,6 +1670,15 @@ function toggleBucket(header) {
 }
 
 function showAddTask(bucketId, bucketName) {
+    // Default to "To Do" bucket if no bucket specified
+    if (!bucketId) {
+        const toDoBucket = allBuckets.find(b => b.name.toLowerCase() === 'to do');
+        if (toDoBucket) {
+            bucketId = toDoBucket.id;
+            bucketName = toDoBucket.name;
+        }
+    }
+    
     currentBucketId = bucketId;
     currentBucketName = bucketName;
     document.getElementById('addTaskModal').classList.add('show');
