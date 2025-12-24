@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.36'; // Reorganize Options modal with Views/Configuration left panel navigation
+const APP_VERSION = '1.4.37'; // Fix hardcoded colors for proper dark mode theming
 
 // Configuration
 let config = {

@@ -61,7 +61,7 @@ body {
 }
 
 .header h1 {
-    color: white;
+    color: var(--text-primary);
     font-size: 18px;
 }
 
@@ -105,16 +105,19 @@ button:disabled {
 
 .bucket-header {
     padding: 10px 16px;
-    background: #f0f0f0;
+    background: var(--bg-secondary);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     user-select: none;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
 }
 
 .bucket-header:hover {
-    background: #e8e8e8;
+    background: var(--bg-hover);
 }
 
 .bucket-title {
@@ -162,8 +165,8 @@ button:disabled {
     font-size: 12px;
     font-weight: 600;
     color: var(--text-secondary);
-    background: #fafafa;
-    border-bottom: 1px solid #e0e0e0;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
     align-items: center;
 }
 
