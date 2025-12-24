@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.51'; // Add automatic sync of theme names to Microsoft Planner
+const APP_VERSION = '1.4.52'; // Add admin mode - restrict theme/config changes to admins only
 
 // Configuration
 let config = {
@@ -24,6 +24,8 @@ let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
 let allUsers = {}; // Store user details: { userId: displayName }
 let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
+let adminUsers = (localStorage.getItem('plannerAdminUsers') || '').split(',').map(e => e.trim().toLowerCase()).filter(e => e);
+let currentUserEmail = null; // Store current user's email
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
@@ -615,6 +617,7 @@ async function updateAuthUI(isAuthenticated) {
                 const user = await response.json();
                 const name = user.displayName || 'User';
                 const email = user.userPrincipalName || user.mail || '';
+                currentUserEmail = email.toLowerCase(); // Store for admin checks
                 document.getElementById('profileName').textContent = name;
                 document.getElementById('profileEmail').textContent = email;
                 
@@ -2308,6 +2311,7 @@ function showOptions() {
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
+    document.getElementById('adminUsersInput').value = adminUsers.join(', ');
     // Load theme names
     document.getElementById('themeNameCategory5').value = customThemeNames['category5'] || '';
     document.getElementById('themeNameCategory4').value = customThemeNames['category4'] || '';
@@ -2316,11 +2320,24 @@ function showOptions() {
     document.getElementById('themeNameCategory7').value = customThemeNames['category7'] || '';
     document.getElementById('themeNameCategory9').value = customThemeNames['category9'] || '';
     document.getElementById('themeNameCategory2').value = customThemeNames['category2'] || '';
+    
+    // Show/hide admin-only tabs
+    const userIsAdmin = isAdmin();
+    const navItems = document.querySelectorAll('.options-nav-item');
+    navItems[1].style.display = userIsAdmin ? 'block' : 'none'; // Themes tab
+    navItems[2].style.display = userIsAdmin ? 'block' : 'none'; // Configuration tab
+    
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
 }
 
 function switchOptionsTab(tab) {
+    // Check admin permissions for restricted tabs
+    if ((tab === 'themes' || tab === 'configuration') && !isAdmin()) {
+        console.warn('Access denied: Admin only');
+        return;
+    }
+    
     // Hide all tabs
     document.getElementById('viewsTab').style.display = 'none';
     document.getElementById('themesTab').style.display = 'none';
@@ -2346,6 +2363,13 @@ function switchOptionsTab(tab) {
 
 function closeOptions() {
     document.getElementById('optionsModal').style.display = 'none';
+}
+
+function isAdmin() {
+    if (!currentUserEmail) return false;
+    // If no admins configured, everyone is admin
+    if (adminUsers.length === 0) return true;
+    return adminUsers.includes(currentUserEmail);
 }
 
 async function syncThemesToPlanner(themeNames) {
@@ -2405,20 +2429,94 @@ async function saveOptions() {
     const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
     const prefix = document.getElementById('taskIdPrefixInput').value.trim().toUpperCase();
+    const adminUsersInput = document.getElementById('adminUsersInput').value.trim();
     
-    // Save clientId
-    if (clientId) {
-        config.clientId = clientId;
-        localStorage.setItem('plannerClientId', clientId);
+    // Check if user is admin for restricted settings
+    const userIsAdmin = isAdmin();
+    
+    // Anyone can save view preferences
+    currentView = defaultView;
+    localStorage.setItem('plannerDefaultView', defaultView);
+    currentGroupBy = defaultGroupBy;
+    localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
+    showCompleted = showCompletedDefault;
+    localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
+    
+    // Admin-only settings
+    if (userIsAdmin) {
+        // Save clientId
+        if (clientId) {
+            config.clientId = clientId;
+            localStorage.setItem('plannerClientId', clientId);
+        }
+        
+        // Save planId
+        if (planIdValue) {
+            planId = planIdValue;
+            localStorage.setItem('plannerPlanId', planIdValue);
+        }
+        
+        // Save authority
+        if (authority) {
+            config.authority = authority;
+            localStorage.setItem('plannerAuthority', authority);
+        }
+        
+        // Save allowed tenants
+        if (allowedTenants) {
+            config.allowedTenants = allowedTenants.split(',').map(t => t.trim());
+            localStorage.setItem('plannerAllowedTenants', allowedTenants);
+        }
+        
+        // Save prefix
+        if (prefix) {
+            taskIdPrefix = prefix;
+            localStorage.setItem('taskIdPrefix', prefix);
+        }
+        
+        // Save admin users
+        if (adminUsersInput) {
+            adminUsers = adminUsersInput.split(',').map(e => e.trim().toLowerCase()).filter(e => e);
+            localStorage.setItem('plannerAdminUsers', adminUsersInput);
+        } else {
+            adminUsers = [];
+            localStorage.removeItem('plannerAdminUsers');
+        }
+        
+        // Save custom theme names
+        const updatedThemes = {
+            category5: document.getElementById('themeNameCategory5').value.trim(),
+            category4: document.getElementById('themeNameCategory4').value.trim(),
+            category3: document.getElementById('themeNameCategory3').value.trim(),
+            category1: document.getElementById('themeNameCategory1').value.trim(),
+            category7: document.getElementById('themeNameCategory7').value.trim(),
+            category9: document.getElementById('themeNameCategory9').value.trim(),
+            category2: document.getElementById('themeNameCategory2').value.trim()
+        };
+        // Remove empties so defaults fall back
+        Object.keys(updatedThemes).forEach(k => {
+            if (!updatedThemes[k]) delete updatedThemes[k];
+        });
+        customThemeNames = updatedThemes;
+        localStorage.setItem('customThemeNames', JSON.stringify(customThemeNames));
+        
+        // Also sync to Planner
+        const syncSuccess = await syncThemesToPlanner(updatedThemes);
+        
+        closeOptions();
+        if (syncSuccess) {
+            alert('Settings saved and synced to Microsoft Planner!');
+        } else {
+            alert('Settings saved locally. Note: Sync to Planner failed - theme names are stored locally only.');
+        }
+        await loadTasks(); // Reload to show updated names
+    } else {
+        // Non-admin just saves view preferences
+        closeOptions();
+        alert('View preferences saved!');
+        await loadTasks();
     }
-    
-    // Save planId
-    if (planIdValue) {
-        planId = planIdValue;
-        localStorage.setItem('plannerPlanId', planIdValue);
-    }
-    
-    // Save authority
+}
     if (authority) {
         config.authority = authority;
         localStorage.setItem('plannerAuthority', authority);
@@ -2429,52 +2527,7 @@ async function saveOptions() {
         config.allowedTenants = allowedTenants.split(',').map(t => t.trim());
         localStorage.setItem('plannerAllowedTenants', allowedTenants);
     }
-    
-    // Save default view
-    currentView = defaultView;
-    localStorage.setItem('plannerDefaultView', defaultView);
-    
-    // Save default group by
-    currentGroupBy = defaultGroupBy;
-    localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
-    
-    // Save show completed default
-    showCompleted = showCompletedDefault;
-    localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
-    
-    // Save prefix
-    if (prefix) {
-        taskIdPrefix = prefix;
-        localStorage.setItem('taskIdPrefix', prefix);
     }
-    
-    // Save custom theme names
-    const updatedThemes = {
-        category5: document.getElementById('themeNameCategory5').value.trim(),
-        category4: document.getElementById('themeNameCategory4').value.trim(),
-        category3: document.getElementById('themeNameCategory3').value.trim(),
-        category1: document.getElementById('themeNameCategory1').value.trim(),
-        category7: document.getElementById('themeNameCategory7').value.trim(),
-        category9: document.getElementById('themeNameCategory9').value.trim(),
-        category2: document.getElementById('themeNameCategory2').value.trim()
-    };
-    // Remove empties so defaults fall back
-    Object.keys(updatedThemes).forEach(k => {
-        if (!updatedThemes[k]) delete updatedThemes[k];
-    });
-    customThemeNames = updatedThemes;
-    localStorage.setItem('customThemeNames', JSON.stringify(customThemeNames));
-    
-    // Also sync to Planner
-    const syncSuccess = await syncThemesToPlanner(updatedThemes);
-    
-    closeOptions();
-    if (syncSuccess) {
-        alert('Settings saved and synced to Microsoft Planner!');
-    } else {
-        alert('Settings saved locally. Note: Sync to Planner failed - theme names are stored locally only.');
-    }
-    await loadTasks(); // Reload to show updated names
 }
 
 async function createNewBucket() {
