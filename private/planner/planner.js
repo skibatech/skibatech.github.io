@@ -1229,37 +1229,36 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
     applyColumnWidths();
 }
 
-function getThemeColorForName(themeName) {
-    // Map theme names to their category keys and colors
-    const themeColorMap = {
-        'Pink': { cat: 'category1', color: '#c2185b' },
-        'Red': { cat: 'category2', color: '#c62828' },
-        'Yellow': { cat: 'category3', color: '#f57f17' },
-        'Green': { cat: 'category4', color: '#388e3c' },
-        'Blue': { cat: 'category5', color: '#1565c0' },
-        'Purple': { cat: 'category6', color: '#6a1b9a' },
-        'Bronze': { cat: 'category7', color: '#5d4037' },
-        'Lime': { cat: 'category8', color: '#9ccc65' },
-        'Aqua': { cat: 'category9', color: '#00838f' },
-        'Gray': { cat: 'category10', color: '#424242' },
-        'Silver': { cat: 'category11', color: '#424242' },
-        'Brown': { cat: 'category12', color: '#3e2723' },
-        'Cranberry': { cat: 'category13', color: '#880e4f' },
-        'Orange': { cat: 'category14', color: '#e65100' },
-        'Peach': { cat: 'category15', color: '#bf360c' },
-        'Marigold': { cat: 'category16', color: '#f57f17' },
-        'Light green': { cat: 'category17', color: '#689f38' },
-        'Dark green': { cat: 'category18', color: '#1b5e20' },
-        'Teal': { cat: 'category19', color: '#00695c' },
-        'Light blue': { cat: 'category20', color: '#01579b' },
-        'Dark blue': { cat: 'category21', color: '#0d47a1' },
-        'Indigo': { cat: 'category22', color: '#4527a0' },
-        'Plum': { cat: 'category23', color: '#6a1b9a' },
-        'Light gray': { cat: 'category24', color: '#616161' },
-        'Dark gray': { cat: 'category25', color: '#212121' }
+function getThemeColorForCategoryId(categoryId) {
+    // Map category IDs directly to their colors
+    const colors = {
+        'category1': '#c2185b',
+        'category2': '#c62828',
+        'category3': '#f57f17',
+        'category4': '#388e3c',
+        'category5': '#1565c0',
+        'category6': '#6a1b9a',
+        'category7': '#5d4037',
+        'category8': '#9ccc65',
+        'category9': '#00838f',
+        'category10': '#424242',
+        'category11': '#424242',
+        'category12': '#3e2723',
+        'category13': '#880e4f',
+        'category14': '#e65100',
+        'category15': '#bf360c',
+        'category16': '#f57f17',
+        'category17': '#689f38',
+        'category18': '#1b5e20',
+        'category19': '#00695c',
+        'category20': '#01579b',
+        'category21': '#0d47a1',
+        'category22': '#4527a0',
+        'category23': '#6a1b9a',
+        'category24': '#616161',
+        'category25': '#212121'
     };
-    
-    return themeColorMap[themeName] || null;
+    return colors[categoryId] || null;
 }
 
 function renderGroup(container, group, buckets, isNested = false) {
@@ -1286,11 +1285,11 @@ function renderGroup(container, group, buckets, isNested = false) {
     // Get theme color if viewing by theme
     let themeColorStyle = '';
     if (currentView === 'theme') {
-        console.log(`🎨 Rendering theme group: "${group.name}" (currentView: ${currentView})`);
-        const themeInfo = getThemeColorForName(group.name);
-        console.log(`🎨 Theme info for "${group.name}":`, themeInfo);
-        if (themeInfo) {
-            themeColorStyle = ` style="background: ${themeInfo.color}; color: white;"`;
+        console.log(`🎨 Rendering theme group: "${group.name}" (group.id: ${group.id}, currentView: ${currentView})`);
+        const themeColor = getThemeColorForCategoryId(group.id);
+        console.log(`🎨 Theme color for category ${group.id}:`, themeColor);
+        if (themeColor) {
+            themeColorStyle = ` style="background: ${themeColor}; color: white;"`;
             console.log(`🎨 Applied style: ${themeColorStyle}`);
         }
     }
