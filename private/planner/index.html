@@ -13,6 +13,9 @@
         <h1>SkibaTech Engineering - Planner Pro</h1>
         <div class="auth-section">
             <button onclick="showAddTask(null, null)" class="primary-btn">+ New Task</button>
+            <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;">
+                <span id="themeToggleIcon">🌙</span>
+            </button>
             
             <div style="display: flex; gap: 15px; align-items: center; margin-right: 15px;">
                 <div>
@@ -70,9 +73,6 @@
                         <div class="profile-menu-item" id="adminModeItem" style="display:none;" onclick="openAdminPortal()">
                             <span>🛡️</span> Admin Mode
                         </div>
-                    <div class="profile-menu-item" onclick="toggleTheme()">
-                        <span id="themeToggleIcon">🌙</span> <span id="themeToggleText">Dark Mode</span>
-                    </div>
                     <div class="profile-menu-item" onclick="signOut()">
                         <span>🚪</span> Sign out
                     </div>

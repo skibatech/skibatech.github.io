@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.57'; // Fix theme banner sort order - maintain Theme 1-7 sequence
+const APP_VERSION = '1.4.58'; // Add dark/light mode toggle to main header
 
 // Configuration
 let config = {
@@ -365,20 +365,19 @@ function toggleSelectAll(el) {
 // Theme toggle functionality
 function toggleTheme() {
     const body = document.body;
-    const themeIcon = document.getElementById('themeToggleIcon');
-    const themeText = document.getElementById('themeToggleText');
     
     if (body.classList.contains('dark-mode')) {
         body.classList.remove('dark-mode');
-        if (themeIcon) themeIcon.textContent = '🌙';
-        if (themeText) themeText.textContent = 'Dark Mode';
         localStorage.setItem('theme', 'light');
     } else {
         body.classList.add('dark-mode');
-        if (themeIcon) themeIcon.textContent = '☀️';
-        if (themeText) themeText.textContent = 'Light Mode';
         localStorage.setItem('theme', 'dark');
     }
+    
+    // Update all theme toggle icons
+    document.querySelectorAll('#themeToggleIcon').forEach(icon => {
+        icon.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
 }
 
 function initializeTheme() {
