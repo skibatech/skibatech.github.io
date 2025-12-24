@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.48'; // Improve task editor layout: move description under themes, Planner link to footer
+const APP_VERSION = '1.4.50'; // Fix theme-to-category mappings to match Planner colors
 
 // Configuration
 let config = {
@@ -27,15 +27,15 @@ let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurabl
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
 const THEME_DEFAULTS = {
-    category1: 'Pink',
-    category2: 'Red',
-    category3: 'Yellow',
-    category4: 'Green',
-    category5: 'Blue',
+    category1: 'Streamline Reporting',
+    category2: 'Maintain Upgrades & Bug Fixes',
+    category3: 'Improve Documentation',
+    category4: 'Optimize Efficiency & Automation',
+    category5: 'Enhance Security & Compliance',
     category6: 'Purple',
-    category7: 'Bronze',
+    category7: 'Practical Modernization',
     category8: 'Lime',
-    category9: 'Aqua',
+    category9: 'Develop Capabilities & Cross-Training',
     category10: 'Gray',
     category11: 'Silver',
     category12: 'Brown',
@@ -1497,8 +1497,8 @@ function groupTasksBy(tasks, buckets, groupBy) {
             case 'theme': {
                 const applied = task.appliedCategories || {};
                 const ordered = [
-                    'category1','category2','category3','category4','category5',
-                    'category7','category9'
+                    'category5','category4','category3','category1','category7',
+                    'category9','category2'
                 ];
                 // Find ALL applied themes, not just the first one
                 const appliedThemes = ordered.filter(cat => applied[cat]);
@@ -2307,13 +2307,13 @@ function showOptions() {
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
     // Load theme names
-    document.getElementById('themeNameCategory1').value = customThemeNames['category1'] || '';
-    document.getElementById('themeNameCategory2').value = customThemeNames['category2'] || '';
-    document.getElementById('themeNameCategory3').value = customThemeNames['category3'] || '';
-    document.getElementById('themeNameCategory4').value = customThemeNames['category4'] || '';
     document.getElementById('themeNameCategory5').value = customThemeNames['category5'] || '';
+    document.getElementById('themeNameCategory4').value = customThemeNames['category4'] || '';
+    document.getElementById('themeNameCategory3').value = customThemeNames['category3'] || '';
+    document.getElementById('themeNameCategory1').value = customThemeNames['category1'] || '';
     document.getElementById('themeNameCategory7').value = customThemeNames['category7'] || '';
     document.getElementById('themeNameCategory9').value = customThemeNames['category9'] || '';
+    document.getElementById('themeNameCategory2').value = customThemeNames['category2'] || '';
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
 }
@@ -2400,13 +2400,13 @@ function saveOptions() {
     
     // Save custom theme names (local only)
     const updatedThemes = {
-        category1: document.getElementById('themeNameCategory1').value.trim(),
-        category2: document.getElementById('themeNameCategory2').value.trim(),
-        category3: document.getElementById('themeNameCategory3').value.trim(),
-        category4: document.getElementById('themeNameCategory4').value.trim(),
         category5: document.getElementById('themeNameCategory5').value.trim(),
+        category4: document.getElementById('themeNameCategory4').value.trim(),
+        category3: document.getElementById('themeNameCategory3').value.trim(),
+        category1: document.getElementById('themeNameCategory1').value.trim(),
         category7: document.getElementById('themeNameCategory7').value.trim(),
-        category9: document.getElementById('themeNameCategory9').value.trim()
+        category9: document.getElementById('themeNameCategory9').value.trim(),
+        category2: document.getElementById('themeNameCategory2').value.trim()
     };
     // Remove empties so defaults fall back
     Object.keys(updatedThemes).forEach(k => {
