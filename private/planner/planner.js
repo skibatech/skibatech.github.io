@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.41'; // Darken theme colors for better visibility in dark mode
+const APP_VERSION = '1.4.42'; // Color group headers by theme color when viewing By Theme
 
 // Configuration
 let config = {
@@ -1229,6 +1229,39 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
     applyColumnWidths();
 }
 
+function getThemeColorForName(themeName) {
+    // Map theme names to their category keys and colors
+    const themeColorMap = {
+        'Pink': { cat: 'category1', color: '#c2185b' },
+        'Red': { cat: 'category2', color: '#c62828' },
+        'Yellow': { cat: 'category3', color: '#f57f17' },
+        'Green': { cat: 'category4', color: '#388e3c' },
+        'Blue': { cat: 'category5', color: '#1565c0' },
+        'Purple': { cat: 'category6', color: '#6a1b9a' },
+        'Bronze': { cat: 'category7', color: '#5d4037' },
+        'Lime': { cat: 'category8', color: '#9ccc65' },
+        'Aqua': { cat: 'category9', color: '#00838f' },
+        'Gray': { cat: 'category10', color: '#424242' },
+        'Silver': { cat: 'category11', color: '#424242' },
+        'Brown': { cat: 'category12', color: '#3e2723' },
+        'Cranberry': { cat: 'category13', color: '#880e4f' },
+        'Orange': { cat: 'category14', color: '#e65100' },
+        'Peach': { cat: 'category15', color: '#bf360c' },
+        'Marigold': { cat: 'category16', color: '#f57f17' },
+        'Light green': { cat: 'category17', color: '#689f38' },
+        'Dark green': { cat: 'category18', color: '#1b5e20' },
+        'Teal': { cat: 'category19', color: '#00695c' },
+        'Light blue': { cat: 'category20', color: '#01579b' },
+        'Dark blue': { cat: 'category21', color: '#0d47a1' },
+        'Indigo': { cat: 'category22', color: '#4527a0' },
+        'Plum': { cat: 'category23', color: '#6a1b9a' },
+        'Light gray': { cat: 'category24', color: '#616161' },
+        'Dark gray': { cat: 'category25', color: '#212121' }
+    };
+    
+    return themeColorMap[themeName] || null;
+}
+
 function renderGroup(container, group, buckets, isNested = false) {
     let groupTasks = group.tasks;
     
@@ -1250,8 +1283,17 @@ function renderGroup(container, group, buckets, isNested = false) {
     // Check if all tasks in this group are selected
     const allSelected = groupTasks.every(t => selectedTasks.has(t.id));
     
+    // Get theme color if viewing by theme
+    let themeColorStyle = '';
+    if (currentView === 'theme') {
+        const themeInfo = getThemeColorForName(group.name);
+        if (themeInfo) {
+            themeColorStyle = ` style="background: ${themeInfo.color}; color: white;"`;
+        }
+    }
+    
     bucketDiv.innerHTML = `
-        <div class=\"bucket-header\" onclick=\"toggleBucket(this)\">
+        <div class=\"bucket-header\"${themeColorStyle} onclick=\"toggleBucket(this)\">
             <div class=\"bucket-title\">
                 <span class=\"expand-icon\">▶</span>
                 ${group.name}
