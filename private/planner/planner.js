@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.46'; // Add description to edit modal, fix theme header text in light mode
+const APP_VERSION = '1.4.47'; // Fix categoryNames undefined error
 
 // Configuration
 let config = {
@@ -1697,11 +1697,6 @@ function renderTask(task) {
             'category24': '#616161',
             'category25': '#212121'
         };
-        
-        // Debug: log if this is TEST123
-        if (categoryNames[cat] && categoryNames[cat].includes('TEST')) {
-            console.log(`🏷️  Label: ${categoryNames[cat]} | Category: ${cat} | Color: ${colors[cat]}`);
-        }
         
         return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${getThemeDisplayName(cat)}</span>`;
     }).join('');
