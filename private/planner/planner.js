@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.37'; // Fix hardcoded colors for proper dark mode theming
+const APP_VERSION = '1.4.38'; // Fix group/bucket header colors in dark mode
 
 // Configuration
 let config = {
