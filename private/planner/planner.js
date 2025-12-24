@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.50'; // Fix theme-to-category mappings to match Planner colors
+const APP_VERSION = '1.4.51'; // Add automatic sync of theme names to Microsoft Planner
 
 // Configuration
 let config = {
@@ -25,6 +25,7 @@ let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
 let allUsers = {}; // Store user details: { userId: displayName }
 let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
 let planCategoryDescriptions = {}; // Store custom label names for categories
+let planDetailsEtag = null; // Store etag for plan details updates
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
 const THEME_DEFAULTS = {
     category1: 'Streamline Reporting',
@@ -689,6 +690,7 @@ async function loadTasks() {
         if (planDetailsResponse.ok) {
             const planDetails = await planDetailsResponse.json();
             planCategoryDescriptions = planDetails.categoryDescriptions || {};
+            planDetailsEtag = planDetails['@odata.etag'];
         }
 
         // Get tasks
@@ -2346,7 +2348,55 @@ function closeOptions() {
     document.getElementById('optionsModal').style.display = 'none';
 }
 
-function saveOptions() {
+async function syncThemesToPlanner(themeNames) {
+    if (!accessToken || !planDetailsEtag) {
+        console.warn('Cannot sync themes: missing access token or plan details etag');
+        return false;
+    }
+    
+    try {
+        // Build category descriptions object with all 7 themes
+        const categoryDescriptions = {
+            category5: themeNames.category5 || THEME_DEFAULTS.category5,
+            category4: themeNames.category4 || THEME_DEFAULTS.category4,
+            category3: themeNames.category3 || THEME_DEFAULTS.category3,
+            category1: themeNames.category1 || THEME_DEFAULTS.category1,
+            category7: themeNames.category7 || THEME_DEFAULTS.category7,
+            category9: themeNames.category9 || THEME_DEFAULTS.category9,
+            category2: themeNames.category2 || THEME_DEFAULTS.category2
+        };
+        
+        const response = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/details`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': planDetailsEtag
+                },
+                body: JSON.stringify({ categoryDescriptions })
+            }
+        );
+        
+        if (response.ok) {
+            const updated = await response.json();
+            planCategoryDescriptions = updated.categoryDescriptions || {};
+            planDetailsEtag = updated['@odata.etag'];
+            console.log('✅ Theme names synced to Planner');
+            return true;
+        } else {
+            const error = await response.text();
+            console.error('Failed to sync themes to Planner:', error);
+            return false;
+        }
+    } catch (err) {
+        console.error('Error syncing themes to Planner:', err);
+        return false;
+    }
+}
+
+async function saveOptions() {
     const clientId = document.getElementById('clientIdInput').value.trim();
     const planIdValue = document.getElementById('planIdInput').value.trim();
     const authority = document.getElementById('authorityInput').value.trim();
@@ -2398,7 +2448,7 @@ function saveOptions() {
         localStorage.setItem('taskIdPrefix', prefix);
     }
     
-    // Save custom theme names (local only)
+    // Save custom theme names
     const updatedThemes = {
         category5: document.getElementById('themeNameCategory5').value.trim(),
         category4: document.getElementById('themeNameCategory4').value.trim(),
@@ -2415,8 +2465,16 @@ function saveOptions() {
     customThemeNames = updatedThemes;
     localStorage.setItem('customThemeNames', JSON.stringify(customThemeNames));
     
+    // Also sync to Planner
+    const syncSuccess = await syncThemesToPlanner(updatedThemes);
+    
     closeOptions();
-    alert('Settings saved. Changes will take effect on next reload.');
+    if (syncSuccess) {
+        alert('Settings saved and synced to Microsoft Planner!');
+    } else {
+        alert('Settings saved locally. Note: Sync to Planner failed - theme names are stored locally only.');
+    }
+    await loadTasks(); // Reload to show updated names
 }
 
 async function createNewBucket() {
