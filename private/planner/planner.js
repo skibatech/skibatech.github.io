@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.44'; // Apply theme colors to nested views and ensure white text
+const APP_VERSION = '1.4.45'; // Fix profile hover, tasks appear in all theme groups
 
 // Configuration
 let config = {
@@ -1465,14 +1465,24 @@ function groupTasksBy(tasks, buckets, groupBy) {
                     'category1','category2','category3','category4','category5',
                     'category7','category9'
                 ];
-                const selected = ordered.find(cat => applied[cat]);
-                if (selected) {
-                    key = selected;
+                // Find ALL applied themes, not just the first one
+                const appliedThemes = ordered.filter(cat => applied[cat]);
+                
+                if (appliedThemes.length > 0) {
+                    // Add task to each theme group it belongs to
                     const defaults = {
                         'category1': 'Pink', 'category2': 'Red', 'category3': 'Yellow',
                         'category4': 'Green', 'category5': 'Blue', 'category7': 'Bronze', 'category9': 'Aqua'
                     };
-                    name = planCategoryDescriptions[selected] || defaults[selected] || 'Theme';
+                    
+                    appliedThemes.forEach(cat => {
+                        const themeName = planCategoryDescriptions[cat] || defaults[cat] || 'Theme';
+                        if (!groups[cat]) {
+                            groups[cat] = { id: cat, name: themeName, tasks: [] };
+                        }
+                        groups[cat].tasks.push(task);
+                    });
+                    return; // Skip the default grouping logic below
                 } else {
                     key = 'no-theme';
                     name = 'No theme';
