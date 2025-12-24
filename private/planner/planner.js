@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.53'; // Add admin mode - restrict theme/config changes to admins only
+const APP_VERSION = '1.4.54'; // Tighten admin gating - deny access when group configured and user removed from group
 
 // Configuration
 let config = {
@@ -2352,8 +2352,10 @@ async function evaluateAdminStatus() {
     currentUserIsAdmin = false;
     if (!currentUserEmail) return false;
 
+    const groupConfigured = !!config.adminGroupId;
+
     // Group check if configured
-    if (config.adminGroupId && accessToken) {
+    if (groupConfigured && accessToken) {
         try {
             const res = await fetchGraph('https://graph.microsoft.com/v1.0/me/checkMemberGroups', {
                 method: 'POST',
@@ -2375,13 +2377,21 @@ async function evaluateAdminStatus() {
         }
     }
 
-    // Fallback to email list
-    if (adminUsers.length === 0) {
-        currentUserIsAdmin = true;
-    } else {
+    // Fallback to email list when provided
+    if (adminUsers.length > 0) {
         currentUserIsAdmin = adminUsers.includes(currentUserEmail);
+        return currentUserIsAdmin;
     }
-    return currentUserIsAdmin;
+
+    // If a group is configured and no email override, default to non-admin
+    if (groupConfigured) {
+        currentUserIsAdmin = false;
+        return false;
+    }
+
+    // No admin controls configured: allow access to avoid lockout
+    currentUserIsAdmin = true;
+    return true;
 }
 
 async function syncThemesToPlanner(themeNames) {
