@@ -476,8 +476,7 @@ textarea.task-input {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
-    margin-top: 20px;
-    padding: 16px;
+    padding: 16px 20px;
 }
 
 .options-nav-item {
@@ -505,12 +504,19 @@ textarea.task-input {
 }
 
 .cancel-btn {
-    background: #f0f0f0;
+    background: var(--bg-tertiary);
     color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .cancel-btn:hover {
-    background: #e0e0e0;
+    background: var(--bg-hover);
 }
 
 /* Security: Hide content until authenticated */

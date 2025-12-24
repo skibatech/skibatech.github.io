@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.38'; // Fix group/bucket header colors in dark mode
+const APP_VERSION = '1.4.39'; // Fix Options modal layout and button styling
 
 // Configuration
 let config = {
