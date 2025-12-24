@@ -1,5 +1,5 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.54-admin';
+const ADMIN_APP_VERSION = '1.4.55-admin';
 const ADMIN_ROLE = 'PlannerAdmin';
 
 let accessToken = null;
@@ -132,6 +132,34 @@ async function evaluateAdminStatus() {
 function initializeVersion() {
     const versionDisplay = $('versionDisplay');
     if (versionDisplay) versionDisplay.textContent = ADMIN_APP_VERSION;
+}
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+    updateThemeIcon();
+}
+
+function toggleTheme() {
+    const body = document.body;
+    if (body.classList.contains('dark-mode')) {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+    }
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const icon = $('themeToggleIcon');
+    const isDark = document.body.classList.contains('dark-mode');
+    if (icon) {
+        icon.textContent = isDark ? '☀️' : '🌙';
+    }
 }
 
 function loadSettingsFromStorage() {
@@ -466,6 +494,7 @@ async function saveAdminSettings() {
 
 window.addEventListener('DOMContentLoaded', () => {
     initializeVersion();
+    initializeTheme();
     loadSettingsFromStorage();
     handleRedirectCallback();
 });
@@ -475,3 +504,4 @@ window.login = login;
 window.signOut = signOut;
 window.saveAdminSettings = saveAdminSettings;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
+window.toggleTheme = toggleTheme;

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.54'; // Tighten admin gating - deny access when group configured and user removed from group
+const APP_VERSION = '1.4.55'; // Add dark/light mode to admin portal
 
 // Configuration
 let config = {
