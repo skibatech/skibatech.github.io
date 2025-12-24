@@ -227,10 +227,6 @@
                         <label class="form-label">Due Date</label>
                         <input type="date" id="newTaskDueDate" class="task-input">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <textarea id="newTaskNotes" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
-                    </div>
                 </div>
                 
                 <!-- Right Column -->
@@ -282,6 +278,11 @@
                 </div>
             </div>
             
+            <div class="form-group" style="margin-top: 16px;">
+                <label class="form-label">Description</label>
+                <textarea id="newTaskNotes" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
+            </div>
+            
             <div class="modal-actions">
                 <button class="cancel-btn" onclick="closeAddTaskModal()">Cancel</button>
                 <button id="createTaskBtn" onclick="createTaskFromModal()">Create Task</button>
@@ -330,10 +331,6 @@
                         <div class="form-group">
                             <label class="form-label">Due Date</label>
                             <input type="date" id="detailTaskDueDate" class="task-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
                         </div>
                     </div>
                     
@@ -408,6 +405,11 @@
                     </div>
                 </div>
                 
+                <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label">Description</label>
+                    <textarea id="detailTaskDescription" class="task-input" placeholder="Add task description" style="min-height: 120px;"></textarea>
+                </div>
+                
                 <div class="modal-actions">
                     <button class="cancel-btn" onclick="closeTaskDetailsModal()">Cancel</button>
                     <button id="deleteTaskBtn" onclick="deleteTaskDetail()" style="background: #ef4444;">Delete</button>
@@ -429,6 +431,9 @@
                 <div style="width: 200px; background: var(--bg-hover); border-right: 1px solid var(--border-color); padding: 16px 0; display: flex; flex-direction: column; flex-shrink: 0;">
                     <div class="options-nav-item active" onclick="switchOptionsTab('views')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent; font-size: 13px;">
                         Views
+                    </div>
+                    <div class="options-nav-item" onclick="switchOptionsTab('themes')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent; font-size: 13px;">
+                        Themes
                     </div>
                     <div class="options-nav-item" onclick="switchOptionsTab('configuration')" style="padding: 12px 16px; cursor: pointer; border-left: 4px solid transparent; font-size: 13px;">
                         Configuration
@@ -467,6 +472,41 @@
                             <input type="checkbox" id="showCompletedDefaultInput" style="cursor: pointer;">
                             <label class="form-label" style="margin: 0;">Show Completed by Default</label>
                         </div>
+                    </div>
+                    
+                    <!-- Themes Tab -->
+                    <div id="themesTab" class="options-tab" style="display: none;">
+                        <h3 style="margin-bottom: 12px; font-size: 14px;">Theme Names (local override)</h3>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Edit display names for Planner categories. Colors stay mapped to their categories.</div>
+                        <div class="form-group">
+                            <label class="form-label">Pink</label>
+                            <input type="text" id="themeNameCategory1" class="task-input" placeholder="Pink">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Red</label>
+                            <input type="text" id="themeNameCategory2" class="task-input" placeholder="Red">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Yellow</label>
+                            <input type="text" id="themeNameCategory3" class="task-input" placeholder="Yellow">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Green</label>
+                            <input type="text" id="themeNameCategory4" class="task-input" placeholder="Green">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Blue</label>
+                            <input type="text" id="themeNameCategory5" class="task-input" placeholder="Blue">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bronze</label>
+                            <input type="text" id="themeNameCategory7" class="task-input" placeholder="Bronze">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Aqua</label>
+                            <input type="text" id="themeNameCategory9" class="task-input" placeholder="Aqua">
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted);">(Local only for now. If you want, we can sync these to Planner category descriptions.)</div>
                     </div>
                     
                     <!-- Configuration Tab -->

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.45'; // Fix profile hover, tasks appear in all theme groups
+const APP_VERSION = '1.4.46'; // Add description to edit modal, fix theme header text in light mode
 
 // Configuration
 let config = {
@@ -25,6 +25,34 @@ let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
 let allUsers = {}; // Store user details: { userId: displayName }
 let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
 let planCategoryDescriptions = {}; // Store custom label names for categories
+let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
+const THEME_DEFAULTS = {
+    category1: 'Pink',
+    category2: 'Red',
+    category3: 'Yellow',
+    category4: 'Green',
+    category5: 'Blue',
+    category6: 'Purple',
+    category7: 'Bronze',
+    category8: 'Lime',
+    category9: 'Aqua',
+    category10: 'Gray',
+    category11: 'Silver',
+    category12: 'Brown',
+    category13: 'Cranberry',
+    category14: 'Orange',
+    category15: 'Peach',
+    category16: 'Marigold',
+    category17: 'Light green',
+    category18: 'Dark green',
+    category19: 'Teal',
+    category20: 'Light blue',
+    category21: 'Dark blue',
+    category22: 'Indigo',
+    category23: 'Plum',
+    category24: 'Light gray',
+    category25: 'Dark gray'
+};
 let taskSequentialIds = {}; // { taskId: number } assigned by createdDateTime order
 let selectedTasks = new Set(); // Track selected tasks for bulk operations
 let resizingColumn = null;
@@ -89,6 +117,13 @@ async function mapWithConcurrency(items, mapper, concurrency = GRAPH_MAX_CONCURR
         };
         next();
     });
+}
+
+function getThemeDisplayName(categoryId) {
+    return customThemeNames[categoryId]
+        || planCategoryDescriptions[categoryId]
+        || THEME_DEFAULTS[categoryId]
+        || 'Theme';
 }
 
 function startResize(event, columnClass) {
@@ -1470,13 +1505,8 @@ function groupTasksBy(tasks, buckets, groupBy) {
                 
                 if (appliedThemes.length > 0) {
                     // Add task to each theme group it belongs to
-                    const defaults = {
-                        'category1': 'Pink', 'category2': 'Red', 'category3': 'Yellow',
-                        'category4': 'Green', 'category5': 'Blue', 'category7': 'Bronze', 'category9': 'Aqua'
-                    };
-                    
                     appliedThemes.forEach(cat => {
-                        const themeName = planCategoryDescriptions[cat] || defaults[cat] || 'Theme';
+                        const themeName = getThemeDisplayName(cat);
                         if (!groups[cat]) {
                             groups[cat] = { id: cat, name: themeName, tasks: [] };
                         }
@@ -1640,33 +1670,6 @@ function renderTask(task) {
     }
     
     const categoryBadges = Object.keys(appliedCategories).map(cat => {
-        const categoryNames = {
-            'category1': planCategoryDescriptions.category1 || 'Pink',
-            'category2': planCategoryDescriptions.category2 || 'Red',
-            'category3': planCategoryDescriptions.category3 || 'Yellow',
-            'category4': planCategoryDescriptions.category4 || 'Green',
-            'category5': planCategoryDescriptions.category5 || 'Blue',
-            'category6': planCategoryDescriptions.category6 || 'Purple',
-            'category7': planCategoryDescriptions.category7 || 'Bronze',
-            'category8': planCategoryDescriptions.category8 || 'Lime',
-            'category9': planCategoryDescriptions.category9 || 'Aqua',
-            'category10': planCategoryDescriptions.category10 || 'Gray',
-            'category11': planCategoryDescriptions.category11 || 'Silver',
-            'category12': planCategoryDescriptions.category12 || 'Brown',
-            'category13': planCategoryDescriptions.category13 || 'Cranberry',
-            'category14': planCategoryDescriptions.category14 || 'Orange',
-            'category15': planCategoryDescriptions.category15 || 'Peach',
-            'category16': planCategoryDescriptions.category16 || 'Marigold',
-            'category17': planCategoryDescriptions.category17 || 'Light green',
-            'category18': planCategoryDescriptions.category18 || 'Dark green',
-            'category19': planCategoryDescriptions.category19 || 'Teal',
-            'category20': planCategoryDescriptions.category20 || 'Light blue',
-            'category21': planCategoryDescriptions.category21 || 'Dark blue',
-            'category22': planCategoryDescriptions.category22 || 'Lavender',
-            'category23': planCategoryDescriptions.category23 || 'Plum',
-            'category24': planCategoryDescriptions.category24 || 'Light gray',
-            'category25': planCategoryDescriptions.category25 || 'Dark gray'
-        };
         const colors = {
             'category1': '#c2185b',
             'category2': '#c62828',
@@ -1700,7 +1703,7 @@ function renderTask(task) {
             console.log(`🏷️  Label: ${categoryNames[cat]} | Category: ${cat} | Color: ${colors[cat]}`);
         }
         
-        return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${categoryNames[cat]}</span>`;
+        return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${getThemeDisplayName(cat)}</span>`;
     }).join('');
 
     return `
@@ -2308,6 +2311,14 @@ function showOptions() {
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('taskIdPrefixInput').value = taskIdPrefix;
+    // Load theme names
+    document.getElementById('themeNameCategory1').value = customThemeNames['category1'] || '';
+    document.getElementById('themeNameCategory2').value = customThemeNames['category2'] || '';
+    document.getElementById('themeNameCategory3').value = customThemeNames['category3'] || '';
+    document.getElementById('themeNameCategory4').value = customThemeNames['category4'] || '';
+    document.getElementById('themeNameCategory5').value = customThemeNames['category5'] || '';
+    document.getElementById('themeNameCategory7').value = customThemeNames['category7'] || '';
+    document.getElementById('themeNameCategory9').value = customThemeNames['category9'] || '';
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
 }
@@ -2315,6 +2326,7 @@ function showOptions() {
 function switchOptionsTab(tab) {
     // Hide all tabs
     document.getElementById('viewsTab').style.display = 'none';
+    document.getElementById('themesTab').style.display = 'none';
     document.getElementById('configurationTab').style.display = 'none';
     
     // Remove active class from all nav items
@@ -2326,9 +2338,12 @@ function switchOptionsTab(tab) {
     if (tab === 'views') {
         document.getElementById('viewsTab').style.display = 'block';
         document.querySelectorAll('.options-nav-item')[0].classList.add('active');
+    } else if (tab === 'themes') {
+        document.getElementById('themesTab').style.display = 'block';
+        document.querySelectorAll('.options-nav-item')[1].classList.add('active');
     } else if (tab === 'configuration') {
         document.getElementById('configurationTab').style.display = 'block';
-        document.querySelectorAll('.options-nav-item')[1].classList.add('active');
+        document.querySelectorAll('.options-nav-item')[2].classList.add('active');
     }
 }
 
@@ -2387,6 +2402,23 @@ function saveOptions() {
         taskIdPrefix = prefix;
         localStorage.setItem('taskIdPrefix', prefix);
     }
+    
+    // Save custom theme names (local only)
+    const updatedThemes = {
+        category1: document.getElementById('themeNameCategory1').value.trim(),
+        category2: document.getElementById('themeNameCategory2').value.trim(),
+        category3: document.getElementById('themeNameCategory3').value.trim(),
+        category4: document.getElementById('themeNameCategory4').value.trim(),
+        category5: document.getElementById('themeNameCategory5').value.trim(),
+        category7: document.getElementById('themeNameCategory7').value.trim(),
+        category9: document.getElementById('themeNameCategory9').value.trim()
+    };
+    // Remove empties so defaults fall back
+    Object.keys(updatedThemes).forEach(k => {
+        if (!updatedThemes[k]) delete updatedThemes[k];
+    });
+    customThemeNames = updatedThemes;
+    localStorage.setItem('customThemeNames', JSON.stringify(customThemeNames));
     
     closeOptions();
     alert('Settings saved. Changes will take effect on next reload.');

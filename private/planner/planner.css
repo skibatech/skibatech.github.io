@@ -131,6 +131,11 @@ button:disabled {
     border-radius: 4px;
 }
 
+/* Override text color for theme headers with background colors */
+.bucket-header[style*="background"][style*="color: white"] {
+    color: white !important;
+}
+
 .bucket-header:hover {
     background: var(--bg-hover);
 }
@@ -142,6 +147,11 @@ button:disabled {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+/* Override bucket-title color when parent header has colored background */
+.bucket-header[style*="background"][style*="color: white"] .bucket-title {
+    color: inherit !important;
 }
 
 .task-count {
