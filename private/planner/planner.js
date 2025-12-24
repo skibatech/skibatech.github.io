@@ -1286,9 +1286,12 @@ function renderGroup(container, group, buckets, isNested = false) {
     // Get theme color if viewing by theme
     let themeColorStyle = '';
     if (currentView === 'theme') {
+        console.log(`🎨 Rendering theme group: "${group.name}" (currentView: ${currentView})`);
         const themeInfo = getThemeColorForName(group.name);
+        console.log(`🎨 Theme info for "${group.name}":`, themeInfo);
         if (themeInfo) {
             themeColorStyle = ` style="background: ${themeInfo.color}; color: white;"`;
+            console.log(`🎨 Applied style: ${themeColorStyle}`);
         }
     }
     
