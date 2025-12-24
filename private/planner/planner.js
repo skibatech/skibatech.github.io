@@ -2416,9 +2416,20 @@ async function syncThemesToPlanner(themeNames) {
         );
         
         if (response.ok) {
-            const updated = await response.json();
-            planCategoryDescriptions = updated.categoryDescriptions || {};
-            planDetailsEtag = updated['@odata.etag'];
+            const newEtag = response.headers.get('etag') || response.headers.get('ETag') || planDetailsEtag;
+            if (response.status === 204) {
+                planDetailsEtag = newEtag;
+                console.log('✅ Theme names synced to Planner (204)');
+                return true;
+            }
+            try {
+                const updated = await response.json();
+                planCategoryDescriptions = updated.categoryDescriptions || {};
+                planDetailsEtag = updated['@odata.etag'] || newEtag;
+            } catch (parseErr) {
+                // No body returned; treat as success
+                planDetailsEtag = newEtag;
+            }
             console.log('✅ Theme names synced to Planner');
             return true;
         } else {

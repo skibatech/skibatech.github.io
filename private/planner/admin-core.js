@@ -358,9 +358,18 @@ async function syncThemesToPlanner(themeNames) {
             }
         );
         if (res.ok) {
-            const updated = await res.json();
-            planCategoryDescriptions = updated.categoryDescriptions || {};
-            planDetailsEtag = updated['@odata.etag'];
+            const newEtag = res.headers.get('etag') || res.headers.get('ETag') || planDetailsEtag;
+            if (res.status === 204) {
+                planDetailsEtag = newEtag;
+                return true;
+            }
+            try {
+                const updated = await res.json();
+                planCategoryDescriptions = updated.categoryDescriptions || {};
+                planDetailsEtag = updated['@odata.etag'] || newEtag;
+            } catch (parseErr) {
+                planDetailsEtag = newEtag;
+            }
             return true;
         }
         console.error('Theme sync failed', await res.text());
