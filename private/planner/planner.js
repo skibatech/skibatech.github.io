@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.42'; // Color group headers by theme color when viewing By Theme
+const APP_VERSION = '1.4.43'; // Fix theme color header lookup using category ID
 
 // Configuration
 let config = {
