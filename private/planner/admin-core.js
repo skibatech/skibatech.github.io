@@ -1,5 +1,5 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.60-admin';
+const ADMIN_APP_VERSION = '1.4.61-admin';
 const ADMIN_ROLE = 'PlannerAdmin';
 
 let accessToken = null;

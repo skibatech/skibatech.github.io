@@ -452,8 +452,10 @@ button:disabled {
     border-radius: 8px;
     max-width: 500px;
     width: 90%;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-header {
@@ -467,12 +469,12 @@ button:disabled {
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .form-label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);

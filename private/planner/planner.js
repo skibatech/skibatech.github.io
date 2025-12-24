@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.60'; // Move theme toggle to right side of header
+const APP_VERSION = '1.4.61'; // Remove vertical scrollbar from Add New Task modal
 
 // Configuration
 let config = {
