@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.40'; // Match Add task button color and set default bucket to To Do
+const APP_VERSION = '1.4.41'; // Darken theme colors for better visibility in dark mode
 
 // Configuration
 let config = {
@@ -1597,31 +1597,31 @@ function renderTask(task) {
             'category25': planCategoryDescriptions.category25 || 'Dark gray'
         };
         const colors = {
-            'category1': '#f06292',
-            'category2': '#ef5350',
-            'category3': '#ffb74d',
-            'category4': '#81c784',
-            'category5': '#64b5f6',
-            'category6': '#ba68c8',
-            'category7': '#a1887f',
-            'category8': '#dce775',
-            'category9': '#4dd0e1',
-            'category10': '#bdbdbd',
-            'category11': '#bdbdbd',
-            'category12': '#795548',
-            'category13': '#c2185b',
-            'category14': '#ff9800',
-            'category15': '#ffab91',
-            'category16': '#ffd54f',
-            'category17': '#aed581',
-            'category18': '#388e3c',
-            'category19': '#00897b',
-            'category20': '#81d4fa',
-            'category21': '#1976d2',
-            'category22': '#b39ddb',
-            'category23': '#ab47bc',
-            'category24': '#e0e0e0',
-            'category25': '#616161'
+            'category1': '#c2185b',
+            'category2': '#c62828',
+            'category3': '#f57f17',
+            'category4': '#388e3c',
+            'category5': '#1565c0',
+            'category6': '#6a1b9a',
+            'category7': '#5d4037',
+            'category8': '#9ccc65',
+            'category9': '#00838f',
+            'category10': '#424242',
+            'category11': '#424242',
+            'category12': '#3e2723',
+            'category13': '#880e4f',
+            'category14': '#e65100',
+            'category15': '#bf360c',
+            'category16': '#f57f17',
+            'category17': '#689f38',
+            'category18': '#1b5e20',
+            'category19': '#00695c',
+            'category20': '#01579b',
+            'category21': '#0d47a1',
+            'category22': '#4527a0',
+            'category23': '#6a1b9a',
+            'category24': '#616161',
+            'category25': '#212121'
         };
         
         // Debug: log if this is TEST123
