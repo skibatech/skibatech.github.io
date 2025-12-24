@@ -1,0 +1,9 @@
+{
+  "clientId": "your-azure-app-client-id-here",
+  "authority": "https://login.microsoftonline.com/yourtenant.com",
+  "planId": "your-planner-plan-id-here",
+  "allowedTenants": ["yourtenant.com", "yourtenant.onmicrosoft.com"],
+  "adminGroupId": "your-entra-admin-group-object-id",
+  "adminUsers": ["admin1@yourtenant.com", "admin2@yourtenant.com"],
+  "taskIdPrefix": "PRJ"
+}

@@ -1,17 +1,17 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.61'; // Remove vertical scrollbar from Add New Task modal
+const APP_VERSION = '1.4.62'; // Load configuration from external config.json file
 
-// Configuration
+// Configuration - will be loaded from config.json
 let config = {
-    clientId: localStorage.getItem('plannerClientId') || '073fb8bf-274f-496d-b2a1-648b1a8195b3',
-    authority: localStorage.getItem('plannerAuthority') || 'https://login.microsoftonline.com/skibatech.com',
+    clientId: '',
+    authority: '',
     redirectUri: window.location.origin + window.location.pathname,
     scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
-    allowedTenants: (localStorage.getItem('plannerAllowedTenants') || 'skibatech.com, skibatech.onmicrosoft.com').split(',').map(t => t.trim()),
-    adminGroupId: localStorage.getItem('plannerAdminGroupId') || ''
+    allowedTenants: [],
+    adminGroupId: ''
 };
 
-let planId = localStorage.getItem('plannerPlanId') || 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
+let planId = '';
 let accessToken = null;
 let currentBucketId = null;
 let currentBucketName = null;
@@ -24,8 +24,8 @@ let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
 let allUsers = {}; // Store user details: { userId: displayName }
-let taskIdPrefix = localStorage.getItem('taskIdPrefix') || 'STE'; // Configurable task ID prefix
-let adminUsers = (localStorage.getItem('plannerAdminUsers') || '').split(',').map(e => e.trim().toLowerCase()).filter(e => e);
+let taskIdPrefix = ''; // Configurable task ID prefix
+let adminUsers = []; // Admin users list
 let currentUserEmail = null; // Store current user's email
 let currentUserIsAdmin = false; // Cache admin status after auth
 let planCategoryDescriptions = {}; // Store custom label names for categories
@@ -403,10 +403,42 @@ function initializeTheme() {
     }
 }
 
+// Load configuration from config.json
+async function loadConfig() {
+    try {
+        const response = await fetch('config.json');
+        if (!response.ok) {
+            throw new Error('Failed to load config.json');
+        }
+        const configData = await response.json();
+        
+        // Apply config
+        config.clientId = configData.clientId;
+        config.authority = configData.authority;
+        config.allowedTenants = configData.allowedTenants || [];
+        config.adminGroupId = configData.adminGroupId || '';
+        planId = configData.planId;
+        taskIdPrefix = configData.taskIdPrefix || 'STE';
+        adminUsers = (configData.adminUsers || []).map(e => e.trim().toLowerCase()).filter(e => e);
+        
+        console.log('✅ Configuration loaded from config.json');
+        return true;
+    } catch (err) {
+        console.error('❌ Failed to load config.json:', err);
+        alert('Failed to load application configuration. Please ensure config.json exists.');
+        return false;
+    }
+}
+
 // Check for OAuth callback
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     initializeVersion();
     initializeTheme();
+    
+    // Load config first
+    const configLoaded = await loadConfig();
+    if (!configLoaded) return;
+    
     handleRedirectCallback();
 });
 

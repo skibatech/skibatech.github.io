@@ -1,5 +1,5 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.61-admin';
+const ADMIN_APP_VERSION = '1.4.62-admin';
 const ADMIN_ROLE = 'PlannerAdmin';
 
 let accessToken = null;
@@ -9,16 +9,16 @@ let planCategoryDescriptions = {};
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
 let currentUserIsAdmin = false;
 
-const config = {
-    clientId: localStorage.getItem('plannerClientId') || '073fb8bf-274f-496d-b2a1-648b1a8195b3',
-    authority: localStorage.getItem('plannerAuthority') || 'https://login.microsoftonline.com/skibatech.com',
+let config = {
+    clientId: '',
+    authority: '',
     redirectUri: window.location.origin + window.location.pathname,
     scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
-    allowedTenants: (localStorage.getItem('plannerAllowedTenants') || 'skibatech.com, skibatech.onmicrosoft.com').split(',').map(t => t.trim()),
-    adminGroupId: localStorage.getItem('plannerAdminGroupId') || ''
+    allowedTenants: [],
+    adminGroupId: ''
 };
-let planId = localStorage.getItem('plannerPlanId') || 'nwc8iIFj8U2MvA4RQReZpWUABC_U';
-let adminUsers = (localStorage.getItem('plannerAdminUsers') || '').split(',').map(e => e.trim().toLowerCase()).filter(e => e);
+let planId = '';
+let adminUsers = [];
 
 const GRAPH_MAX_RETRIES = 5;
 const GRAPH_BASE_DELAY_MS = 500;
@@ -437,38 +437,20 @@ async function saveAdminSettings() {
     const prefix = $('taskIdPrefixInput').value.trim().toUpperCase();
     const adminUsersInput = $('adminUsersInput').value.trim();
 
-    if (clientId) {
-        config.clientId = clientId;
-        localStorage.setItem('plannerClientId', clientId);
-    }
-    if (planIdValue) {
-        planId = planIdValue;
-        localStorage.setItem('plannerPlanId', planIdValue);
-    }
-    if (authority) {
-        config.authority = authority;
-        localStorage.setItem('plannerAuthority', authority);
-    }
-    if (allowedTenants) {
-        config.allowedTenants = allowedTenants.split(',').map(t => t.trim());
-        localStorage.setItem('plannerAllowedTenants', allowedTenants);
-    }
+    // Update runtime config
+    if (clientId) config.clientId = clientId;
+    if (planIdValue) planId = planIdValue;
+    if (authority) config.authority = authority;
+    if (allowedTenants) config.allowedTenants = allowedTenants.split(',').map(t => t.trim());
     if (adminGroupId) {
         config.adminGroupId = adminGroupId;
-        localStorage.setItem('plannerAdminGroupId', adminGroupId);
     } else {
         config.adminGroupId = '';
-        localStorage.removeItem('plannerAdminGroupId');
-    }
-    if (prefix) {
-        localStorage.setItem('taskIdPrefix', prefix);
     }
     if (adminUsersInput) {
         adminUsers = adminUsersInput.split(',').map(e => e.trim().toLowerCase()).filter(e => e);
-        localStorage.setItem('plannerAdminUsers', adminUsersInput);
     } else {
         adminUsers = [];
-        localStorage.removeItem('plannerAdminUsers');
     }
 
     const updatedThemes = {
@@ -484,17 +466,58 @@ async function saveAdminSettings() {
     customThemeNames = updatedThemes;
     localStorage.setItem('customThemeNames', JSON.stringify(customThemeNames));
 
+    // Generate updated config.json content
+    const newConfig = {
+        clientId: config.clientId,
+        authority: config.authority,
+        planId: planId,
+        allowedTenants: config.allowedTenants,
+        adminGroupId: config.adminGroupId,
+        adminUsers: adminUsers,
+        taskIdPrefix: prefix || 'STE'
+    };
+
     const synced = await syncThemesToPlanner(updatedThemes);
-    if (synced) {
-        alert('Settings saved and synced to Planner.');
-    } else {
-        alert('Settings saved locally. Sync to Planner failed.');
+    
+    // Show config.json content for manual saving
+    const configJson = JSON.stringify(newConfig, null, 2);
+    alert(`Settings updated in session. Theme changes synced to Planner.\n\nTo persist configuration changes, update config.json with:\n\n${configJson}`);
+}
+
+// Load configuration from config.json
+async function loadConfig() {
+    try {
+        const response = await fetch('config.json');
+        if (!response.ok) {
+            throw new Error('Failed to load config.json');
+        }
+        const configData = await response.json();
+        
+        // Apply config
+        config.clientId = configData.clientId;
+        config.authority = configData.authority;
+        config.allowedTenants = configData.allowedTenants || [];
+        config.adminGroupId = configData.adminGroupId || '';
+        planId = configData.planId;
+        adminUsers = (configData.adminUsers || []).map(e => e.trim().toLowerCase()).filter(e => e);
+        
+        console.log('✅ Admin configuration loaded from config.json');
+        return true;
+    } catch (err) {
+        console.error('❌ Failed to load config.json:', err);
+        alert('Failed to load application configuration. Please ensure config.json exists.');
+        return false;
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     initializeVersion();
     initializeTheme();
+    
+    // Load config first
+    const configLoaded = await loadConfig();
+    if (!configLoaded) return;
+    
     loadSettingsFromStorage();
     handleRedirectCallback();
 });

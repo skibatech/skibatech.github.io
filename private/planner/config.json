@@ -1,0 +1,9 @@
+{
+  "clientId": "073fb8bf-274f-496d-b2a1-648b1a8195b3",
+  "authority": "https://login.microsoftonline.com/skibatech.com",
+  "planId": "nwc8iIFj8U2MvA4RQReZpWUABC_U",
+  "allowedTenants": ["skibatech.com", "skibatech.onmicrosoft.com"],
+  "adminGroupId": "",
+  "adminUsers": [],
+  "taskIdPrefix": "STE"
+}
