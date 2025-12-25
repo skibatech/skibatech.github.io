@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.62'; // Load configuration from external config.json file
+const APP_VERSION = '1.4.63'; // Fix Bulk Edit sidebar colors in dark mode
 
 // Configuration - will be loaded from config.json
 let config = {

@@ -100,23 +100,23 @@
         width: 400px;
         max-width: 90vw;
         height: 100vh;
-        background: white;
+        background: var(--bg-secondary);
         box-shadow: -4px 0 12px rgba(0,0,0,0.15);
         z-index: 999;
         overflow-y: auto;
-        border-left: 1px solid #e5e7eb;
+        border-left: 1px solid var(--border-color);
     ">
-        <div style="position: sticky; top: 0; background: white; border-bottom: 1px solid #e5e7eb; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="position: sticky; top: 0; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 16px; display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <div style="font-weight: 600; color: #374151;">Bulk Edit</div>
-                <div id="bulkSidebarCount" style="font-size: 12px; color: #6b7280;">0 selected</div>
+                <div style="font-weight: 600; color: var(--text-primary);">Bulk Edit</div>
+                <div id="bulkSidebarCount" style="font-size: 12px; color: var(--text-secondary);">0 selected</div>
             </div>
-            <button onclick="clearSelection()" style="padding: 4px 8px; font-size: 18px; line-height: 1; background: none; border: none; color: #666; cursor: pointer;">×</button>
+            <button onclick="clearSelection()" style="padding: 4px 8px; font-size: 18px; line-height: 1; background: none; border: none; color: var(--text-secondary); cursor: pointer;">×</button>
         </div>
         
         <div style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
             <!-- Assignee Section -->
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
                 <label class="form-label">Assign to:</label>
                 <select id="bulkAssigneeSelect" class="task-input" style="width: 100%; margin-top: 4px;">
                     <option value="">No change</option>
@@ -124,7 +124,7 @@
             </div>
             
             <!-- Bucket Section -->
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
                 <label class="form-label">Move to bucket:</label>
                 <select id="bulkBucketSelect" class="task-input" style="width: 100%; margin-top: 4px;">
                     <option value="">No change</option>
@@ -132,7 +132,7 @@
             </div>
             
             <!-- Priority Section -->
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
                 <label class="form-label">Priority:</label>
                 <select id="bulkPrioritySelect" class="task-input" style="width: 100%; margin-top: 4px;">
                     <option value="">No change</option>
@@ -144,7 +144,7 @@
             </div>
             
             <!-- Progress Section -->
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
                 <label class="form-label">Progress:</label>
                 <select id="bulkProgressSelect" class="task-input" style="width: 100%; margin-top: 4px;">
                     <option value="">No change</option>
@@ -155,13 +155,13 @@
             </div>
             
             <!-- Start Date Section -->
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
                 <label class="form-label">Start Date:</label>
                 <input type="date" id="bulkStartDate" class="task-input" style="width: 100%; margin-top: 4px;">
             </div>
             
             <!-- Due Date Section -->
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
                 <label class="form-label">Due Date:</label>
                 <input type="date" id="bulkDueDate" class="task-input" style="width: 100%; margin-top: 4px;">
             </div>
