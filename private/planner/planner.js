@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.92'; // Remove divider lines; align saw input fields; space labels below role header
+const APP_VERSION = '1.4.93'; // Remove all divider lines between sections; indent Sharpen the Saw fields
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
