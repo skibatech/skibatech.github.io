@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.1'; // Move compass background color picker to compass panel
+const APP_VERSION = '1.6.2'; // Header Save/Cancel UX for Weekly Compass
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
