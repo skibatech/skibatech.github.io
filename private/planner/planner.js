@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.70'; // Increase Weekly Compass font sizes slightly
+const APP_VERSION = '1.4.71'; // Fix missing escapeHtml function for compass save
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -3161,6 +3161,13 @@ function renderCompass() {
     
     // Render roles
     renderCompassRoles();
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function renderCompassRoles() {
