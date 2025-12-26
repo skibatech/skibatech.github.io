@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.3'; // Tighten Save/Cancel spacing in Weekly Compass header
+const APP_VERSION = '1.6.4'; // Iconize Save, group with color + cancel
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

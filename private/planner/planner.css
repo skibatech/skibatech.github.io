@@ -829,6 +829,34 @@ body.unauthenticated #refreshBtn {
     gap: 4px;
 }
 
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: var(--text-primary);
+}
+.icon-btn.primary {
+    background: var(--primary-color);
+    color: #fff;
+}
+.icon-btn:hover {
+    filter: brightness(1.05);
+}
+.icon-swatch {
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0 !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--border-color) !important;
+    cursor: pointer;
+}
+
 .compass-header h2 {
     font-size: 16px;
     color: var(--compass-text);
