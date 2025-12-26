@@ -32,6 +32,9 @@
                 <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;">
                     <span id="themeToggleIcon">🌙</span>
                 </button>
+                <button onclick="showAdminHelp()" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px; margin-left: 8px;" title="Help">
+                    ❓
+                </button>
             </div>
         </div>
 
@@ -139,6 +142,80 @@
             <div style="padding:20px; border-top:1px solid var(--border-color); display:flex; gap:10px; justify-content:flex-end;">
                 <button onclick="copyConfigJson()" class="primary-btn">Copy to Clipboard</button>
                 <button onclick="closeConfigModal()" class="cancel-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; overflow-y:auto;">
+        <div style="background:var(--bg-secondary); border-radius:8px; max-width:800px; width:90%; margin:20px auto; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+            <div style="padding:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; color:var(--text-primary);">Setup & Troubleshooting</h3>
+                <button onclick="closeAdminHelp()" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--text-secondary);">&times;</button>
+            </div>
+            <div style="padding:20px; overflow-y:auto; max-height:70vh;">
+                <div style="color:var(--text-primary); line-height:1.6;">
+                    <h4 style="margin-top:16px; margin-bottom:8px;">Initial Setup</h4>
+                    <ol style="margin:0; padding-left:20px;">
+                        <li><strong>Azure App Registration:</strong> Create an app with delegated permissions for Tasks.ReadWrite, Group.ReadWrite.All, and User.Read.</li>
+                        <li><strong>Update config.json:</strong> Add clientId, authority, and allowedTenants.</li>
+                        <li><strong>Set Admin Access:</strong> Either assign the <code>PlannerAdmin</code> app role or add emails to Admin Users list.</li>
+                        <li><strong>Create/Link Plan:</strong> Enter your Microsoft Planner plan ID in Configuration section.</li>
+                    </ol>
+
+                    <h4 style="margin-top:16px; margin-bottom:8px;">Known Issues</h4>
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:12px; margin-bottom:12px; border-radius:4px;">
+                        <p style="margin:0 0 8px 0;"><strong>HTTP 429 (Too Many Requests)</strong></p>
+                        <p style="margin:0; font-size:14px;">Microsoft Graph enforces throttling limits. The app automatically retries with exponential backoff (up to 5 attempts). If you see 429 errors:</p>
+                        <ul style="margin:8px 0; padding-left:20px; font-size:14px;">
+                            <li>Wait a few minutes before retrying</li>
+                            <li>Avoid rapid bulk operations (theme syncs, admin list updates)</li>
+                            <li>Monitor the status badge for retry progress</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:12px; margin-bottom:12px; border-radius:4px;">
+                        <p style="margin:0 0 8px 0;"><strong>Admin Authorization Failures</strong></p>
+                        <p style="margin:0; font-size:14px;">If you cannot access the admin portal:</p>
+                        <ul style="margin:8px 0; padding-left:20px; font-size:14px;">
+                            <li>Verify your email is in the Admin Users list (check config.json)</li>
+                            <li>If using Entra group, confirm membership in the specified Admin Group ID</li>
+                            <li>Check that your account has the <code>PlannerAdmin</code> app role assigned</li>
+                            <li>Try signing out and signing back in to refresh token claims</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:12px; margin-bottom:12px; border-radius:4px;">
+                        <p style="margin:0 0 8px 0;"><strong>Theme Sync Issues</strong></p>
+                        <p style="margin:0; font-size:14px;">If theme names don't sync to Planner:</p>
+                        <ul style="margin:8px 0; padding-left:20px; font-size:14px;">
+                            <li>Ensure the Plan ID is correct and you have write access</li>
+                            <li>Check that all 7 theme names are defined in the theme section</li>
+                            <li>Click "Save & Sync" to push changes to Planner</li>
+                            <li>Wait for the green success status before closing the modal</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top:16px; margin-bottom:8px;">Common Tasks</h4>
+                    <ul style="margin:0; padding-left:20px;">
+                        <li><strong>Change Plan:</strong> Update Plan ID and click "Save & Sync"</li>
+                        <li><strong>Update Admin List:</strong> Modify Admin Users emails, then "Save & Sync"</li>
+                        <li><strong>Sync Themes:</strong> Edit theme names and click "Save & Sync" to update Planner immediately</li>
+                        <li><strong>Reset Local Settings:</strong> Click "Reload Local Settings" to discard unsaved changes</li>
+                        <li><strong>View Config JSON:</strong> Click "Save & Sync" to see the generated config format</li>
+                    </ul>
+
+                    <h4 style="margin-top:16px; margin-bottom:8px;">Tips</h4>
+                    <ul style="margin:0; padding-left:20px; font-size:14px;">
+                        <li>The admin portal works offline—your local settings persist in browser storage</li>
+                        <li>To make changes permanent, update the <strong>config.json</strong> file in your repo</li>
+                        <li>Theme category mapping: Category 1-9 correspond to Planner's predefined categories</li>
+                        <li>All changes sync immediately to the Planner app when clicked "Save & Sync"</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="padding:20px; border-top:1px solid var(--border-color); display:flex; gap:10px; justify-content:flex-end;">
+                <button onclick="closeAdminHelp()" class="cancel-btn">Close</button>
             </div>
         </div>
     </div>

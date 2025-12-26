@@ -1,5 +1,5 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.64-admin';
+const ADMIN_APP_VERSION = '1.4.65-admin';
 const ADMIN_ROLE = 'PlannerAdmin';
 
 let accessToken = null;
@@ -548,6 +548,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 // Expose globally for buttons
 window.login = login;
 window.signOut = signOut;
+window.showAdminHelp = function() {
+    document.getElementById('helpModal').style.display = 'flex';
+};
+window.closeAdminHelp = function() {
+    document.getElementById('helpModal').style.display = 'none';
+};
 window.saveAdminSettings = saveAdminSettings;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
 window.toggleTheme = toggleTheme;
