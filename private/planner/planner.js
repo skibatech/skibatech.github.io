@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.5'; // Replace checkmark with save icon in compass header
+const APP_VERSION = '1.6.6'; // Uniform icon sizes in compass header
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
