@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.7'; // Fix Weekly Compass title and cancel button visibility in light mode
+const APP_VERSION = '1.6.8'; // Store user preferences in To Do for cross-device sync
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -2604,17 +2604,64 @@ async function saveOptions() {
     const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
     
-    // Anyone can save view preferences
+    // Save to local state and localStorage
     currentView = defaultView;
     localStorage.setItem('plannerDefaultView', defaultView);
     currentGroupBy = defaultGroupBy;
     localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
     showCompleted = showCompletedDefault;
     localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
+    
+    // Save to To Do for sync
+    await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault);
 
     closeOptions();
     alert('View preferences saved!');
     await loadTasks();
+}
+
+async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault) {
+    if (!optionsListId || !accessToken) return;
+    
+    try {
+        // Fetch existing tasks
+        const existingResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${optionsListId}/tasks`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        if (!existingResponse.ok) return;
+        
+        const existingData = await existingResponse.json();
+        const existingTasks = existingData.value || [];
+        
+        // Create new option tasks
+        const createTask = async (title, body) => {
+            const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${optionsListId}/tasks`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, body: { contentType: 'text', content: body } })
+            });
+            if (!resp.ok) throw new Error(`Create failed (${resp.status})`);
+            return resp;
+        };
+        
+        await createTask('OPTION_DEFAULT_VIEW', defaultView);
+        await createTask('OPTION_DEFAULT_GROUPBY', defaultGroupBy);
+        await createTask('OPTION_SHOW_COMPLETED', showCompletedDefault ? 'true' : 'false');
+        
+        // Delete old tasks
+        await Promise.all(existingTasks.map(task =>
+            fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${optionsListId}/tasks/${task.id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            })
+        ));
+    } catch (err) {
+        console.error('Failed to save options to To Do:', err);
+    }
 }
 
 async function createNewBucket() {
@@ -3041,6 +3088,7 @@ let compassData = {
     roles: []
 };
 let compassListId = null;
+let optionsListId = null;
 let compassVisible = false;
 let compassEditMode = false;
 
@@ -3086,8 +3134,79 @@ async function initializeCompass() {
         
         compassListId = compassList.id;
         await loadCompassData();
+        await initializeOptions();
     } catch (err) {
         console.error('Failed to initialize compass:', err);
+    }
+}
+
+async function initializeOptions() {
+    try {
+        if (!accessToken) return;
+        
+        const listsResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        if (!listsResponse.ok) return;
+        
+        const listsData = await listsResponse.json();
+        let optionsList = listsData.value.find(list => list.displayName === 'PlannerOptions_Data');
+        
+        if (!optionsList) {
+            const createResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ displayName: 'PlannerOptions_Data' })
+            });
+            
+            if (!createResponse.ok) return;
+            optionsList = await createResponse.json();
+        }
+        
+        optionsListId = optionsList.id;
+        await loadOptionsData();
+    } catch (err) {
+        console.error('Failed to initialize options:', err);
+    }
+}
+
+async function loadOptionsData() {
+    if (!optionsListId || !accessToken) return;
+    
+    try {
+        const response = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${optionsListId}/tasks`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        const tasks = data.value || [];
+        
+        // Load each option from To Do
+        const viewTask = tasks.find(t => t.title === 'OPTION_DEFAULT_VIEW');
+        if (viewTask && viewTask.body?.content) {
+            currentView = viewTask.body.content;
+            localStorage.setItem('plannerDefaultView', currentView);
+        }
+        
+        const groupByTask = tasks.find(t => t.title === 'OPTION_DEFAULT_GROUPBY');
+        if (groupByTask && groupByTask.body?.content) {
+            currentGroupBy = groupByTask.body.content;
+            localStorage.setItem('plannerDefaultGroupBy', currentGroupBy);
+        }
+        
+        const showCompletedTask = tasks.find(t => t.title === 'OPTION_SHOW_COMPLETED');
+        if (showCompletedTask && showCompletedTask.body?.content) {
+            showCompleted = showCompletedTask.body.content === 'true';
+            localStorage.setItem('plannerShowCompleted', showCompletedTask.body.content);
+        }
+    } catch (err) {
+        console.error('Failed to load options:', err);
     }
 }
 
