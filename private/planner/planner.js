@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.71'; // Fix missing escapeHtml function for compass save
+const APP_VERSION = '1.4.72'; // Add configurable compass background color (default forest green)
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -400,6 +400,12 @@ function initializeTheme() {
     } else {
         if (themeIcon) themeIcon.textContent = '🌙';
         if (themeText) themeText.textContent = 'Dark Mode';
+    }
+    
+    // Apply saved compass background color
+    const savedCompassBg = localStorage.getItem('compassBgColor');
+    if (savedCompassBg) {
+        document.documentElement.style.setProperty('--compass-bg', savedCompassBg);
     }
 }
 
@@ -2416,6 +2422,7 @@ function showOptions() {
     document.getElementById('defaultViewInput').value = currentView;
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
+    document.getElementById('compassBgColorInput').value = localStorage.getItem('compassBgColor') || '#2d5016';
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
 }
@@ -2553,6 +2560,7 @@ async function saveOptions() {
     const defaultView = document.getElementById('defaultViewInput').value;
     const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
+    const compassBgColor = document.getElementById('compassBgColorInput').value;
     
     // Anyone can save view preferences
     currentView = defaultView;
@@ -2561,6 +2569,8 @@ async function saveOptions() {
     localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
     showCompleted = showCompletedDefault;
     localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
+    localStorage.setItem('compassBgColor', compassBgColor);
+    document.documentElement.style.setProperty('--compass-bg', compassBgColor);
 
     closeOptions();
     alert('View preferences saved!');
