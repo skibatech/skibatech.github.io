@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.5.9'; // Strict icon width constraints for menu alignment
+const APP_VERSION = '1.6.0'; // Add drag-and-drop role reordering in Weekly Compass
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -3374,8 +3374,12 @@ function renderCompassRoles() {
     compassData.roles.forEach((role, index) => {
         const section = document.createElement('div');
         section.className = 'compass-section compass-role-section';
+        section.draggable = compassEditMode;
+        section.dataset.roleIndex = index;
+        
         section.innerHTML = `
             <div class="compass-role-header">
+                ${compassEditMode ? '<span class="drag-handle">☰</span>' : ''}
                 Role: <input type="text" class="compass-role-input" ${compassEditMode ? '' : 'readonly'} value="${escapeHtml(role.name)}" placeholder="Enter role name...">
                 ${compassEditMode ? `<button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>` : ''}
             </div>
@@ -3389,6 +3393,14 @@ function renderCompassRoles() {
                 `).join('')}
             </div>
         `;
+        
+        if (compassEditMode) {
+            section.addEventListener('dragstart', handleRoleDragStart);
+            section.addEventListener('dragover', handleRoleDragOver);
+            section.addEventListener('drop', handleRoleDrop);
+            section.addEventListener('dragend', handleRoleDragEnd);
+        }
+        
         container.appendChild(section);
     });
 }
@@ -3421,6 +3433,49 @@ function removeCompassRock(roleIndex, rockIndex) {
     if (!compassData.roles[roleIndex]) return;
     compassData.roles[roleIndex].rocks.splice(rockIndex, 1);
     renderCompassRoles();
+}
+
+// Drag and drop handlers for role reordering
+let draggedRoleIndex = null;
+
+function handleRoleDragStart(e) {
+    draggedRoleIndex = parseInt(e.currentTarget.dataset.roleIndex);
+    e.currentTarget.style.opacity = '0.5';
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleRoleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleRoleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    
+    const dropIndex = parseInt(e.currentTarget.dataset.roleIndex);
+    
+    if (draggedRoleIndex !== null && draggedRoleIndex !== dropIndex) {
+        captureCompassInputs();
+        
+        // Reorder the roles array
+        const draggedRole = compassData.roles[draggedRoleIndex];
+        compassData.roles.splice(draggedRoleIndex, 1);
+        compassData.roles.splice(dropIndex, 0, draggedRole);
+        
+        renderCompassRoles();
+    }
+    
+    return false;
+}
+
+function handleRoleDragEnd(e) {
+    e.currentTarget.style.opacity = '1';
+    draggedRoleIndex = null;
 }
 
 // Expose compass functions globally
