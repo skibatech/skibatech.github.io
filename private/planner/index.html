@@ -104,7 +104,11 @@
                     <button id="compassEditBtn" onclick="toggleCompassEdit()" title="Edit" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px; color: var(--primary-color);">✎</button>
                     <div class="compass-commit-actions">
                         <input type="color" id="compassBgColorInput" title="Background Color" class="icon-swatch" style="display: none;">
-                        <button id="compassSaveBtn" onclick="saveCompass()" class="icon-btn primary" style="display:none;" title="Save">✓</button>
+                        <button id="compassSaveBtn" onclick="saveCompass()" class="icon-btn primary" style="display:none;" title="Save" aria-label="Save">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill="currentColor" d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4zm-5 2h3v4h-3V5zM5 19V5h5v6h7v8H5z"/>
+                            </svg>
+                        </button>
                         <button id="compassCancelBtn" onclick="cancelCompassEdit()" class="icon-btn" style="display:none;" title="Cancel">×</button>
                     </div>
                 </div>
