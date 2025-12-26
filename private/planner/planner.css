@@ -880,7 +880,7 @@ body.unauthenticated #refreshBtn {
     border: none;
 }
 
-.compass-section + .compass-section {
+.compass-section + .compass-section:not(.sharpen-saw) {
     border-top: 1px solid var(--compass-border);
     padding-top: 10px;
 }
@@ -941,6 +941,7 @@ body.unauthenticated #refreshBtn {
     align-items: center;
     gap: 8px;
     margin-bottom: 6px;
+    margin-top: 4px;
 }
 
 .compass-category-inline:last-child {
@@ -954,7 +955,7 @@ body.unauthenticated #refreshBtn {
     color: var(--compass-text);
     margin: 0;
     white-space: nowrap;
-    min-width: 90px;
+    min-width: 110px;
 }
 
 .compass-category-inline input {
