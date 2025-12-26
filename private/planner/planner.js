@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.68'; // Make Weekly Compass collapsible with smaller fonts
+const APP_VERSION = '1.4.69'; // Remove collapse, fix buttons, add editable date range
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -2981,6 +2981,7 @@ async function bulkMarkIncomplete() {
 // ===== Weekly Compass Feature =====
 let compassData = {
     quote: '',
+    dateRange: '',
     sharpenSaw: {
         physical: '',
         socialEmotional: '',
@@ -3032,6 +3033,8 @@ async function loadCompassData() {
             
             if (title === 'COMPASS_QUOTE') {
                 compassData.quote = body;
+            } else if (title === 'COMPASS_DATERANGE') {
+                compassData.dateRange = body;
             } else if (title === 'COMPASS_SAW') {
                 try {
                     compassData.sharpenSaw = JSON.parse(body);
@@ -3060,6 +3063,7 @@ async function saveCompassData() {
     try {
         // Collect current data from UI
         compassData.quote = document.getElementById('compassQuote').textContent;
+        compassData.dateRange = document.getElementById('compassDateRange').value;
         compassData.sharpenSaw.physical = document.getElementById('sawPhysical').value;
         compassData.sharpenSaw.socialEmotional = document.getElementById('sawSocialEmotional').value;
         compassData.sharpenSaw.mental = document.getElementById('sawMental').value;
@@ -3103,6 +3107,7 @@ async function saveCompassData() {
         };
         
         await createTask('COMPASS_QUOTE', compassData.quote);
+        await createTask('COMPASS_DATERANGE', compassData.dateRange || '');
         await createTask('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
         
         for (let i = 0; i < compassData.roles.length; i++) {
@@ -3116,15 +3121,13 @@ async function saveCompassData() {
     }
 }
 
-function toggleCompass(event) {
-    if (event) event.stopPropagation();
+function toggleCompass() {
     compassVisible = !compassVisible;
     const panel = document.getElementById('weeklyCompassPanel');
     const wrapper = document.getElementById('mainContentWrapper');
     
     if (compassVisible) {
         panel.style.display = 'block';
-        panel.classList.remove('collapsed');
         wrapper.style.display = 'flex';
         renderCompass();
     } else {
@@ -3133,25 +3136,22 @@ function toggleCompass(event) {
     }
 }
 
-function toggleCompassExpand(event) {
-    const panel = document.getElementById('weeklyCompassPanel');
-    panel.classList.toggle('collapsed');
-}
-
 function renderCompass() {
     // Update quote
     document.getElementById('compassQuote').textContent = compassData.quote;
     
-    // Update date range (current week)
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay()); // Sunday
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    
-    const formatDate = d => `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
-    document.getElementById('compassDateRange').textContent = 
-        `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
+    // Update date range (editable field)
+    const dateInput = document.getElementById('compassDateRange');
+    if (!compassData.dateRange) {
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        const formatDate = d => `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+        compassData.dateRange = `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
+    }
+    dateInput.value = compassData.dateRange;
     
     // Update Sharpen the Saw
     document.getElementById('sawPhysical').value = compassData.sharpenSaw.physical || '';
@@ -3210,3 +3210,9 @@ function removeCompassRole(index) {
     compassData.roles.splice(index, 1);
     renderCompassRoles();
 }
+
+// Expose compass functions globally
+window.toggleCompass = toggleCompass;
+window.saveCompassData = saveCompassData;
+window.addCompassRole = addCompassRole;
+window.removeCompassRole = removeCompassRole;

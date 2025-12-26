@@ -96,16 +96,15 @@
         
         <!-- Weekly Compass Panel -->
         <div id="weeklyCompassPanel" class="compass-panel" style="display:none;">
-            <div class="compass-header" onclick="toggleCompassExpand(event)">
-                <h2><span class="compass-collapse-icon">▼</span> Weekly Compass</h2>
-                <button onclick="toggleCompass(event)" class="compass-close-btn" title="Close">×</button>
+            <div class="compass-header">
+                <h2>Weekly Compass</h2>
+                <button onclick="toggleCompass()" class="compass-close-btn" title="Close">×</button>
             </div>
             
-            <div class="compass-content">
             <div class="compass-quote" id="compassQuote" contenteditable="true" placeholder="Enter a motivational quote..."></div>
             
             <div class="compass-date-range">
-                <strong>Week of:</strong> <span id="compassDateRange"></span>
+                <strong>Date:</strong> <input type="text" id="compassDateRange" placeholder="MM/DD/YYYY - MM/DD/YYYY">
             </div>
             
             <!-- Sharpen the Saw Section -->
@@ -135,7 +134,6 @@
             <div class="compass-actions">
                 <button onclick="addCompassRole()" class="secondary-btn">+ Add Role</button>
                 <button onclick="saveCompassData()" class="primary-btn">Save Compass</button>
-            </div>
             </div>
         </div>
     </div>

@@ -777,13 +777,6 @@ body.unauthenticated #refreshBtn {
     overflow-y: auto;
     position: sticky;
     top: 20px;
-    transition: all 0.3s ease;
-}
-
-.compass-panel.collapsed {
-    padding: 8px 12px;
-    max-height: 40px;
-    overflow: hidden;
 }
 
 .compass-header {
@@ -793,31 +786,12 @@ body.unauthenticated #refreshBtn {
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-}
-
-.compass-panel.collapsed .compass-header {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
 }
 
 .compass-header h2 {
     font-size: 14px;
     color: var(--text-primary);
     margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.compass-collapse-icon {
-    font-size: 10px;
-    transition: transform 0.2s;
-}
-
-.compass-panel.collapsed .compass-collapse-icon {
-    transform: rotate(-90deg);
 }
 
 .compass-close-btn {
@@ -834,14 +808,6 @@ body.unauthenticated #refreshBtn {
 
 .compass-close-btn:hover {
     color: var(--text-primary);
-}
-
-.compass-content {
-    transition: opacity 0.2s ease;
-}
-
-.compass-panel.collapsed .compass-content {
-    display: none;
 }
 
 .compass-quote {
@@ -873,6 +839,19 @@ body.unauthenticated #refreshBtn {
     padding: 6px 8px;
     background: var(--bg-tertiary);
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.compass-date-range input {
+    flex: 1;
+    font-size: 10px;
+    padding: 3px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 .compass-section {
