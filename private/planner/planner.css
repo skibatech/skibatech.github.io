@@ -21,6 +21,7 @@
     --link-color: #0078d4;
     --link-hover: #005a9e;
     --compass-bg: #2d5016;
+    --compass-border: #e0e0e0;
 }
 
 /* Dark Mode Variables */
@@ -39,6 +40,7 @@ body.dark-mode {
     --shadow-hover: rgba(0, 0, 0, 0.4);
     --link-color: #4da6ff;
     --link-hover: #80bfff;
+    --compass-border: #cfcfcf;
 }
 
 body {
@@ -770,7 +772,7 @@ body.unauthenticated #refreshBtn {
     min-width: 380px;
     max-width: 380px;
     background: var(--compass-bg);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--compass-border);
     border-radius: 8px;
     padding: 12px;
     box-shadow: 0 2px 8px var(--shadow);
@@ -786,7 +788,7 @@ body.unauthenticated #refreshBtn {
     align-items: center;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--compass-border);
 }
 
 .compass-header h2 {
@@ -872,7 +874,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-section + .compass-section {
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--compass-border);
     padding-top: 10px;
 }
 
@@ -977,7 +979,8 @@ body.unauthenticated #refreshBtn {
 .compass-readonly .compass-quote-inline input,
 .compass-readonly .compass-date-range input,
 .compass-readonly .compass-role-header input,
-.compass-readonly .compass-rock-item input {
+.compass-readonly .compass-rock-item input,
+.compass-readonly .compass-category-inline input {
     border: none;
     background: transparent;
     color: #ffffff;

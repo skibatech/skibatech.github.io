@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.84'; // Remove Big Rocks numbering; Sharpen-the-Saw read-only honored
+const APP_VERSION = '1.4.85'; // Read-only Saw captions; light dividers in dark mode
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
