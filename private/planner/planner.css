@@ -857,15 +857,22 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-section {
-    margin-bottom: 16px;
-    padding: 10px;
-    background: var(--bg-tertiary);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
+    margin: 0;
+    padding: 8px 0;
+    background: transparent;
+    border: none;
+}
+
+.compass-section + .compass-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
 }
 
 .compass-section.sharpen-saw {
+    border-top: none;
+    padding-top: 0;
     border-left: 3px solid #10b981;
+    padding-left: 8px;
 }
 
 .compass-role-header {
@@ -901,7 +908,7 @@ body.unauthenticated #refreshBtn {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .compass-category-inline:last-child {
@@ -957,7 +964,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-rock-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 6px;
     margin-bottom: 6px;
 }

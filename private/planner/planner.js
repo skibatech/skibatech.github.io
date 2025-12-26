@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.76'; // Change Big Rocks to single-line and increase compass fonts
+const APP_VERSION = '1.4.77'; // Tighten compass spacing and fix dark-mode color application
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -386,6 +386,10 @@ function toggleTheme() {
     document.querySelectorAll('#themeToggleIcon').forEach(icon => {
         icon.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
+
+    // Re-apply saved compass background color after theme switch
+    const savedCompassBg = localStorage.getItem('compassBgColor') || '#2d5016';
+    document.documentElement.style.setProperty('--compass-bg', savedCompassBg);
 }
 
 function initializeTheme() {
