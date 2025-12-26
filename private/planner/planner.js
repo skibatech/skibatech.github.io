@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.63'; // Fix Bulk Edit sidebar colors in dark mode
+const APP_VERSION = '1.4.64'; // Add selectable/copyable config modal in Admin Mode
 
 // Configuration - will be loaded from config.json
 let config = {

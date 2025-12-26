@@ -1,5 +1,5 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.63-admin';
+const ADMIN_APP_VERSION = '1.4.64-admin';
 const ADMIN_ROLE = 'PlannerAdmin';
 
 let accessToken = null;
@@ -479,9 +479,32 @@ async function saveAdminSettings() {
 
     const synced = await syncThemesToPlanner(updatedThemes);
     
-    // Show config.json content for manual saving
+    // Show config.json content in modal for easy copying
     const configJson = JSON.stringify(newConfig, null, 2);
-    alert(`Settings updated in session. Theme changes synced to Planner.\n\nTo persist configuration changes, update config.json with:\n\n${configJson}`);
+    showConfigModal(configJson);
+}
+
+function showConfigModal(configJson) {
+    const modal = document.getElementById('configModal');
+    const textarea = document.getElementById('configJsonText');
+    textarea.value = configJson;
+    modal.style.display = 'flex';
+}
+
+function closeConfigModal() {
+    document.getElementById('configModal').style.display = 'none';
+}
+
+function copyConfigJson() {
+    const textarea = document.getElementById('configJsonText');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile
+    navigator.clipboard.writeText(textarea.value).then(() => {
+        alert('Configuration JSON copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy. Please select and copy manually.');
+    });
 }
 
 // Load configuration from config.json
@@ -528,3 +551,9 @@ window.signOut = signOut;
 window.saveAdminSettings = saveAdminSettings;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
 window.toggleTheme = toggleTheme;
+window.showConfigModal = showConfigModal;
+window.closeConfigModal = closeConfigModal;
+window.copyConfigJson = copyConfigJson;
+window.showConfigModal = showConfigModal;
+window.closeConfigModal = closeConfigModal;
+window.copyConfigJson = copyConfigJson;
