@@ -673,8 +673,9 @@ body.unauthenticated #refreshBtn {
 
 .profile-menu-item span {
     display: inline-block;
-    width: 20px;
+    width: 24px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .profile-menu-item:hover {

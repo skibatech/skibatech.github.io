@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.5.6'; // Align profile menu items text
+const APP_VERSION = '1.5.7'; // Fix profile menu icon alignment with increased width
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
