@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.73'; // Fix compass initialization and response handling
+const APP_VERSION = '1.4.74'; // Fix loadCompassData forEach error
 
 // Configuration - will be loaded from config.json
 let config = {
