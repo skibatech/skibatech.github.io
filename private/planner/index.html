@@ -97,10 +97,13 @@
         <!-- Weekly Compass Panel -->
         <div id="weeklyCompassPanel" class="compass-panel compass-readonly" style="display:none;">
             <div class="compass-header">
-                <h2>Weekly Compass</h2>
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <button id="compassEditBtn" onclick="toggleCompassEdit()" class="secondary-btn" title="Edit">✎</button>
-                    <button onclick="toggleCompass()" class="compass-close-btn" title="Close">×</button>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    Weekly Compass <span class="version-badge">v1.6.1</span>
+                </h3>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="color" id="compassBgColorInput" title="Background Color" style="width: 32px; height: 28px; cursor: pointer; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px; display: none;">
+                    <button id="compassEditBtn" onclick="toggleCompassEdit()" title="Edit" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px; color: var(--primary-color);">✎</button>
+                    <button onclick="saveCompass()" style="padding: 4px 12px; font-size: 13px;">Save</button>
                 </div>
             </div>
             
@@ -521,10 +524,6 @@
                         <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" id="showCompletedDefaultInput" style="cursor: pointer;">
                             <label class="form-label" style="margin: 0;">Show Completed by Default</label>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Weekly Compass Background Color</label>
-                            <input type="color" id="compassBgColorInput" style="width: 100%; height: 40px; cursor: pointer;">
                         </div>
                     </div>
                 </div>

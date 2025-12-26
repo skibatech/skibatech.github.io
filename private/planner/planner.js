@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.0'; // Add drag-and-drop role reordering in Weekly Compass
+const APP_VERSION = '1.6.1'; // Move compass background color picker to compass panel
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -401,6 +401,12 @@ function applyCompassBackground(color) {
     } catch (e) {
         document.documentElement.style.setProperty('--compass-text', '#ffffff');
     }
+}
+
+function handleCompassColorChange() {
+    const color = document.getElementById('compassBgColorInput').value;
+    localStorage.setItem('compassBgColor', color);
+    applyCompassBackground(color);
 }
 
 // Theme toggle functionality
@@ -2459,13 +2465,6 @@ function showOptions() {
     document.getElementById('defaultViewInput').value = currentView;
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
-    document.getElementById('compassBgColorInput').value = localStorage.getItem('compassBgColor') || '#2d5016';
-    
-    // Add real-time color change listener
-    const colorInput = document.getElementById('compassBgColorInput');
-    colorInput.addEventListener('change', function() {
-        applyCompassBackground(this.value);
-    });
     
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
@@ -2604,7 +2603,6 @@ async function saveOptions() {
     const defaultView = document.getElementById('defaultViewInput').value;
     const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
-    const compassBgColor = document.getElementById('compassBgColorInput').value;
     
     // Anyone can save view preferences
     currentView = defaultView;
@@ -2613,8 +2611,6 @@ async function saveOptions() {
     localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
     showCompleted = showCompletedDefault;
     localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
-    localStorage.setItem('compassBgColor', compassBgColor);
-    applyCompassBackground(compassBgColor);
 
     closeOptions();
     alert('View preferences saved!');
@@ -3303,6 +3299,12 @@ function toggleCompassEdit() {
     renderCompassRoles();
     const editBtn = document.getElementById('compassEditBtn');
     if (editBtn) editBtn.textContent = compassEditMode ? '✓' : '✎';
+    
+    // Show/hide color picker in edit mode
+    const colorInput = document.getElementById('compassBgColorInput');
+    if (colorInput) {
+        colorInput.style.display = compassEditMode ? 'block' : 'none';
+    }
 }
 
 function updateCompassEditUI() {
@@ -3316,6 +3318,16 @@ function updateCompassEditUI() {
 }
 
 function renderCompass() {
+    // Initialize color picker with saved value and add change listener
+    const colorInput = document.getElementById('compassBgColorInput');
+    if (colorInput) {
+        colorInput.value = localStorage.getItem('compassBgColor') || '#2d5016';
+        colorInput.style.display = compassEditMode ? 'block' : 'none';
+        // Remove old listener to avoid duplicates
+        colorInput.removeEventListener('change', handleCompassColorChange);
+        colorInput.addEventListener('change', handleCompassColorChange);
+    }
+    
     // Update quote
     const quoteInput = document.getElementById('compassQuoteInput');
     if (!compassData.quote) {
