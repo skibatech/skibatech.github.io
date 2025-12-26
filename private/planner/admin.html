@@ -42,10 +42,25 @@
             <button id="signInBtn" onclick="login()">Sign In with Microsoft</button>
             <button id="signOutBtn" style="display:none;" onclick="signOut()">Sign out</button>
             <button onclick="loadSettingsFromStorage()" class="primary-btn" style="margin-right:auto;">Reload Local Settings</button>
-            <div class="muted">Requires assigned Entra app role <strong>PlannerAdmin</strong> or admin email entry.</div>
+            <div class="muted">Click the <strong>❓</strong> icon for step-by-step setup guide.</div>
         </div>
 
-        <div id="unauthorizedPanel" class="unauth" style="display:none;">Not authorized for admin actions. If you expect access, ensure you have the PlannerAdmin app role or are listed in Admin Users.</div>
+        <div id="unauthorizedPanel" class="unauth" style="display:none;">
+            <strong>Not authorized.</strong> Add your email to the Admin Users list in the config, or click <strong>❓</strong> for help.
+        </div>
+
+        <div id="gettingStartedPanel" class="card" style="background:linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%); border-left:4px solid #2196F3; display:none;">
+            <h3 style="margin-top:0; color:#2196F3;">🚀 Getting Started</h3>
+            <p style="margin:0 0 12px 0; color:var(--text-secondary); font-size:13px;">New to the admin portal? Follow these quick steps:</p>
+            <ol style="margin:0 0 12px 0; padding-left:20px; color:var(--text-secondary); font-size:13px;">
+                <li style="margin-bottom:8px;"><strong>Find your Planner Plan ID</strong> - Go to tasks.microsoft.com, open your plan, and copy the ID from the URL</li>
+                <li style="margin-bottom:8px;"><strong>Enter Plan ID above</strong> - Paste it in the Configuration section</li>
+                <li style="margin-bottom:8px;"><strong>Set theme names</strong> - Customize the color labels (optional)</li>
+                <li><strong>Click Save & Sync</strong> - Done! Your settings are saved and synced to Planner</li>
+            </ol>
+            <button onclick="closeGettingStarted(); showAdminHelp();" style="background:#2196F3; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-size:13px;">Read Full Setup Guide</button>
+            <button onclick="closeGettingStarted();" style="background:none; border:1px solid var(--border-color); padding:8px 16px; border-radius:4px; cursor:pointer; margin-left:8px; font-size:13px;">Got it, thanks</button>
+        </div>
 
         <div id="adminContent" style="display:none;">
             <div class="grid-two">
@@ -148,70 +163,149 @@
 
     <!-- Help Modal -->
     <div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; overflow-y:auto;">
-        <div style="background:var(--bg-secondary); border-radius:8px; max-width:800px; width:90%; margin:20px auto; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+        <div style="background:var(--bg-secondary); border-radius:8px; max-width:900px; width:90%; margin:20px auto; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
             <div style="padding:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; color:var(--text-primary);">Setup & Troubleshooting</h3>
+                <div>
+                    <h3 style="margin:0 0 4px 0; color:var(--text-primary);">Setup & Troubleshooting</h3>
+                    <div style="font-size:13px; color:var(--text-secondary);">Step-by-step guide to get your admin portal running</div>
+                </div>
                 <button onclick="closeAdminHelp()" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--text-secondary);">&times;</button>
             </div>
             <div style="padding:20px; overflow-y:auto; max-height:70vh;">
-                <div style="color:var(--text-primary); line-height:1.6;">
-                    <h4 style="margin-top:16px; margin-bottom:8px;">Initial Setup</h4>
-                    <ol style="margin:0; padding-left:20px;">
-                        <li><strong>Azure App Registration:</strong> Create an app with delegated permissions for Tasks.ReadWrite, Group.ReadWrite.All, and User.Read.</li>
-                        <li><strong>Update config.json:</strong> Add clientId, authority, and allowedTenants.</li>
-                        <li><strong>Set Admin Access:</strong> Either assign the <code>PlannerAdmin</code> app role or add emails to Admin Users list.</li>
-                        <li><strong>Create/Link Plan:</strong> Enter your Microsoft Planner plan ID in Configuration section.</li>
-                    </ol>
+                <div style="color:var(--text-primary); line-height:1.7;">
+                    
+                    <!-- INITIAL SETUP SECTION -->
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #2196F3; padding:16px; margin-bottom:20px; border-radius:4px;">
+                        <h4 style="margin:0 0 16px 0; color:#2196F3; font-size:16px;">🚀 Initial Setup (First Time Only)</h4>
+                        <div style="display:flex; flex-direction:column; gap:16px;">
+                            
+                            <!-- Step 1 -->
+                            <div style="display:flex; gap:12px;">
+                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">1</div>
+                                <div style="flex:1;">
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Sign In with Microsoft</p>
+                                    <p style="margin:0; font-size:13px; color:var(--text-secondary);">Click the blue "Sign In with Microsoft" button at the top. This verifies you're the authorized admin.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2 -->
+                            <div style="display:flex; gap:12px;">
+                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">2</div>
+                                <div style="flex:1;">
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Enter Your Planner Plan ID</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Go to <strong>Microsoft Planner</strong> (tasks.microsoft.com), find your plan, and copy the Plan ID:</p>
+                                    <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
+                                        <li>Open your Planner plan</li>
+                                        <li>Look at the URL: <code style="background:var(--bg-secondary); padding:2px 6px; border-radius:3px;">https://tasks.microsoft.com/...?cid=<strong>[PLAN-ID]</strong></code></li>
+                                        <li>Copy the Plan ID and paste it in the <strong>Plan ID</strong> field above</li>
+                                    </ul>
+                                </div>
+                            </div>
 
-                    <h4 style="margin-top:16px; margin-bottom:8px;">Known Issues</h4>
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:12px; margin-bottom:12px; border-radius:4px;">
-                        <p style="margin:0 0 8px 0;"><strong>HTTP 429 (Too Many Requests)</strong></p>
-                        <p style="margin:0; font-size:14px;">Microsoft Graph enforces throttling limits. The app automatically retries with exponential backoff (up to 5 attempts). If you see 429 errors:</p>
-                        <ul style="margin:8px 0; padding-left:20px; font-size:14px;">
-                            <li>Wait a few minutes before retrying</li>
-                            <li>Avoid rapid bulk operations (theme syncs, admin list updates)</li>
-                            <li>Monitor the status badge for retry progress</li>
-                        </ul>
+                            <!-- Step 3 -->
+                            <div style="display:flex; gap:12px;">
+                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">3</div>
+                                <div style="flex:1;">
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Set Your Theme Names (Optional)</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Customize the color labels that appear in tasks:</p>
+                                    <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
+                                        <li><strong>Theme 1 (Blue)</strong> → e.g., "Priority"</li>
+                                        <li><strong>Theme 2 (Green)</strong> → e.g., "In Progress"</li>
+                                        <li>Customize all 7 color themes to match your workflow</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div style="display:flex; gap:12px;">
+                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">4</div>
+                                <div style="flex:1;">
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Save & Sync</p>
+                                    <p style="margin:0; font-size:13px; color:var(--text-secondary);">Click the blue <strong>"Save & Sync"</strong> button. Your settings will be saved and your theme names will sync to Microsoft Planner instantly.</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 5 -->
+                            <div style="display:flex; gap:12px;">
+                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">5</div>
+                                <div style="flex:1;">
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Copy config.json (Optional but Recommended)</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">To make your settings permanent across all browsers and devices:</p>
+                                    <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
+                                        <li>After you click "Save & Sync", a modal will show your <strong>config.json</strong></li>
+                                        <li>Click <strong>"Copy to Clipboard"</strong></li>
+                                        <li>Update the <code>config.json</code> file in your repository with this content</li>
+                                        <li>This way, your settings will load automatically for all users</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:12px; margin-bottom:12px; border-radius:4px;">
-                        <p style="margin:0 0 8px 0;"><strong>Admin Authorization Failures</strong></p>
-                        <p style="margin:0; font-size:14px;">If you cannot access the admin portal:</p>
-                        <ul style="margin:8px 0; padding-left:20px; font-size:14px;">
-                            <li>Verify your email is in the Admin Users list (check config.json)</li>
-                            <li>If using Entra group, confirm membership in the specified Admin Group ID</li>
-                            <li>Check that your account has the <code>PlannerAdmin</code> app role assigned</li>
-                            <li>Try signing out and signing back in to refresh token claims</li>
-                        </ul>
+                    <!-- ONGOING MANAGEMENT SECTION -->
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #4CAF50; padding:16px; margin-bottom:20px; border-radius:4px;">
+                        <h4 style="margin:0 0 16px 0; color:#4CAF50; font-size:16px;">⚙️ Ongoing Management</h4>
+                        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+                            <div>
+                                <p style="margin:0 0 4px 0; font-weight:500;">Edit Theme Names</p>
+                                <p style="margin:0; color:var(--text-secondary);">Change the color labels anytime in the <strong>Strategic Theme Names</strong> section, then click "Save & Sync" to update Microsoft Planner.</p>
+                            </div>
+                            <div>
+                                <p style="margin:0 0 4px 0; font-weight:500;">Switch Planner Plans</p>
+                                <p style="margin:0; color:var(--text-secondary);">Update the <strong>Plan ID</strong> field with a different plan and click "Save & Sync".</p>
+                            </div>
+                            <div>
+                                <p style="margin:0 0 4px 0; font-weight:500;">Add More Admins</p>
+                                <p style="margin:0; color:var(--text-secondary);">In the <strong>Admin Users (Emails)</strong> field, add comma-separated emails (e.g., admin1@company.com, admin2@company.com) and save.</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:12px; margin-bottom:12px; border-radius:4px;">
-                        <p style="margin:0 0 8px 0;"><strong>Theme Sync Issues</strong></p>
-                        <p style="margin:0; font-size:14px;">If theme names don't sync to Planner:</p>
-                        <ul style="margin:8px 0; padding-left:20px; font-size:14px;">
-                            <li>Ensure the Plan ID is correct and you have write access</li>
-                            <li>Check that all 7 theme names are defined in the theme section</li>
-                            <li>Click "Save & Sync" to push changes to Planner</li>
-                            <li>Wait for the green success status before closing the modal</li>
-                        </ul>
+                    <!-- TROUBLESHOOTING SECTION -->
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:16px; margin-bottom:20px; border-radius:4px;">
+                        <h4 style="margin:0 0 16px 0; color:#ff9800; font-size:16px;">🔧 Troubleshooting</h4>
+                        <div style="display:flex; flex-direction:column; gap:16px;">
+                            
+                            <div>
+                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Not authorized for admin actions"</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Make sure your email is listed in the <strong>Admin Users (Emails)</strong> field. After adding yourself, save and try signing out/back in.</p>
+                            </div>
+
+                            <div>
+                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Cannot find theme names in Planner"</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Your custom theme names appear in Planner as <strong>Categories</strong>. Check that you clicked "Save & Sync" and wait a moment for the sync to complete.</p>
+                            </div>
+
+                            <div>
+                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Seeing 'Too Many Requests' errors"</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Microsoft limits rapid requests. Wait a few minutes and try again. The app automatically retries errors up to 5 times.</p>
+                            </div>
+
+                            <div>
+                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Settings not staying saved"</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Settings are stored in your browser's local storage. To make them permanent across devices, copy your <strong>config.json</strong> to your repository (see Step 5 above).</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <h4 style="margin-top:16px; margin-bottom:8px;">Common Tasks</h4>
-                    <ul style="margin:0; padding-left:20px;">
-                        <li><strong>Change Plan:</strong> Update Plan ID and click "Save & Sync"</li>
-                        <li><strong>Update Admin List:</strong> Modify Admin Users emails, then "Save & Sync"</li>
-                        <li><strong>Sync Themes:</strong> Edit theme names and click "Save & Sync" to update Planner immediately</li>
-                        <li><strong>Reset Local Settings:</strong> Click "Reload Local Settings" to discard unsaved changes</li>
-                        <li><strong>View Config JSON:</strong> Click "Save & Sync" to see the generated config format</li>
-                    </ul>
-
-                    <h4 style="margin-top:16px; margin-bottom:8px;">Tips</h4>
-                    <ul style="margin:0; padding-left:20px; font-size:14px;">
-                        <li>The admin portal works offline—your local settings persist in browser storage</li>
-                        <li>To make changes permanent, update the <strong>config.json</strong> file in your repo</li>
-                        <li>Theme category mapping: Category 1-9 correspond to Planner's predefined categories</li>
-                        <li>All changes sync immediately to the Planner app when clicked "Save & Sync"</li>
-                    </ul>
+                    <!-- ADVANCED SECTION -->
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:16px; border-radius:4px;">
+                        <h4 style="margin:0 0 16px 0; color:#9C27B0; font-size:16px;">⚡ Advanced (For Power Users)</h4>
+                        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+                            <div>
+                                <p style="margin:0 0 4px 0; font-weight:500;">Admin Group ID (Entra)</p>
+                                <p style="margin:0; color:var(--text-secondary);">Instead of listing individual emails, you can assign the Object ID of an Entra group. Members of that group automatically get admin access.</p>
+                            </div>
+                            <div>
+                                <p style="margin:0 0 4px 0; font-weight:500;">Task ID Prefix</p>
+                                <p style="margin:0; color:var(--text-secondary);">Tasks get IDs like STE-1, STE-2, etc. Change the prefix (STE) to match your organization (e.g., "ABC", "PROJ").</p>
+                            </div>
+                            <div>
+                                <p style="margin:0 0 4px 0; font-weight:500;">Allowed Tenants</p>
+                                <p style="margin:0; color:var(--text-secondary);">Restrict who can sign in by specifying allowed tenant domains (e.g., company.com).</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div style="padding:20px; border-top:1px solid var(--border-color); display:flex; gap:10px; justify-content:flex-end;">

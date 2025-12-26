@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.7.0'; // Bold headers, uniform button styling, visual refinements
+const APP_VERSION = '1.7.1'; // Fix: sync Show completed checkbox with saved default setting
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -940,6 +940,9 @@ async function loadTasks() {
 
         // Set view dropdown to match current view
         document.getElementById('viewSelect').value = currentView;
+        
+        // Sync show completed checkbox with saved setting
+        document.getElementById('showCompletedCheckbox').checked = showCompleted;
         
         // Initialize Group By dropdown to exclude current view
         changeView();

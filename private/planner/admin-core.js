@@ -551,8 +551,18 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!configLoaded) return;
     
     loadSettingsFromStorage();
+    showGettingStartedIfNeeded();
     handleRedirectCallback();
 });
+
+// Check if this is first-time user (no plan ID set)
+function showGettingStartedIfNeeded() {
+    const planId = localStorage.getItem('planId') || '';
+    const gettingStartedPanel = document.getElementById('gettingStartedPanel');
+    if (gettingStartedPanel && !planId) {
+        gettingStartedPanel.style.display = 'block';
+    }
+}
 
 // Expose globally for buttons
 window.login = login;
@@ -563,12 +573,17 @@ window.showAdminHelp = function() {
 window.closeAdminHelp = function() {
     document.getElementById('helpModal').style.display = 'none';
 };
+window.closeGettingStarted = function() {
+    const panel = document.getElementById('gettingStartedPanel');
+    if (panel) {
+        panel.style.display = 'none';
+        // Mark that user has dismissed the getting started
+        localStorage.setItem('dismissedGettingStarted', 'true');
+    }
+};
 window.saveAdminSettings = saveAdminSettings;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
 window.toggleTheme = toggleTheme;
-window.showConfigModal = showConfigModal;
-window.closeConfigModal = closeConfigModal;
-window.copyConfigJson = copyConfigJson;
 window.showConfigModal = showConfigModal;
 window.closeConfigModal = closeConfigModal;
 window.copyConfigJson = copyConfigJson;
