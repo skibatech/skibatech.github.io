@@ -10,7 +10,7 @@
 </head>
 <body class="unauthenticated">
     <div class="header">
-        <h1>SkibaTech Engineering - Planner Pro</h1>
+        <h1>SkibaTech Engineering - Planner Pro <span class="version-pill">v<span id="versionDisplay">-</span></span></h1>
         <div class="auth-section">
             <button onclick="showAddTask(null, null)" class="primary-btn">+ New Task</button>
             
@@ -95,10 +95,13 @@
         <div id="tasksContainer"></div>
         
         <!-- Weekly Compass Panel -->
-        <div id="weeklyCompassPanel" class="compass-panel" style="display:none;">
+        <div id="weeklyCompassPanel" class="compass-panel compass-readonly" style="display:none;">
             <div class="compass-header">
                 <h2>Weekly Compass</h2>
-                <button onclick="toggleCompass()" class="compass-close-btn" title="Close">×</button>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <button id="compassEditBtn" onclick="toggleCompassEdit()" class="secondary-btn" title="Edit">Edit</button>
+                    <button onclick="toggleCompass()" class="compass-close-btn" title="Close">×</button>
+                </div>
             </div>
             
             <div class="compass-quote-inline">
@@ -234,9 +237,7 @@
         </div>
     </div>
 
-    <footer style="position: fixed; bottom: 10px; right: 10px; font-size: 11px; color: #999; font-family: monospace; z-index: 998; opacity: 0.6;">
-        v<span id="versionDisplay">1.4.36</span>
-    </footer>
+    
 
     <div id="addTaskModal" class="modal">
         <div class="modal-content" style="max-width: 750px; max-height: 90vh;">

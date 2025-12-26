@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.81'; // Dynamic rocks add/remove and auto motivational quotes
+const APP_VERSION = '1.4.83'; // Compass read-only default + edit toggle, sticky bottom, version in header
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
@@ -3033,6 +3033,7 @@ let compassData = {
 };
 let compassListId = null;
 let compassVisible = false;
+let compassEditMode = false;
 
 async function initializeCompass() {
     try {
@@ -3273,10 +3274,30 @@ function toggleCompass() {
     if (compassVisible) {
         panel.style.display = 'block';
         wrapper.style.display = 'flex';
+        compassEditMode = false;
         renderCompass();
+        updateCompassEditUI();
     } else {
         panel.style.display = 'none';
         wrapper.style.display = 'block';
+    }
+}
+
+function toggleCompassEdit() {
+    compassEditMode = !compassEditMode;
+    updateCompassEditUI();
+    renderCompassRoles();
+    const editBtn = document.getElementById('compassEditBtn');
+    if (editBtn) editBtn.textContent = compassEditMode ? 'Done' : 'Edit';
+}
+
+function updateCompassEditUI() {
+    const panel = document.getElementById('weeklyCompassPanel');
+    if (!panel) return;
+    if (compassEditMode) {
+        panel.classList.remove('compass-readonly');
+    } else {
+        panel.classList.add('compass-readonly');
     }
 }
 
@@ -3286,7 +3307,10 @@ function renderCompass() {
     if (!compassData.quote) {
         compassData.quote = getRandomQuote();
     }
-    if (quoteInput) quoteInput.value = compassData.quote;
+    if (quoteInput) {
+        quoteInput.value = compassData.quote;
+        quoteInput.readOnly = !compassEditMode;
+    }
     
     // Update date range (editable field)
     const dateInput = document.getElementById('compassDateRange');
@@ -3300,12 +3324,17 @@ function renderCompass() {
         compassData.dateRange = `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
     }
     dateInput.value = compassData.dateRange;
+    dateInput.readOnly = !compassEditMode;
     
     // Update Sharpen the Saw
-    document.getElementById('sawPhysical').value = compassData.sharpenSaw.physical || '';
-    document.getElementById('sawSocialEmotional').value = compassData.sharpenSaw.socialEmotional || '';
-    document.getElementById('sawMental').value = compassData.sharpenSaw.mental || '';
-    document.getElementById('sawSpiritual').value = compassData.sharpenSaw.spiritual || '';
+    const sawPhysical = document.getElementById('sawPhysical');
+    const sawSocial = document.getElementById('sawSocialEmotional');
+    const sawMental = document.getElementById('sawMental');
+    const sawSpiritual = document.getElementById('sawSpiritual');
+    if (sawPhysical) { sawPhysical.value = compassData.sharpenSaw.physical || ''; sawPhysical.readOnly = !compassEditMode; }
+    if (sawSocial) { sawSocial.value = compassData.sharpenSaw.socialEmotional || ''; sawSocial.readOnly = !compassEditMode; }
+    if (sawMental) { sawMental.value = compassData.sharpenSaw.mental || ''; sawMental.readOnly = !compassEditMode; }
+    if (sawSpiritual) { sawSpiritual.value = compassData.sharpenSaw.spiritual || ''; sawSpiritual.readOnly = !compassEditMode; }
     
     // Render roles
     renderCompassRoles();
@@ -3333,16 +3362,16 @@ function renderCompassRoles() {
         section.className = 'compass-section compass-role-section';
         section.innerHTML = `
             <div class="compass-role-header">
-                Role: <input type="text" class="compass-role-input" value="${escapeHtml(role.name)}" placeholder="Enter role name...">
-                <button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>
+                Role: <input type="text" class="compass-role-input" ${compassEditMode ? '' : 'readonly'} value="${escapeHtml(role.name)}" placeholder="Enter role name...">
+                ${compassEditMode ? `<button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>` : ''}
             </div>
             <div class="compass-rocks">
-                <div class="compass-rocks-header">Big Rocks <button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button></div>
+                <div class="compass-rocks-header">Big Rocks ${compassEditMode ? `<button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button>` : ''}</div>
                 ${role.rocks.map((rock, i) => `
                     <div class="compass-rock-item">
                         <span>${i + 1}.</span>
-                        <input type="text" class="compass-rock-input" placeholder="Enter a big rock..." value="${escapeHtml(rock)}">
-                        <button class="compass-mini-btn" onclick="removeCompassRock(${index}, ${i})" title="Remove priority">✕</button>
+                        <input type="text" class="compass-rock-input" ${compassEditMode ? '' : 'readonly'} placeholder="Enter a big rock..." value="${escapeHtml(rock)}">
+                        ${compassEditMode ? `<button class="compass-mini-btn" onclick="removeCompassRock(${index}, ${i})" title="Remove priority">✕</button>` : ''}
                     </div>
                 `).join('')}
             </div>
@@ -3386,5 +3415,6 @@ window.toggleCompass = toggleCompass;
 window.saveCompassData = saveCompassData;
 window.addCompassRole = addCompassRole;
 window.removeCompassRole = removeCompassRole;
+window.toggleCompassEdit = toggleCompassEdit;
 window.addCompassRock = addCompassRock;
 window.removeCompassRock = removeCompassRock;
