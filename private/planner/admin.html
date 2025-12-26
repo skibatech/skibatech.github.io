@@ -53,10 +53,10 @@
             <h3 style="margin-top:0; color:#2196F3;">🚀 Getting Started</h3>
             <p style="margin:0 0 12px 0; color:var(--text-secondary); font-size:13px;">New to the admin portal? Here's the easiest path to setup:</p>
             <ol style="margin:0 0 12px 0; padding-left:20px; color:var(--text-secondary); font-size:13px;">
-                <li style="margin-bottom:8px;"><strong>Copy your Planner Plan ID</strong> - Go to tasks.microsoft.com, open your plan, and copy the ID from the URL</li>
-                <li style="margin-bottom:8px;"><strong>Configure settings</strong> - Copy your Plan ID and other config values (Client ID, Authority, etc.) to the Configuration section below, or update config.json in your repository</li>
-                <li style="margin-bottom:8px;"><strong>Customize theme names</strong> - Below, rename the color labels to match your workflow (e.g., "High Priority", "In Progress")</li>
-                <li><strong>Click Save & Sync</strong> - Your theme names sync instantly to Planner. Configuration changes sync when you update config.json.</li>
+                <li style="margin-bottom:8px;"><strong>Find your Planner Plan ID</strong> - Go to tasks.microsoft.com, open your plan, and copy the ID from the URL</li>
+                <li style="margin-bottom:8px;"><strong>Enter your settings below</strong> - Fill in the Configuration section (Plan ID, Client ID, Authority, etc.) and customize Theme Names</li>
+                <li style="margin-bottom:8px;"><strong>Click Save & Sync</strong> - A modal will show your generated config.json</li>
+                <li><strong>Copy config to your repo</strong> - Copy the config.json content and update the config.json file in your repository. Theme names sync to Planner immediately.</li>
             </ol>
             <button onclick="closeGettingStarted(); showAdminHelp();" style="background:#2196F3; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-size:13px;">Read Full Setup Guide</button>
             <button onclick="closeGettingStarted();" style="background:none; border:1px solid var(--border-color); padding:8px 16px; border-radius:4px; cursor:pointer; margin-left:8px; font-size:13px;">Got it, thanks</button>
@@ -192,14 +192,13 @@
                             <div style="display:flex; gap:12px;">
                                 <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">2</div>
                                 <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Update Configuration Settings</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">The <strong>Configuration</strong> section below shows your current settings (Client ID, Plan ID, Admin Group ID, Authority, etc.). To change these:</p>
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Fill in Configuration Settings</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">In the <strong>Configuration</strong> section below, enter your settings:</p>
                                     <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li>Edit <strong>config.json</strong> in your repository with the new values</li>
-                                        <li>Or paste your config values directly into these fields to test them locally</li>
-                                        <li>Click "Save & Sync" to update the admin portal with your changes</li>
+                                        <li><strong>Plan ID</strong> - From your Planner URL</li>
+                                        <li><strong>Client ID, Authority</strong> - From your Azure app registration</li>
+                                        <li><strong>Admin Group ID, Admin Users</strong> - Your organization's admin setup</li>
                                     </ul>
-                                    <p style="margin:12px 0 0 0; font-size:12px; color:#ff9800; font-weight:500;">💡 For persistent changes across all users, update config.json</p>
                                 </div>
                             </div>
 
@@ -230,13 +229,13 @@
                             <div style="display:flex; gap:12px;">
                                 <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">5</div>
                                 <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Copy config.json (Optional but Recommended)</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">To make your settings permanent across all browsers and devices:</p>
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Copy and Update config.json</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">After you click "Save & Sync", a modal will display your generated <strong>config.json</strong> content:</p>
                                     <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li>After you click "Save & Sync", a modal will show your <strong>config.json</strong></li>
                                         <li>Click <strong>"Copy to Clipboard"</strong></li>
                                         <li>Update the <code>config.json</code> file in your repository with this content</li>
-                                        <li>This way, your settings will load automatically for all users</li>
+                                        <li>Commit and push the changes</li>
+                                        <li>Your settings will now load for all users automatically</li>
                                     </ul>
                                 </div>
                             </div>
@@ -248,16 +247,16 @@
                         <h4 style="margin:0 0 16px 0; color:#4CAF50; font-size:16px;">⚙️ Ongoing Management</h4>
                         <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
                             <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">✅ Edit Theme Names (Easiest)</p>
-                                <p style="margin:0; color:var(--text-secondary);">Change the color labels anytime in the <strong>Strategic Theme Names</strong> section below, then click "Save & Sync" to update Microsoft Planner immediately.</p>
+                                <p style="margin:0 0 4px 0; font-weight:500;">✅ Edit Theme Names (Easiest - No File Edits)</p>
+                                <p style="margin:0; color:var(--text-secondary);">Change the color labels anytime, click "Save & Sync", and your custom theme names sync to Planner immediately.</p>
                             </div>
                             <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">📝 Change Configuration (Edit config.json)</p>
-                                <p style="margin:0; color:var(--text-secondary);">To change Plan ID, Authority, Admin Group, or other config values, update <strong>config.json</strong> in your repository. You can also paste values here to test them locally before committing to config.json.</p>
+                                <p style="margin:0 0 4px 0; font-weight:500;">📝 Change Configuration (Plan ID, Admins, etc.)</p>
+                                <p style="margin:0; color:var(--text-secondary);">Edit the Configuration fields, click "Save & Sync" to generate the updated config.json, copy it, and paste into your repository's config.json file.</p>
                             </div>
                             <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">👥 Add More Admins</p>
-                                <p style="margin:0; color:var(--text-secondary);">Edit the <strong>Admin Users (Emails)</strong> field with comma-separated emails and update config.json, or paste them here to test locally.</p>
+                                <p style="margin:0 0 4px 0; font-weight:500;">💾 Everything Flows From The Portal Form</p>
+                                <p style="margin:0; color:var(--text-secondary);">Fill in your settings here, click "Save & Sync" to generate the config.json content, then update your repo. This ensures your repo always has the exact configuration you've defined.</p>
                             </div>
                         </div>
                     </div>
