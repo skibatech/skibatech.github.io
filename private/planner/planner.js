@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.89'; // Big Rocks hidden in read-only mode; role header banners; improved quote styling
+const APP_VERSION = '1.4.90'; // Generate new random quote on each load; remove saw dividers; add arrow bullets for rocks
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
@@ -3141,7 +3141,7 @@ async function loadCompassData() {
             const body = task.body?.content || '';
             
             if (title === 'COMPASS_QUOTE') {
-                compassData.quote = body;
+                // Skip loading quote from To Do; always generate fresh
             } else if (title === 'COMPASS_DATERANGE') {
                 compassData.dateRange = body;
             } else if (title === 'COMPASS_SAW') {

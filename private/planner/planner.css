@@ -886,8 +886,6 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-section.sharpen-saw {
-    border-top: 1px solid var(--compass-border);
-    border-bottom: 1px solid var(--compass-border);
     padding-top: 8px;
     padding-bottom: 8px;
 }
@@ -1032,6 +1030,16 @@ body.unauthenticated #refreshBtn {
     align-items: center;
     gap: 6px;
     margin-bottom: 4px;
+    margin-left: 12px;
+}
+
+.compass-rock-item::before {
+    content: '→';
+    color: var(--compass-text);
+    margin-left: -8px;
+    margin-right: 4px;
+    font-size: 12px;
+}
 }
 
 .compass-rock-item textarea {
