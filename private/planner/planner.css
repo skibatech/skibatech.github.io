@@ -21,6 +21,7 @@
     --link-color: #0078d4;
     --link-hover: #005a9e;
     --compass-bg: #2d5016;
+    --compass-text: #ffffff;
     --compass-border: #e0e0e0;
 }
 
@@ -793,7 +794,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-header h2 {
     font-size: 16px;
-    color: #ffffff;
+    color: var(--compass-text);
     margin: 0;
 }
 
@@ -822,7 +823,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-quote-inline label {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--compass-text);
     min-width: 46px;
     white-space: nowrap;
 }
@@ -850,7 +851,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-date-range label {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--compass-text);
     min-width: 40px;
     white-space: nowrap;
 }
@@ -888,7 +889,7 @@ body.unauthenticated #refreshBtn {
 .compass-role-header {
     font-weight: 600;
     font-size: 14px;
-    color: var(--text-primary);
+    color: var(--compass-text);
     margin-bottom: 8px;
     display: flex;
     align-items: center;
@@ -943,7 +944,7 @@ body.unauthenticated #refreshBtn {
     display: block;
     font-size: 12px;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: var(--compass-text);
     margin: 0;
     white-space: nowrap;
     min-width: 90px;
@@ -983,7 +984,7 @@ body.unauthenticated #refreshBtn {
 .compass-readonly .compass-category-inline input {
     border: none;
     background: transparent;
-    color: #ffffff;
+    color: var(--compass-text);
     padding: 0;
     height: auto;
 }
@@ -1013,7 +1014,7 @@ body.unauthenticated #refreshBtn {
 .compass-rocks-header {
     font-size: 12px;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: var(--compass-text);
     margin-bottom: 6px;
 }
 
