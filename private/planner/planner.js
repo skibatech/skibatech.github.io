@@ -3297,9 +3297,7 @@ function toggleCompassEdit() {
     updateCompassEditUI();
     renderCompass();
     renderCompassRoles();
-    const editBtn = document.getElementById('compassEditBtn');
-    if (editBtn) editBtn.textContent = compassEditMode ? '✓' : '✎';
-    
+    updateCompassHeaderButtons();
     // Show/hide color picker in edit mode
     const colorInput = document.getElementById('compassBgColorInput');
     if (colorInput) {
@@ -3315,6 +3313,7 @@ function updateCompassEditUI() {
     } else {
         panel.classList.add('compass-readonly');
     }
+    updateCompassHeaderButtons();
 }
 
 function renderCompass() {
@@ -3327,6 +3326,7 @@ function renderCompass() {
         colorInput.removeEventListener('change', handleCompassColorChange);
         colorInput.addEventListener('change', handleCompassColorChange);
     }
+    updateCompassHeaderButtons();
     
     // Update quote
     const quoteInput = document.getElementById('compassQuoteInput');
@@ -3363,6 +3363,30 @@ function renderCompass() {
     if (sawSpiritual) { sawSpiritual.value = compassData.sharpenSaw.spiritual || ''; sawSpiritual.readOnly = !compassEditMode; }
     
     // Render roles
+    renderCompassRoles();
+}
+
+function updateCompassHeaderButtons() {
+    const editBtn = document.getElementById('compassEditBtn');
+    const saveBtn = document.getElementById('compassSaveBtn');
+    const cancelBtn = document.getElementById('compassCancelBtn');
+    if (editBtn) editBtn.style.display = compassEditMode ? 'none' : 'inline-block';
+    if (saveBtn) saveBtn.style.display = compassEditMode ? 'inline-block' : 'none';
+    if (cancelBtn) cancelBtn.style.display = compassEditMode ? 'inline-block' : 'none';
+}
+
+async function saveCompass() {
+    await saveCompassData();
+    compassEditMode = false;
+    updateCompassEditUI();
+    renderCompass();
+    renderCompassRoles();
+}
+
+function cancelCompassEdit() {
+    compassEditMode = false;
+    updateCompassEditUI();
+    renderCompass();
     renderCompassRoles();
 }
 
