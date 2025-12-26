@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.88'; // Fix Sharpen-the-Saw inputs to be editable in edit mode
+const APP_VERSION = '1.4.89'; // Big Rocks hidden in read-only mode; role header banners; improved quote styling
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
@@ -3380,7 +3380,7 @@ function renderCompassRoles() {
                 ${compassEditMode ? `<button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>` : ''}
             </div>
             <div class="compass-rocks">
-                <div class="compass-rocks-header">Big Rocks ${compassEditMode ? `<button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button>` : ''}</div>
+                <div class="compass-rocks-header">${compassEditMode ? `Big Rocks <button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button>` : ''}</div>
                 ${role.rocks.map((rock, i) => `
                     <div class="compass-rock-item">
                         <input type="text" class="compass-rock-input" ${compassEditMode ? '' : 'readonly'} placeholder="Enter a big rock..." value="${escapeHtml(rock)}">

@@ -839,6 +839,12 @@ body.unauthenticated #refreshBtn {
     height: 28px;
 }
 
+.compass-readonly .compass-quote-inline input {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: transparent;
+    color: var(--compass-text);
+}
+
 .compass-date-range {
     font-size: 12px;
     color: var(--text-secondary);
@@ -894,6 +900,9 @@ body.unauthenticated #refreshBtn {
     display: flex;
     align-items: center;
     gap: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 6px 8px;
+    border-radius: 3px;
 }
 
 .compass-role-header input {
