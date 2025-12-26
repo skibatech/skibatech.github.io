@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.5.0'; // Pencil button matches background; quote above date; centered date
+const APP_VERSION = '1.5.1'; // Date inline single-line; minor layout tweak
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

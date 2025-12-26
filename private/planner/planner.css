@@ -861,10 +861,11 @@ body.unauthenticated #refreshBtn {
     margin-bottom: 8px;
     padding: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
-    gap: 4px;
+    justify-content: center;
+    text-align: left;
+    gap: 8px;
 }
 
 .compass-date-range label {
@@ -874,8 +875,9 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-date-range input {
-    width: 100%;
-    max-width: 240px;
+    width: auto;
+    min-width: 190px;
+    max-width: 260px;
     font-size: 12px;
     padding: 5px 6px;
     border: 1px solid var(--border-color);
