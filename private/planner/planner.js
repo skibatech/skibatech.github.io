@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.5.3'; // Light background around date row
+const APP_VERSION = '1.5.4'; // Make date editable in edit mode
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -3338,7 +3338,7 @@ function renderCompass() {
         compassData.dateRange = `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
     }
     dateInput.value = compassData.dateRange;
-    dateInput.readOnly = true; // Always read-only
+    dateInput.readOnly = !compassEditMode;
     
     // Update Sharpen the Saw
     const sawPhysical = document.getElementById('sawPhysical');
