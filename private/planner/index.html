@@ -101,10 +101,13 @@
                 <button onclick="toggleCompass()" class="compass-close-btn" title="Close">×</button>
             </div>
             
-            <div class="compass-quote" id="compassQuote" contenteditable="true" placeholder="Enter a motivational quote..."></div>
+            <div class="compass-quote-inline">
+                <label>Quote:</label>
+                <input type="text" id="compassQuoteInput" placeholder="Enter a motivational quote...">
+            </div>
             
             <div class="compass-date-range">
-                <strong>Date:</strong> <input type="text" id="compassDateRange" placeholder="MM/DD/YYYY - MM/DD/YYYY">
+                <label>Date:</label> <input type="text" id="compassDateRange" placeholder="MM/DD/YYYY - MM/DD/YYYY">
             </div>
             
             <!-- Sharpen the Saw Section -->

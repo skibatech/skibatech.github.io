@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.78'; // Inline trash icon for roles and layout tweaks
+const APP_VERSION = '1.4.79'; // Single-line quote, inline date row, tightened spacing
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -723,9 +723,9 @@ async function loadTasks() {
         document.getElementById('status').textContent = 'Loading...';
 
         // Get buckets
-        const bucketsResponse = await fetchGraph(
-            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`,
-            {
+            const bucketsResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`,
+                {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -764,9 +764,9 @@ async function loadTasks() {
         }
 
         // Get tasks
-        const tasksResponse = await fetchGraph(
-            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
-            {
+            const tasksResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
+                {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -3115,7 +3115,8 @@ async function saveCompassData() {
     
     try {
         // Collect current data from UI
-        compassData.quote = document.getElementById('compassQuote').textContent;
+        const quoteInput = document.getElementById('compassQuoteInput');
+        compassData.quote = quoteInput ? quoteInput.value : '';
         compassData.dateRange = document.getElementById('compassDateRange').value;
         compassData.sharpenSaw.physical = document.getElementById('sawPhysical').value;
         compassData.sharpenSaw.socialEmotional = document.getElementById('sawSocialEmotional').value;
@@ -3204,7 +3205,8 @@ function toggleCompass() {
 
 function renderCompass() {
     // Update quote
-    document.getElementById('compassQuote').textContent = compassData.quote;
+    const quoteInput = document.getElementById('compassQuoteInput');
+    if (quoteInput) quoteInput.value = compassData.quote;
     
     // Update date range (editable field)
     const dateInput = document.getElementById('compassDateRange');
