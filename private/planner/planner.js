@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.67'; // Add Weekly Compass panel with Microsoft To Do storage
+const APP_VERSION = '1.4.68'; // Make Weekly Compass collapsible with smaller fonts
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -3116,19 +3116,26 @@ async function saveCompassData() {
     }
 }
 
-function toggleCompass() {
+function toggleCompass(event) {
+    if (event) event.stopPropagation();
     compassVisible = !compassVisible;
     const panel = document.getElementById('weeklyCompassPanel');
     const wrapper = document.getElementById('mainContentWrapper');
     
     if (compassVisible) {
         panel.style.display = 'block';
+        panel.classList.remove('collapsed');
         wrapper.style.display = 'flex';
         renderCompass();
     } else {
         panel.style.display = 'none';
         wrapper.style.display = 'block';
     }
+}
+
+function toggleCompassExpand(event) {
+    const panel = document.getElementById('weeklyCompassPanel');
+    panel.classList.toggle('collapsed');
 }
 
 function renderCompass() {
