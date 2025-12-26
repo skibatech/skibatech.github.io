@@ -3299,6 +3299,7 @@ function toggleCompass() {
 function toggleCompassEdit() {
     compassEditMode = !compassEditMode;
     updateCompassEditUI();
+    renderCompass();
     renderCompassRoles();
     const editBtn = document.getElementById('compassEditBtn');
     if (editBtn) editBtn.textContent = compassEditMode ? 'Done' : 'Edit';
