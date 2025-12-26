@@ -817,6 +817,18 @@ body.unauthenticated #refreshBtn {
     border-bottom: 1px solid var(--compass-border);
 }
 
+.compass-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.compass-commit-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .compass-header h2 {
     font-size: 16px;
     color: var(--compass-text);
