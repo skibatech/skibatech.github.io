@@ -3069,7 +3069,7 @@ async function loadCompassData() {
         const tasks = tasksData.value || [];
         
         // Parse compass data from To Do tasks
-        tasks.value.forEach(task => {
+        tasks.forEach(task => {
             const title = task.title;
             const body = task.body?.content || '';
             
