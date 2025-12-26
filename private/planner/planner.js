@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.69'; // Remove collapse, fix buttons, add editable date range
+const APP_VERSION = '1.4.70'; // Increase Weekly Compass font sizes slightly
 
 // Configuration - will be loaded from config.json
 let config = {
