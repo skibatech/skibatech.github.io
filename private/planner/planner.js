@@ -3110,7 +3110,16 @@ async function loadCompassData() {
         }
         
         const tasksData = await response.json();
-        const tasks = tasksData.value || [];
+        const tasks = (tasksData.value || []).slice();
+        // Ensure roles keep entered order by sorting on the numeric suffix
+        tasks.sort((a, b) => {
+            const getIdx = (title) => {
+                if (!title || !title.startsWith('COMPASS_ROLE_')) return Number.MAX_SAFE_INTEGER;
+                const num = parseInt(title.replace('COMPASS_ROLE_', ''), 10);
+                return isNaN(num) ? Number.MAX_SAFE_INTEGER : num;
+            };
+            return getIdx(a.title) - getIdx(b.title);
+        });
         
         // Parse compass data from To Do tasks
         tasks.forEach(task => {
@@ -3328,7 +3337,7 @@ function renderCompassRoles() {
                 <button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>
             </div>
             <div class="compass-rocks">
-                <div class="compass-rocks-header">Big Rocks</div>
+                <div class="compass-rocks-header">Big Rocks <button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button></div>
                 ${role.rocks.map((rock, i) => `
                     <div class="compass-rock-item">
                         <span>${i + 1}.</span>
@@ -3336,10 +3345,6 @@ function renderCompassRoles() {
                         <button class="compass-mini-btn" onclick="removeCompassRock(${index}, ${i})" title="Remove priority">✕</button>
                     </div>
                 `).join('')}
-                <div class="compass-rock-item add-row">
-                    <span>+</span>
-                    <button class="compass-add-rock-btn" onclick="addCompassRock(${index})" title="Add another priority">Add priority</button>
-                </div>
             </div>
         `;
         container.appendChild(section);
