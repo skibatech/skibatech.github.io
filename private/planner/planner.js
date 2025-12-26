@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.5.4'; // Make date editable in edit mode
+const APP_VERSION = '1.5.5'; // Center date row horizontally
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
