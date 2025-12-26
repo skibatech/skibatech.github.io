@@ -831,7 +831,9 @@ body.unauthenticated #refreshBtn {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--compass-border);
 }
 
 .compass-quote-inline label {
