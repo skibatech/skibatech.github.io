@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.5.5'; // Center date row horizontally
+const APP_VERSION = '1.5.6'; // Align profile menu items text
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

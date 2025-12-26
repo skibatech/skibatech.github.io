@@ -671,6 +671,12 @@ body.unauthenticated #refreshBtn {
     gap: 8px;
 }
 
+.profile-menu-item span {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+}
+
 .profile-menu-item:hover {
     background: var(--bg-hover);
 }
