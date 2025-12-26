@@ -831,19 +831,16 @@ body.unauthenticated #refreshBtn {
 .compass-quote-inline input {
     flex: 1;
     font-size: 12px;
-    padding: 5px 6px;
+    padding: 8px 10px;
     border: 1px solid var(--border-color);
     border-radius: 3px;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    height: 28px;
+    background: rgba(0, 120, 212, 0.08);
+    color: var(--compass-text);
+    height: auto;
+    font-style: italic;
+    font-weight: 500;
 }
 
-.compass-readonly .compass-quote-inline input {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: transparent;
-    color: var(--compass-text);
-}
 
 .compass-date-range {
     font-size: 12px;

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.93'; // Remove all divider lines between sections; indent Sharpen the Saw fields
+const APP_VERSION = '1.4.94'; // Quote display-only with highlight; date moved to top and read-only
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -3323,7 +3323,7 @@ function renderCompass() {
     }
     if (quoteInput) {
         quoteInput.value = compassData.quote;
-        quoteInput.readOnly = !compassEditMode;
+        quoteInput.readOnly = true; // Always read-only
     }
     
     // Update date range (editable field)
@@ -3338,7 +3338,7 @@ function renderCompass() {
         compassData.dateRange = `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
     }
     dateInput.value = compassData.dateRange;
-    dateInput.readOnly = !compassEditMode;
+    dateInput.readOnly = true; // Always read-only
     
     // Update Sharpen the Saw
     const sawPhysical = document.getElementById('sawPhysical');
