@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.64'; // Add selectable/copyable config modal in Admin Mode
+const APP_VERSION = '1.4.66'; // Persist view and groupBy changes to localStorage
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -1644,6 +1644,7 @@ function groupTasksBy(tasks, buckets, groupBy) {
 function changeView() {
     const newView = document.getElementById('viewSelect').value;
     currentView = newView;
+    localStorage.setItem('plannerDefaultView', currentView);
     
     // Update Group By dropdown to exclude current view
     const groupBySelect = document.getElementById('groupBySelect');
@@ -1681,6 +1682,7 @@ function changeView() {
 
 function changeGroupBy() {
     currentGroupBy = document.getElementById('groupBySelect').value;
+    localStorage.setItem('plannerDefaultGroupBy', currentGroupBy);
     applyFilters();
 }
 
