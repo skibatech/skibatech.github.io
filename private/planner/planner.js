@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.77'; // Tighten compass spacing and fix dark-mode color application
+const APP_VERSION = '1.4.78'; // Inline trash icon for roles and layout tweaks
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -3246,6 +3246,7 @@ function renderCompassRoles() {
         section.innerHTML = `
             <div class="compass-role-header">
                 Role: <input type="text" class="compass-role-input" value="${escapeHtml(role.name)}" placeholder="Enter role name...">
+                <button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>
             </div>
             <div class="compass-rocks">
                 <div class="compass-rocks-header">Big Rocks (1-3 priorities)</div>
@@ -3261,9 +3262,6 @@ function renderCompassRoles() {
                         <input type="text" class="compass-rock-input" placeholder="Enter a big rock...">
                     </div>
                 `).join('') : ''}
-            </div>
-            <div class="compass-role-actions">
-                <button class="remove-role-btn" onclick="removeCompassRole(${index})">Remove Role</button>
             </div>
         `;
         container.appendChild(section);

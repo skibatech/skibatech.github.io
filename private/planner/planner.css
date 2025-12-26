@@ -896,6 +896,20 @@ body.unauthenticated #refreshBtn {
     color: var(--text-primary);
 }
 
+.compass-trash-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.compass-trash-btn:hover {
+    color: var(--text-primary);
+}
+
 .compass-category {
     margin-bottom: 8px;
 }
