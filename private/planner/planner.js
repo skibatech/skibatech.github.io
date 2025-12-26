@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.8'; // Store user preferences in To Do for cross-device sync
+const APP_VERSION = '1.6.9'; // Improve visibility of header labels (View, Group by, Filter, Show completed)
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
