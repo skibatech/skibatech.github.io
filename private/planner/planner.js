@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.79'; // Single-line quote, inline date row, tightened spacing
+const APP_VERSION = '1.4.80'; // Preserve inline edits when adding roles, dark-mode compass color fix, removed quote label
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -370,6 +370,12 @@ function toggleSelectAll(el) {
     applyFilters();
 }
 
+function applyCompassBackground(color) {
+    if (!color) return;
+    document.documentElement.style.setProperty('--compass-bg', color);
+    document.body.style.setProperty('--compass-bg', color);
+}
+
 // Theme toggle functionality
 function toggleTheme() {
     const body = document.body;
@@ -389,7 +395,7 @@ function toggleTheme() {
 
     // Re-apply saved compass background color after theme switch
     const savedCompassBg = localStorage.getItem('compassBgColor') || '#2d5016';
-    document.documentElement.style.setProperty('--compass-bg', savedCompassBg);
+    applyCompassBackground(savedCompassBg);
 }
 
 function initializeTheme() {
@@ -409,7 +415,7 @@ function initializeTheme() {
     // Apply saved compass background color
     const savedCompassBg = localStorage.getItem('compassBgColor');
     if (savedCompassBg) {
-        document.documentElement.style.setProperty('--compass-bg', savedCompassBg);
+        applyCompassBackground(savedCompassBg);
     }
 }
 
@@ -2431,7 +2437,7 @@ function showOptions() {
     // Add real-time color change listener
     const colorInput = document.getElementById('compassBgColorInput');
     colorInput.addEventListener('change', function() {
-        document.documentElement.style.setProperty('--compass-bg', this.value);
+        applyCompassBackground(this.value);
     });
     
     document.getElementById('optionsModal').style.display = 'flex';
@@ -2581,7 +2587,7 @@ async function saveOptions() {
     showCompleted = showCompletedDefault;
     localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
     localStorage.setItem('compassBgColor', compassBgColor);
-    document.documentElement.style.setProperty('--compass-bg', compassBgColor);
+    applyCompassBackground(compassBgColor);
 
     closeOptions();
     alert('View preferences saved!');
@@ -3065,6 +3071,19 @@ async function loadCompassData() {
     if (!compassListId || !accessToken) return;
     
     try {
+        // Reset local cache before loading
+        compassData = {
+            quote: '',
+            dateRange: '',
+            sharpenSaw: {
+                physical: '',
+                socialEmotional: '',
+                mental: '',
+                spiritual: ''
+            },
+            roles: []
+        };
+
         const response = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -3110,57 +3129,77 @@ async function loadCompassData() {
     }
 }
 
+function captureCompassInputs() {
+    const updated = {
+        quote: compassData.quote,
+        dateRange: compassData.dateRange,
+        sharpenSaw: {
+            physical: compassData.sharpenSaw.physical,
+            socialEmotional: compassData.sharpenSaw.socialEmotional,
+            mental: compassData.sharpenSaw.mental,
+            spiritual: compassData.sharpenSaw.spiritual
+        },
+        roles: []
+    };
+
+    const quoteInput = document.getElementById('compassQuoteInput');
+    if (quoteInput) updated.quote = quoteInput.value;
+
+    const dateInput = document.getElementById('compassDateRange');
+    if (dateInput) updated.dateRange = dateInput.value;
+
+    const physicalInput = document.getElementById('sawPhysical');
+    if (physicalInput) updated.sharpenSaw.physical = physicalInput.value;
+
+    const socialInput = document.getElementById('sawSocialEmotional');
+    if (socialInput) updated.sharpenSaw.socialEmotional = socialInput.value;
+
+    const mentalInput = document.getElementById('sawMental');
+    if (mentalInput) updated.sharpenSaw.mental = mentalInput.value;
+
+    const spiritualInput = document.getElementById('sawSpiritual');
+    if (spiritualInput) updated.sharpenSaw.spiritual = spiritualInput.value;
+
+    document.querySelectorAll('.compass-role-section').forEach(section => {
+        const roleName = section.querySelector('.compass-role-input')?.value || '';
+        const rocks = [];
+        section.querySelectorAll('.compass-rock-input').forEach(input => {
+            const val = input.value.trim();
+            if (val) rocks.push(val);
+        });
+        if (roleName.trim() || rocks.length > 0) {
+            updated.roles.push({ name: roleName, rocks });
+        }
+    });
+
+    compassData = updated;
+    return updated;
+}
+
 async function saveCompassData() {
     if (!compassListId || !accessToken) return;
     
     try {
-        // Collect current data from UI
-        const quoteInput = document.getElementById('compassQuoteInput');
-        compassData.quote = quoteInput ? quoteInput.value : '';
-        compassData.dateRange = document.getElementById('compassDateRange').value;
-        compassData.sharpenSaw.physical = document.getElementById('sawPhysical').value;
-        compassData.sharpenSaw.socialEmotional = document.getElementById('sawSocialEmotional').value;
-        compassData.sharpenSaw.mental = document.getElementById('sawMental').value;
-        compassData.sharpenSaw.spiritual = document.getElementById('sawSpiritual').value;
+        // Capture unsaved UI changes before persisting
+        captureCompassInputs();
         
-        // Collect roles
-        compassData.roles = [];
-        document.querySelectorAll('.compass-role-section').forEach(section => {
-            const roleName = section.querySelector('.compass-role-input').value;
-            const rocks = [];
-            section.querySelectorAll('.compass-rock-input').forEach(input => {
-                if (input.value.trim()) rocks.push(input.value.trim());
-            });
-            if (roleName.trim()) {
-                compassData.roles.push({ name: roleName, rocks });
-            }
-        });
-        
-        // Delete all existing tasks
+        // Fetch existing tasks
         const existingResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        
         if (!existingResponse.ok) {
             console.error('Failed to fetch existing tasks:', existingResponse.status);
+            alert('Failed to save compass data: unable to fetch existing items.');
             return;
         }
-        
         const existingData = await existingResponse.json();
         const existingTasks = existingData.value || [];
-        
-        await Promise.all(existingTasks.map(task =>
-            fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${accessToken}` }
-            })
-        ));
-        
-        // Create new tasks
+
+        // Create new tasks first (safer). If any creation fails, we abort without deleting old data.
         const createTask = async (title, body) => {
-            return fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+            const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -3171,15 +3210,30 @@ async function saveCompassData() {
                     body: { contentType: 'text', content: body }
                 })
             });
+            if (!resp.ok) throw new Error(`Create failed (${resp.status})`);
+            return resp;
         };
-        
-        await createTask('COMPASS_QUOTE', compassData.quote);
-        await createTask('COMPASS_DATERANGE', compassData.dateRange || '');
-        await createTask('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
-        
-        for (let i = 0; i < compassData.roles.length; i++) {
-            await createTask(`COMPASS_ROLE_${i}`, JSON.stringify(compassData.roles[i]));
+
+        try {
+            await createTask('COMPASS_QUOTE', compassData.quote);
+            await createTask('COMPASS_DATERANGE', compassData.dateRange || '');
+            await createTask('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
+            for (let i = 0; i < compassData.roles.length; i++) {
+                await createTask(`COMPASS_ROLE_${i}`, JSON.stringify(compassData.roles[i]));
+            }
+        } catch (createErr) {
+            console.error('Failed to create compass items:', createErr);
+            alert('Failed to save compass data (create phase). Existing data was preserved.');
+            return;
         }
+
+        // If creation succeeded, delete old tasks
+        await Promise.all(existingTasks.map(task =>
+            fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            })
+        ));
         
         alert('Weekly Compass saved successfully!');
     } catch (err) {
@@ -3275,11 +3329,13 @@ function addCompassRole() {
         alert('Maximum 7 roles allowed');
         return;
     }
+    captureCompassInputs();
     compassData.roles.push({ name: '', rocks: [] });
     renderCompassRoles();
 }
 
 function removeCompassRole(index) {
+    captureCompassInputs();
     compassData.roles.splice(index, 1);
     renderCompassRoles();
 }
