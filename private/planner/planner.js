@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.97'; // Slightly reduce left margin on Saw fields and rock bullets
+const APP_VERSION = '1.4.98'; // Change Edit button to pencil icon; Done to checkmark
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -3302,7 +3302,7 @@ function toggleCompassEdit() {
     renderCompass();
     renderCompassRoles();
     const editBtn = document.getElementById('compassEditBtn');
-    if (editBtn) editBtn.textContent = compassEditMode ? 'Done' : 'Edit';
+    if (editBtn) editBtn.textContent = compassEditMode ? '✓' : '✎';
 }
 
 function updateCompassEditUI() {
