@@ -1,20 +1,20 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.90'; // Generate new random quote on each load; remove saw dividers; add arrow bullets for rocks
+const APP_VERSION = '1.4.91'; // Shortened quotes to fit within display width
 
-// Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
+// Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
-    'Begin with the end in mind. — Stephen Covey',
-    'Put first things first. — Stephen Covey',
-    'The main thing is the main thing. — Stephen Covey',
-    'Success is getting what you want; happiness is wanting what you get. — Dale Carnegie',
-    'Do one thing well today. — Dale Carnegie',
-    'The obstacle is the way. — Ryan Holiday',
-    'Discipline equals freedom. — Ryan Holiday',
+    'Begin with the end in mind. — Covey',
+    'Put first things first. — Covey',
+    'The main thing is the main thing. — Covey',
+    'Get what you want; want what you get. — Carnegie',
+    'Do one thing well today. — Carnegie',
+    'The obstacle is the way. — Holiday',
+    'Discipline equals freedom. — Holiday',
     'No great thing is created suddenly. — Epictetus',
-    'We suffer more in imagination than in reality. — Seneca',
-    'Well done is better than well said. — Benjamin Franklin',
+    'We suffer more in imagination. — Seneca',
+    'Well done beats well said. — Franklin',
     'Small deeds, big results. — Anonymous',
-    'Change your thoughts; change your world. — Norman Vincent Peale'
+    'Your thoughts create your world. — Peale'
 ];
 
 // Configuration - will be loaded from config.json
