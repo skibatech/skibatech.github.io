@@ -1021,12 +1021,6 @@ body.unauthenticated #refreshBtn {
     margin-bottom: 4px;
 }
 
-.compass-rock-item span {
-    color: var(--text-muted);
-    font-size: 11px;
-    padding-top: 7px;
-}
-
 .compass-rock-item textarea {
     flex: 1;
 }

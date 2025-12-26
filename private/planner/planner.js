@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.83'; // Compass read-only default + edit toggle, sticky bottom, version in header
+const APP_VERSION = '1.4.84'; // Remove Big Rocks numbering; Sharpen-the-Saw read-only honored
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
@@ -3369,7 +3369,6 @@ function renderCompassRoles() {
                 <div class="compass-rocks-header">Big Rocks ${compassEditMode ? `<button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button>` : ''}</div>
                 ${role.rocks.map((rock, i) => `
                     <div class="compass-rock-item">
-                        <span>${i + 1}.</span>
                         <input type="text" class="compass-rock-input" ${compassEditMode ? '' : 'readonly'} placeholder="Enter a big rock..." value="${escapeHtml(rock)}">
                         ${compassEditMode ? `<button class="compass-mini-btn" onclick="removeCompassRock(${index}, ${i})" title="Remove priority">✕</button>` : ''}
                     </div>
