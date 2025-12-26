@@ -1,5 +1,5 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.68-admin';
+const ADMIN_APP_VERSION = '1.4.69-admin';
 const DEFAULT_THEME_NAMES = {
     category5: 'Enhance Security & Compliance',
     category4: 'Optimize Efficiency & Automation',
