@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.72'; // Add configurable compass background color (default forest green)
+const APP_VERSION = '1.4.73'; // Fix compass initialization and response handling
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -3005,13 +3005,26 @@ let compassVisible = false;
 
 async function initializeCompass() {
     try {
+        if (!accessToken) return; // Can't initialize without token
+        
         // Try to find existing compass list
-        const lists = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists');
-        let compassList = lists.value.find(list => list.displayName === 'PlannerCompass_Data');
+        const listsResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (!listsResponse.ok) {
+            console.error('Failed to fetch To Do lists:', listsResponse.status);
+            return;
+        }
+        
+        const listsData = await listsResponse.json();
+        let compassList = listsData.value.find(list => list.displayName === 'PlannerCompass_Data');
         
         if (!compassList) {
             // Create the list if it doesn't exist
-            compassList = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+            const createResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -3021,6 +3034,13 @@ async function initializeCompass() {
                     displayName: 'PlannerCompass_Data'
                 })
             });
+            
+            if (!createResponse.ok) {
+                console.error('Failed to create compass list:', createResponse.status);
+                return;
+            }
+            
+            compassList = await createResponse.json();
         }
         
         compassListId = compassList.id;
@@ -3031,10 +3051,22 @@ async function initializeCompass() {
 }
 
 async function loadCompassData() {
-    if (!compassListId) return;
+    if (!compassListId || !accessToken) return;
     
     try {
-        const tasks = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`);
+        const response = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (!response.ok) {
+            console.error('Failed to load compass tasks:', response.status);
+            return;
+        }
+        
+        const tasksData = await response.json();
+        const tasks = tasksData.value || [];
         
         // Parse compass data from To Do tasks
         tasks.value.forEach(task => {
@@ -3093,8 +3125,21 @@ async function saveCompassData() {
         });
         
         // Delete all existing tasks
-        const existingTasks = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`);
-        await Promise.all(existingTasks.value.map(task =>
+        const existingResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (!existingResponse.ok) {
+            console.error('Failed to fetch existing tasks:', existingResponse.status);
+            return;
+        }
+        
+        const existingData = await existingResponse.json();
+        const existingTasks = existingData.value || [];
+        
+        await Promise.all(existingTasks.map(task =>
             fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${accessToken}` }
