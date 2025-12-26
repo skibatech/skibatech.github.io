@@ -51,12 +51,12 @@
 
         <div id="gettingStartedPanel" class="card" style="background:linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%); border-left:4px solid #2196F3; display:none;">
             <h3 style="margin-top:0; color:#2196F3;">🚀 Getting Started</h3>
-            <p style="margin:0 0 12px 0; color:var(--text-secondary); font-size:13px;">New to the admin portal? Follow these quick steps:</p>
+            <p style="margin:0 0 12px 0; color:var(--text-secondary); font-size:13px;">New to the admin portal? Here's the easiest path to setup:</p>
             <ol style="margin:0 0 12px 0; padding-left:20px; color:var(--text-secondary); font-size:13px;">
-                <li style="margin-bottom:8px;"><strong>Find your Planner Plan ID</strong> - Go to tasks.microsoft.com, open your plan, and copy the ID from the URL</li>
-                <li style="margin-bottom:8px;"><strong>Enter Plan ID above</strong> - Paste it in the Configuration section</li>
-                <li style="margin-bottom:8px;"><strong>Set theme names</strong> - Customize the color labels (optional)</li>
-                <li><strong>Click Save & Sync</strong> - Done! Your settings are saved and synced to Planner</li>
+                <li style="margin-bottom:8px;"><strong>Copy your Planner Plan ID</strong> - Go to tasks.microsoft.com, open your plan, and copy the ID from the URL</li>
+                <li style="margin-bottom:8px;"><strong>Configure settings</strong> - Copy your Plan ID and other config values (Client ID, Authority, etc.) to the Configuration section below, or update config.json in your repository</li>
+                <li style="margin-bottom:8px;"><strong>Customize theme names</strong> - Below, rename the color labels to match your workflow (e.g., "High Priority", "In Progress")</li>
+                <li><strong>Click Save & Sync</strong> - Your theme names sync instantly to Planner. Configuration changes sync when you update config.json.</li>
             </ol>
             <button onclick="closeGettingStarted(); showAdminHelp();" style="background:#2196F3; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-size:13px;">Read Full Setup Guide</button>
             <button onclick="closeGettingStarted();" style="background:none; border:1px solid var(--border-color); padding:8px 16px; border-radius:4px; cursor:pointer; margin-left:8px; font-size:13px;">Got it, thanks</button>
@@ -192,13 +192,14 @@
                             <div style="display:flex; gap:12px;">
                                 <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">2</div>
                                 <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Enter Your Planner Plan ID</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Go to <strong>Microsoft Planner</strong> (tasks.microsoft.com), find your plan, and copy the Plan ID:</p>
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Update Configuration Settings</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">The <strong>Configuration</strong> section below shows your current settings (Client ID, Plan ID, Admin Group ID, Authority, etc.). To change these:</p>
                                     <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li>Open your Planner plan</li>
-                                        <li>Look at the URL: <code style="background:var(--bg-secondary); padding:2px 6px; border-radius:3px;">https://tasks.microsoft.com/...?cid=<strong>[PLAN-ID]</strong></code></li>
-                                        <li>Copy the Plan ID and paste it in the <strong>Plan ID</strong> field above</li>
+                                        <li>Edit <strong>config.json</strong> in your repository with the new values</li>
+                                        <li>Or paste your config values directly into these fields to test them locally</li>
+                                        <li>Click "Save & Sync" to update the admin portal with your changes</li>
                                     </ul>
+                                    <p style="margin:12px 0 0 0; font-size:12px; color:#ff9800; font-weight:500;">💡 For persistent changes across all users, update config.json</p>
                                 </div>
                             </div>
 
@@ -206,12 +207,12 @@
                             <div style="display:flex; gap:12px;">
                                 <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">3</div>
                                 <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Set Your Theme Names (Optional)</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Customize the color labels that appear in tasks:</p>
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Customize Theme Names (Easy Customization Here!)</p>
+                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">This is the one thing you <strong>can customize directly in the admin portal</strong>. Rename the color categories:</p>
                                     <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li><strong>Theme 1 (Blue)</strong> → e.g., "Priority"</li>
-                                        <li><strong>Theme 2 (Green)</strong> → e.g., "In Progress"</li>
-                                        <li>Customize all 7 color themes to match your workflow</li>
+                                        <li><strong>Theme 1 (Blue)</strong> → e.g., "High Priority", "Critical"</li>
+                                        <li><strong>Theme 2 (Green)</strong> → e.g., "In Progress", "Active"</li>
+                                        <li>Customize all 7 colors to match your workflow</li>
                                     </ul>
                                 </div>
                             </div>
@@ -220,8 +221,8 @@
                             <div style="display:flex; gap:12px;">
                                 <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">4</div>
                                 <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Save & Sync</p>
-                                    <p style="margin:0; font-size:13px; color:var(--text-secondary);">Click the blue <strong>"Save & Sync"</strong> button. Your settings will be saved and your theme names will sync to Microsoft Planner instantly.</p>
+                                    <p style="margin:0 0 8px 0; font-weight:500;">Save & Sync Theme Names to Planner</p>
+                                    <p style="margin:0; font-size:13px; color:var(--text-secondary);">Click the blue <strong>"Save & Sync"</strong> button. Your theme name customizations will be saved and synced to Microsoft Planner instantly. Configuration changes (Plan ID, etc.) sync when you update config.json.</p>
                                 </div>
                             </div>
 
@@ -247,16 +248,16 @@
                         <h4 style="margin:0 0 16px 0; color:#4CAF50; font-size:16px;">⚙️ Ongoing Management</h4>
                         <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
                             <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">Edit Theme Names</p>
-                                <p style="margin:0; color:var(--text-secondary);">Change the color labels anytime in the <strong>Strategic Theme Names</strong> section, then click "Save & Sync" to update Microsoft Planner.</p>
+                                <p style="margin:0 0 4px 0; font-weight:500;">✅ Edit Theme Names (Easiest)</p>
+                                <p style="margin:0; color:var(--text-secondary);">Change the color labels anytime in the <strong>Strategic Theme Names</strong> section below, then click "Save & Sync" to update Microsoft Planner immediately.</p>
                             </div>
                             <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">Switch Planner Plans</p>
-                                <p style="margin:0; color:var(--text-secondary);">Update the <strong>Plan ID</strong> field with a different plan and click "Save & Sync".</p>
+                                <p style="margin:0 0 4px 0; font-weight:500;">📝 Change Configuration (Edit config.json)</p>
+                                <p style="margin:0; color:var(--text-secondary);">To change Plan ID, Authority, Admin Group, or other config values, update <strong>config.json</strong> in your repository. You can also paste values here to test them locally before committing to config.json.</p>
                             </div>
                             <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">Add More Admins</p>
-                                <p style="margin:0; color:var(--text-secondary);">In the <strong>Admin Users (Emails)</strong> field, add comma-separated emails (e.g., admin1@company.com, admin2@company.com) and save.</p>
+                                <p style="margin:0 0 4px 0; font-weight:500;">👥 Add More Admins</p>
+                                <p style="margin:0; color:var(--text-secondary);">Edit the <strong>Admin Users (Emails)</strong> field with comma-separated emails and update config.json, or paste them here to test locally.</p>
                             </div>
                         </div>
                     </div>
