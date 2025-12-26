@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.74'; // Fix loadCompassData forEach error
+const APP_VERSION = '1.4.75'; // Fix compass color picker and format Sharpen the Saw inline
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -2423,6 +2423,13 @@ function showOptions() {
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('compassBgColorInput').value = localStorage.getItem('compassBgColor') || '#2d5016';
+    
+    // Add real-time color change listener
+    const colorInput = document.getElementById('compassBgColorInput');
+    colorInput.addEventListener('change', function() {
+        document.documentElement.style.setProperty('--compass-bg', this.value);
+    });
+    
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
 }
