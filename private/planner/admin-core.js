@@ -1,5 +1,14 @@
 // Admin portal core logic
-const ADMIN_APP_VERSION = '1.4.66-admin';
+const ADMIN_APP_VERSION = '1.4.67-admin';
+const DEFAULT_THEME_NAMES = {
+    category5: 'Enhance Security & Compliance',
+    category4: 'Optimize Efficiency & Automation',
+    category3: 'Improve Documentation',
+    category1: 'Streamline Reporting',
+    category7: 'Practical Modernization',
+    category9: 'Develop Capabilities & Cross-Training',
+    category2: 'Maintain Upgrades & Bug Fixes'
+};
 const ADMIN_ROLE = 'PlannerAdmin';
 
 let accessToken = null;
@@ -171,13 +180,13 @@ function loadSettingsFromStorage() {
     $('taskIdPrefixInput').value = localStorage.getItem('taskIdPrefix') || 'STE';
     $('adminUsersInput').value = adminUsers.join(', ');
 
-    $('themeNameCategory5').value = customThemeNames['category5'] || '';
-    $('themeNameCategory4').value = customThemeNames['category4'] || '';
-    $('themeNameCategory3').value = customThemeNames['category3'] || '';
-    $('themeNameCategory1').value = customThemeNames['category1'] || '';
-    $('themeNameCategory7').value = customThemeNames['category7'] || '';
-    $('themeNameCategory9').value = customThemeNames['category9'] || '';
-    $('themeNameCategory2').value = customThemeNames['category2'] || '';
+    $('themeNameCategory5').value = customThemeNames['category5'] || DEFAULT_THEME_NAMES.category5;
+    $('themeNameCategory4').value = customThemeNames['category4'] || DEFAULT_THEME_NAMES.category4;
+    $('themeNameCategory3').value = customThemeNames['category3'] || DEFAULT_THEME_NAMES.category3;
+    $('themeNameCategory1').value = customThemeNames['category1'] || DEFAULT_THEME_NAMES.category1;
+    $('themeNameCategory7').value = customThemeNames['category7'] || DEFAULT_THEME_NAMES.category7;
+    $('themeNameCategory9').value = customThemeNames['category9'] || DEFAULT_THEME_NAMES.category9;
+    $('themeNameCategory2').value = customThemeNames['category2'] || DEFAULT_THEME_NAMES.category2;
 }
 
 function updateVisibility(isAuthenticated) {
