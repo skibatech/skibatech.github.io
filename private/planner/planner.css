@@ -753,3 +753,215 @@ body.unauthenticated #refreshBtn {
     transition: transform 0.2s;
 }
 
+/* Weekly Compass Panel */
+#mainContentWrapper {
+    display: flex;
+    gap: 20px;
+}
+
+#tasksContainer {
+    flex: 1;
+    min-width: 0;
+}
+
+.compass-panel {
+    width: 380px;
+    min-width: 380px;
+    max-width: 380px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px var(--shadow);
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    position: sticky;
+    top: 20px;
+}
+
+.compass-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.compass-header h2 {
+    font-size: 20px;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.compass-close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.compass-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.compass-quote {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--link-color);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    min-height: 50px;
+}
+
+.compass-quote:empty:before {
+    content: attr(placeholder);
+    color: var(--text-muted);
+}
+
+.compass-quote:focus {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
+}
+
+.compass-date-range {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    padding: 8px 12px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+}
+
+.compass-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.compass-section.sharpen-saw {
+    border-left: 4px solid #10b981;
+}
+
+.compass-role-header {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.compass-role-header input {
+    flex: 1;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.compass-category {
+    margin-bottom: 12px;
+}
+
+.compass-category:last-child {
+    margin-bottom: 0;
+}
+
+.compass-category label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.compass-category textarea,
+.compass-rocks textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    resize: vertical;
+    font-family: inherit;
+}
+
+.compass-rocks {
+    margin-top: 12px;
+}
+
+.compass-rocks-header {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.compass-rock-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.compass-rock-item span {
+    color: var(--text-muted);
+    font-size: 12px;
+    padding-top: 9px;
+}
+
+.compass-rock-item textarea {
+    flex: 1;
+}
+
+.compass-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.compass-role-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.compass-role-actions button {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.remove-role-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.remove-role-btn:hover {
+    background: #dc2626;
+}
+

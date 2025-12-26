@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.66'; // Persist view and groupBy changes to localStorage
+const APP_VERSION = '1.4.67'; // Add Weekly Compass panel with Microsoft To Do storage
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -635,8 +635,10 @@ async function updateAuthUI(isAuthenticated) {
     const status = document.getElementById('status');
     const connectBtn = document.getElementById('connectBtn');
     const refreshBtn = document.getElementById('refreshBtn');
+    const compassToggleBtn = document.getElementById('compassToggleBtn');
     const authRequired = document.getElementById('authRequired');
     const tasksContainer = document.getElementById('tasksContainer');
+    const mainWrapper = document.getElementById('mainContentWrapper');
     const profileContainer = document.getElementById('profileContainer');
     const adminModeItem = document.getElementById('adminModeItem');
     
@@ -645,9 +647,10 @@ async function updateAuthUI(isAuthenticated) {
         status.style.color = '#107c10';
         connectBtn.style.display = 'none';
         refreshBtn.style.display = 'inline-block';
+        compassToggleBtn.style.display = 'inline-block';
         profileContainer.style.display = 'inline-block';
         authRequired.style.display = 'none';
-        tasksContainer.style.display = 'block';
+        mainWrapper.style.display = 'block';
         document.body.classList.remove('unauthenticated');
         
         // Fetch and display user info
@@ -687,9 +690,10 @@ async function updateAuthUI(isAuthenticated) {
         status.style.color = '#666';
         connectBtn.style.display = 'inline-block';
         refreshBtn.style.display = 'none';
+        compassToggleBtn.style.display = 'none';
         profileContainer.style.display = 'none';
         authRequired.style.display = 'block';
-        tasksContainer.style.display = 'none';
+        mainWrapper.style.display = 'none';
         document.body.classList.add('unauthenticated');
         if (adminModeItem) adminModeItem.style.display = 'none';
     }
@@ -894,6 +898,11 @@ async function loadTasks() {
         // Apply filters and render
         applyFilters();
         document.getElementById('status').textContent = 'Connected';
+        
+        // Initialize compass on first load
+        if (!compassListId) {
+            initializeCompass();
+        }
     } catch (error) {
         console.error('Error loading tasks:', error);
         document.getElementById('status').textContent = 'Error loading tasks';
@@ -2967,4 +2976,230 @@ async function bulkMarkIncomplete() {
         console.error('Bulk incomplete error:', err);
         alert('Error marking tasks incomplete: ' + err.message);
     }
+}
+
+// ===== Weekly Compass Feature =====
+let compassData = {
+    quote: '',
+    sharpenSaw: {
+        physical: '',
+        socialEmotional: '',
+        mental: '',
+        spiritual: ''
+    },
+    roles: []
+};
+let compassListId = null;
+let compassVisible = false;
+
+async function initializeCompass() {
+    try {
+        // Try to find existing compass list
+        const lists = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists');
+        let compassList = lists.value.find(list => list.displayName === 'PlannerCompass_Data');
+        
+        if (!compassList) {
+            // Create the list if it doesn't exist
+            compassList = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    displayName: 'PlannerCompass_Data'
+                })
+            });
+        }
+        
+        compassListId = compassList.id;
+        await loadCompassData();
+    } catch (err) {
+        console.error('Failed to initialize compass:', err);
+    }
+}
+
+async function loadCompassData() {
+    if (!compassListId) return;
+    
+    try {
+        const tasks = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`);
+        
+        // Parse compass data from To Do tasks
+        tasks.value.forEach(task => {
+            const title = task.title;
+            const body = task.body?.content || '';
+            
+            if (title === 'COMPASS_QUOTE') {
+                compassData.quote = body;
+            } else if (title === 'COMPASS_SAW') {
+                try {
+                    compassData.sharpenSaw = JSON.parse(body);
+                } catch (e) {
+                    compassData.sharpenSaw = { physical: '', socialEmotional: '', mental: '', spiritual: '' };
+                }
+            } else if (title.startsWith('COMPASS_ROLE_')) {
+                try {
+                    const roleData = JSON.parse(body);
+                    compassData.roles.push(roleData);
+                } catch (e) {
+                    console.error('Failed to parse role:', e);
+                }
+            }
+        });
+        
+        renderCompass();
+    } catch (err) {
+        console.error('Failed to load compass data:', err);
+    }
+}
+
+async function saveCompassData() {
+    if (!compassListId || !accessToken) return;
+    
+    try {
+        // Collect current data from UI
+        compassData.quote = document.getElementById('compassQuote').textContent;
+        compassData.sharpenSaw.physical = document.getElementById('sawPhysical').value;
+        compassData.sharpenSaw.socialEmotional = document.getElementById('sawSocialEmotional').value;
+        compassData.sharpenSaw.mental = document.getElementById('sawMental').value;
+        compassData.sharpenSaw.spiritual = document.getElementById('sawSpiritual').value;
+        
+        // Collect roles
+        compassData.roles = [];
+        document.querySelectorAll('.compass-role-section').forEach(section => {
+            const roleName = section.querySelector('.compass-role-input').value;
+            const rocks = [];
+            section.querySelectorAll('.compass-rock-input').forEach(input => {
+                if (input.value.trim()) rocks.push(input.value.trim());
+            });
+            if (roleName.trim()) {
+                compassData.roles.push({ name: roleName, rocks });
+            }
+        });
+        
+        // Delete all existing tasks
+        const existingTasks = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`);
+        await Promise.all(existingTasks.value.map(task =>
+            fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            })
+        ));
+        
+        // Create new tasks
+        const createTask = async (title, body) => {
+            return fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title,
+                    body: { contentType: 'text', content: body }
+                })
+            });
+        };
+        
+        await createTask('COMPASS_QUOTE', compassData.quote);
+        await createTask('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
+        
+        for (let i = 0; i < compassData.roles.length; i++) {
+            await createTask(`COMPASS_ROLE_${i}`, JSON.stringify(compassData.roles[i]));
+        }
+        
+        alert('Weekly Compass saved successfully!');
+    } catch (err) {
+        console.error('Failed to save compass:', err);
+        alert('Failed to save compass data: ' + err.message);
+    }
+}
+
+function toggleCompass() {
+    compassVisible = !compassVisible;
+    const panel = document.getElementById('weeklyCompassPanel');
+    const wrapper = document.getElementById('mainContentWrapper');
+    
+    if (compassVisible) {
+        panel.style.display = 'block';
+        wrapper.style.display = 'flex';
+        renderCompass();
+    } else {
+        panel.style.display = 'none';
+        wrapper.style.display = 'block';
+    }
+}
+
+function renderCompass() {
+    // Update quote
+    document.getElementById('compassQuote').textContent = compassData.quote;
+    
+    // Update date range (current week)
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay()); // Sunday
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    
+    const formatDate = d => `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+    document.getElementById('compassDateRange').textContent = 
+        `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
+    
+    // Update Sharpen the Saw
+    document.getElementById('sawPhysical').value = compassData.sharpenSaw.physical || '';
+    document.getElementById('sawSocialEmotional').value = compassData.sharpenSaw.socialEmotional || '';
+    document.getElementById('sawMental').value = compassData.sharpenSaw.mental || '';
+    document.getElementById('sawSpiritual').value = compassData.sharpenSaw.spiritual || '';
+    
+    // Render roles
+    renderCompassRoles();
+}
+
+function renderCompassRoles() {
+    const container = document.getElementById('compassRoles');
+    container.innerHTML = '';
+    
+    compassData.roles.forEach((role, index) => {
+        const section = document.createElement('div');
+        section.className = 'compass-section compass-role-section';
+        section.innerHTML = `
+            <div class="compass-role-header">
+                Role: <input type="text" class="compass-role-input" value="${escapeHtml(role.name)}" placeholder="Enter role name...">
+            </div>
+            <div class="compass-rocks">
+                <div class="compass-rocks-header">Big Rocks (1-3 priorities)</div>
+                ${role.rocks.slice(0, 3).map((rock, i) => `
+                    <div class="compass-rock-item">
+                        <span>${i + 1}.</span>
+                        <textarea class="compass-rock-input" rows="2" placeholder="Enter a big rock...">${escapeHtml(rock)}</textarea>
+                    </div>
+                `).join('')}
+                ${role.rocks.length < 3 ? Array(3 - role.rocks.length).fill(0).map((_, i) => `
+                    <div class="compass-rock-item">
+                        <span>${role.rocks.length + i + 1}.</span>
+                        <textarea class="compass-rock-input" rows="2" placeholder="Enter a big rock..."></textarea>
+                    </div>
+                `).join('') : ''}
+            </div>
+            <div class="compass-role-actions">
+                <button class="remove-role-btn" onclick="removeCompassRole(${index})">Remove Role</button>
+            </div>
+        `;
+        container.appendChild(section);
+    });
+}
+
+function addCompassRole() {
+    if (compassData.roles.length >= 7) {
+        alert('Maximum 7 roles allowed');
+        return;
+    }
+    compassData.roles.push({ name: '', rocks: [] });
+    renderCompassRoles();
+}
+
+function removeCompassRole(index) {
+    compassData.roles.splice(index, 1);
+    renderCompassRoles();
 }
