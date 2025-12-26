@@ -1,18 +1,20 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.85'; // Read-only Saw captions; light dividers in dark mode
+const APP_VERSION = '1.4.86'; // Saw dividers top/bottom; curated one-line quotes
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
-    'The main thing is to keep the main thing the main thing. — Stephen Covey',
     'Begin with the end in mind. — Stephen Covey',
-    'Do the hard stuff first. — Stephen Covey',
-    'Success is getting what you want. Happiness is wanting what you get. — Dale Carnegie',
-    'Courage starts with showing up and letting ourselves be seen. — Brené Brown',
-    'Clear is kind. — Brené Brown',
+    'Put first things first. — Stephen Covey',
+    'The main thing is the main thing. — Stephen Covey',
+    'Success is getting what you want; happiness is wanting what you get. — Dale Carnegie',
+    'Do one thing well today. — Dale Carnegie',
     'The obstacle is the way. — Ryan Holiday',
-    'Ego is the enemy. — Ryan Holiday',
-    'Change your thoughts and you change your world. — Norman Vincent Peale',
-    'Believe you can and you are halfway there. — Theodore Roosevelt'
+    'Discipline equals freedom. — Ryan Holiday',
+    'No great thing is created suddenly. — Epictetus',
+    'We suffer more in imagination than in reality. — Seneca',
+    'Well done is better than well said. — Benjamin Franklin',
+    'Small deeds, big results. — Anonymous',
+    'Change your thoughts; change your world. — Norman Vincent Peale'
 ];
 
 // Configuration - will be loaded from config.json
