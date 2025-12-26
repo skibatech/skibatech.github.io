@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.96'; // Align rock bullets with Sharpen the Saw field indentation
+const APP_VERSION = '1.4.97'; // Slightly reduce left margin on Saw fields and rock bullets
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

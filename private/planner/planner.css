@@ -878,7 +878,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-section.sharpen-saw .compass-category-inline {
-    margin-left: 12px;
+    margin-left: 10px;
 }
 
 .compass-role-header {
@@ -1022,7 +1022,7 @@ body.unauthenticated #refreshBtn {
     align-items: center;
     gap: 6px;
     margin-bottom: 4px;
-    margin-left: 20px;
+    margin-left: 18px;
 }
 
 .compass-rock-item::before {
