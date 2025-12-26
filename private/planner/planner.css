@@ -791,7 +791,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-header h2 {
-    font-size: 15px;
+    font-size: 16px;
     color: #ffffff;
     margin: 0;
 }
@@ -815,7 +815,7 @@ body.unauthenticated #refreshBtn {
 .compass-quote {
     font-style: italic;
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 13px;
     padding: 8px;
     background: var(--bg-tertiary);
     border-left: 2px solid var(--link-color);
@@ -835,7 +835,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-date-range {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
     margin-bottom: 12px;
     padding: 6px 8px;
@@ -848,7 +848,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-date-range input {
     flex: 1;
-    font-size: 11px;
+    font-size: 12px;
     padding: 3px 6px;
     border: 1px solid var(--border-color);
     border-radius: 3px;
@@ -870,7 +870,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-role-header {
     font-weight: 600;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-primary);
     margin-bottom: 8px;
     display: flex;
@@ -881,7 +881,7 @@ body.unauthenticated #refreshBtn {
 .compass-role-header input {
     flex: 1;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 14px;
     padding: 3px 6px;
     border: 1px solid var(--border-color);
     border-radius: 3px;
@@ -910,7 +910,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-category-inline label {
     display: block;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
     margin: 0;
@@ -920,7 +920,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-category-inline input {
     flex: 1;
-    font-size: 11px;
+    font-size: 12px;
     padding: 5px 6px;
     border: 1px solid var(--border-color);
     border-radius: 3px;
@@ -929,10 +929,10 @@ body.unauthenticated #refreshBtn {
     height: 28px;
 }
 
-.compass-category textarea,
-.compass-rocks textarea {
+.compass-rock-item input,
+.compass-rock-item textarea {
     width: 100%;
-    padding: 6px;
+    padding: 5px 6px;
     font-size: 12px;
     border: 1px solid var(--border-color);
     border-radius: 3px;
@@ -940,6 +940,8 @@ body.unauthenticated #refreshBtn {
     color: var(--text-primary);
     resize: vertical;
     font-family: inherit;
+    height: 28px;
+    box-sizing: border-box;
 }
 
 .compass-rocks {
@@ -947,7 +949,7 @@ body.unauthenticated #refreshBtn {
 }
 
 .compass-rocks-header {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
     margin-bottom: 6px;

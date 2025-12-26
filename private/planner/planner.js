@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.75'; // Fix compass color picker and format Sharpen the Saw inline
+const APP_VERSION = '1.4.76'; // Change Big Rocks to single-line and increase compass fonts
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -3248,13 +3248,13 @@ function renderCompassRoles() {
                 ${role.rocks.slice(0, 3).map((rock, i) => `
                     <div class="compass-rock-item">
                         <span>${i + 1}.</span>
-                        <textarea class="compass-rock-input" rows="2" placeholder="Enter a big rock...">${escapeHtml(rock)}</textarea>
+                        <input type="text" class="compass-rock-input" placeholder="Enter a big rock..." value="${escapeHtml(rock)}">
                     </div>
                 `).join('')}
                 ${role.rocks.length < 3 ? Array(3 - role.rocks.length).fill(0).map((_, i) => `
                     <div class="compass-rock-item">
                         <span>${role.rocks.length + i + 1}.</span>
-                        <textarea class="compass-rock-input" rows="2" placeholder="Enter a big rock..."></textarea>
+                        <input type="text" class="compass-rock-input" placeholder="Enter a big rock...">
                     </div>
                 `).join('') : ''}
             </div>
