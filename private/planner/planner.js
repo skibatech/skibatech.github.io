@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.94'; // Quote display-only with highlight; date moved to top and read-only
+const APP_VERSION = '1.4.95'; // Change rock bullets from arrows to circle with dot
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
