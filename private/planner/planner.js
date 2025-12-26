@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.87'; // Dynamic compass text contrast and readable labels
+const APP_VERSION = '1.4.88'; // Fix Sharpen-the-Saw inputs to be editable in edit mode
 
 // Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
 const MOTIVATIONAL_QUOTES = [
