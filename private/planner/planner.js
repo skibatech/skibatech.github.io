@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.6'; // Uniform icon sizes in compass header
+const APP_VERSION = '1.6.7'; // Fix Weekly Compass title and cancel button visibility in light mode
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

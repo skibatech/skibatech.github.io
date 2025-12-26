@@ -817,6 +817,10 @@ body.unauthenticated #refreshBtn {
     border-bottom: 1px solid var(--compass-border);
 }
 
+.compass-title {
+    color: var(--compass-text) !important;
+}
+
 .compass-header-actions {
     display: flex;
     align-items: center;
@@ -840,6 +844,9 @@ body.unauthenticated #refreshBtn {
     justify-content: center;
     border-radius: 6px;
     color: var(--text-primary);
+}
+.icon-btn.icon-cancel {
+    color: var(--compass-text);
 }
 .icon-btn.primary {
     background: var(--primary-color);
