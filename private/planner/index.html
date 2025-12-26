@@ -16,7 +16,7 @@
             
             <div style="display: flex; gap: 15px; align-items: center; margin-right: 15px;">
                 <div>
-                    <label for="viewSelect" style="font-size: 13px; color: var(--text-primary); margin-right: 8px;">View:</label>
+                    <label for="viewSelect" style="font-size: 13px; color: var(--text-primary); margin-right: 8px; font-weight: bold;">View:</label>
                     <select id="viewSelect" onchange="changeView()" class="control-select">
                         <option value="assigned">By Assigned To</option>
                         <option value="bucket">By Bucket</option>
@@ -27,7 +27,7 @@
                     </select>
                 </div>
                 <div id="groupByContainer">
-                    <label for="groupBySelect" style="font-size: 13px; color: var(--text-primary); margin-right: 8px;">Group by:</label>
+                    <label for="groupBySelect" style="font-size: 13px; color: var(--text-primary); margin-right: 8px; font-weight: bold;">Group by:</label>
                     <select id="groupBySelect" onchange="changeGroupBy()" class="control-select">
                         <option value="none">None</option>
                         <option value="bucket">Bucket</option>
@@ -39,7 +39,7 @@
                     </select>
                 </div>
             </div>
-            <label for="filterSelect" style="font-size: 13px; color: var(--text-primary);">Filter:</label>
+            <label for="filterSelect" style="font-size: 13px; color: var(--text-primary); font-weight: bold;">Filter:</label>
             <select id="filterSelect" onchange="applyFilters()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
                 <option value="all">All tasks</option>
                 <option value="urgent">Urgent priority</option>
@@ -50,13 +50,13 @@
                 <option value="due-today">Due today</option>
                 <option value="due-this-week">Due this week</option>
             </select>
-            <label style="font-size: 13px; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+            <label style="font-size: 13px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; font-weight: bold;">
                 <input type="checkbox" id="showCompletedCheckbox" onchange="applyFilters()" style="cursor: pointer;">
                 Show completed
             </label>
-            <span class="status" id="status">Not connected</span>
+            <span class="status" id="status" style="font-weight: bold;">Not connected</span>
             <button id="connectBtn" onclick="login()">Sign In with Microsoft</button>
-            <button id="refreshBtn" onclick="loadTasks()" style="display:none;">Refresh</button>
+            <button id="refreshBtn" onclick="loadTasks()" class="primary-btn" style="display:none;">Refresh</button>
             <button id="compassToggleBtn" onclick="toggleCompass()" style="display:none; background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;" title="Toggle Weekly Compass">
                 <span>🧭</span>
             </button>

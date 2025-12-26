@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.6.9'; // Improve visibility of header labels (View, Group by, Filter, Show completed)
+const APP_VERSION = '1.7.0'; // Bold headers, uniform button styling, visual refinements
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
