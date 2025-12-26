@@ -1,5 +1,19 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.4.80'; // Preserve inline edits when adding roles, dark-mode compass color fix, removed quote label
+const APP_VERSION = '1.4.81'; // Dynamic rocks add/remove and auto motivational quotes
+
+// Compact set of one-line motivational quotes (Covey, Carnegie, Brown, Holiday, Peale, others)
+const MOTIVATIONAL_QUOTES = [
+    'The main thing is to keep the main thing the main thing. — Stephen Covey',
+    'Begin with the end in mind. — Stephen Covey',
+    'Do the hard stuff first. — Stephen Covey',
+    'Success is getting what you want. Happiness is wanting what you get. — Dale Carnegie',
+    'Courage starts with showing up and letting ourselves be seen. — Brené Brown',
+    'Clear is kind. — Brené Brown',
+    'The obstacle is the way. — Ryan Holiday',
+    'Ego is the enemy. — Ryan Holiday',
+    'Change your thoughts and you change your world. — Norman Vincent Peale',
+    'Believe you can and you are halfway there. — Theodore Roosevelt'
+];
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -3260,6 +3274,9 @@ function toggleCompass() {
 function renderCompass() {
     // Update quote
     const quoteInput = document.getElementById('compassQuoteInput');
+    if (!compassData.quote) {
+        compassData.quote = getRandomQuote();
+    }
     if (quoteInput) quoteInput.value = compassData.quote;
     
     // Update date range (editable field)
@@ -3292,6 +3309,12 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function getRandomQuote() {
+    if (!Array.isArray(MOTIVATIONAL_QUOTES) || MOTIVATIONAL_QUOTES.length === 0) return '';
+    const idx = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+    return MOTIVATIONAL_QUOTES[idx];
+}
+
 function renderCompassRoles() {
     const container = document.getElementById('compassRoles');
     container.innerHTML = '';
@@ -3305,19 +3328,18 @@ function renderCompassRoles() {
                 <button class="compass-trash-btn" onclick="removeCompassRole(${index})" title="Remove role">🗑️</button>
             </div>
             <div class="compass-rocks">
-                <div class="compass-rocks-header">Big Rocks (1-3 priorities)</div>
-                ${role.rocks.slice(0, 3).map((rock, i) => `
+                <div class="compass-rocks-header">Big Rocks</div>
+                ${role.rocks.map((rock, i) => `
                     <div class="compass-rock-item">
                         <span>${i + 1}.</span>
                         <input type="text" class="compass-rock-input" placeholder="Enter a big rock..." value="${escapeHtml(rock)}">
+                        <button class="compass-mini-btn" onclick="removeCompassRock(${index}, ${i})" title="Remove priority">✕</button>
                     </div>
                 `).join('')}
-                ${role.rocks.length < 3 ? Array(3 - role.rocks.length).fill(0).map((_, i) => `
-                    <div class="compass-rock-item">
-                        <span>${role.rocks.length + i + 1}.</span>
-                        <input type="text" class="compass-rock-input" placeholder="Enter a big rock...">
-                    </div>
-                `).join('') : ''}
+                <div class="compass-rock-item add-row">
+                    <span>+</span>
+                    <button class="compass-add-rock-btn" onclick="addCompassRock(${index})" title="Add another priority">Add priority</button>
+                </div>
             </div>
         `;
         container.appendChild(section);
@@ -3340,8 +3362,24 @@ function removeCompassRole(index) {
     renderCompassRoles();
 }
 
+function addCompassRock(roleIndex) {
+    captureCompassInputs();
+    if (!compassData.roles[roleIndex]) return;
+    compassData.roles[roleIndex].rocks.push('');
+    renderCompassRoles();
+}
+
+function removeCompassRock(roleIndex, rockIndex) {
+    captureCompassInputs();
+    if (!compassData.roles[roleIndex]) return;
+    compassData.roles[roleIndex].rocks.splice(rockIndex, 1);
+    renderCompassRoles();
+}
+
 // Expose compass functions globally
 window.toggleCompass = toggleCompass;
 window.saveCompassData = saveCompassData;
 window.addCompassRole = addCompassRole;
 window.removeCompassRole = removeCompassRole;
+window.addCompassRock = addCompassRock;
+window.removeCompassRock = removeCompassRock;
