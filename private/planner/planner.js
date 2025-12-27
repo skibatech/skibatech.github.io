@@ -126,6 +126,26 @@ function formatDateForDisplay(isoDateString) {
     return date.toLocaleDateString();
 }
 
+function inputDateToISO(dateInputValue) {
+    // Convert input[type=date] value (YYYY-MM-DD string) to ISO 8601 string
+    // Treats the input value as a LOCAL date and converts to UTC ISO
+    // This ensures the date doesn't shift when stored/retrieved
+    if (!dateInputValue) return null;
+    
+    // Parse as local date (input type=date always gives YYYY-MM-DD in local context)
+    const parts = dateInputValue.split('-');
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // JS months are 0-indexed
+    const day = parseInt(parts[2], 10);
+    
+    // Create date in UTC that represents midnight on the specified local date
+    // We offset by timezone to preserve the intended date
+    const localDate = new Date(year, month, day, 0, 0, 0, 0);
+    const utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+    
+    return utcDate.toISOString();
+}
+
 function getTodayAsInputValue() {
     // Get today's date in YYYY-MM-DD format (local timezone, not UTC)
     const today = new Date();
@@ -2184,7 +2204,8 @@ async function saveInlineEdit(cell, task, field, newValue) {
                 task.assignments = {};
             }
         } else if (field === 'startDateTime' || field === 'dueDateTime') {
-            task[field] = newValue ? new Date(newValue).toISOString() : null;
+            // Convert input date string to ISO format preserving local date
+            task[field] = newValue ? inputDateToISO(newValue) : null;
         } else {
             task[field] = newValue;
         }
@@ -2241,7 +2262,8 @@ async function flushEditCache() {
                         updatePayload.assignments = {};
                     }
                 } else if (field === 'startDateTime' || field === 'dueDateTime') {
-                    updatePayload[field] = newValue ? new Date(newValue).toISOString() : null;
+                    // newValue is input date string (YYYY-MM-DD), convert to ISO
+                    updatePayload[field] = newValue ? inputDateToISO(newValue) : null;
                 } else {
                     updatePayload[field] = newValue;
                 }
@@ -2435,10 +2457,10 @@ async function createTaskFromModal() {
         };
 
         if (startDate) {
-            taskBody.startDateTime = new Date(startDate).toISOString();
+            taskBody.startDateTime = inputDateToISO(startDate);
         }
         if (dueDate) {
-            taskBody.dueDateTime = new Date(dueDate).toISOString();
+            taskBody.dueDateTime = inputDateToISO(dueDate);
         }
         
         // Add assignee if selected
@@ -2718,13 +2740,13 @@ async function saveTaskDetails() {
         };
         
         if (startDate) {
-            taskBody.startDateTime = new Date(startDate).toISOString();
+            taskBody.startDateTime = inputDateToISO(startDate);
         } else {
             taskBody.startDateTime = null;
         }
         
         if (dueDate) {
-            taskBody.dueDateTime = new Date(dueDate).toISOString();
+            taskBody.dueDateTime = inputDateToISO(dueDate);
         } else {
             taskBody.dueDateTime = null;
         }
