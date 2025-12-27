@@ -465,8 +465,14 @@ function toggleGridEditMode() {
     
     const btn = document.getElementById('gridEditModeBtn');
     if (btn) {
-        btn.style.background = gridEditMode ? 'var(--link-color)' : 'transparent';
-        btn.style.color = gridEditMode ? 'white' : 'var(--text-primary)';
+        // Adjust button appearance to show active state
+        if (gridEditMode) {
+            btn.style.opacity = '1';
+            btn.style.filter = 'brightness(1)';
+        } else {
+            btn.style.opacity = '0.7';
+            btn.style.filter = 'brightness(0.95)';
+        }
         btn.title = gridEditMode ? 'Grid editing enabled - click cells to edit inline' : 'Grid editing disabled - click task names to view details';
     }
     

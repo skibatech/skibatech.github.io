@@ -152,7 +152,7 @@ button:disabled {
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    margin-right: 15px;
+    margin-right: 10px;
     transition: background-color 0.2s ease;
 }
 
