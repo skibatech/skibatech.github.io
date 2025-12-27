@@ -1220,3 +1220,61 @@ body.unauthenticated #refreshBtn {
     background: #dc2626;
 }
 
+/* Inline Grid Editing Styles */
+.editable-cell {
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s ease;
+}
+
+.editable-cell:hover {
+    background: var(--bg-hover);
+}
+
+.editable-cell.editing {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    padding: 2px;
+}
+
+body.dark-mode .editable-cell.editing {
+    background: #3a3000;
+    border-color: #ffc107;
+}
+
+.inline-edit-input,
+.inline-edit-select {
+    width: 100%;
+    padding: 4px 8px;
+    border: none;
+    background: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.inline-edit-select {
+    cursor: pointer;
+}
+
+.editable-cell .placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.editable-cell:hover::after {
+    content: '✎';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--link-color);
+    opacity: 0.6;
+}
+
+.editable-cell.editing:hover::after {
+    display: none;
+}
+

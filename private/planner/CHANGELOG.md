@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.0] - 2025-12-27
+
+### Added
+- **🎯 Inline Grid Editing (Major Feature)**: Click any cell to edit directly in the grid view
+  - **Text fields**: Click task name to edit inline with text input
+  - **Date fields**: Click start/due dates to edit with date picker
+  - **Dropdowns**: Click to edit assigned user, progress, and priority with dropdown selects
+  - **Visual feedback**: Cells highlight on hover with pencil icon; yellow border when editing
+  - **Keyboard shortcuts**: 
+    - Enter to save changes
+    - Escape to cancel editing
+  - **Auto-save**: Changes save automatically on blur (click away)
+  - **Real-time updates**: Changes sync immediately to Microsoft Planner
+  - Similar to SharePoint's quick edit experience
+
+### Changed
+- Task name no longer opens details modal on single click (use double-click or click themes column for details)
+- Improved cell hover states for better discoverability
+
+---
+
 ## [1.8.1] - 2025-12-27
 
 ### Improved

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.8.1'; // Improve 429 throttling status messages with color-coded feedback
+const APP_VERSION = '2.0.0'; // Major: Inline grid editing - click cells to edit directly
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -1895,20 +1895,278 @@ function renderTask(task) {
                 ${selectedTasks.has(task.id) ? 'checked' : ''} 
                 onchange="toggleTaskSelection('${task.id}')">
             <div class="task-id col-id">${taskDisplayId}</div>
-            <div class="task-title col-task-name" onclick="openTaskDetail('${task.id}')">
+            <div class="task-title col-task-name editable-cell" 
+                data-field="title" 
+                data-task-id="${task.id}"
+                onclick="makeEditable(this, 'text')">
                 <span>${task.title}</span>
             </div>
-            <div class="task-assignee col-assigned">${assignee}</div>
-            <div class="task-date col-start-date">${startDate}</div>
-            <div class="task-date col-due-date">${dueDate}</div>
-            <div class="task-progress col-progress">
+            <div class="task-assignee col-assigned editable-cell" 
+                data-field="assignments" 
+                data-task-id="${task.id}"
+                onclick="makeEditable(this, 'select-user')">
+                ${assignee || '<span class="placeholder">Unassigned</span>'}
+            </div>
+            <div class="task-date col-start-date editable-cell" 
+                data-field="startDateTime" 
+                data-task-id="${task.id}"
+                onclick="makeEditable(this, 'date')">
+                ${startDate || '<span class="placeholder">--</span>'}
+            </div>
+            <div class="task-date col-due-date editable-cell" 
+                data-field="dueDateTime" 
+                data-task-id="${task.id}"
+                onclick="makeEditable(this, 'date')">
+                ${dueDate || '<span class="placeholder">--</span>'}
+            </div>
+            <div class="task-progress col-progress editable-cell" 
+                data-field="percentComplete" 
+                data-task-id="${task.id}"
+                onclick="makeEditable(this, 'select-progress')">
                 <span class="progress-dot ${progressClass}"></span>
                 ${progressText}
             </div>
-            <div class="task-priority col-priority">${priorityText}</div>
+            <div class="task-priority col-priority editable-cell" 
+                data-field="priority" 
+                data-task-id="${task.id}"
+                onclick="makeEditable(this, 'select-priority')">
+                ${priorityText || '<span class="placeholder">--</span>'}
+            </div>
             <div class="task-labels col-labels">${categoryBadges}</div>
         </div>
     `;
+}
+
+// Inline Grid Editing Functions
+let currentEditingCell = null;
+
+function makeEditable(cell, type) {
+    // Prevent editing if already editing
+    if (currentEditingCell) {
+        cancelEdit(currentEditingCell);
+    }
+    
+    const taskId = cell.getAttribute('data-task-id');
+    const field = cell.getAttribute('data-field');
+    const task = allTasks.find(t => t.id === taskId);
+    if (!task) return;
+    
+    currentEditingCell = cell;
+    cell.classList.add('editing');
+    
+    const originalContent = cell.innerHTML;
+    cell.setAttribute('data-original-content', originalContent);
+    
+    switch (type) {
+        case 'text':
+            makeTextEditable(cell, task, field);
+            break;
+        case 'date':
+            makeDateEditable(cell, task, field);
+            break;
+        case 'select-user':
+            makeUserSelectEditable(cell, task, field);
+            break;
+        case 'select-progress':
+            makeProgressSelectEditable(cell, task, field);
+            break;
+        case 'select-priority':
+            makePrioritySelectEditable(cell, task, field);
+            break;
+    }
+}
+
+function makeTextEditable(cell, task, field) {
+    const currentValue = task[field] || '';
+    cell.innerHTML = `<input type="text" class="inline-edit-input" value="${escapeHtml(currentValue)}" />`;
+    const input = cell.querySelector('input');
+    input.focus();
+    input.select();
+    
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveInlineEdit(cell, task, field, input.value);
+        } else if (e.key === 'Escape') {
+            cancelEdit(cell);
+        }
+    });
+    input.addEventListener('blur', () => {
+        setTimeout(() => saveInlineEdit(cell, task, field, input.value), 150);
+    });
+}
+
+function makeDateEditable(cell, task, field) {
+    const currentValue = task[field] ? new Date(task[field]).toISOString().split('T')[0] : '';
+    cell.innerHTML = `<input type="date" class="inline-edit-input" value="${currentValue}" />`;
+    const input = cell.querySelector('input');
+    input.focus();
+    
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveInlineEdit(cell, task, field, input.value);
+        } else if (e.key === 'Escape') {
+            cancelEdit(cell);
+        }
+    });
+    input.addEventListener('blur', () => {
+        setTimeout(() => saveInlineEdit(cell, task, field, input.value), 150);
+    });
+}
+
+function makeUserSelectEditable(cell, task, field) {
+    const currentAssignee = task.assignments && Object.keys(task.assignments).length > 0 
+        ? Object.keys(task.assignments)[0] 
+        : '';
+    
+    const options = ['<option value="">Unassigned</option>'];
+    Object.keys(allUsers).forEach(userId => {
+        const selected = userId === currentAssignee ? 'selected' : '';
+        options.push(`<option value="${userId}" ${selected}>${allUsers[userId]}</option>`);
+    });
+    
+    cell.innerHTML = `<select class="inline-edit-select">${options.join('')}</select>`;
+    const select = cell.querySelector('select');
+    select.focus();
+    
+    select.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveInlineEdit(cell, task, field, select.value);
+        } else if (e.key === 'Escape') {
+            cancelEdit(cell);
+        }
+    });
+    select.addEventListener('blur', () => {
+        setTimeout(() => saveInlineEdit(cell, task, field, select.value), 150);
+    });
+}
+
+function makeProgressSelectEditable(cell, task, field) {
+    const currentValue = task.percentComplete;
+    cell.innerHTML = `
+        <select class="inline-edit-select">
+            <option value="0" ${currentValue === 0 ? 'selected' : ''}>Not started</option>
+            <option value="50" ${currentValue === 50 ? 'selected' : ''}>In progress</option>
+            <option value="100" ${currentValue === 100 ? 'selected' : ''}>Completed</option>
+        </select>
+    `;
+    const select = cell.querySelector('select');
+    select.focus();
+    
+    select.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveInlineEdit(cell, task, field, parseInt(select.value));
+        } else if (e.key === 'Escape') {
+            cancelEdit(cell);
+        }
+    });
+    select.addEventListener('blur', () => {
+        setTimeout(() => saveInlineEdit(cell, task, field, parseInt(select.value)), 150);
+    });
+}
+
+function makePrioritySelectEditable(cell, task, field) {
+    const currentValue = task.priority;
+    cell.innerHTML = `
+        <select class="inline-edit-select">
+            <option value="9" ${currentValue === 9 ? 'selected' : ''}>Low</option>
+            <option value="5" ${currentValue === 5 ? 'selected' : ''}>Medium</option>
+            <option value="3" ${currentValue === 3 ? 'selected' : ''}>Important</option>
+            <option value="1" ${currentValue === 1 ? 'selected' : ''}>Urgent</option>
+        </select>
+    `;
+    const select = cell.querySelector('select');
+    select.focus();
+    
+    select.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveInlineEdit(cell, task, field, parseInt(select.value));
+        } else if (e.key === 'Escape') {
+            cancelEdit(cell);
+        }
+    });
+    select.addEventListener('blur', () => {
+        setTimeout(() => saveInlineEdit(cell, task, field, parseInt(select.value)), 150);
+    });
+}
+
+async function saveInlineEdit(cell, task, field, newValue) {
+    if (!currentEditingCell) return;
+    
+    try {
+        // Prepare update payload
+        let updatePayload = {};
+        
+        if (field === 'assignments') {
+            // Handle assignment changes
+            if (newValue) {
+                updatePayload.assignments = { [newValue]: { '@odata.type': '#microsoft.graph.plannerAssignment', 'orderHint': ' !' } };
+            } else {
+                updatePayload.assignments = {};
+            }
+        } else if (field === 'startDateTime' || field === 'dueDateTime') {
+            // Handle date fields
+            updatePayload[field] = newValue ? new Date(newValue).toISOString() : null;
+        } else {
+            updatePayload[field] = newValue;
+        }
+        
+        // Update via API
+        const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+                'If-Match': task['@odata.etag'],
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(updatePayload)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Update failed: ${response.status}`);
+        }
+        
+        const updatedTask = await response.json();
+        
+        // Update local task object
+        Object.assign(task, updatedTask);
+        
+        // Clear editing state
+        cell.classList.remove('editing');
+        currentEditingCell = null;
+        
+        // Refresh the view
+        await loadTasks();
+        
+    } catch (error) {
+        console.error('Error saving inline edit:', error);
+        cancelEdit(cell);
+        alert('Failed to save changes: ' + error.message);
+    }
+}
+
+function cancelEdit(cell) {
+    if (!cell) return;
+    const originalContent = cell.getAttribute('data-original-content');
+    if (originalContent) {
+        cell.innerHTML = originalContent;
+    }
+    cell.classList.remove('editing');
+    cell.removeAttribute('data-original-content');
+    if (currentEditingCell === cell) {
+        currentEditingCell = null;
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function toggleBucket(header) {
