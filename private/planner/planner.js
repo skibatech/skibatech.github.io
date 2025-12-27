@@ -106,6 +106,35 @@ const GRAPH_MAX_RETRIES = 5;
 const GRAPH_BASE_DELAY_MS = 500;
 const GRAPH_MAX_CONCURRENT = 6; // Cap concurrent per-item calls (e.g., task details)
 
+// Utility functions for consistent date handling (fixes timezone offset issues)
+function formatDateForInput(isoDateString) {
+    // Convert ISO date string to local date string for input[type=date]
+    // Fixes timezone offset issues by using local timezone
+    if (!isoDateString) return '';
+    const date = new Date(isoDateString);
+    // Format as YYYY-MM-DD in local timezone (not UTC)
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function formatDateForDisplay(isoDateString) {
+    // Convert ISO date string to locale date string for display in grid
+    if (!isoDateString) return '';
+    const date = new Date(isoDateString);
+    return date.toLocaleDateString();
+}
+
+function getTodayAsInputValue() {
+    // Get today's date in YYYY-MM-DD format (local timezone, not UTC)
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 function sleep(ms) {
     return new Promise(res => setTimeout(res, ms));
 }
@@ -1870,8 +1899,8 @@ function renderTask(task) {
     const priorityMap = {1: 'Urgent', 3: 'Important', 5: 'Medium', 9: 'Low'};
     const priorityText = priorityMap[task.priority] || '';
     
-    const startDate = task.startDateTime ? new Date(task.startDateTime).toLocaleDateString() : '';
-    const dueDate = task.dueDateTime ? new Date(task.dueDateTime).toLocaleDateString() : '';
+    const startDate = formatDateForDisplay(task.startDateTime);
+    const dueDate = formatDateForDisplay(task.dueDateTime);
     
     const assignee = task.assignments && Object.keys(task.assignments).length > 0 ? 
         (allTaskDetails[task.id]?.assignments ? 
@@ -2038,7 +2067,7 @@ function makeTextEditable(cell, task, field) {
 }
 
 function makeDateEditable(cell, task, field) {
-    const currentValue = task[field] ? new Date(task[field]).toISOString().split('T')[0] : '';
+    const currentValue = formatDateForInput(task[field]);
     cell.innerHTML = `<input type="date" class="inline-edit-input" value="${currentValue}" />`;
     const input = cell.querySelector('input');
     input.focus();
@@ -2318,9 +2347,8 @@ function showAddTask(bucketId, bucketName) {
     document.getElementById('newTaskProgress').value = '0';
     document.getElementById('newTaskPriority').value = '5';
     
-    // Set Start Date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('newTaskStartDate').value = today;
+    // Set Start Date to today (local timezone)
+    document.getElementById('newTaskStartDate').value = getTodayAsInputValue();
     
     document.getElementById('newTaskDueDate').value = '';
     document.getElementById('newTaskNotes').value = '';
@@ -2553,17 +2581,15 @@ async function openTaskDetail(taskId) {
         
         console.log('Loaded task from Planner - Priority value:', task.priority, 'Title:', task.title);
         
-        // Format dates for input fields
+        // Format dates for input fields (using local timezone to avoid offset issues)
         if (task.startDateTime) {
-            const startDate = new Date(task.startDateTime);
-            document.getElementById('detailTaskStartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('detailTaskStartDate').value = formatDateForInput(task.startDateTime);
         } else {
             document.getElementById('detailTaskStartDate').value = '';
         }
         
         if (task.dueDateTime) {
-            const dueDate = new Date(task.dueDateTime);
-            document.getElementById('detailTaskDueDate').value = dueDate.toISOString().split('T')[0];
+            document.getElementById('detailTaskDueDate').value = formatDateForInput(task.dueDateTime);
         } else {
             document.getElementById('detailTaskDueDate').value = '';
         }
