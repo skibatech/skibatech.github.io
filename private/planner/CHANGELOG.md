@@ -14,6 +14,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.7] - 2025-12-27
+
+### Improved
+- **429 Rate Limiting**: Major improvements to handle API throttling
+  - Changes display locally immediately (optimistic UI)
+  - Queue system prevents overwhelming the API
+  - Exponential backoff when rate limited (2s → 4s → 8s → 16s → 30s max)
+  - Automatic retry with status feedback ("Syncing paused (X pending) - retry in Xs")
+  - 300ms delay between successful writes to avoid rate limits
+  - Console logging shows sync progress: 📤 flush, ✅ success, ⚠️ retry, ❌ error
+  - Better error recovery - gives up after 5 consecutive failures per task
+
+---
+
 ## [2.0.6] - 2025-12-27
 
 ### Improved

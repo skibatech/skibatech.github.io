@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.6'; // Remove compass border for cleaner appearance
+const APP_VERSION = '2.0.7'; // Improved 429 handling with queue and exponential backoff
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -54,7 +54,11 @@ localStorage.setItem('gridEditMode', 'false');
 // Edit caching system to reduce 429 rate limiting
 let editCache = {}; // { taskId: { field: value, field: value, ... } }
 let editCacheTimer = null;
-const EDIT_CACHE_DELAY_MS = 1500; // Wait 1.5 seconds before writing to Planner (batch edits)
+let editQueue = []; // Queue of pending writes
+let isProcessingQueue = false;
+let retryCount = 0;
+const EDIT_CACHE_DELAY_MS = 2000; // Wait 2 seconds before writing to Planner (batch edits)
+const MAX_RETRY_DELAY_MS = 30000; // Max 30 seconds between retries
 
 const THEME_DEFAULTS = {
     category1: 'Streamline Reporting',
@@ -2245,6 +2249,7 @@ async function saveInlineEdit(cell, task, field, newValue) {
 // Flush cached edits to Planner API (batched to reduce 429 rate limiting)
 async function flushEditCache() {
     if (Object.keys(editCache).length === 0) return;
+    if (isProcessingQueue) return; // Already processing
     
     console.log('📤 Flushing edit cache with', Object.keys(editCache).length, 'tasks');
     
@@ -2252,11 +2257,29 @@ async function flushEditCache() {
     const cacheSnapshot = { ...editCache };
     editCache = {}; // Clear cache while writing
     
+    // Add to queue
     for (const taskId of tasksToUpdate) {
+        editQueue.push({ taskId, edits: cacheSnapshot[taskId] });
+    }
+    
+    // Process queue
+    await processEditQueue();
+}
+
+async function processEditQueue() {
+    if (isProcessingQueue || editQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    let consecutiveErrors = 0;
+    
+    while (editQueue.length > 0) {
+        const { taskId, edits } = editQueue.shift();
         const task = allTasks.find(t => t.id === taskId);
-        if (!task) continue;
         
-        const edits = cacheSnapshot[taskId];
+        if (!task) {
+            console.warn(`⚠️ Task ${taskId} not found in allTasks`);
+            continue;
+        }
         
         try {
             // Prepare update payload from cached edits
@@ -2270,15 +2293,14 @@ async function flushEditCache() {
                         updatePayload.assignments = {};
                     }
                 } else if (field === 'startDateTime' || field === 'dueDateTime') {
-                    // newValue is input date string (YYYY-MM-DD), convert to ISO
                     updatePayload[field] = newValue ? inputDateToISO(newValue) : null;
                 } else {
                     updatePayload[field] = newValue;
                 }
             }
             
-            // Update via API
-            const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
+            // Update via API with fetchGraph (handles 429 automatically)
+            const response = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -2291,13 +2313,17 @@ async function flushEditCache() {
             
             if (!response.ok) {
                 if (response.status === 429) {
-                    // Put edits back in cache for retry
-                    editCache[taskId] = edits;
-                    console.warn(`⚠️ 429 rate limit - re-queuing ${taskId} for retry`);
-                    // Retry after delay
-                    editCacheTimer = setTimeout(() => {
-                        flushEditCache();
-                    }, EDIT_CACHE_DELAY_MS * 2);
+                    // Put back at front of queue for retry
+                    editQueue.unshift({ taskId, edits });
+                    consecutiveErrors++;
+                    
+                    // Calculate exponential backoff
+                    const delayMs = Math.min(EDIT_CACHE_DELAY_MS * Math.pow(2, consecutiveErrors), MAX_RETRY_DELAY_MS);
+                    console.warn(`⚠️ 429 rate limit - retrying in ${delayMs}ms (${editQueue.length} items in queue)`);
+                    setStatus(`Syncing paused (${editQueue.length} pending) - retry in ${Math.round(delayMs/1000)}s`, 'orange');
+                    
+                    // Wait before retrying
+                    await sleep(delayMs);
                     continue;
                 }
                 throw new Error(`Update failed: ${response.status}`);
@@ -2310,18 +2336,34 @@ async function flushEditCache() {
                 allTasks[taskIndex] = updatedTask;
             }
             
-            console.log(`✅ Task ${taskId} updated successfully`);
+            consecutiveErrors = 0; // Reset on success
+            console.log(`✅ Task ${taskId} synced (${editQueue.length} remaining)`);
+            
+            // Brief delay between successful writes to avoid rate limiting
+            if (editQueue.length > 0) {
+                await sleep(300);
+            }
             
         } catch (error) {
-            console.error(`Error saving edits for task ${taskId}:`, error);
-            // Put failed edits back in cache for retry
-            editCache[taskId] = edits;
+            console.error(`❌ Error saving edits for task ${taskId}:`, error);
+            consecutiveErrors++;
+            
+            // Re-queue with limit
+            if (consecutiveErrors < 5) {
+                editQueue.push({ taskId, edits }); // Retry at end of queue
+            } else {
+                console.error(`❌ Giving up on task ${taskId} after too many errors`);
+                setStatus(`Failed to sync some changes - please refresh`, 'red');
+            }
         }
     }
     
+    isProcessingQueue = false;
+    
     // Refresh view after all updates
-    if (Object.keys(editCache).length === 0) {
-        applyFilters();
+    if (editQueue.length === 0) {
+        setStatus('Connected', 'green');
+        console.log('✅ All edits synced successfully');
     }
 }
 
