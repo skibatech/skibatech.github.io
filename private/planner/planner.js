@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.1'; // Fix: Make grid editing optional mode with toggle (default OFF - clickable task names)
+const APP_VERSION = '2.0.2'; // Fix: Grid edit toggle instant, add edit caching to reduce 429 errors
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -48,6 +48,12 @@ let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
 let gridEditMode = localStorage.getItem('gridEditMode') === 'true' || false; // Grid edit mode toggle (default OFF)
+
+// Edit caching system to reduce 429 rate limiting
+let editCache = {}; // { taskId: { field: value, field: value, ... } }
+let editCacheTimer = null;
+const EDIT_CACHE_DELAY_MS = 1500; // Wait 1.5 seconds before writing to Planner (batch edits)
+
 const THEME_DEFAULTS = {
     category1: 'Streamline Reporting',
     category2: 'Maintain Upgrades & Bug Fixes',
@@ -464,8 +470,8 @@ function toggleGridEditMode() {
         btn.title = gridEditMode ? 'Grid editing enabled - click cells to edit inline' : 'Grid editing disabled - click task names to view details';
     }
     
-    // Refresh view to apply/remove editable-cell classes
-    renderTasksView();
+    // Refresh view to apply/remove editable-cell classes (re-render all tasks with new mode)
+    applyFilters();
 }
 
 function initializeTheme() {
@@ -2127,55 +2133,130 @@ async function saveInlineEdit(cell, task, field, newValue) {
     if (!currentEditingCell) return;
     
     try {
-        // Prepare update payload
-        let updatePayload = {};
+        // Add to edit cache instead of writing immediately
+        if (!editCache[task.id]) {
+            editCache[task.id] = {};
+        }
         
+        // Store the edit in cache
+        editCache[task.id][field] = newValue;
+        
+        // Update local task object immediately for UI feedback
         if (field === 'assignments') {
-            // Handle assignment changes
             if (newValue) {
-                updatePayload.assignments = { [newValue]: { '@odata.type': '#microsoft.graph.plannerAssignment', 'orderHint': ' !' } };
+                task.assignments = { [newValue]: { '@odata.type': '#microsoft.graph.plannerAssignment', 'orderHint': ' !' } };
             } else {
-                updatePayload.assignments = {};
+                task.assignments = {};
             }
         } else if (field === 'startDateTime' || field === 'dueDateTime') {
-            // Handle date fields
-            updatePayload[field] = newValue ? new Date(newValue).toISOString() : null;
+            task[field] = newValue ? new Date(newValue).toISOString() : null;
         } else {
-            updatePayload[field] = newValue;
+            task[field] = newValue;
         }
-        
-        // Update via API
-        const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-                'If-Match': task['@odata.etag'],
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(updatePayload)
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Update failed: ${response.status}`);
-        }
-        
-        const updatedTask = await response.json();
-        
-        // Update local task object
-        Object.assign(task, updatedTask);
         
         // Clear editing state
         cell.classList.remove('editing');
         currentEditingCell = null;
         
-        // Refresh the view
-        await loadTasks();
+        // Cancel existing timer if any
+        if (editCacheTimer) {
+            clearTimeout(editCacheTimer);
+        }
+        
+        // Set new timer to batch writes
+        editCacheTimer = setTimeout(() => {
+            flushEditCache();
+        }, EDIT_CACHE_DELAY_MS);
+        
+        // Refresh the view to show updated values
+        applyFilters();
         
     } catch (error) {
-        console.error('Error saving inline edit:', error);
+        console.error('Error in inline edit:', error);
         cancelEdit(cell);
-        alert('Failed to save changes: ' + error.message);
+        alert('Failed to process edit: ' + error.message);
+    }
+}
+
+// Flush cached edits to Planner API (batched to reduce 429 rate limiting)
+async function flushEditCache() {
+    if (Object.keys(editCache).length === 0) return;
+    
+    console.log('📤 Flushing edit cache with', Object.keys(editCache).length, 'tasks');
+    
+    const tasksToUpdate = Object.keys(editCache);
+    const cacheSnapshot = { ...editCache };
+    editCache = {}; // Clear cache while writing
+    
+    for (const taskId of tasksToUpdate) {
+        const task = allTasks.find(t => t.id === taskId);
+        if (!task) continue;
+        
+        const edits = cacheSnapshot[taskId];
+        
+        try {
+            // Prepare update payload from cached edits
+            let updatePayload = {};
+            
+            for (const [field, newValue] of Object.entries(edits)) {
+                if (field === 'assignments') {
+                    if (newValue) {
+                        updatePayload.assignments = { [newValue]: { '@odata.type': '#microsoft.graph.plannerAssignment', 'orderHint': ' !' } };
+                    } else {
+                        updatePayload.assignments = {};
+                    }
+                } else if (field === 'startDateTime' || field === 'dueDateTime') {
+                    updatePayload[field] = newValue ? new Date(newValue).toISOString() : null;
+                } else {
+                    updatePayload[field] = newValue;
+                }
+            }
+            
+            // Update via API
+            const response = await fetch(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': task['@odata.etag'],
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify(updatePayload)
+            });
+            
+            if (!response.ok) {
+                if (response.status === 429) {
+                    // Put edits back in cache for retry
+                    editCache[taskId] = edits;
+                    console.warn(`⚠️ 429 rate limit - re-queuing ${taskId} for retry`);
+                    // Retry after delay
+                    editCacheTimer = setTimeout(() => {
+                        flushEditCache();
+                    }, EDIT_CACHE_DELAY_MS * 2);
+                    continue;
+                }
+                throw new Error(`Update failed: ${response.status}`);
+            }
+            
+            const updatedTask = await response.json();
+            // Update local task object with server response
+            const taskIndex = allTasks.findIndex(t => t.id === taskId);
+            if (taskIndex >= 0) {
+                allTasks[taskIndex] = updatedTask;
+            }
+            
+            console.log(`✅ Task ${taskId} updated successfully`);
+            
+        } catch (error) {
+            console.error(`Error saving edits for task ${taskId}:`, error);
+            // Put failed edits back in cache for retry
+            editCache[taskId] = edits;
+        }
+    }
+    
+    // Refresh view after all updates
+    if (Object.keys(editCache).length === 0) {
+        applyFilters();
     }
 }
 

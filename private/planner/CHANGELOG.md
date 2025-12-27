@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.2] - 2025-12-27
+
+### Fixed
+- **Grid Edit Toggle Bug**: Grid editing now switches immediately without requiring manual refresh
+  - Changed from non-existent `renderTasksView()` to `applyFilters()` for proper re-rendering
+  - Toggle button now instantly updates all task cells on click
+
+### Improved
+- **Edit Caching System**: Reduces 429 API rate limiting errors during bulk grid editing
+  - Caches edits locally for 1.5 seconds before batching writes to Microsoft Planner
+  - Allows multiple edits to be combined into single API calls
+  - Handles 429 throttling gracefully by re-queuing failed edits
+  - Shows console logs for edit operations: 📤 flush, ✅ success, ⚠️ retry
+  - Updates UI immediately for responsive feel while writes happen in background
+  - Reduces server load and helps avoid hitting rate limits during rapid editing sessions
+
+---
+
 ## [2.0.1] - 2025-12-27
 
 ### Fixed
