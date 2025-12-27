@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.5] - 2025-12-27
+
+### Fixed
+- **Grid Edit Default OFF**: Grid edit mode now forces off on load and resets stored state to honor view-as-default
+- **Dropdown Stability**: Inline dropdowns stop event bubbling so clicks no longer collapse instantly (Progress/Priority/etc.)
+
+---
+
 ## [2.0.3] - 2025-12-27
 
 ### Fixed

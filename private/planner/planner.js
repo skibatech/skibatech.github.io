@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.4'; // Remove pencil hover icon in grid edit; improve dropdown usability
+const APP_VERSION = '2.0.5'; // Default grid edit OFF, improve dropdown stability
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -47,7 +47,9 @@ let currentUserIsAdmin = false; // Cache admin status after auth
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
-let gridEditMode = localStorage.getItem('gridEditMode') === 'true' || false; // Grid edit mode toggle (default OFF)
+// Force default OFF each load (ignores prior stored state to honor requested default view mode)
+let gridEditMode = false;
+localStorage.setItem('gridEditMode', 'false');
 
 // Edit caching system to reduce 429 rate limiting
 let editCache = {}; // { taskId: { field: value, field: value, ... } }
@@ -512,21 +514,18 @@ function toggleGridEditMode() {
     gridEditMode = !gridEditMode;
     localStorage.setItem('gridEditMode', gridEditMode ? 'true' : 'false');
     
-    const btn = document.getElementById('gridEditModeBtn');
-    if (btn) {
-        // Adjust button appearance to show active state
-        if (gridEditMode) {
-            btn.style.opacity = '1';
-            btn.style.filter = 'brightness(1)';
-        } else {
-            btn.style.opacity = '0.7';
-            btn.style.filter = 'brightness(0.95)';
-        }
-        btn.title = gridEditMode ? 'Grid editing enabled - click cells to edit inline' : 'Grid editing disabled - click task names to view details';
-    }
+    updateGridEditButtonState();
     
     // Refresh view to apply/remove editable-cell classes (re-render all tasks with new mode)
     applyFilters();
+}
+
+function updateGridEditButtonState() {
+    const btn = document.getElementById('gridEditModeBtn');
+    if (!btn) return;
+    btn.style.opacity = gridEditMode ? '1' : '0.8';
+    btn.style.filter = gridEditMode ? 'brightness(1)' : 'brightness(0.95)';
+    btn.title = gridEditMode ? 'Grid editing enabled - click cells to edit inline' : 'Grid editing disabled - click task names to view details';
 }
 
 function initializeTheme() {
@@ -797,7 +796,10 @@ async function updateAuthUI(isAuthenticated) {
         compassToggleBtn.style.display = 'inline-block';
         profileContainer.style.display = 'inline-block';
         const gridEditBtn = document.getElementById('gridEditModeBtn');
-        if (gridEditBtn) gridEditBtn.style.display = 'inline-block';
+        if (gridEditBtn) {
+            gridEditBtn.style.display = 'inline-block';
+            updateGridEditButtonState();
+        }
         authRequired.style.display = 'none';
         mainWrapper.style.display = 'block';
         document.body.classList.remove('unauthenticated');
@@ -2119,6 +2121,8 @@ function makeUserSelectEditable(cell, task, field) {
     cell.innerHTML = `<select class="inline-edit-select">${options.join('')}</select>`;
     const select = cell.querySelector('select');
     select.focus();
+    select.addEventListener('mousedown', (e) => e.stopPropagation());
+    select.addEventListener('click', (e) => e.stopPropagation());
     
     select.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -2144,6 +2148,8 @@ function makeProgressSelectEditable(cell, task, field) {
     `;
     const select = cell.querySelector('select');
     select.focus();
+    select.addEventListener('mousedown', (e) => e.stopPropagation());
+    select.addEventListener('click', (e) => e.stopPropagation());
     
     select.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -2170,6 +2176,8 @@ function makePrioritySelectEditable(cell, task, field) {
     `;
     const select = cell.querySelector('select');
     select.focus();
+    select.addEventListener('mousedown', (e) => e.stopPropagation());
+    select.addEventListener('click', (e) => e.stopPropagation());
     
     select.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
