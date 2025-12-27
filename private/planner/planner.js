@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.8.0'; // Feature: Compass position toggle (left/right)
+const APP_VERSION = '1.8.1'; // Improve 429 throttling status messages with color-coded feedback
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -103,14 +103,34 @@ function sleep(ms) {
     return new Promise(res => setTimeout(res, ms));
 }
 
+function setStatus(text, color = null) {
+    const statusElement = document.getElementById('status');
+    if (statusElement) {
+        statusElement.textContent = text;
+        if (color) {
+            statusElement.style.color = color;
+        } else {
+            statusElement.style.color = ''; // Reset to default
+        }
+    }
+}
+
 async function fetchGraph(url, options = {}, attempt = 0) {
     const res = await fetch(url, options);
     if (res.status === 429 || res.status === 503) {
-        if (attempt >= GRAPH_MAX_RETRIES) return res;
+        if (attempt >= GRAPH_MAX_RETRIES) {
+            setStatus('Too many requests - try again later', '#b00020');
+            return res;
+        }
         const retryAfter = parseInt(res.headers.get('Retry-After') || '0', 10);
         const backoff = retryAfter > 0
             ? retryAfter * 1000
             : Math.min(16000, GRAPH_BASE_DELAY_MS * Math.pow(2, attempt)) + Math.floor(Math.random() * 250);
+        
+        // Show throttling status
+        const waitSeconds = Math.ceil(backoff / 1000);
+        setStatus(`Please wait (429) - retry ${attempt + 1}/${GRAPH_MAX_RETRIES} in ${waitSeconds}s`, '#ff9800');
+        
         await sleep(backoff);
         return fetchGraph(url, options, attempt + 1);
     }
@@ -760,7 +780,7 @@ async function loadTasks() {
     }
 
     try {
-        document.getElementById('status').textContent = 'Loading...';
+        setStatus('Loading...');
 
         // Get buckets
             const bucketsResponse = await fetchGraph(
@@ -950,7 +970,7 @@ async function loadTasks() {
 
         // Apply filters and render
         applyFilters();
-        document.getElementById('status').textContent = 'Connected';
+        setStatus('Connected', '#107c10');
         
         // Initialize compass on first load
         if (!compassListId) {
@@ -958,7 +978,7 @@ async function loadTasks() {
         }
     } catch (error) {
         console.error('Error loading tasks:', error);
-        document.getElementById('status').textContent = 'Error loading tasks';
+        setStatus('Error loading tasks', '#b00020');
         alert('Error: ' + error.message);
     }
 }
