@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.0.4] - 2025-12-27
-
-### Fixed
-- **Grid Edit Dropdown Usability**: Removed hover pencil icon and raised inline select z-index to prevent interference when changing Progress/Priority dropdowns in grid edit mode
-
----
-
 ## [2.0.7] - 2025-12-27
 
 ### Improved
@@ -40,6 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Grid Edit Default OFF**: Grid edit mode now forces off on load and resets stored state to honor view-as-default
 - **Dropdown Stability**: Inline dropdowns stop event bubbling so clicks no longer collapse instantly (Progress/Priority/etc.)
+
+---
+
+## [2.0.4] - 2025-12-27
+
+### Fixed
+- **Grid Edit Dropdown Usability**: Removed hover pencil icon and raised inline select z-index to prevent interference when changing Progress/Priority dropdowns in grid edit mode
 
 ---
 
