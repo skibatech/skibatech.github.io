@@ -59,14 +59,50 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px var(--shadow);
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.header-top {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background-color 0.3s ease;
+    gap: 20px;
+}
+
+.header-top h1 {
+    color: var(--text-primary);
+    font-size: 18px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.header-top-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .header h1 {
     color: var(--text-primary);
     font-size: 18px;
+}
+
+.header-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.header-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .auth-section {
@@ -1142,7 +1178,6 @@ body.unauthenticated #refreshBtn {
     margin-left: -8px;
     margin-right: 4px;
     font-size: 12px;
-}
 }
 
 .compass-rock-item textarea {

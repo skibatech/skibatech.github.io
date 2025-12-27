@@ -10,13 +10,42 @@
 </head>
 <body class="unauthenticated">
     <div class="header">
-        <h1>SkibaTech Engineering - Planner Pro <span class="version-pill">v<span id="versionDisplay">-</span></span></h1>
-        <div class="auth-section">
-            <button onclick="showAddTask(null, null)" class="primary-btn">+ New Task</button>
-            
-            <div style="display: flex; gap: 15px; align-items: center; margin-right: 15px;">
+        <div class="header-top">
+            <h1>SkibaTech Engineering - Planner Pro <span class="version-pill">v<span id="versionDisplay">-</span></span></h1>
+            <div class="header-top-actions">
+                <button id="compassToggleBtn" onclick="toggleCompass()" style="display:none; background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;" title="Toggle Weekly Compass">
+                    <span>🧭</span>
+                </button>
+                <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;" title="Toggle Dark Mode">
+                    <span id="themeToggleIcon">🌙</span>
+                </button>
+                <div id="profileContainer" class="profile-container" style="display:none;">
+                    <div class="profile-icon" onclick="toggleProfileDropdown()" id="profileIcon">?</div>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-info">
+                            <div class="profile-name" id="profileName">Loading...</div>
+                            <div class="profile-email" id="profileEmail"></div>
+                        </div>
+                        <div class="profile-menu-item" onclick="showOptions()">
+                            <span>⚙️</span> Options
+                        </div>
+                        <div class="profile-menu-item" id="adminModeItem" style="display:none;" onclick="openAdminPortal()">
+                            <span>🛡️</span> Admin Mode
+                        </div>
+                        <div class="profile-menu-item" onclick="signOut()">
+                            <span>🚪</span> Sign out
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-bottom">
+            <div class="header-controls">
+                <button onclick="showAddTask(null, null)" class="primary-btn">+ New Task</button>
+                
                 <div>
-                    <label for="viewSelect" style="font-size: 13px; color: var(--text-primary); margin-right: 8px; font-weight: bold;">View:</label>
+                    <label for="viewSelect" style="font-size: 13px; color: var(--text-primary); margin-right: 6px; font-weight: bold;">View:</label>
                     <select id="viewSelect" onchange="changeView()" class="control-select">
                         <option value="assigned">By Assigned To</option>
                         <option value="bucket">By Bucket</option>
@@ -26,8 +55,9 @@
                         <option value="theme">By Theme</option>
                     </select>
                 </div>
+
                 <div id="groupByContainer">
-                    <label for="groupBySelect" style="font-size: 13px; color: var(--text-primary); margin-right: 8px; font-weight: bold;">Group by:</label>
+                    <label for="groupBySelect" style="font-size: 13px; color: var(--text-primary); margin-right: 6px; font-weight: bold;">Group by:</label>
                     <select id="groupBySelect" onchange="changeGroupBy()" class="control-select">
                         <option value="none">None</option>
                         <option value="bucket">Bucket</option>
@@ -38,48 +68,33 @@
                         <option value="theme">Theme</option>
                     </select>
                 </div>
-            </div>
-            <label for="filterSelect" style="font-size: 13px; color: var(--text-primary); font-weight: bold;">Filter:</label>
-            <select id="filterSelect" onchange="applyFilters()" style="padding: 6px 12px; font-size: 13px; border: 1px solid #ddd; border-radius: 4px; background: white;">
-                <option value="all">All tasks</option>
-                <option value="urgent">Urgent priority</option>
-                <option value="important">Important priority</option>
-                <option value="assigned">Assigned to someone</option>
-                <option value="unassigned">Unassigned</option>
-                <option value="overdue">Overdue</option>
-                <option value="due-today">Due today</option>
-                <option value="due-this-week">Due this week</option>
-            </select>
-            <label style="font-size: 13px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; font-weight: bold;">
-                <input type="checkbox" id="showCompletedCheckbox" onchange="applyFilters()" style="cursor: pointer;">
-                Show completed
-            </label>
-            <span class="status" id="status" style="font-weight: bold;">Not connected</span>
-            <button id="connectBtn" onclick="login()">Sign In with Microsoft</button>
-            <button id="refreshBtn" onclick="loadTasks()" class="primary-btn" style="display:none;">Refresh</button>
-            <button id="compassToggleBtn" onclick="toggleCompass()" style="display:none; background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;" title="Toggle Weekly Compass">
-                <span>🧭</span>
-            </button>
-            <button onclick="toggleTheme()" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;">
-                <span id="themeToggleIcon">🌙</span>
-            </button>
-            <div id="profileContainer" class="profile-container" style="display:none;">
-                <div class="profile-icon" onclick="toggleProfileDropdown()" id="profileIcon">?</div>
-                <div class="profile-dropdown" id="profileDropdown">
-                    <div class="profile-info">
-                        <div class="profile-name" id="profileName">Loading...</div>
-                        <div class="profile-email" id="profileEmail"></div>
-                    </div>
-                    <div class="profile-menu-item" onclick="showOptions()">
-                        <span>⚙️</span> Options
-                    </div>
-                    <div class="profile-menu-item" id="adminModeItem" style="display:none;" onclick="openAdminPortal()">
-                        <span>🛡️</span> Admin Mode
-                    </div>
-                    <div class="profile-menu-item" onclick="signOut()">
-                        <span>🚪</span> Sign out
-                    </div>
+
+                <div>
+                    <label for="filterSelect" style="font-size: 13px; color: var(--text-primary); margin-right: 6px; font-weight: bold;">Filter:</label>
+                    <select id="filterSelect" onchange="applyFilters()" class="control-select">
+                        <option value="all">All tasks</option>
+                        <option value="urgent">Urgent priority</option>
+                        <option value="important">Important priority</option>
+                        <option value="assigned">Assigned to someone</option>
+                        <option value="unassigned">Unassigned</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="due-today">Due today</option>
+                        <option value="due-this-week">Due this week</option>
+                    </select>
                 </div>
+
+                <label style="font-size: 13px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; font-weight: bold; white-space: nowrap;">
+                    <input type="checkbox" id="showCompletedCheckbox" onchange="applyFilters()" style="cursor: pointer;">
+                    Show completed
+                </label>
+                <span class="status" id="status" style="font-weight: bold; white-space: nowrap;">Not connected</span>
+
+                <button id="connectBtn" onclick="login()" class="primary-btn">Sign In</button>
+                <button id="refreshBtn" onclick="loadTasks()" class="primary-btn" style="display:none;">Refresh</button>
+
+                <button id="gridEditModeBtn" onclick="toggleGridEditMode()" style="display:none; background: none; border: 1px solid var(--border-color); cursor: pointer; padding: 6px 12px; border-radius: 4px; font-size: 13px; color: var(--text-primary); white-space: nowrap;" title="Toggle inline grid editing mode">
+                    📝 Grid Edit
+                </button>
             </div>
         </div>
     </div>

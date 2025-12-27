@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.0'; // Major: Inline grid editing - click cells to edit directly
+const APP_VERSION = '2.0.1'; // Fix: Make grid editing optional mode with toggle (default OFF - clickable task names)
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -47,6 +47,7 @@ let currentUserIsAdmin = false; // Cache admin status after auth
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
+let gridEditMode = localStorage.getItem('gridEditMode') === 'true' || false; // Grid edit mode toggle (default OFF)
 const THEME_DEFAULTS = {
     category1: 'Streamline Reporting',
     category2: 'Maintain Upgrades & Bug Fixes',
@@ -452,6 +453,21 @@ function toggleTheme() {
     applyCompassBackground(savedCompassBg);
 }
 
+function toggleGridEditMode() {
+    gridEditMode = !gridEditMode;
+    localStorage.setItem('gridEditMode', gridEditMode ? 'true' : 'false');
+    
+    const btn = document.getElementById('gridEditModeBtn');
+    if (btn) {
+        btn.style.background = gridEditMode ? 'var(--link-color)' : 'transparent';
+        btn.style.color = gridEditMode ? 'white' : 'var(--text-primary)';
+        btn.title = gridEditMode ? 'Grid editing enabled - click cells to edit inline' : 'Grid editing disabled - click task names to view details';
+    }
+    
+    // Refresh view to apply/remove editable-cell classes
+    renderTasksView();
+}
+
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
     const themeIcon = document.getElementById('themeToggleIcon');
@@ -719,6 +735,8 @@ async function updateAuthUI(isAuthenticated) {
         refreshBtn.style.display = 'inline-block';
         compassToggleBtn.style.display = 'inline-block';
         profileContainer.style.display = 'inline-block';
+        const gridEditBtn = document.getElementById('gridEditModeBtn');
+        if (gridEditBtn) gridEditBtn.style.display = 'inline-block';
         authRequired.style.display = 'none';
         mainWrapper.style.display = 'block';
         document.body.classList.remove('unauthenticated');
@@ -762,6 +780,8 @@ async function updateAuthUI(isAuthenticated) {
         refreshBtn.style.display = 'none';
         compassToggleBtn.style.display = 'none';
         profileContainer.style.display = 'none';
+        const gridEditBtn = document.getElementById('gridEditModeBtn');
+        if (gridEditBtn) gridEditBtn.style.display = 'none';
         authRequired.style.display = 'block';
         mainWrapper.style.display = 'none';
         document.body.classList.add('unauthenticated');
@@ -1889,47 +1909,56 @@ function renderTask(task) {
         return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${getThemeDisplayName(cat)}</span>`;
     }).join('');
 
+    // Determine if cells should be editable
+    const editableClass = gridEditMode ? 'editable-cell' : '';
+    const titleClickHandler = gridEditMode ? `onclick="makeEditable(this, 'text')"` : `onclick="openTaskDetail('${task.id}')"`;
+    const assigneeClickHandler = gridEditMode ? `onclick="makeEditable(this, 'select-user')"` : `onclick="openTaskDetail('${task.id}')"`;
+    const startDateClickHandler = gridEditMode ? `onclick="makeEditable(this, 'date')"` : `onclick="openTaskDetail('${task.id}')"`;
+    const dueDateClickHandler = gridEditMode ? `onclick="makeEditable(this, 'date')"` : `onclick="openTaskDetail('${task.id}')"`;
+    const progressClickHandler = gridEditMode ? `onclick="makeEditable(this, 'select-progress')"` : `onclick="openTaskDetail('${task.id}')"`;
+    const priorityClickHandler = gridEditMode ? `onclick="makeEditable(this, 'select-priority')"` : `onclick="openTaskDetail('${task.id}')"`;
+
     return `
         <div class="task-row" data-task-id="${task.id}">
             <input type="checkbox" class="task-checkbox" 
                 ${selectedTasks.has(task.id) ? 'checked' : ''} 
                 onchange="toggleTaskSelection('${task.id}')">
             <div class="task-id col-id">${taskDisplayId}</div>
-            <div class="task-title col-task-name editable-cell" 
+            <div class="task-title col-task-name ${editableClass}" 
                 data-field="title" 
                 data-task-id="${task.id}"
-                onclick="makeEditable(this, 'text')">
+                ${titleClickHandler}>
                 <span>${task.title}</span>
             </div>
-            <div class="task-assignee col-assigned editable-cell" 
+            <div class="task-assignee col-assigned ${editableClass}" 
                 data-field="assignments" 
                 data-task-id="${task.id}"
-                onclick="makeEditable(this, 'select-user')">
+                ${assigneeClickHandler}>
                 ${assignee || '<span class="placeholder">Unassigned</span>'}
             </div>
-            <div class="task-date col-start-date editable-cell" 
+            <div class="task-date col-start-date ${editableClass}" 
                 data-field="startDateTime" 
                 data-task-id="${task.id}"
-                onclick="makeEditable(this, 'date')">
+                ${startDateClickHandler}>
                 ${startDate || '<span class="placeholder">--</span>'}
             </div>
-            <div class="task-date col-due-date editable-cell" 
+            <div class="task-date col-due-date ${editableClass}" 
                 data-field="dueDateTime" 
                 data-task-id="${task.id}"
-                onclick="makeEditable(this, 'date')">
+                ${dueDateClickHandler}>
                 ${dueDate || '<span class="placeholder">--</span>'}
             </div>
-            <div class="task-progress col-progress editable-cell" 
+            <div class="task-progress col-progress ${editableClass}" 
                 data-field="percentComplete" 
                 data-task-id="${task.id}"
-                onclick="makeEditable(this, 'select-progress')">
+                ${progressClickHandler}>
                 <span class="progress-dot ${progressClass}"></span>
                 ${progressText}
             </div>
-            <div class="task-priority col-priority editable-cell" 
+            <div class="task-priority col-priority ${editableClass}" 
                 data-field="priority" 
                 data-task-id="${task.id}"
-                onclick="makeEditable(this, 'select-priority')">
+                ${priorityClickHandler}>
                 ${priorityText || '<span class="placeholder">--</span>'}
             </div>
             <div class="task-labels col-labels">${categoryBadges}</div>

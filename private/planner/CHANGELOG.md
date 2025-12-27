@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.1] - 2025-12-27
+
+### Fixed
+- **Grid Editing Mode Toggle**: Grid editing is now an optional MODE, not the default behavior
+  - **Default OFF**: Task names are clickable and open the details modal (pre-v2.0.0 behavior)
+  - **Toggle ON**: Cells become editable inline for quick field updates
+  - **📝 Grid Edit button**: Added to header (visible when logged in) to toggle mode on/off
+  - **Preference saved**: Grid edit mode preference persists across sessions via localStorage
+  - **Visual indicator**: Button highlights in blue when grid edit mode is active
+
+### Improved
+- **Header Layout**: Reorganized into two rows for better UX
+  - **Top row**: Title/version, Weekly Compass toggle, Dark/Light mode, MS Profile dropdown
+  - **Bottom row**: New Task, View, Group By, Filter, Show completed, Status, Refresh, Grid Edit
+  - Reduces visual clutter and improves control accessibility
+  - Responsive layout that wraps gracefully on smaller screens
+
+---
+
 ## [2.0.0] - 2025-12-27
 
 ### Added
