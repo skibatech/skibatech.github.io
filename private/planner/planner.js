@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.2'; // Fix: Grid edit toggle instant, add edit caching to reduce 429 errors
+const APP_VERSION = '2.0.3'; // Fix: Grid edit progress dropdown click blockage
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.3] - 2025-12-27
+
+### Fixed
+- **Grid Edit Progress Dropdown**: Hover pencil icon no longer intercepts clicks, so progress changes work reliably in grid edit mode
+
+---
+
 ## [2.0.2] - 2025-12-27
 
 ### Fixed
