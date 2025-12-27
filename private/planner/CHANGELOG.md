@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.4] - 2025-12-27
+
+### Fixed
+- **Grid Edit Dropdown Usability**: Removed hover pencil icon and raised inline select z-index to prevent interference when changing Progress/Priority dropdowns in grid edit mode
+
+---
+
 ## [2.0.3] - 2025-12-27
 
 ### Fixed

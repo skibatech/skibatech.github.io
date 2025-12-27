@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.3'; // Fix: Grid edit progress dropdown click blockage
+const APP_VERSION = '2.0.4'; // Remove pencil hover icon in grid edit; improve dropdown usability
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
