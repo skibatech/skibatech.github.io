@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '1.7.1'; // Fix: sync Show completed checkbox with saved default setting
+const APP_VERSION = '1.8.0'; // Feature: Compass position toggle (left/right)
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -81,6 +81,7 @@ let resizeStartX = 0;
 let resizeStartWidth = 0;
 let currentFilter = 'all';
 let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || false;
+let compassPosition = localStorage.getItem('plannerCompassPosition') || 'right'; // 'left' or 'right'
 let draggedColumnElement = null; // Store the dragged column header element
 let columnWidths = {
     'col-id': 90,
@@ -2468,6 +2469,7 @@ function showOptions() {
     document.getElementById('defaultViewInput').value = currentView;
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
+    document.getElementById('compassPositionInput').value = compassPosition;
     
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
@@ -2606,6 +2608,7 @@ async function saveOptions() {
     const defaultView = document.getElementById('defaultViewInput').value;
     const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
+    const compassPos = document.getElementById('compassPositionInput').value;
     
     // Save to local state and localStorage
     currentView = defaultView;
@@ -2614,16 +2617,21 @@ async function saveOptions() {
     localStorage.setItem('plannerDefaultGroupBy', defaultGroupBy);
     showCompleted = showCompletedDefault;
     localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
+    compassPosition = compassPos;
+    localStorage.setItem('plannerCompassPosition', compassPos);
     
     // Save to To Do for sync
-    await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault);
+    await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos);
+
+    // Apply compass position immediately
+    applyCompassPosition();
 
     closeOptions();
     alert('View preferences saved!');
     await loadTasks();
 }
 
-async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault) {
+async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos) {
     if (!optionsListId || !accessToken) return;
     
     try {
@@ -2654,6 +2662,7 @@ async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault
         await createTask('OPTION_DEFAULT_VIEW', defaultView);
         await createTask('OPTION_DEFAULT_GROUPBY', defaultGroupBy);
         await createTask('OPTION_SHOW_COMPLETED', showCompletedDefault ? 'true' : 'false');
+        await createTask('OPTION_COMPASS_POSITION', compassPos || 'right');
         
         // Delete old tasks
         await Promise.all(existingTasks.map(task =>
@@ -3208,6 +3217,13 @@ async function loadOptionsData() {
             showCompleted = showCompletedTask.body.content === 'true';
             localStorage.setItem('plannerShowCompleted', showCompletedTask.body.content);
         }
+        
+        const compassPosTask = tasks.find(t => t.title === 'OPTION_COMPASS_POSITION');
+        if (compassPosTask && compassPosTask.body?.content) {
+            compassPosition = compassPosTask.body.content;
+            localStorage.setItem('plannerCompassPosition', compassPosition);
+            applyCompassPosition();
+        }
     } catch (err) {
         console.error('Failed to load options:', err);
     }
@@ -3408,6 +3424,7 @@ function toggleCompass() {
         compassEditMode = false;
         renderCompass();
         updateCompassEditUI();
+        applyCompassPosition();
     } else {
         panel.style.display = 'none';
         wrapper.style.display = 'block';
@@ -3634,6 +3651,15 @@ function handleRoleDrop(e) {
 function handleRoleDragEnd(e) {
     e.currentTarget.style.opacity = '1';
     draggedRoleIndex = null;
+}
+
+// Apply compass position (left or right)
+function applyCompassPosition() {
+    const panel = document.getElementById('weeklyCompassPanel');
+    if (!panel) return;
+    
+    panel.classList.remove('compass-left', 'compass-right');
+    panel.classList.add(`compass-${compassPosition}`);
 }
 
 // Expose compass functions globally

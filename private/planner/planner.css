@@ -808,6 +808,14 @@ body.unauthenticated #refreshBtn {
     bottom: 20px;
 }
 
+.compass-panel.compass-left {
+    order: -1;
+}
+
+.compass-panel.compass-right {
+    order: 1;
+}
+
 .compass-header {
     display: flex;
     justify-content: space-between;
