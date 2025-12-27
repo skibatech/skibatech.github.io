@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.8] - 2025-12-27
+
+### Fixed
+- **Due Date Bug**: Fixed timezone conversion issue causing due dates to display 1 day behind
+  - Changed date parsing to extract date portion directly from ISO string instead of converting through Date object
+  - Prevents timezone offset from affecting displayed date values
+
+---
+
 ## [2.0.7] - 2025-12-27
 
 ### Improved

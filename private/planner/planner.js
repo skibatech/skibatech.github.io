@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.7'; // Improved 429 handling with queue and exponential backoff
+const APP_VERSION = '2.0.8'; // Fix due date timezone bug (1 day behind)
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -115,14 +115,13 @@ const GRAPH_MAX_CONCURRENT = 6; // Cap concurrent per-item calls (e.g., task det
 // Utility functions for consistent date handling (fixes timezone offset issues)
 function formatDateForInput(isoDateString) {
     // Convert ISO date string to local date string for input[type=date]
-    // Fixes timezone offset issues by using local timezone
+    // Extracts date portion directly to avoid timezone conversion issues
     if (!isoDateString) return '';
-    const date = new Date(isoDateString);
-    // Format as YYYY-MM-DD in local timezone (not UTC)
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    
+    // Extract just the date portion (YYYY-MM-DD) from ISO string
+    // This avoids timezone offset issues that occur when parsing the full timestamp
+    const datePart = isoDateString.split('T')[0];
+    return datePart;
 }
 
 function formatDateForDisplay(isoDateString) {
