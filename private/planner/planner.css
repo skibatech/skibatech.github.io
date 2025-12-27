@@ -834,7 +834,7 @@ body.unauthenticated #refreshBtn {
     min-width: 380px;
     max-width: 380px;
     background: var(--compass-bg);
-    border: 1px solid var(--compass-border);
+    border: none;
     border-radius: 8px;
     padding: 12px;
     box-shadow: 0 2px 8px var(--shadow);

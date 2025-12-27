@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.6] - 2025-12-27
+
+### Improved
+- **Weekly Compass**: Removed white border for cleaner appearance - background color now extends to edge
+
+---
+
 ## [2.0.5] - 2025-12-27
 
 ### Fixed

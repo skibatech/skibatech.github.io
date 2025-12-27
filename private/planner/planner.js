@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.5'; // Default grid edit OFF, improve dropdown stability
+const APP_VERSION = '2.0.6'; // Remove compass border for cleaner appearance
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
