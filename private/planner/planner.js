@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.8'; // Fix due date timezone bug (1 day behind)
+const APP_VERSION = '2.0.9'; // Fix due date display drift (date shows 1 day earlier)
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -133,21 +133,16 @@ function formatDateForDisplay(isoDateString) {
 
 function inputDateToISO(dateInputValue) {
     // Convert input[type=date] value (YYYY-MM-DD string) to ISO 8601 string
-    // Treats the input value as a LOCAL date and converts to UTC ISO
-    // This ensures the date doesn't shift when stored/retrieved
+    // Store as UTC noon to avoid timezone shifts that move the date backward/forward
     if (!dateInputValue) return null;
     
-    // Parse as local date (input type=date always gives YYYY-MM-DD in local context)
     const parts = dateInputValue.split('-');
     const year = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1; // JS months are 0-indexed
     const day = parseInt(parts[2], 10);
     
-    // Create date in UTC that represents midnight on the specified local date
-    // We offset by timezone to preserve the intended date
-    const localDate = new Date(year, month, day, 0, 0, 0, 0);
-    const utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
-    
+    // Set to 12:00 UTC so any timezone offset won't change the calendar date
+    const utcDate = new Date(Date.UTC(year, month, day, 12, 0, 0, 0));
     return utcDate.toISOString();
 }
 

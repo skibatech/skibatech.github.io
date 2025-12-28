@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.9] - 2025-12-27
+
+### Fixed
+- **Due Date Display Drift**: Dates no longer shift a day earlier in views
+  - Store dates at 12:00 UTC to prevent timezone offsets from rolling dates backward/forward
+
+---
+
 ## [2.0.8] - 2025-12-27
 
 ### Fixed
