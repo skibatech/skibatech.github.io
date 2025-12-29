@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.0.55] - 2025-12-29
+
+### Changed
+- **Admin Portal Version**: Bumped admin portal to 1.4.70-admin to stay aligned with README/help content
+
 ## [2.0.54] - 2025-12-29
 
 ### Changed
