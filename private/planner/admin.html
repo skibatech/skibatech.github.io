@@ -173,25 +173,25 @@
             </div>
             <div style="padding:20px; overflow-y:auto; max-height:70vh;">
                 <div style="color:var(--text-primary); line-height:1.6; font-size:14px;">
-                    <p style="margin:0 0 12px 0; color:var(--text-secondary);">This help matches README.md. Keep them in sync and avoid duplicating steps elsewhere.</p>
+                    <p style="margin:0 0 12px 0; color:var(--text-secondary);">This help matches README.md. Keep them identical—no duplicate or conflicting steps.</p>
 
                     <div style="background:var(--bg-tertiary); border-left:4px solid #2196F3; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">Initial Setup (first time)</h4>
-                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Sign in with Microsoft</strong> to verify admin access.</li>
-                            <li><strong>Fill configuration</strong>: Plan ID (from `/plan/{id}`), Client ID and Authority (Azure app), admin access (group name/id or adminUsers).</li>
-                            <li><strong>Customize theme names</strong> (the 7 Planner categories).</li>
-                            <li><strong>Save & Sync</strong> to push theme names to Planner.</li>
-                            <li><strong>Copy config.json</strong> from the modal, paste into your repo, commit, and push.</li>
-                        </ul>
+                        <ol style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li><strong>Sign in with Microsoft</strong> to verify you’re an admin.</li>
+                            <li><strong>Fill Configuration</strong>: Plan ID (from <code>/plan/{id}</code>), Client ID and Authority (Azure app), admin group/email settings.</li>
+                            <li><strong>Customize Theme Names</strong>: Rename the 7 Planner categories.</li>
+                            <li><strong>Save & Sync</strong>: Push theme names to Planner.</li>
+                            <li><strong>Copy config.json</strong>: Copy from the modal, paste into your repo, commit, and push.</li>
+                        </ol>
                     </div>
 
                     <div style="background:var(--bg-tertiary); border-left:4px solid #4CAF50; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#4CAF50; font-size:16px;">Ongoing Management</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Theme names</strong>: Edit, then Save & Sync (no file edits).</li>
-                            <li><strong>Config changes</strong>: Update fields, Save & Sync, copy generated config.json to repo, commit, push.</li>
-                            <li><strong>Source of truth</strong>: The portal form generates the config; keep repo in sync.</li>
+                            <li><strong>Theme names</strong>: Edit and click “Save & Sync” — no file edits.</li>
+                            <li><strong>Config changes</strong>: Update fields, “Save & Sync,” copy generated config.json to repo, commit, push.</li>
+                            <li><strong>Source of truth</strong>: The portal form generates the config; keep the repo in sync.</li>
                         </ul>
                     </div>
 
@@ -199,7 +199,7 @@
                         <h4 style="margin:0 0 10px 0; color:#ff9800; font-size:16px;">Troubleshooting</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
                             <li><strong>Not authorized for admin actions</strong>: Add your email to adminUsers or ensure you’re in the admin group; sign out/in.</li>
-                            <li><strong>Custom theme names not showing</strong>: Click Save & Sync and wait a moment.</li>
+                            <li><strong>Custom theme names not showing</strong>: Click “Save & Sync” and wait a moment.</li>
                             <li><strong>Too Many Requests</strong>: Wait; the app auto-retries up to 5 times.</li>
                             <li><strong>Settings not sticking</strong>: Until you update config.json in the repo, changes stay local.</li>
                         </ul>
@@ -208,9 +208,9 @@
                     <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#9C27B0; font-size:16px;">Advanced</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Admin group name</strong>: Preferred; uses Entra display name. Admin group ID is an alternative (Object ID).</li>
-                            <li><strong>Task ID prefix</strong>: Change the prefix shown on task IDs (e.g., PRJ-001).</li>
-                            <li><strong>Allowed tenants</strong>: Restrict sign-in to specific tenant domains.</li>
+                            <li><strong>Admin Group Name</strong>: Preferred (Entra display name). Admin Group ID is an alternative (Object ID).</li>
+                            <li><strong>Task ID Prefix</strong>: Change the prefix shown on task IDs (e.g., PRJ-001).</li>
+                            <li><strong>Allowed Tenants</strong>: Restrict sign-in to specific tenant domains.</li>
                         </ul>
                     </div>
 

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.55'; // Bump admin portal version; keep README/admin help in sync
+const APP_VERSION = '2.0.56'; // README/Admin help fully aligned; admin portal version bumped
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

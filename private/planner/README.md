@@ -184,7 +184,7 @@ Accessible to users who meet admin criteria (separate `admin.html` page):
 - Check for 429 rate limiting (app auto-retries with backoff)
 
 ## Version
-Current: v2.0.48
+Current: v2.0.56
 
 See [CHANGELOG.md](CHANGELOG.md) for version history and recent changes.
 
