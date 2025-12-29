@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.25'; // Fix syntax errors; remove duplicate function and orphaned code
+const APP_VERSION = '2.0.26'; // Replace icon button with clickable label for Sharpen the Saw suggestions
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -4106,6 +4106,12 @@ function renderCompass() {
     if (sawMental) { sawMental.value = compassData.sharpenSaw.mental || ''; sawMental.readOnly = !compassEditMode; }
     if (sawSpiritual) { sawSpiritual.value = compassData.sharpenSaw.spiritual || ''; sawSpiritual.readOnly = !compassEditMode; }
     
+    // Attach event listeners to Sharpen the Saw labels
+    document.querySelectorAll('.saw-label').forEach(label => {
+        label.removeEventListener('click', handleSawLabelClick);
+        label.addEventListener('click', handleSawLabelClick);
+    });
+    
     // Render roles
     renderCompassRoles();
 }
@@ -4189,6 +4195,14 @@ function renderCompassRoles() {
 }
 
 // Removed duplicate showSawSuggestions; valid definition exists earlier
+
+function handleSawLabelClick(event) {
+    if (!compassEditMode) return;
+    const category = event.target.dataset.category;
+    if (category) {
+        showSawSuggestions(category);
+    }
+}
 
 function addSuggestionToSaw(category, suggestion) {
     // Enforce max 6 words on insert

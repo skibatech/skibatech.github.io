@@ -1118,37 +1118,33 @@ body.unauthenticated #refreshBtn {
 }
 
 .saw-suggest-btn {
-    background: #ffeb3b !important; /* bright yellow for high contrast */
-    border: 2px solid #fbc02d !important;
-    color: #111 !important; /* dark icon/text */
-    cursor: pointer;
-    padding: 0 !important;
-    font-size: 16px !important; /* icon size */
-    font-weight: 700 !important;
-    border-radius: 50%;
-    transition: transform 0.15s ease, background 0.15s ease;
-    flex-shrink: 0 !important;
-    opacity: 1 !important;
-    line-height: 1;
-    display: inline-flex !important;
-    visibility: visible !important;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
+    display: none !important; /* Hidden; labels are now clickable instead */
 }
 
 .saw-suggest-btn:hover {
-    background: #ffe74b !important;
-    opacity: 1 !important;
-    border-color: #f1c40f !important;
-    transform: translateY(-1px) scale(1.03);
+    display: none !important;
 }
 
 /* Hide suggest buttons in read-only mode */
 .compass-panel.compass-readonly .saw-suggest-btn,
 .compass-readonly .compass-section.sharpen-saw .saw-suggest-btn {
     display: none !important;
+}
+
+/* Clickable label for Sharpen the Saw */
+.saw-label {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--compass-text);
+    transition: opacity 0.15s ease;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    min-width: 110px;
+}
+
+.saw-label:hover {
+    opacity: 0.8;
 }
 
 .compass-rock-item input[type="text"],

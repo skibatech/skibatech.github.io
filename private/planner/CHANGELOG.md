@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.26] - 2025-12-29
+
+### Changed
+- **Sharpen the Saw UX**: Replaced icon button with clickable label text
+  - Label text (Physical, Social/Emotional, Mental, Spiritual) is now underlined and clickable
+  - Opens suggestions modal on click in edit mode
+  - Improves usability by removing button that occupied space to the right of text input
+
 ## [2.0.21] - 2025-12-29
 
 ### Fixed
