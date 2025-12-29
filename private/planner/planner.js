@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.41'; // Eyedropper color picker button
+const APP_VERSION = '2.0.42'; // Eyedropper SVG sizing fix
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

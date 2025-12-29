@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.42] - 2025-12-29
+
+### Fixed
+- **Eyedropper Icon**: Explicit SVG width/height to ensure icon renders visibly in the Weekly Compass header
+
 ## [2.0.41] - 2025-12-29
 
 ### Changed
