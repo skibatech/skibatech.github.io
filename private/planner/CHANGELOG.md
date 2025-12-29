@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.10] - 2025-12-29
+
+### Improved
+- **Weekly Compass Big Rocks**: Replaced dot bullets with checkboxes and strike-through when checked; completion state is captured for each rock
+
+---
+
 ## [2.0.9] - 2025-12-27
 
 ### Fixed

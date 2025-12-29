@@ -1107,7 +1107,7 @@ body.unauthenticated #refreshBtn {
     height: 28px;
 }
 
-.compass-rock-item input,
+.compass-rock-item input[type="text"],
 .compass-rock-item textarea {
     width: 100%;
     padding: 5px 6px;
@@ -1126,7 +1126,8 @@ body.unauthenticated #refreshBtn {
 .compass-readonly .compass-quote-inline input,
 .compass-readonly .compass-date-range input,
 .compass-readonly .compass-role-header input,
-.compass-readonly .compass-rock-item input,
+.compass-readonly .compass-rock-item input[type="text"],
+.compass-readonly .compass-rock-item textarea,
 .compass-readonly .compass-category-inline input {
     border: none;
     background: transparent;
@@ -1167,21 +1168,24 @@ body.unauthenticated #refreshBtn {
 .compass-rock-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     margin-bottom: 4px;
-    margin-left: 18px;
-}
-
-.compass-rock-item::before {
-    content: '◉';
-    color: var(--compass-text);
-    margin-left: -8px;
-    margin-right: 4px;
-    font-size: 12px;
 }
 
 .compass-rock-item textarea {
     flex: 1;
+}
+
+.compass-rock-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.compass-rock-item.rock-done .compass-rock-input,
+.compass-rock-item.rock-done textarea {
+    text-decoration: line-through;
+    color: var(--text-muted);
 }
 
 .compass-mini-btn {

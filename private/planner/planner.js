@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.9'; // Fix due date display drift (date shows 1 day earlier)
+const APP_VERSION = '2.0.10'; // Weekly Compass rocks use checkboxes with strike-through
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -3779,6 +3779,15 @@ async function loadCompassData() {
                 }
             }
         });
+
+        // Normalize roles/rocks structure to include completion state
+        compassData.roles = compassData.roles.map(role => {
+            const rocks = (role.rocks || []).map(r => {
+                if (typeof r === 'string') return { text: r, done: false };
+                return { text: r?.text || '', done: !!r?.done };
+            });
+            return { ...role, rocks };
+        });
         
         renderCompass();
     } catch (err) {
@@ -3820,9 +3829,12 @@ function captureCompassInputs() {
     document.querySelectorAll('.compass-role-section').forEach(section => {
         const roleName = section.querySelector('.compass-role-input')?.value || '';
         const rocks = [];
-        section.querySelectorAll('.compass-rock-input').forEach(input => {
-            const val = input.value.trim();
-            if (val) rocks.push(val);
+        section.querySelectorAll('.compass-rock-item').forEach(item => {
+            const textInput = item.querySelector('.compass-rock-input');
+            const check = item.querySelector('.compass-rock-checkbox');
+            const val = textInput ? textInput.value.trim() : '';
+            const done = check ? check.checked : false;
+            if (val) rocks.push({ text: val, done });
         });
         if (roleName.trim() || rocks.length > 0) {
             updated.roles.push({ name: roleName, rocks });
@@ -4046,12 +4058,15 @@ function renderCompassRoles() {
             </div>
             <div class="compass-rocks">
                 <div class="compass-rocks-header">${compassEditMode ? `Big Rocks <button class="compass-add-rock-icon" onclick="addCompassRock(${index})" title="Add priority">＋</button>` : ''}</div>
-                ${role.rocks.map((rock, i) => `
-                    <div class="compass-rock-item">
-                        <input type="text" class="compass-rock-input" ${compassEditMode ? '' : 'readonly'} placeholder="Enter a big rock..." value="${escapeHtml(rock)}">
+                ${role.rocks.map((rock, i) => {
+                    const rockObj = typeof rock === 'string' ? { text: rock, done: false } : (rock || { text: '', done: false });
+                    return `
+                    <div class="compass-rock-item ${rockObj.done ? 'rock-done' : ''}">
+                        <input type="checkbox" class="compass-rock-checkbox" ${rockObj.done ? 'checked' : ''} onchange="toggleCompassRockDone(${index}, ${i}, this.checked)">
+                        <input type="text" class="compass-rock-input" ${compassEditMode ? '' : 'readonly'} placeholder="Enter a big rock..." value="${escapeHtml(rockObj.text)}">
                         ${compassEditMode ? `<button class="compass-mini-btn" onclick="removeCompassRock(${index}, ${i})" title="Remove priority">✕</button>` : ''}
                     </div>
-                `).join('')}
+                `;}).join('')}
             </div>
         `;
         
@@ -4085,7 +4100,7 @@ function removeCompassRole(index) {
 function addCompassRock(roleIndex) {
     captureCompassInputs();
     if (!compassData.roles[roleIndex]) return;
-    compassData.roles[roleIndex].rocks.push('');
+    compassData.roles[roleIndex].rocks.push({ text: '', done: false });
     renderCompassRoles();
 }
 
@@ -4093,6 +4108,19 @@ function removeCompassRock(roleIndex, rockIndex) {
     captureCompassInputs();
     if (!compassData.roles[roleIndex]) return;
     compassData.roles[roleIndex].rocks.splice(rockIndex, 1);
+    renderCompassRoles();
+}
+
+function toggleCompassRockDone(roleIndex, rockIndex, isDone) {
+    captureCompassInputs();
+    const role = compassData.roles[roleIndex];
+    if (!role || !role.rocks[rockIndex]) return;
+    const rock = role.rocks[rockIndex];
+    if (typeof rock === 'string') {
+        role.rocks[rockIndex] = { text: rock, done: isDone };
+    } else {
+        role.rocks[rockIndex].done = isDone;
+    }
     renderCompassRoles();
 }
 
