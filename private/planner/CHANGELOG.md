@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.33] - 2025-12-29
+
+### Changed
+- **All Suggestion Categories**: Updated mental, social/emotional, and spiritual suggestions to be 6 words or less
+  - **Mental**: "Visit a museum or art gallery" → "Visit a museum or gallery"; "Study the works of spiritual leaders" → "Study spiritual leader works"
+  - **Social/Emotional**: Significantly shortened all 37 items while preserving meaning
+    - Removed self-care/others-care comments, condensed suggestions
+    - "Treat yourself to a hot bath by candlelight" → "Take a hot bath by candlelight"
+    - "Practice the \"Platinum Rule\": Do unto others as they want" → "Practice the Platinum Rule always"
+  - **Spiritual**: Fixed 4 items
+    - "Reflect on your values and principles" → "Reflect on your values"
+    - "Study the works of spiritual leaders" → "Study spiritual leader works"
+    - "Serve others without expecting reward" → "Serve others without reward"
+    - "Create a vision board for goals" → "Create a vision board"
+
 ## [2.0.32] - 2025-12-29
 
 ### Changed
