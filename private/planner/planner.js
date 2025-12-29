@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.58'; // Admin help 100% matches README (wording, code formatting)
+const APP_VERSION = '2.0.59'; // Admin help now exactly matches README (removed internal note, added security sections)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

@@ -173,16 +173,15 @@
             </div>
             <div style="padding:20px; overflow-y:auto; max-height:70vh;">
                 <div style="color:var(--text-primary); line-height:1.6; font-size:14px;">
-                    <p style="margin:0 0 12px 0; color:var(--text-secondary);">This help matches README.md. Keep them identical—no duplicate or conflicting steps.</p>
 
                     <div style="background:var(--bg-tertiary); border-left:4px solid #2196F3; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">Initial Setup (first time)</h4>
                         <ol style="margin:0; padding-left:18px; line-height:1.6;">
                             <li><strong>Sign in with Microsoft</strong> to verify you’re an admin.</li>
-                            <li><strong>Fill Configuration</strong>: Plan ID (from <code>/plan/{id}</code>), Client ID and Authority (Azure app), admin group/email settings.</li>
-                            <li><strong>Customize Theme Names</strong>: Rename the 7 Planner categories.</li>
-                            <li><strong>Save & Sync</strong>: Push theme names to Planner.</li>
-                            <li><strong>Copy config.json</strong>: Copy from the modal, paste into your repo, commit, and push.</li>
+                            <li><strong>Fill Configuration</strong>: Plan ID (from <code>/plan/{id}</code>), Client ID and Authority (from your Azure app), Admin group/email settings.</li>
+                            <li><strong>Customize Theme Names</strong>: Rename the 7 Planner categories as you like.</li>
+                            <li><strong>Save & Sync</strong>: Push theme names to Planner immediately.</li>
+                            <li><strong>Copy config.json</strong>: Use "Copy to Clipboard," paste into your repo <code>config.json</code>, commit, and push.</li>
                         </ol>
                     </div>
 
@@ -205,12 +204,32 @@
                         </ul>
                     </div>
 
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:14px; border-radius:4px;">
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#9C27B0; font-size:16px;">Advanced</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
                             <li><strong>Admin Group ID</strong>: Use Entra group Object ID instead of individual emails.</li>
                             <li><strong>Task ID Prefix</strong>: Change the prefix for displayed task IDs (e.g., <code>PRJ-001</code>).</li>
                             <li><strong>Allowed Tenants</strong>: Restrict sign-in to specific tenant domains.</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #f44336; padding:14px; margin-bottom:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#f44336; font-size:16px;">What Should NEVER Be in config.json</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li>❌ <strong>Client secrets</strong> - Never store secrets client-side</li>
+                            <li>❌ <strong>Access tokens</strong> - Handled by MSAL, never hardcoded</li>
+                            <li>❌ <strong>Passwords</strong> - Authentication is via Microsoft identity platform</li>
+                            <li>❌ <strong>Personal data</strong> - No PII beyond what users configure</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #607D8B; padding:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#607D8B; font-size:16px;">Network Security</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li>All data access requires valid Microsoft Graph authentication</li>
+                            <li>App uses browser-based MSAL for token acquisition</li>
+                            <li>Tokens are stored in sessionStorage, never in config</li>
+                            <li>CORS and Azure permissions control API access</li>
                         </ul>
                     </div>
                 </div>
