@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.28] - 2025-12-29
+
+### Fixed
+- **Suggestions Modal Width**: Further increased max-width to 850px and scroll area padding-right to 20px for better scrollbar spacing
+
 ## [2.0.27] - 2025-12-29
 
 ### Fixed

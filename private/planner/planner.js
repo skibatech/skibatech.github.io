@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.27'; // Increase suggestions modal width to show close button
+const APP_VERSION = '2.0.28'; // Further increase modal width to 850px and scroll padding
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3153,11 +3153,11 @@ function showSawSuggestions(category) {
     };
 
     const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 480px; max-width: 720px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 480px; max-width: 850px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
 
     // Scroll area
     const scroll = document.createElement('div');
-    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding-right: 10px;';
+    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding-right: 20px;';
 
     const h3 = document.createElement('h3');
     h3.textContent = `Ideas for ${categoryName} Renewal:`;
