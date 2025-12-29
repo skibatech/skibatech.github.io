@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.48'; // Admin group name support to avoid exposing group ID
+const APP_VERSION = '2.0.49'; // Planner link updated to planner.cloud.microsoft
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -2915,8 +2915,9 @@ async function openTaskDetail(taskId) {
         });
         
         // Set Planner link
+        // Planner now lives under planner.cloud.microsoft
         document.getElementById('openInPlannerLink').href = 
-            `https://tasks.office.com/skibatech.com/Home/Task/${taskId}`;
+            `https://planner.cloud.microsoft/tasks/${taskId}`;
         
         // Show content
         document.getElementById('taskDetailsLoading').style.display = 'none';

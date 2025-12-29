@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.49] - 2025-12-29
+
+### Changed
+- **Planner Deep Link**: Updated task link target to planner.cloud.microsoft instead of tasks.office.com (Outlook Planner experience)
+- **Docs**: README instructions now direct to planner.cloud.microsoft for Plan ID lookup
+
 ## [2.0.48] - 2025-12-29
 
 ### Changed

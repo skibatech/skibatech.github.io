@@ -17,9 +17,9 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
 
 ### 2. Get Your Planner Plan ID
 
-1. Open [Planner](https://tasks.office.com) in your browser
-2. Navigate to your target plan
-3. Copy the Plan ID from the URL: `https://tasks.office.com/.../plans/{PLAN-ID}/...`
+1. Open Planner at https://planner.cloud.microsoft/ (also available from Outlook’s left nav).
+2. Navigate to your target plan.
+3. Copy the Plan ID from the URL (you will see `/plans/{PLAN-ID}/...` or `planId={PLAN-ID}` in the Planner URL).
 
 ### 3. Configure config.json
 
