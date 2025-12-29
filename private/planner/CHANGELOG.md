@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.40] - 2025-12-29
+
+### Changed
+- **Weekly Compass Header Icons**: Save and Cancel buttons increased to 32px with 22px glyphs; background color picker reduced to 18px for better visual balance
+
 ## [2.0.39] - 2025-12-29
 
 ### Changed

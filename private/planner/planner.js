@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.39'; // Tweak 429 retry status message format
+const APP_VERSION = '2.0.40'; // Compass header icon sizing polish
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
