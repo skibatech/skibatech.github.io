@@ -96,9 +96,7 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
 - **Minimal**: Any Microsoft 365 SKU that includes Planner *and* Exchange Online (for To Do/Tasks) such as Business Basic, Business Standard, Business Premium, Office 365 E1/E3/E5, Microsoft 365 E3/E5, F3, or education equivalents. A tenant admin must grant Graph delegated consent for `Tasks.ReadWrite`, `Group.ReadWrite.All`, and `User.Read`.
 - **Preferred**: Microsoft 365 E3/E5 (or Business Standard/Premium) so users have Planner, To Do, Exchange Online, and admins can easily grant and manage Graph permissions and groups used for admin access.
 
-## Admin Portal Help (matches the ❓ button)
-
-This section mirrors the Admin Mode help dialog. Keep them identical—no duplicated or conflicting steps.
+## Admin Portal Usage
 
 ### Initial Setup (first time)
 1) **Sign in with Microsoft** to verify you’re an admin.  
