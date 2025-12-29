@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.52'; // Docs: add licensing requirements
+const APP_VERSION = '2.0.54'; // Docs: sync README with admin help and avoid duplicate steps
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

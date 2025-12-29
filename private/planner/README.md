@@ -96,6 +96,33 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
 - **Minimal**: Any Microsoft 365 SKU that includes Planner *and* Exchange Online (for To Do/Tasks) such as Business Basic, Business Standard, Business Premium, Office 365 E1/E3/E5, Microsoft 365 E3/E5, F3, or education equivalents. A tenant admin must grant Graph delegated consent for `Tasks.ReadWrite`, `Group.ReadWrite.All`, and `User.Read`.
 - **Preferred**: Microsoft 365 E3/E5 (or Business Standard/Premium) so users have Planner, To Do, Exchange Online, and admins can easily grant and manage Graph permissions and groups used for admin access.
 
+## Admin Portal Help (matches the ❓ button)
+
+This section mirrors the Admin Mode help dialog. Keep them identical—no duplicated or conflicting steps.
+
+### Initial Setup (first time)
+1) **Sign in with Microsoft** to verify you’re an admin.  
+2) **Fill Configuration**: Plan ID (from `/plan/{id}`), Client ID and Authority (from your Azure app), Admin group/email settings.  
+3) **Customize Theme Names**: Rename the 7 Planner categories as you like.  
+4) **Save & Sync**: Push theme names to Planner immediately.  
+5) **Copy config.json**: Use “Copy to Clipboard,” paste into your repo `config.json`, commit, and push.
+
+### Ongoing Management
+- **Theme names**: Edit and click “Save & Sync” — no file edits needed.  
+- **Config changes** (Plan ID, admins, etc.): Update fields, click “Save & Sync,” copy the generated `config.json` to your repo, commit, push.  
+- **Source of truth**: The portal form generates the config; keep the repo in sync.
+
+### Troubleshooting
+- **Not authorized for admin actions**: Add your email to `adminUsers` or ensure you’re in the admin group; sign out/in.  
+- **Custom theme names not showing in Planner**: Make sure you clicked “Save & Sync” and give it a moment.  
+- **Too Many Requests**: Wait a bit; the app auto-retries up to 5 times.  
+- **Settings not sticking**: Local to your browser until you update `config.json` in the repo and deploy.
+
+### Advanced
+- **Admin Group ID**: Use Entra group Object ID instead of individual emails.  
+- **Task ID Prefix**: Change the prefix for displayed task IDs (e.g., `PRJ-001`).  
+- **Allowed Tenants**: Restrict sign-in to specific tenant domains.
+
 ### What Should NEVER Be in config.json
 ❌ **Client secrets** - Never store secrets client-side  
 ❌ **Access tokens** - Handled by MSAL, never hardcoded  

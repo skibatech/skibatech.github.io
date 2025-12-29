@@ -172,139 +172,54 @@
                 <button onclick="closeAdminHelp()" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--text-secondary);">&times;</button>
             </div>
             <div style="padding:20px; overflow-y:auto; max-height:70vh;">
-                <div style="color:var(--text-primary); line-height:1.7;">
-                    
-                    <!-- INITIAL SETUP SECTION -->
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #2196F3; padding:16px; margin-bottom:20px; border-radius:4px;">
-                        <h4 style="margin:0 0 16px 0; color:#2196F3; font-size:16px;">🚀 Initial Setup (First Time Only)</h4>
-                        <div style="display:flex; flex-direction:column; gap:16px;">
-                            
-                            <!-- Step 1 -->
-                            <div style="display:flex; gap:12px;">
-                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">1</div>
-                                <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Sign In with Microsoft</p>
-                                    <p style="margin:0; font-size:13px; color:var(--text-secondary);">Click the blue "Sign In with Microsoft" button at the top. This verifies you're the authorized admin.</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Step 2 -->
-                            <div style="display:flex; gap:12px;">
-                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">2</div>
-                                <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Fill in Configuration Settings</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">In the <strong>Configuration</strong> section below, enter your settings:</p>
-                                    <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li><strong>Plan ID</strong> - From your Planner URL</li>
-                                        <li><strong>Client ID, Authority</strong> - From your Azure app registration</li>
-                                        <li><strong>Admin Group ID, Admin Users</strong> - Your organization's admin setup</li>
-                                    </ul>
-                                </div>
-                            </div>
+                <div style="color:var(--text-primary); line-height:1.6; font-size:14px;">
+                    <p style="margin:0 0 12px 0; color:var(--text-secondary);">This help matches README.md. Keep them in sync and avoid duplicating steps elsewhere.</p>
 
-                            <!-- Step 3 -->
-                            <div style="display:flex; gap:12px;">
-                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">3</div>
-                                <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Customize Theme Names (Easy Customization Here!)</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">This is the one thing you <strong>can customize directly in the admin portal</strong>. Rename the color categories:</p>
-                                    <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li><strong>Theme 1 (Blue)</strong> → e.g., "High Priority", "Critical"</li>
-                                        <li><strong>Theme 2 (Green)</strong> → e.g., "In Progress", "Active"</li>
-                                        <li>Customize all 7 colors to match your workflow</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- Step 4 -->
-                            <div style="display:flex; gap:12px;">
-                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">4</div>
-                                <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Save & Sync Theme Names to Planner</p>
-                                    <p style="margin:0; font-size:13px; color:var(--text-secondary);">Click the blue <strong>"Save & Sync"</strong> button. Your theme name customizations will be saved and synced to Microsoft Planner instantly. Configuration changes (Plan ID, etc.) sync when you update config.json.</p>
-                                </div>
-                            </div>
-
-                            <!-- Step 5 -->
-                            <div style="display:flex; gap:12px;">
-                                <div style="background:#2196F3; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">5</div>
-                                <div style="flex:1;">
-                                    <p style="margin:0 0 8px 0; font-weight:500;">Copy and Update config.json</p>
-                                    <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">After you click "Save & Sync", a modal will display your generated <strong>config.json</strong> content:</p>
-                                    <ul style="margin:8px 0 0 0; padding-left:20px; font-size:13px;">
-                                        <li>Click <strong>"Copy to Clipboard"</strong></li>
-                                        <li>Update the <code>config.json</code> file in your repository with this content</li>
-                                        <li>Commit and push the changes</li>
-                                        <li>Your settings will now load for all users automatically</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #2196F3; padding:14px; margin-bottom:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#2196F3; font-size:16px;">Initial Setup (first time)</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li><strong>Sign in with Microsoft</strong> to verify admin access.</li>
+                            <li><strong>Fill configuration</strong>: Plan ID (from `/plan/{id}`), Client ID and Authority (Azure app), admin access (group name/id or adminUsers).</li>
+                            <li><strong>Customize theme names</strong> (the 7 Planner categories).</li>
+                            <li><strong>Save & Sync</strong> to push theme names to Planner.</li>
+                            <li><strong>Copy config.json</strong> from the modal, paste into your repo, commit, and push.</li>
+                        </ul>
                     </div>
 
-                    <!-- ONGOING MANAGEMENT SECTION -->
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #4CAF50; padding:16px; margin-bottom:20px; border-radius:4px;">
-                        <h4 style="margin:0 0 16px 0; color:#4CAF50; font-size:16px;">⚙️ Ongoing Management</h4>
-                        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
-                            <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">✅ Edit Theme Names (Easiest - No File Edits)</p>
-                                <p style="margin:0; color:var(--text-secondary);">Change the color labels anytime, click "Save & Sync", and your custom theme names sync to Planner immediately.</p>
-                            </div>
-                            <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">📝 Change Configuration (Plan ID, Admins, etc.)</p>
-                                <p style="margin:0; color:var(--text-secondary);">Edit the Configuration fields, click "Save & Sync" to generate the updated config.json, copy it, and paste into your repository's config.json file.</p>
-                            </div>
-                            <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">💾 Everything Flows From The Portal Form</p>
-                                <p style="margin:0; color:var(--text-secondary);">Fill in your settings here, click "Save & Sync" to generate the config.json content, then update your repo. This ensures your repo always has the exact configuration you've defined.</p>
-                            </div>
-                        </div>
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #4CAF50; padding:14px; margin-bottom:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#4CAF50; font-size:16px;">Ongoing Management</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li><strong>Theme names</strong>: Edit, then Save & Sync (no file edits).</li>
+                            <li><strong>Config changes</strong>: Update fields, Save & Sync, copy generated config.json to repo, commit, push.</li>
+                            <li><strong>Source of truth</strong>: The portal form generates the config; keep repo in sync.</li>
+                        </ul>
                     </div>
 
-                    <!-- TROUBLESHOOTING SECTION -->
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:16px; margin-bottom:20px; border-radius:4px;">
-                        <h4 style="margin:0 0 16px 0; color:#ff9800; font-size:16px;">🔧 Troubleshooting</h4>
-                        <div style="display:flex; flex-direction:column; gap:16px;">
-                            
-                            <div>
-                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Not authorized for admin actions"</p>
-                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Make sure your email is listed in the <strong>Admin Users (Emails)</strong> field. After adding yourself, save and try signing out/back in.</p>
-                            </div>
-
-                            <div>
-                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Cannot find theme names in Planner"</p>
-                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Your custom theme names appear in Planner as <strong>Categories</strong>. Check that you clicked "Save & Sync" and wait a moment for the sync to complete.</p>
-                            </div>
-
-                            <div>
-                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Seeing 'Too Many Requests' errors"</p>
-                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Microsoft limits rapid requests. Wait a few minutes and try again. The app automatically retries errors up to 5 times.</p>
-                            </div>
-
-                            <div>
-                                <p style="margin:0 0 8px 0; font-weight:500;">❌ "Settings not staying saved"</p>
-                                <p style="margin:0 0 8px 0; font-size:13px; color:var(--text-secondary);">Settings are stored in your browser's local storage. To make them permanent across devices, copy your <strong>config.json</strong> to your repository (see Step 5 above).</p>
-                            </div>
-                        </div>
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:14px; margin-bottom:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#ff9800; font-size:16px;">Troubleshooting</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li><strong>Not authorized for admin actions</strong>: Add your email to adminUsers or ensure you’re in the admin group; sign out/in.</li>
+                            <li><strong>Custom theme names not showing</strong>: Click Save & Sync and wait a moment.</li>
+                            <li><strong>Too Many Requests</strong>: Wait; the app auto-retries up to 5 times.</li>
+                            <li><strong>Settings not sticking</strong>: Until you update config.json in the repo, changes stay local.</li>
+                        </ul>
                     </div>
 
-                    <!-- ADVANCED SECTION -->
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:16px; border-radius:4px;">
-                        <h4 style="margin:0 0 16px 0; color:#9C27B0; font-size:16px;">⚡ Advanced (For Power Users)</h4>
-                        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
-                            <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">Admin Group ID (Entra)</p>
-                                <p style="margin:0; color:var(--text-secondary);">Instead of listing individual emails, you can assign the Object ID of an Entra group. Members of that group automatically get admin access.</p>
-                            </div>
-                            <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">Task ID Prefix</p>
-                                <p style="margin:0; color:var(--text-secondary);">Tasks get IDs like STE-1, STE-2, etc. Change the prefix (STE) to match your organization (e.g., "ABC", "PROJ").</p>
-                            </div>
-                            <div>
-                                <p style="margin:0 0 4px 0; font-weight:500;">Allowed Tenants</p>
-                                <p style="margin:0; color:var(--text-secondary);">Restrict who can sign in by specifying allowed tenant domains (e.g., company.com).</p>
-                            </div>
-                        </div>
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:14px; margin-bottom:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#9C27B0; font-size:16px;">Advanced</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li><strong>Admin group name</strong>: Preferred; uses Entra display name. Admin group ID is an alternative (Object ID).</li>
+                            <li><strong>Task ID prefix</strong>: Change the prefix shown on task IDs (e.g., PRJ-001).</li>
+                            <li><strong>Allowed tenants</strong>: Restrict sign-in to specific tenant domains.</li>
+                        </ul>
+                    </div>
+
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #607D8B; padding:14px; border-radius:4px;">
+                        <h4 style="margin:0 0 10px 0; color:#607D8B; font-size:16px;">Licensing</h4>
+                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
+                            <li><strong>Minimal</strong>: Any M365 SKU with Planner and Exchange Online (e.g., Business Basic/Standard/Premium, Office 365 E1/E3/E5, M365 E3/E5, F3, edu). Admin must grant Graph delegated consent for Tasks.ReadWrite, Group.ReadWrite.All, User.Read.</li>
+                            <li><strong>Preferred</strong>: M365 E3/E5 or Business Standard/Premium for simpler permission and group management.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
