@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.16] - 2025-12-29
+
+### Fixed
+- **Header Layout**: Restored two-line header layout that was accidentally collapsed to one line
+  - Top row: Title, profile menu, toggle buttons
+  - Bottom row: View, Group By, Filter, Show completed, Status, Refresh
+
+---
+
 ## [2.0.15] - 2025-12-29
 
 ### Improved
