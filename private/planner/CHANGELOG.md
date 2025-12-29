@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.27] - 2025-12-29
+
+### Fixed
+- **Suggestions Modal Width**: Increased max-width from 640px to 720px so close button is not blocked by scrollbar
+
 ## [2.0.26] - 2025-12-29
 
 ### Changed
