@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.20] - 2025-12-29
+
+### Fixed
+- **Suggestion Buttons in Read-Only Mode**: Buttons now visible when compass is not in edit mode
+  - Added overflow: visible and z-index to sharpen-saw section
+  - Ensured buttons stay visible despite read-only input styling
+
+---
+
 ## [2.0.19] - 2025-12-29
 
 ### Fixed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.19'; // Fix suggestion buttons visibility (add !important, borders)
+const APP_VERSION = '2.0.20'; // Ensure suggestion buttons visible in read-only compass
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

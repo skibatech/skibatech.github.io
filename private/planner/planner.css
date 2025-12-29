@@ -1012,6 +1012,15 @@ body.unauthenticated #refreshBtn {
 
 .compass-section.sharpen-saw .compass-category-inline {
     margin-left: 10px;
+    overflow: visible !important;
+    position: relative;
+}
+
+.compass-section.sharpen-saw .saw-suggest-btn {
+    display: block !important;
+    visibility: visible !important;
+    position: relative;
+    z-index: 10;
 }
 
 .compass-role-section[draggable="true"] {
@@ -1178,6 +1187,13 @@ body.unauthenticated #refreshBtn {
 .compass-readonly .compass-add-rock-icon,
 .compass-readonly .compass-actions {
     display: none;
+}
+
+/* Ensure buttons are always visible */
+.compass-readonly .saw-suggest-btn,
+.saw-suggest-btn {
+    display: block !important;
+    visibility: visible !important;
 }
 
 .version-pill {
