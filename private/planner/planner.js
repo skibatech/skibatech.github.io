@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.43'; // Nest color input inside eyedropper; anchor picker near icon
+const APP_VERSION = '2.0.44'; // Eyedropper icon rendered via stroked SVG
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

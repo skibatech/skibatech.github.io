@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.44] - 2025-12-29
+
+### Fixed
+- **Eyedropper Icon Visibility**: Replaced complex filled path with a simple stroked SVG (circle + stem + tip) to render consistently
+
 ## [2.0.43] - 2025-12-29
 
 ### Fixed
