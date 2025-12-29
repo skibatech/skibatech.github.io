@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.57'; // Remove maintainer note from README
+const APP_VERSION = '2.0.58'; // Admin help 100% matches README (wording, code formatting)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

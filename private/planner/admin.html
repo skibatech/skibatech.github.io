@@ -189,8 +189,8 @@
                     <div style="background:var(--bg-tertiary); border-left:4px solid #4CAF50; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#4CAF50; font-size:16px;">Ongoing Management</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Theme names</strong>: Edit and click “Save & Sync” — no file edits.</li>
-                            <li><strong>Config changes</strong>: Update fields, “Save & Sync,” copy generated config.json to repo, commit, push.</li>
+                            <li><strong>Theme names</strong>: Edit and click "Save & Sync" — no file edits needed.</li>
+                            <li><strong>Config changes</strong> (Plan ID, admins, etc.): Update fields, click "Save & Sync," copy the generated <code>config.json</code> to your repo, commit, push.</li>
                             <li><strong>Source of truth</strong>: The portal form generates the config; keep the repo in sync.</li>
                         </ul>
                     </div>
@@ -198,27 +198,19 @@
                     <div style="background:var(--bg-tertiary); border-left:4px solid #ff9800; padding:14px; margin-bottom:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#ff9800; font-size:16px;">Troubleshooting</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Not authorized for admin actions</strong>: Add your email to adminUsers or ensure you’re in the admin group; sign out/in.</li>
-                            <li><strong>Custom theme names not showing</strong>: Click “Save & Sync” and wait a moment.</li>
-                            <li><strong>Too Many Requests</strong>: Wait; the app auto-retries up to 5 times.</li>
-                            <li><strong>Settings not sticking</strong>: Until you update config.json in the repo, changes stay local.</li>
+                            <li><strong>Not authorized for admin actions</strong>: Add your email to <code>adminUsers</code> or ensure you're in the admin group; sign out/in.</li>
+                            <li><strong>Custom theme names not showing in Planner</strong>: Make sure you clicked "Save & Sync" and give it a moment.</li>
+                            <li><strong>Too Many Requests</strong>: Wait a bit; the app auto-retries up to 5 times.</li>
+                            <li><strong>Settings not sticking</strong>: Local to your browser until you update <code>config.json</code> in the repo and deploy.</li>
                         </ul>
                     </div>
 
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:14px; margin-bottom:14px; border-radius:4px;">
+                    <div style="background:var(--bg-tertiary); border-left:4px solid #9C27B0; padding:14px; border-radius:4px;">
                         <h4 style="margin:0 0 10px 0; color:#9C27B0; font-size:16px;">Advanced</h4>
                         <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Admin Group Name</strong>: Preferred (Entra display name). Admin Group ID is an alternative (Object ID).</li>
-                            <li><strong>Task ID Prefix</strong>: Change the prefix shown on task IDs (e.g., PRJ-001).</li>
+                            <li><strong>Admin Group ID</strong>: Use Entra group Object ID instead of individual emails.</li>
+                            <li><strong>Task ID Prefix</strong>: Change the prefix for displayed task IDs (e.g., <code>PRJ-001</code>).</li>
                             <li><strong>Allowed Tenants</strong>: Restrict sign-in to specific tenant domains.</li>
-                        </ul>
-                    </div>
-
-                    <div style="background:var(--bg-tertiary); border-left:4px solid #607D8B; padding:14px; border-radius:4px;">
-                        <h4 style="margin:0 0 10px 0; color:#607D8B; font-size:16px;">Licensing</h4>
-                        <ul style="margin:0; padding-left:18px; line-height:1.6;">
-                            <li><strong>Minimal</strong>: Any M365 SKU with Planner and Exchange Online (e.g., Business Basic/Standard/Premium, Office 365 E1/E3/E5, M365 E3/E5, F3, edu). Admin must grant Graph delegated consent for Tasks.ReadWrite, Group.ReadWrite.All, User.Read.</li>
-                            <li><strong>Preferred</strong>: M365 E3/E5 or Business Standard/Premium for simpler permission and group management.</li>
                         </ul>
                     </div>
                 </div>
