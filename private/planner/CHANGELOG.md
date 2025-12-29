@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.31] - 2025-12-29
+
+### Fixed
+- **Suggestions Modal Close Button**: Restructured modal with dedicated header bar
+  - Title and close button now in separate header (not in scrollable area)
+  - Close button clearly visible and not overlapped by scrollbar
+  - Header uses flexbox layout with padding for better spacing
+  - Scroll area now contains only suggestions and hint text
+
 ## [2.0.30] - 2025-12-29
 
 ### Fixed

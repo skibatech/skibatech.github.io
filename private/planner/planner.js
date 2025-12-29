@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.30'; // Fix modal width with 90vw and improve close button visibility
+const APP_VERSION = '2.0.31'; // Restructure modal with header to make close button clearly visible
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3153,16 +3153,28 @@ function showSawSuggestions(category) {
     };
 
     const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; width: 90vw; max-width: 900px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; z-index: 10000; width: 90vw; max-width: 900px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column;';
+
+    // Header with title and close button
+    const header = document.createElement('div');
+    header.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); flex-shrink: 0;';
+    
+    const h3 = document.createElement('h3');
+    h3.textContent = `Ideas for ${categoryName} Renewal:`;
+    h3.style.cssText = 'margin: 0; color: var(--compass-text); flex: 1;';
+    header.appendChild(h3);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+    closeBtn.onclick = () => { modal.remove(); backdrop.remove(); };
+    header.appendChild(closeBtn);
+
+    modal.appendChild(header);
 
     // Scroll area
     const scroll = document.createElement('div');
-    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding-right: 8px;';
-
-    const h3 = document.createElement('h3');
-    h3.textContent = `Ideas for ${categoryName} Renewal:`;
-    h3.style.cssText = 'margin-top: 0; color: var(--compass-text);';
-    scroll.appendChild(h3);
+    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding: 16px 20px;';
 
     const ul = document.createElement('ul');
     ul.className = 'saw-suggestions-list';
@@ -3189,16 +3201,10 @@ function showSawSuggestions(category) {
 
     const hint = document.createElement('p');
     hint.textContent = `Click any suggestion to add it to your ${categoryName} field`;
-    hint.style.cssText = 'font-size: 11px; color: var(--text-muted); margin-top: 12px;';
+    hint.style.cssText = 'font-size: 11px; color: var(--text-muted); margin-top: 12px; margin-bottom: 0;';
     scroll.appendChild(hint);
 
     modal.appendChild(scroll);
-
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = '✕';
-    closeBtn.style.cssText = 'position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); z-index: 10002; pointer-events: auto; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;';
-    closeBtn.onclick = () => modal.remove();
-    modal.insertBefore(closeBtn, modal.firstChild);
 
     const backdrop = document.createElement('div');
     backdrop.id = 'saw-suggestions-backdrop';
