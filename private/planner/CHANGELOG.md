@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.30] - 2025-12-29
+
+### Fixed
+- **Suggestions Modal Close Button**: Fixed close button visibility issue
+  - Changed modal width to 90vw (90% of viewport width) with max-width 900px for better responsiveness
+  - Adjusted close button positioning (right: 16px, top: 12px) with larger font size (24px)
+  - Added box-sizing: border-box to ensure padding is included in width calculation
+  - Reduced scroll area padding-right from 20px to 8px for better space utilization
+
 ## [2.0.29] - 2025-12-29
 
 ### Changed

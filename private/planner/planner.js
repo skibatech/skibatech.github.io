@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.29'; // Move Status and Refresh button to top toolbar
+const APP_VERSION = '2.0.30'; // Fix modal width with 90vw and improve close button visibility
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3153,11 +3153,11 @@ function showSawSuggestions(category) {
     };
 
     const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 480px; max-width: 850px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; width: 90vw; max-width: 900px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
 
     // Scroll area
     const scroll = document.createElement('div');
-    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding-right: 20px;';
+    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding-right: 8px;';
 
     const h3 = document.createElement('h3');
     h3.textContent = `Ideas for ${categoryName} Renewal:`;
@@ -3196,7 +3196,7 @@ function showSawSuggestions(category) {
 
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '✕';
-    closeBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary); z-index: 10002; pointer-events: auto;';
+    closeBtn.style.cssText = 'position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); z-index: 10002; pointer-events: auto; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;';
     closeBtn.onclick = () => modal.remove();
     modal.insertBefore(closeBtn, modal.firstChild);
 
