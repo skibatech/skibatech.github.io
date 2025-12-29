@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.39] - 2025-12-29
+
+### Changed
+- **429 Retry Status Message**: Updated text shown during throttling to "Too Many Requests (429) - Retrying (x/5) in XXXs" for clearer feedback
+
 ## [2.0.38] - 2025-12-29
 
 ### Fixed

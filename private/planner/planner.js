@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.38'; // Reduce 429s: global Graph limiter + jitter; lower concurrency
+const APP_VERSION = '2.0.39'; // Tweak 429 retry status message format
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -343,7 +343,7 @@ async function fetchGraph(url, options = {}, attempt = 0) {
         
         // Show throttling status
         const waitSeconds = Math.ceil(backoff / 1000);
-        setStatus(`Please wait (429) - retry ${attempt + 1}/${GRAPH_MAX_RETRIES} in ${waitSeconds}s`, '#ff9800');
+        setStatus(`Too Many Requests (429) - Retrying (${attempt + 1}/${GRAPH_MAX_RETRIES}) in ${waitSeconds}s`, '#ff9800');
         
         await sleep(backoff);
         return fetchGraph(url, options, attempt + 1);
