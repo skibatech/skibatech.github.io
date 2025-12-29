@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.44'; // Eyedropper icon rendered via stroked SVG
+const APP_VERSION = '2.0.45'; // Fix Options modal handlers (Cancel, Save, X)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3169,6 +3169,23 @@ function showOptions() {
     switchOptionsTab('views');
 }
 
+function closeOptions() {
+    const modal = document.getElementById('optionsModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function switchOptionsTab(tabName) {
+    const tabs = document.querySelectorAll('.options-tab');
+    tabs.forEach(tab => { tab.style.display = 'none'; });
+    const target = document.getElementById(`${tabName}Tab`);
+    if (target) target.style.display = 'block';
+    const navItems = document.querySelectorAll('.options-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    // Mark the corresponding nav item active (first match by onclick signature)
+    const activeItem = Array.from(navItems).find(i => (i.getAttribute('onclick') || '').includes(`'${tabName}'`));
+    if (activeItem) activeItem.classList.add('active');
+}
+
 function showSawSuggestions(category) {
     const categoryNames = {
         physical: 'Physical',
@@ -3345,6 +3362,12 @@ async function saveOptions() {
     alert('View preferences saved!');
     await loadTasks();
 }
+
+// Expose modal handlers for inline onclick bindings
+window.showOptions = showOptions;
+window.closeOptions = closeOptions;
+window.switchOptionsTab = switchOptionsTab;
+window.saveOptions = saveOptions;
 
 async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos) {
     if (!optionsListId || !accessToken) return;

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.45] - 2025-12-29
+
+### Fixed
+- **Options Modal Controls**: Implemented `closeOptions()` and `switchOptionsTab()` and bound handlers to `window` so Cancel, Save, and Close (×) work reliably
+
 ## [2.0.44] - 2025-12-29
 
 ### Fixed
