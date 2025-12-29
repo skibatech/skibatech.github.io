@@ -1157,6 +1157,7 @@ body.unauthenticated #refreshBtn {
 .compass-rocks {
     margin-top: 8px;
     list-style: none;
+    padding-left: 10px; /* indent to align checkboxes under the Role label */
 }
 
 .compass-rocks-header {
@@ -1172,6 +1173,7 @@ body.unauthenticated #refreshBtn {
     gap: 8px;
     margin-bottom: 4px;
     list-style: none;
+    padding-left: 2px;
 }
 
 .compass-rock-item textarea {

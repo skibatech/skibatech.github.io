@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.12] - 2025-12-29
+
+### Improved
+- **Weekly Compass Big Rocks**: Indented checkboxes to align with Role label for cleaner hierarchy
+
+---
+
 ## [2.0.11] - 2025-12-29
 
 ### Improved
