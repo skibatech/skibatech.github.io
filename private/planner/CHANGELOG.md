@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.17] - 2025-12-29
+
+### Improved
+- **Suggestion Buttons**: 💡 buttons now always visible (in both edit and read-only modes) for easy access
+  - Larger font size (16px) for better visibility
+  - Slightly transparent (70%) by default, full opacity on hover
+
+---
+
 ## [2.0.16] - 2025-12-29
 
 ### Fixed

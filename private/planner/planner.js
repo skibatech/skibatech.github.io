@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.16'; // Fix navbar layout (restore 2-line layout)
+const APP_VERSION = '2.0.17'; // Make suggestion buttons always visible
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
