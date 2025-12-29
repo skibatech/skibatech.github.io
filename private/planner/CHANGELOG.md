@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.18] - 2025-12-29
+
+### Improved
+- **Suggestion Buttons**: Made much more visible - bright yellow text, semi-transparent background, larger size
+  - Yellow color stands out against green compass background
+  - Slight hover effect (scale up) to encourage interaction
+
+---
+
 ## [2.0.17] - 2025-12-29
 
 ### Improved

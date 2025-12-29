@@ -1110,22 +1110,24 @@ body.unauthenticated #refreshBtn {
 }
 
 .saw-suggest-btn {
-    background: none;
-    border: 1px solid var(--border-color);
-    color: var(--compass-text);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffff00;
     cursor: pointer;
-    padding: 4px 8px;
-    font-size: 16px;
-    border-radius: 3px;
+    padding: 6px 10px;
+    font-size: 18px;
+    border-radius: 4px;
     transition: all 0.2s ease;
     flex-shrink: 0;
-    opacity: 0.7;
+    opacity: 1;
+    line-height: 1;
 }
 
 .saw-suggest-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.25);
     opacity: 1;
-    border-color: var(--compass-text);
+    border-color: #ffff00;
+    transform: scale(1.1);
 }
 
 .compass-readonly .saw-suggest-btn {
