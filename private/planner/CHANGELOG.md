@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.15] - 2025-12-29
+
+### Improved
+- **Weekly Compass Social/Emotional Suggestions**: Expanded from 20 to 39 ideas
+  - Now includes both self-care (personal renewal) and others-care (relationships) categories
+  - Self-care: hot baths, saying no/yes, treating yourself, quiet time, etc.
+  - Others-care: listening, keeping promises, compliments, volunteering, sending cards, etc.
+
+---
+
+## [2.0.14] - 2025-12-29
+
+### Added
+- **Weekly Compass Suggestions**: Sharpen the Saw categories now have a 💡 suggestion button
+  - Physical Renewal: 34 ideas (exercise, nutrition, health)
+  - Mental Renewal: 20 ideas (learning, growth, skills)
+  - Social/Emotional Renewal: 20 ideas (relationships, community, empathy)
+  - Spiritual Renewal: 20 ideas (meditation, faith, purpose)
+  - Click any suggestion to add it to the field
+
+---
+
 ## [2.0.13] - 2025-12-29
 
 ### Improved

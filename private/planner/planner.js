@@ -1,5 +1,128 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.13'; // Compass readability: higher contrast and spacing
+const APP_VERSION = '2.0.15'; // Expanded Social/Emotional Renewal suggestions
+
+// Suggestions for Sharpen the Saw categories
+const SAW_SUGGESTIONS = {
+    physical: [
+        'Take the stairs instead of the elevator',
+        'Avoid caffeine',
+        'Drink eight to ten glasses of water a day',
+        'Research your nutritional needs',
+        'Swim',
+        'Do water aerobics',
+        'Garden',
+        'Dance',
+        'Park the car further away so you have to walk more',
+        'Lift weights',
+        'Add a raw fruit or vegetable to your daily diet',
+        'Start a stretching-and-flexibility program',
+        'Research vitamin and mineral information',
+        'Join a bowling league',
+        'Learn to golf',
+        'Drink only purified water',
+        'Delete harmful or empty-calorie items',
+        'Get to bed 20 minutes earlier',
+        'Cut out all carbonated beverages',
+        'Set up health check-up system',
+        'Bike',
+        'Ride horseback',
+        'Kick-box',
+        'Do aerobics',
+        'Power-walk',
+        'Play racquetball',
+        'Get massage therapy',
+        'Improve sleeping patterns',
+        'Hire a trainer for fitness program',
+        'Play soccer',
+        'Play tennis',
+        'Use a treadmill while watching TV'
+    ],
+    mental: [
+        'Read a book',
+        'Take a course or class',
+        'Learn a new language',
+        'Practice meditation or mindfulness',
+        'Solve puzzles or play chess',
+        'Write in a journal',
+        'Study subjects that interest you',
+        'Listen to educational podcasts',
+        'Attend seminars or workshops',
+        'Discuss ideas with smart people',
+        'Learn a musical instrument',
+        'Practice public speaking',
+        'Read biographies of great people',
+        'Visit a museum or art gallery',
+        'Learn photography',
+        'Study philosophy or ethics',
+        'Take online courses',
+        'Engage in strategic games',
+        'Learn about different cultures',
+        'Practice memory techniques'
+    ],
+    socialEmotional: [
+        // Self-Care
+        'Treat yourself to a hot bath by candlelight',
+        'Eliminate one thing that keeps you from people who matter',
+        'Give yourself permission to say no and mean it',
+        'Give yourself permission to say yes and enjoy it',
+        'Clean out a part of your room that needs refreshing',
+        'Reorganize your desk, room, or closet',
+        'Buy yourself an inexpensive treat',
+        'Allow plenty of time for appointments (no rushing)',
+        'Schedule routine phone calls with supportive people',
+        'Read from a favorite book or journal daily',
+        'Surround yourself with uplifting music or items',
+        'Get quiet time each day to clear your thinking',
+        'Drink a warm beverage each morning',
+        'Pack yourself a wholesome meal',
+        'Sign up for daily jokes or quotes',
+        'Develop a talent just because you want to',
+        'Watch a movie you\'ve been wanting to see',
+        'Join a volunteer organization',
+        // Others-Care
+        'Learn to listen and understand others\' perspectives',
+        'Stop trying to control outcomes in others\' lives',
+        'Drop engagements that don\'t match your priorities',
+        'Hold the door and greet people with a smile',
+        'Make phone calls to check in with loved ones',
+        'Write letters or emails on a consistent basis',
+        'Send cards with personalized messages',
+        'Acknowledge or compliment someone regularly',
+        'Strengthen the habit of keeping promises',
+        'Send notes of encouragement weekly',
+        'Meet someone for lunch regularly',
+        'Smile at other people',
+        'Practice the "Platinum Rule": Do unto others as they want',
+        'Provide goodies at the office once a month',
+        'Send flowers or small gifts to someone special',
+        'Read to a child',
+        'Volunteer at a homeless shelter',
+        'Invite someone to dinner',
+        'Send anonymous gifts to those needing encouragement'
+    ],
+    spiritual: [
+        'Pray or meditate daily',
+        'Read spiritual or religious texts',
+        'Attend worship services',
+        'Reflect on your values and principles',
+        'Practice gratitude daily',
+        'Spend time in nature',
+        'Journal about meaningful experiences',
+        'Study the works of spiritual leaders',
+        'Practice forgiveness and letting go',
+        'Serve others without expecting reward',
+        'Examine your purpose and mission',
+        'Practice yoga',
+        'Spend time in contemplation',
+        'Keep a gratitude jar',
+        'Connect with your higher power',
+        'Practice mindfulness',
+        'Read inspirational books',
+        'Participate in faith community',
+        'Write letters to your future self',
+        'Create a vision board for goals'
+    ]
+};
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -4079,6 +4202,73 @@ function renderCompassRoles() {
         
         container.appendChild(section);
     });
+}
+
+function showSawSuggestions(category) {
+    const categoryNames = {
+        physical: 'Physical',
+        mental: 'Mental',
+        socialEmotional: 'Social/Emotional',
+        spiritual: 'Spiritual'
+    };
+    
+    const suggestions = SAW_SUGGESTIONS[category] || [];
+    const categoryName = categoryNames[category] || category;
+    
+    const modalHtml = `
+        <div style="max-height: 400px; overflow-y: auto;">
+            <h3 style="margin-top: 0; color: var(--compass-text);">Ideas for ${categoryName} Renewal:</h3>
+            <ul style="list-style: none; padding-left: 0; color: var(--compass-text);">
+                ${suggestions.map((s, i) => `
+                    <li style="padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer;" 
+                        onmouseover="this.style.backgroundColor='rgba(255,255,255,0.05)'" 
+                        onmouseout="this.style.backgroundColor='transparent'"
+                        onclick="addSuggestionToSaw('${category}', '${s.replace(/'/g, "\\'")}')"
+                        title="Click to add to ${categoryName}">
+                        ${escapeHtml(s)}
+                    </li>
+                `).join('')}
+            </ul>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 12px;">Click any suggestion to add it to your ${categoryName} field</p>
+        </div>
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 400px; max-width: 500px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+    modal.innerHTML = modalHtml;
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary);';
+    closeBtn.onclick = () => modal.remove();
+    modal.insertBefore(closeBtn, modal.firstChild);
+    
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;';
+    backdrop.onclick = () => { modal.remove(); backdrop.remove(); };
+    
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+}
+
+function addSuggestionToSaw(category, suggestion) {
+    const fieldId = `saw${category.charAt(0).toUpperCase() + category.slice(1)}`;
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    
+    const current = field.value.trim();
+    if (current) {
+        field.value = current + '\n• ' + suggestion;
+    } else {
+        field.value = suggestion;
+    }
+    
+    field.focus();
+    // Close any open modal
+    const modal = document.querySelector('div[style*="fixed"]');
+    if (modal) modal.remove();
+    const backdrop = document.querySelector('div[style*="rgba(0,0,0,0.5)"]');
+    if (backdrop) backdrop.remove();
 }
 
 function addCompassRole() {
