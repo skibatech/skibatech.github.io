@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.32] - 2025-12-29
+
+### Changed
+- **Suggestions Modal Width**: Reduced width from 90vw/900px to 80vw/750px (skinnier modal)
+- **Physical Suggestions**: Updated all suggestions to be 6 words or less and semantically complete
+  - "Drink eight to ten glasses of water a day" → "Drink eight glasses of water daily"
+  - "Park the car further away so you have to walk more" → "Park further away to walk more"
+  - "Add a raw fruit or vegetable to your daily diet" → "Add raw fruit or vegetable daily"
+  - "Start a stretching-and-flexibility program" → "Start a stretching program"
+  - "Delete harmful or empty-calorie items" → "Delete empty-calorie food items"
+  - "Hire a trainer for fitness program" → "Hire a fitness trainer"
+  - "Use a treadmill while watching TV" → "Use treadmill while watching TV"
+  - "Take the stairs instead of the elevator" → "Take the stairs instead of elevator"
+
 ## [2.0.31] - 2025-12-29
 
 ### Fixed

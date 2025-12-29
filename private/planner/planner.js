@@ -1,26 +1,26 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.31'; // Restructure modal with header to make close button clearly visible
+const APP_VERSION = '2.0.32'; // Skinnier modal and fix suggestions to 6 words or less
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
     physical: [
-        'Take the stairs instead of the elevator',
+        'Take the stairs instead of elevator',
         'Avoid caffeine',
-        'Drink eight to ten glasses of water a day',
+        'Drink eight glasses of water daily',
         'Research your nutritional needs',
         'Swim',
         'Do water aerobics',
         'Garden',
         'Dance',
-        'Park the car further away so you have to walk more',
+        'Park further away to walk more',
         'Lift weights',
-        'Add a raw fruit or vegetable to your daily diet',
-        'Start a stretching-and-flexibility program',
+        'Add raw fruit or vegetable daily',
+        'Start a stretching program',
         'Research vitamin and mineral information',
         'Join a bowling league',
         'Learn to golf',
         'Drink only purified water',
-        'Delete harmful or empty-calorie items',
+        'Delete empty-calorie food items',
         'Get to bed 20 minutes earlier',
         'Cut out all carbonated beverages',
         'Set up health check-up system',
@@ -32,10 +32,10 @@ const SAW_SUGGESTIONS = {
         'Play racquetball',
         'Get massage therapy',
         'Improve sleeping patterns',
-        'Hire a trainer for fitness program',
+        'Hire a fitness trainer',
         'Play soccer',
         'Play tennis',
-        'Use a treadmill while watching TV'
+        'Use treadmill while watching TV'
     ],
     mental: [
         'Read a book',
@@ -3153,7 +3153,7 @@ function showSawSuggestions(category) {
     };
 
     const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; z-index: 10000; width: 90vw; max-width: 900px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column;';
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; z-index: 10000; width: 80vw; max-width: 750px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column;';
 
     // Header with title and close button
     const header = document.createElement('div');
