@@ -13,6 +13,8 @@
         <div class="header-top">
             <h1>SkibaTech Engineering - Planner Pro <span class="version-pill">v<span id="versionDisplay">-</span></span></h1>
             <div class="header-top-actions">
+                <span class="status" id="status" style="font-weight: bold; white-space: nowrap; margin-right: 8px; font-size: 13px;">Not connected</span>
+                <button id="refreshBtn" onclick="loadTasks()" class="primary-btn" style="display:none; margin-right: 12px;">Refresh</button>
                 <button id="compassToggleBtn" onclick="toggleCompass()" style="display:none; background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px 8px;" title="Toggle Weekly Compass">
                     <span>🧭</span>
                 </button>
@@ -90,10 +92,8 @@
                     <input type="checkbox" id="showCompletedCheckbox" onchange="applyFilters()" style="cursor: pointer;">
                     Show completed
                 </label>
-                <span class="status" id="status" style="font-weight: bold; white-space: nowrap;">Not connected</span>
 
                 <button id="connectBtn" onclick="login()" class="primary-btn">Sign In</button>
-                <button id="refreshBtn" onclick="loadTasks()" class="primary-btn" style="display:none;">Refresh</button>
             </div>
         </div>
     </div>

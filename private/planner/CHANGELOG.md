@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.29] - 2025-12-29
+
+### Changed
+- **Header Layout**: Moved Status indicator and Refresh button to top toolbar, to the left of compass toggle, dark mode, and profile icon
+
 ## [2.0.28] - 2025-12-29
 
 ### Fixed

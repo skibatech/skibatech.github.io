@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.28'; // Further increase modal width to 850px and scroll padding
+const APP_VERSION = '2.0.29'; // Move Status and Refresh button to top toolbar
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
