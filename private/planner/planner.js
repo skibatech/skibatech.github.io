@@ -973,6 +973,47 @@ async function updateAuthUI(isAuthenticated) {
     }
 }
 
+// Evaluate whether the current user has admin privileges
+async function evaluateAdminStatus() {
+    try {
+        const groupConfigured = !!(config.adminGroupId && config.adminGroupId.trim());
+        const emailConfigured = Array.isArray(adminUsers) && adminUsers.length > 0;
+
+        // Email allow-list takes precedence
+        if (emailConfigured && currentUserEmail) {
+            const isListed = adminUsers.includes(currentUserEmail.toLowerCase());
+            if (isListed) {
+                currentUserIsAdmin = true;
+                return currentUserIsAdmin;
+            }
+        }
+
+        if (groupConfigured) {
+            // Check if user is a member of the configured admin group
+            const resp = await fetchGraph('https://graph.microsoft.com/v1.0/me/memberOf?$select=id', {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                const inGroup = (data.value || []).some(g => g.id && g.id.toLowerCase() === config.adminGroupId.toLowerCase());
+                currentUserIsAdmin = !!inGroup;
+                return currentUserIsAdmin;
+            }
+            // If Graph call fails and a group is configured, default to non-admin
+            currentUserIsAdmin = false;
+            return currentUserIsAdmin;
+        }
+
+        // If no admin controls configured, allow access to avoid lockout
+        currentUserIsAdmin = true;
+        return currentUserIsAdmin;
+    } catch (err) {
+        console.warn('Admin status evaluation failed:', err);
+        currentUserIsAdmin = false;
+        return currentUserIsAdmin;
+    }
+}
+
 function openAdminPortal() {
     window.open('admin.html', '_blank', 'noopener');
 }
@@ -1199,7 +1240,8 @@ function renderTasks(buckets, tasks) {
     const container = document.getElementById('tasksContainer');
     container.innerHTML = '';
 
-    // If we have a secondary grouping, render nested hierarchy
+        // If we have a secondary grouping, render nested hierarchy
+        applyColumnWidths();
     if (currentGroupBy && currentGroupBy !== 'none') {
         renderNestedView(container, buckets, tasks, currentView, currentGroupBy);
     } else {
@@ -3092,75 +3134,90 @@ function showOptions() {
     switchOptionsTab('views');
 }
 
-function switchOptionsTab(tab) {
-    // Hide all tabs
-    document.getElementById('viewsTab').style.display = 'none';
-    
-    // Remove active class from all nav items
-    document.querySelectorAll('.options-nav-item').forEach(item => {
-        item.classList.remove('active');
+function showSawSuggestions(category) {
+    const categoryNames = {
+        physical: 'Physical',
+        mental: 'Mental',
+        socialEmotional: 'Social/Emotional',
+        spiritual: 'Spiritual'
+    };
+
+    const suggestions = SAW_SUGGESTIONS[category] || [];
+    const categoryName = categoryNames[category] || category;
+
+    // Helper to truncate to max 6 words
+    const truncateToWords = (text, max = 6) => {
+        if (!text) return '';
+        const parts = text.trim().split(/\s+/);
+        return parts.slice(0, max).join(' ');
+    };
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 480px; max-width: 640px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+
+    // Scroll area
+    const scroll = document.createElement('div');
+    scroll.style.cssText = 'max-height: 420px; overflow-y: auto; padding-right: 10px;';
+
+    const h3 = document.createElement('h3');
+    h3.textContent = `Ideas for ${categoryName} Renewal:`;
+    h3.style.cssText = 'margin-top: 0; color: var(--compass-text);';
+    scroll.appendChild(h3);
+
+    const ul = document.createElement('ul');
+    ul.className = 'saw-suggestions-list';
+    ul.style.cssText = 'list-style: none; padding-left: 0; color: var(--compass-text); margin: 0;';
+
+    suggestions.forEach((s) => {
+        const t = truncateToWords(s, 6);
+        const li = document.createElement('li');
+        li.className = 'saw-suggestion-item';
+        li.style.cssText = 'padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer;';
+        li.textContent = t;
+        li.title = `Click to add to ${categoryName}`;
+        li.addEventListener('mouseover', () => { li.style.backgroundColor = 'rgba(255,255,255,0.05)'; });
+        li.addEventListener('mouseout', () => { li.style.backgroundColor = 'transparent'; });
+        li.addEventListener('click', () => {
+            addSuggestionToSaw(category, t);
+            modal.remove();
+            const backdropEl = document.getElementById('saw-suggestions-backdrop');
+            if (backdropEl) backdropEl.remove();
+        });
+        ul.appendChild(li);
     });
-    
-    // Show selected tab and mark nav item as active
-    if (tab === 'views') {
-        document.getElementById('viewsTab').style.display = 'block';
-        document.querySelectorAll('.options-nav-item')[0].classList.add('active');
-    }
-}
+    scroll.appendChild(ul);
 
-function closeOptions() {
-    document.getElementById('optionsModal').style.display = 'none';
-}
+    const hint = document.createElement('p');
+    hint.textContent = `Click any suggestion to add it to your ${categoryName} field`;
+    hint.style.cssText = 'font-size: 11px; color: var(--text-muted); margin-top: 12px;';
+    scroll.appendChild(hint);
 
-function isAdmin() {
-    return currentUserIsAdmin === true;
-}
+    modal.appendChild(scroll);
 
-async function evaluateAdminStatus() {
-    currentUserIsAdmin = false;
-    if (!currentUserEmail) return false;
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary); z-index: 10002; pointer-events: auto;';
+    closeBtn.onclick = () => modal.remove();
+    modal.insertBefore(closeBtn, modal.firstChild);
 
-    const groupConfigured = !!config.adminGroupId;
+    const backdrop = document.createElement('div');
+    backdrop.id = 'saw-suggestions-backdrop';
+    backdrop.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;';
+    backdrop.onclick = () => { modal.remove(); backdrop.remove(); };
 
-    // Group check if configured
-    if (groupConfigured && accessToken) {
-        try {
-            const res = await fetchGraph('https://graph.microsoft.com/v1.0/me/checkMemberGroups', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ groupIds: [config.adminGroupId] })
-            });
-            if (res.ok) {
-                const data = await res.json();
-                if (data && Array.isArray(data.value) && data.value.includes(config.adminGroupId)) {
-                    currentUserIsAdmin = true;
-                    return true;
-                }
-            }
-        } catch (err) {
-            console.warn('Group membership check failed', err);
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            modal.remove();
+            backdrop.remove();
+            document.removeEventListener('keydown', handleEsc);
         }
-    }
-
-    // Fallback to email list when provided
-    if (adminUsers.length > 0) {
-        currentUserIsAdmin = adminUsers.includes(currentUserEmail);
-        return currentUserIsAdmin;
-    }
-
-    // If a group is configured and no email override, default to non-admin
-    if (groupConfigured) {
-        currentUserIsAdmin = false;
-        return false;
-    }
-
-    // No admin controls configured: allow access to avoid lockout
-    currentUserIsAdmin = true;
-    return true;
+    };
+    document.addEventListener('keydown', handleEsc);
 }
+
 
 async function syncThemesToPlanner(themeNames) {
     if (!accessToken || !planDetailsEtag) {
@@ -3429,87 +3486,6 @@ function updateBulkEditSidebar() {
         }
     } else {
         sidebar.style.display = 'none';
-    }
-}
-
-function clearSelection() {
-    selectedTasks.clear();
-    updateBulkEditSidebar();
-    applyFilters();
-}
-
-async function bulkAssignSelected() {
-    const assigneeSelect = document.getElementById('bulkAssigneeSelect');
-    if (!assigneeSelect) return;
-    const assigneeUserId = assigneeSelect.value; // empty for unassigned
-    if (selectedTasks.size === 0) return;
-    
-    try {
-        const taskIds = Array.from(selectedTasks);
-        await mapWithConcurrency(taskIds, async (taskId) => {
-            const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${accessToken}` }
-            });
-            if (!getRes.ok) return;
-            const task = await getRes.json();
-            const etag = task['@odata.etag'];
-            const assignments = {};
-            if (task.assignments) {
-                Object.keys(task.assignments).forEach(uid => { assignments[uid] = null; });
-            }
-            if (assigneeUserId) {
-                assignments[assigneeUserId] = { '@odata.type': '#microsoft.graph.plannerAssignment', orderHint: ' !' };
-            }
-            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                    'If-Match': etag
-                },
-                body: JSON.stringify({ assignments })
-            });
-            await sleep(250);
-        }, 2);
-        clearSelection();
-        loadTasks();
-    } catch (err) {
-        console.error('Bulk assign error:', err);
-        alert('Error assigning tasks: ' + err.message);
-    }
-}
-
-async function bulkMoveSelected() {
-    const bucketSelect = document.getElementById('bulkBucketSelect');
-    if (!bucketSelect || !bucketSelect.value) return;
-    const targetBucketId = bucketSelect.value;
-    if (selectedTasks.size === 0) return;
-    try {
-        const taskIds = Array.from(selectedTasks);
-        await mapWithConcurrency(taskIds, async (taskId) => {
-            const getRes = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
-                method: 'GET', headers: { 'Authorization': `Bearer ${accessToken}` }
-            });
-            if (!getRes.ok) return;
-            const task = await getRes.json();
-            const etag = task['@odata.etag'];
-            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${taskId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                    'If-Match': etag
-                },
-                body: JSON.stringify({ bucketId: targetBucketId })
-            });
-            await sleep(250);
-        }, 2);
-        clearSelection();
-        loadTasks();
-    } catch (err) {
-        console.error('Bulk move error:', err);
-        alert('Error moving tasks: ' + err.message);
     }
 }
 
@@ -4212,62 +4188,7 @@ function renderCompassRoles() {
     });
 }
 
-function showSawSuggestions(category) {
-    const categoryNames = {
-        physical: 'Physical',
-        mental: 'Mental',
-        socialEmotional: 'Social/Emotional',
-        spiritual: 'Spiritual'
-    };
-    
-    const suggestions = SAW_SUGGESTIONS[category] || [];
-    const categoryName = categoryNames[category] || category;
-    
-    // Helper to truncate to max 6 words
-    const truncateToWords = (text, max = 6) => {
-        if (!text) return '';
-        const parts = text.trim().split(/\s+/);
-        return parts.slice(0, max).join(' ');
-    };
-
-    const modalHtml = `
-        <div style="max-height: 420px; overflow-y: auto; padding-right: 10px;">
-            <h3 style="margin-top: 0; color: var(--compass-text);">Ideas for ${categoryName} Renewal:</h3>
-            <ul style="list-style: none; padding-left: 0; color: var(--compass-text); margin: 0;">
-                ${suggestions.map((s, i) => {
-                    const t = truncateToWords(s, 6);
-                    return `
-                    <li style=\"padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer;\" 
-                        onmouseover=\"this.style.backgroundColor='rgba(255,255,255,0.05)'\" 
-                        onmouseout=\"this.style.backgroundColor='transparent'\"
-                        onclick=\"addSuggestionToSaw('${category}', '${t.replace(/'/g, \\\"\\'\\\\\")}')\"
-                        title=\"Click to add to ${categoryName}\">\n${escapeHtml(t)}\n                    </li>`;
-                }).join('')}
-            </ul>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 12px;">Click any suggestion to add it to your ${categoryName} field</p>
-        </div>
-    `;
-    
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 480px; max-width: 640px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
-    modal.innerHTML = modalHtml;
-    
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = '✕';
-    closeBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary); z-index: 10002; pointer-events: auto;';
-    closeBtn.onclick = () => modal.remove();
-    modal.insertBefore(closeBtn, modal.firstChild);
-    
-    const backdrop = document.createElement('div');
-    backdrop.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;';
-    backdrop.onclick = () => { modal.remove(); backdrop.remove(); };
-    
-    document.body.appendChild(backdrop);
-    document.body.appendChild(modal);
-    // Allow escape key to close
-    const handleEsc = (e) => { if (e.key === 'Escape') { modal.remove(); backdrop.remove(); document.removeEventListener('keydown', handleEsc); } };
-    document.addEventListener('keydown', handleEsc);
-}
+// Removed duplicate showSawSuggestions; valid definition exists earlier
 
 function addSuggestionToSaw(category, suggestion) {
     // Enforce max 6 words on insert
