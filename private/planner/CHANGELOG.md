@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.37] - 2025-12-29
+
+### Changed
+- **Compass Header Controls**: Background color picker made smaller; Save and Cancel icons made larger for consistent sizing
+
 ## [2.0.36] - 2025-12-29
 
 ### Changed
