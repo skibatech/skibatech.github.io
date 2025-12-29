@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.35] - 2025-12-29
+
+### Fixed
+- **Sharpen the Saw Labels**: Clickable styling and tooltip now only shown in edit mode; in read-only, labels are non-clickable and show no hint
+
 ## [2.0.34] - 2025-12-29
 
 ### Changed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.34'; // Reduce modal width by 20%
+const APP_VERSION = '2.0.35'; // Labels clickable only in edit mode
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -4110,10 +4110,18 @@ function renderCompass() {
     if (sawMental) { sawMental.value = compassData.sharpenSaw.mental || ''; sawMental.readOnly = !compassEditMode; }
     if (sawSpiritual) { sawSpiritual.value = compassData.sharpenSaw.spiritual || ''; sawSpiritual.readOnly = !compassEditMode; }
     
-    // Attach event listeners to Sharpen the Saw labels
+    // Attach event listeners to Sharpen the Saw labels and toggle clickable state
     document.querySelectorAll('.saw-label').forEach(label => {
         label.removeEventListener('click', handleSawLabelClick);
         label.addEventListener('click', handleSawLabelClick);
+
+        if (compassEditMode) {
+            label.classList.add('clickable');
+            label.title = 'Click for suggestions';
+        } else {
+            label.classList.remove('clickable');
+            label.removeAttribute('title');
+        }
     });
     
     // Render roles
