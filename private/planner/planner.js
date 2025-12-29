@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.24'; // Read-only hide fix; modal UI & 6-word limit
+const APP_VERSION = '2.0.25'; // Fix syntax errors; remove duplicate function and orphaned code
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
