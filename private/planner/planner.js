@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.35'; // Labels clickable only in edit mode
+const APP_VERSION = '2.0.36'; // Auto-save compass rock checkboxes (debounced)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3700,6 +3700,7 @@ let compassListId = null;
 let optionsListId = null;
 let compassVisible = false;
 let compassEditMode = false;
+let compassAutoSaveTimer = null;
 
 async function initializeCompass() {
     try {
@@ -3956,7 +3957,7 @@ function captureCompassInputs() {
     return updated;
 }
 
-async function saveCompassData() {
+async function saveCompassData(showAlert = true) {
     if (!compassListId || !accessToken) return;
     
     try {
@@ -3971,7 +3972,7 @@ async function saveCompassData() {
         });
         if (!existingResponse.ok) {
             console.error('Failed to fetch existing tasks:', existingResponse.status);
-            alert('Failed to save compass data: unable to fetch existing items.');
+            if (showAlert) alert('Failed to save compass data: unable to fetch existing items.');
             return;
         }
         const existingData = await existingResponse.json();
@@ -4003,7 +4004,7 @@ async function saveCompassData() {
             }
         } catch (createErr) {
             console.error('Failed to create compass items:', createErr);
-            alert('Failed to save compass data (create phase). Existing data was preserved.');
+            if (showAlert) alert('Failed to save compass data (create phase). Existing data was preserved.');
             return;
         }
 
@@ -4015,10 +4016,25 @@ async function saveCompassData() {
             })
         ));
         
-        alert('Weekly Compass saved successfully!');
+        if (showAlert) alert('Weekly Compass saved successfully!');
     } catch (err) {
         console.error('Failed to save compass:', err);
-        alert('Failed to save compass data: ' + err.message);
+        if (showAlert) alert('Failed to save compass data: ' + err.message);
+    }
+}
+
+function scheduleCompassAutoSave() {
+    try {
+        if (compassAutoSaveTimer) {
+            clearTimeout(compassAutoSaveTimer);
+        }
+        // Debounce to avoid excessive requests on rapid toggles
+        compassAutoSaveTimer = setTimeout(() => {
+            saveCompassData(false);
+            compassAutoSaveTimer = null;
+        }, 1000);
+    } catch (e) {
+        console.error('Auto-save scheduling failed:', e);
     }
 }
 
@@ -4284,6 +4300,7 @@ function toggleCompassRockDone(roleIndex, rockIndex, isDone) {
         role.rocks[rockIndex].done = isDone;
     }
     renderCompassRoles();
+    scheduleCompassAutoSave();
 }
 
 // Drag and drop handlers for role reordering

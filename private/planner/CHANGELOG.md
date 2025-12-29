@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.36] - 2025-12-29
+
+### Changed
+- **Weekly Compass Rocks**: Checkbox state now auto-saves (debounced ~1s) so changes persist across refresh without needing manual Save
+
 ## [2.0.35] - 2025-12-29
 
 ### Fixed
