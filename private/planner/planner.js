@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.23'; // Icon-only suggestions; hide in read-only
+const APP_VERSION = '2.0.24'; // Read-only hide fix; modal UI & 6-word limit
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -4223,31 +4223,38 @@ function showSawSuggestions(category) {
     const suggestions = SAW_SUGGESTIONS[category] || [];
     const categoryName = categoryNames[category] || category;
     
+    // Helper to truncate to max 6 words
+    const truncateToWords = (text, max = 6) => {
+        if (!text) return '';
+        const parts = text.trim().split(/\s+/);
+        return parts.slice(0, max).join(' ');
+    };
+
     const modalHtml = `
-        <div style="max-height: 400px; overflow-y: auto;">
+        <div style="max-height: 420px; overflow-y: auto; padding-right: 10px;">
             <h3 style="margin-top: 0; color: var(--compass-text);">Ideas for ${categoryName} Renewal:</h3>
-            <ul style="list-style: none; padding-left: 0; color: var(--compass-text);">
-                ${suggestions.map((s, i) => `
-                    <li style="padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer;" 
-                        onmouseover="this.style.backgroundColor='rgba(255,255,255,0.05)'" 
-                        onmouseout="this.style.backgroundColor='transparent'"
-                        onclick="addSuggestionToSaw('${category}', '${s.replace(/'/g, "\\'")}')"
-                        title="Click to add to ${categoryName}">
-                        ${escapeHtml(s)}
-                    </li>
-                `).join('')}
+            <ul style="list-style: none; padding-left: 0; color: var(--compass-text); margin: 0;">
+                ${suggestions.map((s, i) => {
+                    const t = truncateToWords(s, 6);
+                    return `
+                    <li style=\"padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer;\" 
+                        onmouseover=\"this.style.backgroundColor='rgba(255,255,255,0.05)'\" 
+                        onmouseout=\"this.style.backgroundColor='transparent'\"
+                        onclick=\"addSuggestionToSaw('${category}', '${t.replace(/'/g, \\\"\\'\\\\\")}')\"
+                        title=\"Click to add to ${categoryName}\">\n${escapeHtml(t)}\n                    </li>`;
+                }).join('')}
             </ul>
             <p style="font-size: 11px; color: var(--text-muted); margin-top: 12px;">Click any suggestion to add it to your ${categoryName} field</p>
         </div>
     `;
     
     const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 400px; max-width: 500px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; z-index: 10000; min-width: 480px; max-width: 640px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
     modal.innerHTML = modalHtml;
     
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '✕';
-    closeBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary);';
+    closeBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary); z-index: 10002; pointer-events: auto;';
     closeBtn.onclick = () => modal.remove();
     modal.insertBefore(closeBtn, modal.firstChild);
     
@@ -4257,18 +4264,28 @@ function showSawSuggestions(category) {
     
     document.body.appendChild(backdrop);
     document.body.appendChild(modal);
+    // Allow escape key to close
+    const handleEsc = (e) => { if (e.key === 'Escape') { modal.remove(); backdrop.remove(); document.removeEventListener('keydown', handleEsc); } };
+    document.addEventListener('keydown', handleEsc);
 }
 
 function addSuggestionToSaw(category, suggestion) {
+    // Enforce max 6 words on insert
+    const truncateToWords = (text, max = 6) => {
+        if (!text) return '';
+        const parts = text.trim().split(/\s+/);
+        return parts.slice(0, max).join(' ');
+    };
+    const safeSuggestion = truncateToWords(suggestion, 6);
     const fieldId = `saw${category.charAt(0).toUpperCase() + category.slice(1)}`;
     const field = document.getElementById(fieldId);
     if (!field) return;
     
     const current = field.value.trim();
     if (current) {
-        field.value = current + '\n• ' + suggestion;
+        field.value = current + '\n• ' + safeSuggestion;
     } else {
-        field.value = suggestion;
+        field.value = safeSuggestion;
     }
     
     field.focus();

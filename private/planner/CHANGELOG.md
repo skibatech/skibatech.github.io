@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Rate Limiting on Hard Refresh**: Resolved 429 "too many requests" errors on initial page load
   - Added 500ms delay between task loading and compass initialization to stagger API calls
+
+## [2.0.24] - 2025-12-29
+### Fixed
+- **Edit-only Visibility**: Ensure the lightbulb button is hidden in read-only mode by increasing selector specificity
+- **Suggestions Modal**: Close button no longer blocked by scrollbar; ESC closes the modal
+- **Modal Width**: Increased width for better readability (min 480px, max 640px)
+### Changed
+- **Suggestion Length**: All suggestions limited to 6 words max (both display and inserted text)
   - Reduced initial task detail fetch concurrency from 6 to 3 on startup for safer rate limiting
   - Ensures compass initialization waits for task loading to complete (was previously fire-and-forget)
   - Compass feature now initializes with better spacing of API requests to avoid triggering rate limits
