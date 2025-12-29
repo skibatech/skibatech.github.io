@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.34] - 2025-12-29
+
+### Changed
+- **Suggestions Modal Width**: Reduced by 20% (from 80vw/750px to 64vw/600px)
+
 ## [2.0.33] - 2025-12-29
 
 ### Changed

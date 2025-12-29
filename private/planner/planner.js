@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.33'; // Fix all suggestion categories to 6 words or less
+const APP_VERSION = '2.0.34'; // Reduce modal width by 20%
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3151,7 +3151,7 @@ function showSawSuggestions(category) {
     };
 
     const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; z-index: 10000; width: 80vw; max-width: 750px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column;';
+    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; z-index: 10000; width: 64vw; max-width: 600px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column;';
 
     // Header with title and close button
     const header = document.createElement('div');
