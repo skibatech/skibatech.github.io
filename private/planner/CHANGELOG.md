@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.19] - 2025-12-29
+
+### Fixed
+- **Suggestion Buttons Visibility**: Added !important flags and bright yellow borders to ensure buttons are always visible
+  - Yellow background (#ffff00) with bright border
+  - Added overflow: visible to container
+  - Added visibility: visible and display: block with !important
+
+---
+
 ## [2.0.18] - 2025-12-29
 
 ### Improved

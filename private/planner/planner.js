@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.18'; // Make suggestion buttons more visible (yellow, larger)
+const APP_VERSION = '2.0.19'; // Fix suggestion buttons visibility (add !important, borders)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

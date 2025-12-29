@@ -1082,6 +1082,7 @@ body.unauthenticated #refreshBtn {
     gap: 8px;
     margin-bottom: 6px;
     margin-top: 4px;
+    overflow: visible;
 }
 
 .compass-category-inline:last-child {
@@ -1110,24 +1111,33 @@ body.unauthenticated #refreshBtn {
 }
 
 .saw-suggest-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffff00;
+    background: rgba(255, 255, 0, 0.3) !important;
+    border: 2px solid #ffff00 !important;
+    color: #ffff00 !important;
     cursor: pointer;
-    padding: 6px 10px;
-    font-size: 18px;
+    padding: 6px 12px !important;
+    font-size: 18px !important;
     border-radius: 4px;
     transition: all 0.2s ease;
-    flex-shrink: 0;
-    opacity: 1;
+    flex-shrink: 0 !important;
+    opacity: 1 !important;
     line-height: 1;
+    display: block !important;
+    visibility: visible !important;
+    min-width: 35px;
+    text-align: center;
 }
 
 .saw-suggest-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    opacity: 1;
-    border-color: #ffff00;
-    transform: scale(1.1);
+    background: rgba(255, 255, 0, 0.5) !important;
+    opacity: 1 !important;
+    border-color: #ffff00 !important;
+    transform: scale(1.15);
+}
+
+.compass-readonly .saw-suggest-btn {
+    display: block !important;
+    visibility: visible !important;
 }
 
 .compass-readonly .saw-suggest-btn {
