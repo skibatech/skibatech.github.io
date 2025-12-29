@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.40'; // Compass header icon sizing polish
+const APP_VERSION = '2.0.41'; // Eyedropper color picker button
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -4099,10 +4099,10 @@ function toggleCompassEdit() {
     renderCompass();
     renderCompassRoles();
     updateCompassHeaderButtons();
-    // Show/hide color picker in edit mode
+    // Ensure native color input stays hidden; show eyedropper button in edit mode
     const colorInput = document.getElementById('compassBgColorInput');
     if (colorInput) {
-        colorInput.style.display = compassEditMode ? 'block' : 'none';
+        colorInput.style.display = 'none';
     }
 }
 
@@ -4122,10 +4122,14 @@ function renderCompass() {
     const colorInput = document.getElementById('compassBgColorInput');
     if (colorInput) {
         colorInput.value = localStorage.getItem('compassBgColor') || '#2d5016';
-        colorInput.style.display = compassEditMode ? 'block' : 'none';
-        // Remove old listener to avoid duplicates
+        colorInput.style.display = 'none';
         colorInput.removeEventListener('change', handleCompassColorChange);
         colorInput.addEventListener('change', handleCompassColorChange);
+    }
+    // Wire eyedropper button to open native color picker
+    const colorBtn = document.getElementById('compassColorBtn');
+    if (colorBtn && colorInput) {
+        colorBtn.onclick = () => colorInput.click();
     }
     updateCompassHeaderButtons();
     
@@ -4185,9 +4189,11 @@ function updateCompassHeaderButtons() {
     const editBtn = document.getElementById('compassEditBtn');
     const saveBtn = document.getElementById('compassSaveBtn');
     const cancelBtn = document.getElementById('compassCancelBtn');
+    const colorBtn = document.getElementById('compassColorBtn');
     if (editBtn) editBtn.style.display = compassEditMode ? 'none' : 'inline-block';
     if (saveBtn) saveBtn.style.display = compassEditMode ? 'inline-block' : 'none';
     if (cancelBtn) cancelBtn.style.display = compassEditMode ? 'inline-block' : 'none';
+    if (colorBtn) colorBtn.style.display = compassEditMode ? 'inline-flex' : 'none';
 }
 
 async function saveCompass() {

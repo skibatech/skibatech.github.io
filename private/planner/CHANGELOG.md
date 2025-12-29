@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.41] - 2025-12-29
+
+### Changed
+- **Weekly Compass Color Picker**: Replaced small swatch with an Eyedropper icon button that opens the native color picker; native input remains hidden
+
 ## [2.0.40] - 2025-12-29
 
 ### Changed
