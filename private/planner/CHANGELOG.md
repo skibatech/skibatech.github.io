@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.21] - 2025-12-29
+
+### Fixed
+- **Rate Limiting on Hard Refresh**: Resolved 429 "too many requests" errors on initial page load
+  - Added 500ms delay between task loading and compass initialization to stagger API calls
+  - Reduced initial task detail fetch concurrency from 6 to 3 on startup for safer rate limiting
+  - Ensures compass initialization waits for task loading to complete (was previously fire-and-forget)
+  - Compass feature now initializes with better spacing of API requests to avoid triggering rate limits
+
+---
+
 ## [2.0.20] - 2025-12-29
 
 ### Fixed

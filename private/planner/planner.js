@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.20'; // Ensure suggestion buttons visible in read-only compass
+const APP_VERSION = '2.0.21'; // Fix rate limiting on hard refresh with staggered initialization
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1054,7 +1054,7 @@ async function loadTasks() {
         });
         ordered.forEach((t, idx) => { taskSequentialIds[t.id] = idx + 1; });
 
-        // Fetch task details for categories
+        // Fetch task details for categories (use lower concurrency on startup to avoid rate limiting)
         const details = await mapWithConcurrency(
             tasks,
             async (task) => {
@@ -1063,7 +1063,8 @@ async function loadTasks() {
                 });
                 if (!r.ok) return null;
                 return r.json();
-            }
+            },
+            3  // Lower concurrency on initial load to avoid 429 errors
         );
         
         // Collect all unique user IDs from assignments
@@ -1176,9 +1177,16 @@ async function loadTasks() {
         applyFilters();
         setStatus('Connected', '#107c10');
         
-        // Initialize compass on first load
+        // Initialize compass on first load (with delay to avoid rate limiting)
         if (!compassListId) {
-            initializeCompass();
+            // Add 500ms delay before initializing compass to spread out API calls
+            setTimeout(async () => {
+                try {
+                    await initializeCompass();
+                } catch (err) {
+                    console.error('Failed to initialize compass after delay:', err);
+                }
+            }, 500);
         }
     } catch (error) {
         console.error('Error loading tasks:', error);
