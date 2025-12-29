@@ -906,6 +906,16 @@ body.unauthenticated #refreshBtn {
     height: 22px;
     fill: currentColor;
 }
+.color-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    border: 0;
+    padding: 0;
+}
 .icon-swatch {
     width: 18px !important;
     height: 18px !important;

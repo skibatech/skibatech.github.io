@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.42'; // Eyedropper SVG sizing fix
+const APP_VERSION = '2.0.43'; // Nest color input inside eyedropper; anchor picker near icon
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -4102,7 +4102,8 @@ function toggleCompassEdit() {
     // Ensure native color input stays hidden; show eyedropper button in edit mode
     const colorInput = document.getElementById('compassBgColorInput');
     if (colorInput) {
-        colorInput.style.display = 'none';
+        // Keep input invisible but present to anchor picker near icon
+        colorInput.style.display = '';
     }
 }
 
@@ -4122,7 +4123,8 @@ function renderCompass() {
     const colorInput = document.getElementById('compassBgColorInput');
     if (colorInput) {
         colorInput.value = localStorage.getItem('compassBgColor') || '#2d5016';
-        colorInput.style.display = 'none';
+        // Ensure element renders (even at 1px/opacity 0) so native picker anchors here
+        colorInput.style.display = '';
         colorInput.removeEventListener('change', handleCompassColorChange);
         colorInput.addEventListener('change', handleCompassColorChange);
     }

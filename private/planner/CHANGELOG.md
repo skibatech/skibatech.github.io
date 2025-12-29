@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.43] - 2025-12-29
+
+### Fixed
+- **Color Picker Position**: Nest hidden color input inside Eyedropper button and render invisibly (1px, opacity 0) so the native picker anchors near the icon
+
 ## [2.0.42] - 2025-12-29
 
 ### Fixed
