@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.11] - 2025-12-29
+
+### Improved
+- **Weekly Compass Big Rocks**: Checkbox styling polish (no bullets; clear that only priorities are checkable)
+
+---
+
 ## [2.0.10] - 2025-12-29
 
 ### Improved

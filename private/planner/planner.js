@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.10'; // Weekly Compass rocks use checkboxes with strike-through
+const APP_VERSION = '2.0.11'; // Compass rocks checkbox UX polish (no bullets)
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

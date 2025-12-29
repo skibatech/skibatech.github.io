@@ -1156,6 +1156,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-rocks {
     margin-top: 8px;
+    list-style: none;
 }
 
 .compass-rocks-header {
@@ -1170,6 +1171,7 @@ body.unauthenticated #refreshBtn {
     align-items: center;
     gap: 8px;
     margin-bottom: 4px;
+    list-style: none;
 }
 
 .compass-rock-item textarea {
@@ -1180,6 +1182,7 @@ body.unauthenticated #refreshBtn {
     width: 16px;
     height: 16px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .compass-rock-item.rock-done .compass-rock-input,
