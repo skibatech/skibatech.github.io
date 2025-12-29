@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.49'; // Planner link updated to planner.cloud.microsoft
+const APP_VERSION = '2.0.50'; // Docs: clarify Planner Plan ID extraction
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

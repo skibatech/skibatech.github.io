@@ -19,7 +19,7 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
 
 1. Open Planner at https://planner.cloud.microsoft/.
 2. Navigate to your target plan.
-3. Copy the Plan ID from the URL (you will see `/plans/{PLAN-ID}/...` or `planId={PLAN-ID}` in the Planner URL).
+3. Copy the Plan ID from the URL: the segment right after `/plan/` (example: `.../plan/THIS_IS_YOUR_PLAN_ID/view/board`). You may also see `planId=...` in some views.
 
 ### 3. Configure config.json
 

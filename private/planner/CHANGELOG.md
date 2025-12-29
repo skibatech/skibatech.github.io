@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.50] - 2025-12-29
+
+### Changed
+- **Docs**: Clarified how to copy the Planner Plan ID from the `/plan/{id}` segment in the Planner URL
+
 ## [2.0.49] - 2025-12-29
 
 ### Changed
