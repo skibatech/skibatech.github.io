@@ -916,6 +916,11 @@ body.unauthenticated #refreshBtn {
     border: 0;
     padding: 0;
 }
+.icon-text {
+    font-size: 22px;
+    line-height: 1;
+    display: inline-block;
+}
 .icon-swatch {
     width: 18px !important;
     height: 18px !important;

@@ -118,14 +118,7 @@
                     <button id="compassEditBtn" onclick="toggleCompassEdit()" title="Edit" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px; color: var(--primary-color);">✎</button>
                     <div class="compass-commit-actions">
                         <button id="compassColorBtn" class="icon-btn" style="display:none; color: var(--compass-text); position: relative;" title="Background Color" aria-label="Background Color">
-                            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="width:22px;height:22px;">
-                                <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="16" cy="6" r="3"></circle>
-                                    <path d="M14 8 L8 14"></path>
-                                    <path d="M7 15 L5 17"></path>
-                                    <rect x="3" y="17" width="4" height="4" rx="1"></rect>
-                                </g>
-                            </svg>
+                            <span class="icon-text" aria-hidden="true">🎨</span>
                             <input type="color" id="compassBgColorInput" class="color-overlay" title="Background Color" aria-hidden="true">
                         </button>
                         <button id="compassSaveBtn" onclick="saveCompass()" class="icon-btn primary" style="display:none;" title="Save" aria-label="Save">

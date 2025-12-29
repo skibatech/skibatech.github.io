@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.45'; // Fix Options modal handlers (Cancel, Save, X)
+const APP_VERSION = '2.0.46'; // Color picker: palette emoji fallback icon
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.46] - 2025-12-29
+
+### Changed
+- **Weekly Compass Color Picker Icon**: Temporary switch to a text-based palette icon (🎨) for reliable visibility while we investigate the eyedropper rendering issue
+
 ## [2.0.45] - 2025-12-29
 
 ### Fixed
