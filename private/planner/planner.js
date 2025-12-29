@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.37'; // Adjust compass header icon sizes (picker smaller, save/cancel larger)
+const APP_VERSION = '2.0.38'; // Reduce 429s: global Graph limiter + jitter; lower concurrency
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -231,7 +231,32 @@ let columnWidths = {
 // Graph request tuning
 const GRAPH_MAX_RETRIES = 5;
 const GRAPH_BASE_DELAY_MS = 500;
-const GRAPH_MAX_CONCURRENT = 6; // Cap concurrent per-item calls (e.g., task details)
+const GRAPH_MAX_CONCURRENT = 3; // Lower per-item concurrency to reduce 429s
+const GRAPH_GLOBAL_MAX = 4; // Global concurrent Graph requests cap
+const GRAPH_STARTUP_JITTER_MS = 200; // Small stagger to avoid burst on hard refresh
+
+let graphActive = 0;
+const graphQueue = [];
+
+function acquireGraphSlot() {
+    return new Promise(resolve => {
+        const tryAcquire = () => {
+            if (graphActive < GRAPH_GLOBAL_MAX) {
+                graphActive++;
+                resolve();
+            } else {
+                graphQueue.push(tryAcquire);
+            }
+        };
+        tryAcquire();
+    });
+}
+
+function releaseGraphSlot() {
+    graphActive = Math.max(0, graphActive - 1);
+    const next = graphQueue.shift();
+    if (next) setTimeout(next, 0);
+}
 
 // Utility functions for consistent date handling (fixes timezone offset issues)
 function formatDateForInput(isoDateString) {
@@ -293,7 +318,19 @@ function setStatus(text, color = null) {
 }
 
 async function fetchGraph(url, options = {}, attempt = 0) {
-    const res = await fetch(url, options);
+    // Small random jitter on initial attempt to reduce burst traffic
+    if (attempt === 0) {
+        const jitter = Math.floor(Math.random() * GRAPH_STARTUP_JITTER_MS);
+        if (jitter > 0) await sleep(jitter);
+    }
+
+    await acquireGraphSlot();
+    let res;
+    try {
+        res = await fetch(url, options);
+    } finally {
+        releaseGraphSlot();
+    }
     if (res.status === 429 || res.status === 503) {
         if (attempt >= GRAPH_MAX_RETRIES) {
             setStatus('Too many requests - try again later', '#b00020');

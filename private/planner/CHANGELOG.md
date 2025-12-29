@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.38] - 2025-12-29
+
+### Fixed
+- **Hard Refresh 429s**: Added global Graph request limiter (max 4 concurrent), reduced detail fetch concurrency to 3, and introduced small startup jitter to stagger calls
+
 ## [2.0.37] - 2025-12-29
 
 ### Changed
