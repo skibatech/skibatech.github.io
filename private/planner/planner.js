@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.46'; // Color picker: palette emoji fallback icon
+const APP_VERSION = '2.0.47'; // Options Save immediately applies View/Group/Filter
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3357,6 +3357,28 @@ async function saveOptions() {
 
     // Apply compass position immediately
     applyCompassPosition();
+
+    // Immediately apply the new view/group/filter to the main screen
+    const viewSelect = document.getElementById('viewSelect');
+    if (viewSelect) {
+        viewSelect.value = defaultView;
+        changeView();
+    } else {
+        // Fallback: ensure currentView takes effect without the dropdown
+        currentView = defaultView;
+    }
+    const groupSelect = document.getElementById('groupBySelect');
+    if (groupSelect) {
+        groupSelect.value = defaultGroupBy;
+        changeGroupBy();
+    } else {
+        currentGroupBy = defaultGroupBy;
+    }
+    const showCompletedCheckbox = document.getElementById('showCompletedCheckbox');
+    if (showCompletedCheckbox) {
+        showCompletedCheckbox.checked = showCompletedDefault;
+    }
+    applyFilters();
 
     closeOptions();
     alert('View preferences saved!');

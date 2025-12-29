@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.47] - 2025-12-29
+
+### Changed
+- **Options Save Behavior**: Applying View, Group By, and Show Completed immediately to the main screen on Save (no longer waits for refresh/load)
+
 ## [2.0.46] - 2025-12-29
 
 ### Changed
