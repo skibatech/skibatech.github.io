@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.47'; // Options Save immediately applies View/Group/Filter
+const APP_VERSION = '2.0.48'; // Admin group name support to avoid exposing group ID
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -145,7 +145,8 @@ let config = {
     redirectUri: window.location.origin + window.location.pathname,
     scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
     allowedTenants: [],
-    adminGroupId: ''
+    adminGroupId: '',
+    adminGroupName: ''
 };
 
 let planId = '';
@@ -719,6 +720,7 @@ async function loadConfig() {
         config.authority = configData.authority;
         config.allowedTenants = configData.allowedTenants || [];
         config.adminGroupId = configData.adminGroupId || '';
+        config.adminGroupName = configData.adminGroupName || '';
         planId = configData.planId;
         taskIdPrefix = configData.taskIdPrefix || 'STE';
         adminUsers = (configData.adminUsers || []).map(e => e.trim().toLowerCase()).filter(e => e);
@@ -1011,7 +1013,8 @@ async function updateAuthUI(isAuthenticated) {
 // Evaluate whether the current user has admin privileges
 async function evaluateAdminStatus() {
     try {
-        const groupConfigured = !!(config.adminGroupId && config.adminGroupId.trim());
+        const groupIdConfigured = !!(config.adminGroupId && config.adminGroupId.trim());
+        const groupNameConfigured = !!(config.adminGroupName && config.adminGroupName.trim());
         const emailConfigured = Array.isArray(adminUsers) && adminUsers.length > 0;
 
         // Email allow-list takes precedence
@@ -1023,14 +1026,20 @@ async function evaluateAdminStatus() {
             }
         }
 
-        if (groupConfigured) {
-            // Check if user is a member of the configured admin group
-            const resp = await fetchGraph('https://graph.microsoft.com/v1.0/me/memberOf?$select=id', {
+        if (groupIdConfigured || groupNameConfigured) {
+            // Check if user is a member of the configured admin group (by Id or Name)
+            const select = groupNameConfigured ? '$select=id,displayName' : '$select=id';
+            const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/memberOf?${select}`, {
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
             if (resp.ok) {
                 const data = await resp.json();
-                const inGroup = (data.value || []).some(g => g.id && g.id.toLowerCase() === config.adminGroupId.toLowerCase());
+                let inGroup = false;
+                if (groupIdConfigured) {
+                    inGroup = (data.value || []).some(g => g.id && g.id.toLowerCase() === config.adminGroupId.toLowerCase());
+                } else if (groupNameConfigured) {
+                    inGroup = (data.value || []).some(g => (g.displayName || '').toLowerCase() === config.adminGroupName.toLowerCase());
+                }
                 currentUserIsAdmin = !!inGroup;
                 return currentUserIsAdmin;
             }

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.48] - 2025-12-29
+
+### Changed
+- **Admin Group Configuration**: Added support for `adminGroupName` so admin checks can be done by group display name via Graph; enables removing `adminGroupId` from public `config.json`
+
 ## [2.0.47] - 2025-12-29
 
 ### Changed
