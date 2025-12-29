@@ -91,6 +91,11 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
 ⚠️ **adminGroupId** - Group GUID (less secure, prefer adminGroupName)  
 ⚠️ **adminUsers** - Admin emails (consider privacy implications)
 
+## Licensing Requirements
+
+- **Minimal**: Any Microsoft 365 SKU that includes Planner *and* Exchange Online (for To Do/Tasks) such as Business Basic, Business Standard, Business Premium, Office 365 E1/E3/E5, Microsoft 365 E3/E5, F3, or education equivalents. A tenant admin must grant Graph delegated consent for `Tasks.ReadWrite`, `Group.ReadWrite.All`, and `User.Read`.
+- **Preferred**: Microsoft 365 E3/E5 (or Business Standard/Premium) so users have Planner, To Do, Exchange Online, and admins can easily grant and manage Graph permissions and groups used for admin access.
+
 ### What Should NEVER Be in config.json
 ❌ **Client secrets** - Never store secrets client-side  
 ❌ **Access tokens** - Handled by MSAL, never hardcoded  

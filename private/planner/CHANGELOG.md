@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.52] - 2025-12-29
+
+### Changed
+- **Docs**: Added minimal and preferred Microsoft 365 licensing guidance for Planner Pro usage
+
 ## [2.0.51] - 2025-12-29
 
 ### Changed

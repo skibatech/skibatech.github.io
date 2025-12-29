@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.51'; // Docs: explicit config instructions (clientId, authority, planId, adminGroupName)
+const APP_VERSION = '2.0.52'; // Docs: add licensing requirements
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
