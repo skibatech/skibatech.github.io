@@ -28,18 +28,26 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
    Copy-Item config.example.json config.json
    ```
 
-2. Edit `config.json` with your values:
+2. Edit `config.json` with your values (details below):
    ```json
    {
-     "clientId": "YOUR-CLIENT-ID-FROM-AZURE",
-     "authority": "https://login.microsoftonline.com/yourtenant.com",
+     "clientId": "YOUR-APP-REGISTRATION-CLIENT-ID",
+     "authority": "https://login.microsoftonline.com/YOUR-TENANT-DOMAIN-OR-ID",
      "planId": "YOUR-PLANNER-PLAN-ID",
      "allowedTenants": ["yourtenant.com"],
-     "adminGroupName": "Planner Admins",
+     "adminGroupName": "YOUR-PLANNER-ADMINS-GROUP-NAME",
      "adminUsers": [],
      "taskIdPrefix": "PRJ"
    }
    ```
+
+   - **clientId**: Azure Portal → App registrations → your app → *Application (client) ID*.
+   - **authority**: `https://login.microsoftonline.com/` followed by your tenant domain (e.g., `contoso.com`) or Directory (tenant) ID GUID.
+   - **planId**: From the Planner URL segment after `/plan/` (see Step 2 for how to copy).
+   - **allowedTenants**: Domains you want to allow to sign in (usually just your primary tenant, e.g., `contoso.com`).
+   - **adminGroupName**: Display name of your Entra group that should have Admin Portal access (e.g., `Planner Admins`). Use the exact display name.
+   - **adminUsers** (optional): List of specific admin email addresses. If populated, this takes precedence over group checks.
+   - **taskIdPrefix**: Optional short prefix for task IDs displayed in-app (e.g., `PRJ` → `PRJ-001`).
 
 ### 4. Admin Access Control
 

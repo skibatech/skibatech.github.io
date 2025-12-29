@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.50'; // Docs: clarify Planner Plan ID extraction
+const APP_VERSION = '2.0.51'; // Docs: explicit config instructions (clientId, authority, planId, adminGroupName)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.51] - 2025-12-29
+
+### Changed
+- **Docs**: Added explicit guidance for config values (how to get clientId, authority, planId; clarified adminGroupName placeholder; explained allowedTenants, adminUsers, taskIdPrefix)
+
 ## [2.0.50] - 2025-12-29
 
 ### Changed
