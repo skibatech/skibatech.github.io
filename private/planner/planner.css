@@ -1120,28 +1120,32 @@ body.unauthenticated #refreshBtn {
 }
 
 .saw-suggest-btn {
-    background: rgba(255, 255, 0, 0.3) !important;
-    border: 2px solid #ffff00 !important;
-    color: #ffff00 !important;
+    background: #ffeb3b !important; /* bright yellow for high contrast */
+    border: 2px solid #fbc02d !important;
+    color: #111 !important; /* dark text for readability */
     cursor: pointer;
-    padding: 6px 12px !important;
-    font-size: 18px !important;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 16px;
+    transition: transform 0.15s ease, background 0.15s ease;
     flex-shrink: 0 !important;
     opacity: 1 !important;
     line-height: 1;
-    display: block !important;
+    display: inline-flex !important;
     visibility: visible !important;
-    min-width: 35px;
-    text-align: center;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 28px;
+    white-space: nowrap;
 }
 
 .saw-suggest-btn:hover {
-    background: rgba(255, 255, 0, 0.5) !important;
+    background: #ffe74b !important;
     opacity: 1 !important;
-    border-color: #ffff00 !important;
-    transform: scale(1.15);
+    border-color: #f1c40f !important;
+    transform: translateY(-1px) scale(1.03);
 }
 
 .compass-readonly .saw-suggest-btn {
