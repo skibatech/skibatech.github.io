@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.12'; // Compass rocks checkbox indentation aligned under Role label
+const APP_VERSION = '2.0.13'; // Compass readability: higher contrast and spacing
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [

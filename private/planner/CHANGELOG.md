@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.13] - 2025-12-29
+
+### Improved
+- **Weekly Compass Readability**: Higher-contrast text, subtle shadow, and spacing tweaks for easier reading (roles and big rocks)
+
+---
+
 ## [2.0.12] - 2025-12-29
 
 ### Improved
