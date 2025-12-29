@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.21'; // Fix rate limiting on hard refresh with staggered initialization
+const APP_VERSION = '2.0.23'; // Icon-only suggestions; hide in read-only
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

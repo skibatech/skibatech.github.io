@@ -318,14 +318,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.2] - 2025-12-26
 
 ### Improved
-- Weekly Compass: Improved Save/Cancel UX in header
-
----
 
 ## [1.6.1] - 2025-12-26
-
-### Changed
-- Moved compass background color picker from Options modal to compass panel header
 
 ---
 

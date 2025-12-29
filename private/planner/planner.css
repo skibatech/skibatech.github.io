@@ -1122,12 +1122,12 @@ body.unauthenticated #refreshBtn {
 .saw-suggest-btn {
     background: #ffeb3b !important; /* bright yellow for high contrast */
     border: 2px solid #fbc02d !important;
-    color: #111 !important; /* dark text for readability */
+    color: #111 !important; /* dark icon/text */
     cursor: pointer;
-    padding: 6px 10px !important;
-    font-size: 13px !important;
+    padding: 0 !important;
+    font-size: 16px !important; /* icon size */
     font-weight: 700 !important;
-    border-radius: 16px;
+    border-radius: 50%;
     transition: transform 0.15s ease, background 0.15s ease;
     flex-shrink: 0 !important;
     opacity: 1 !important;
@@ -1136,9 +1136,8 @@ body.unauthenticated #refreshBtn {
     visibility: visible !important;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: 28px;
-    white-space: nowrap;
+    width: 28px;
+    height: 28px;
 }
 
 .saw-suggest-btn:hover {
@@ -1148,13 +1147,9 @@ body.unauthenticated #refreshBtn {
     transform: translateY(-1px) scale(1.03);
 }
 
+/* Hide suggest buttons in read-only mode */
 .compass-readonly .saw-suggest-btn {
-    display: block !important;
-    visibility: visible !important;
-}
-
-.compass-readonly .saw-suggest-btn {
-    display: block;
+    display: none !important;
 }
 
 .compass-rock-item input[type="text"],
@@ -1193,10 +1188,8 @@ body.unauthenticated #refreshBtn {
     display: none;
 }
 
-/* Ensure buttons are always visible */
-.compass-readonly .saw-suggest-btn,
+/* Ensure buttons are visible in edit mode */
 .saw-suggest-btn {
-    display: block !important;
     visibility: visible !important;
 }
 
