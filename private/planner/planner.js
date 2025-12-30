@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.33'; // SAW suggestions loaded from CSV
+const APP_VERSION = '2.1.34'; // Debug user fetching with console logs
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -1240,7 +1240,9 @@ async function loadTasks() {
         planMembers.forEach(m => {
             if (m && m.id && m.displayName) userDetailsMap[m.id] = m.displayName;
         });
+        console.log('📋 User details from plan members:', userDetailsMap);
         const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);
+        console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
         // Fetch remaining users via directoryObjects/getByIds in chunks
         async function fetchUsersByIds(ids) {
             const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
@@ -1251,8 +1253,12 @@ async function loadTasks() {
                 },
                 body: JSON.stringify({ ids, types: ['user'] })
             });
-            if (!r.ok) return [];
+            if (!r.ok) {
+                console.error('Failed to fetch users by IDs:', r.status, r.statusText);
+                return [];
+            }
             const data = await r.json();
+            console.log('✅ Fetched users:', data.value);
             return data.value || [];
         }
         const chunkSize = 100;
@@ -1264,6 +1270,7 @@ async function loadTasks() {
             });
         }
         
+        console.log('👥 Final userDetailsMap:', userDetailsMap);
         // Store users globally for assignment dropdown
         allUsers = { ...userDetailsMap };
         
