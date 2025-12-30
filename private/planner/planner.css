@@ -1528,8 +1528,10 @@ body.dark-mode .editable-cell.editing {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 16px;
+    width: 100%;
+    overflow: hidden;
 }
 
 .dashboard-card {
@@ -1554,9 +1556,17 @@ body.dark-mode .editable-cell.editing {
 
 .bar-row {
     display: grid;
-    grid-template-columns: 1fr 3fr auto;
+    grid-template-columns: minmax(80px, 1fr) 3fr auto;
     align-items: center;
     gap: 8px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.bar-row:hover {
+    background: var(--bg-hover);
 }
 
 .bar-label {
@@ -1597,4 +1607,113 @@ body.dark-mode .editable-cell.editing {
 
 #tasksView {
     display: block;
+}
+
+/* Dashboard drill-down */
+.drill-down-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.drill-down-content {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.drill-down-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drill-down-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.drill-down-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.drill-down-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    line-height: 1;
+}
+
+.drill-down-close:hover {
+    color: var(--text-primary);
+}
+
+.drill-down-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.drill-task-item {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.drill-task-item:hover {
+    background: var(--bg-hover);
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.drill-task-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.drill-task-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.drill-task-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.drill-empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-secondary);
 }

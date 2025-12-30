@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.1'; // Fix Weekly Compass layout with tab structure
+const APP_VERSION = '2.1.2'; // Interactive dashboard with clickable charts and drill-down
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -2172,7 +2172,7 @@ function switchTab(tab) {
     }
 }
 
-function renderBarGroup(containerId, data) {
+function renderBarGroup(containerId, data, filterType) {
     const container = document.getElementById(containerId);
     if (!container) return;
     if (!Array.isArray(data) || data.length === 0) {
@@ -2183,8 +2183,8 @@ function renderBarGroup(containerId, data) {
     container.innerHTML = data.map(item => {
         const pct = Math.max(4, Math.round((item.value / maxValue) * 100));
         return `
-            <div class="bar-row">
-                <div class="bar-label">${item.label}</div>
+            <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
+                <div class="bar-label">${escapeHtml(item.label)}</div>
                 <div class="bar-track">
                     <div class="bar-fill" style="width:${pct}%; background:${item.color};"></div>
                 </div>
@@ -2192,6 +2192,10 @@ function renderBarGroup(containerId, data) {
             </div>
         `;
     }).join('');
+}
+
+function escapeForAttribute(text) {
+    return String(text).replace(/'/g, '\\\'').replace(/"/g, '&quot;');
 }
 
 function getProgressLabel(percentComplete) {
@@ -2308,33 +2312,144 @@ function renderDashboard() {
         { label: 'Not started', value: statusCounts['Not started'] || 0, color: palette[1] },
         { label: 'In progress', value: statusCounts['In progress'] || 0, color: palette[0] },
         { label: 'Completed', value: statusCounts['Completed'] || 0, color: palette[2] }
-    ]);
+    ], 'progress');
 
     const priorityData = Object.keys(priorityCounts).map((label, idx) => ({
         label,
         value: priorityCounts[label],
         color: palette[idx % palette.length]
     })).sort((a, b) => b.value - a.value);
-    renderBarGroup('chartPriority', priorityData);
+    renderBarGroup('chartPriority', priorityData, 'priority');
 
     const dueData = Object.keys(dueCounts).map((label, idx) => ({
         label,
         value: dueCounts[label],
         color: palette[idx % palette.length]
     })).sort((a, b) => b.value - a.value);
-    renderBarGroup('chartDue', dueData);
+    renderBarGroup('chartDue', dueData, 'due');
 
     const assigneeData = Object.keys(assigneeCounts)
         .map((label, idx) => ({ label, value: assigneeCounts[label], color: palette[idx % palette.length] }))
         .sort((a, b) => b.value - a.value)
         .slice(0, 8);
-    renderBarGroup('chartAssignees', assigneeData);
+    renderBarGroup('chartAssignees', assigneeData, 'assignee');
 
     const themeData = Object.keys(themeCounts)
         .map((label, idx) => ({ label, value: themeCounts[label], color: palette[idx % palette.length] }))
         .sort((a, b) => b.value - a.value)
         .slice(0, 10);
-    renderBarGroup('chartThemes', themeData);
+    renderBarGroup('chartThemes', themeData, 'theme');
+}
+
+function drillDownTasks(filterType, filterValue) {
+    const tasks = getFilteredTasks();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let filtered = tasks.filter(task => {
+        switch(filterType) {
+            case 'progress':
+                return getProgressLabel(task.percentComplete) === filterValue;
+            case 'priority':
+                return getPriorityLabel(task.priority) === filterValue;
+            case 'due':
+                if (filterValue === 'No due date') return !task.dueDateTime;
+                if (filterValue === 'Overdue') {
+                    if (!task.dueDateTime) return false;
+                    const due = new Date(task.dueDateTime);
+                    due.setHours(0, 0, 0, 0);
+                    return due < today && task.percentComplete !== 100;
+                }
+                if (filterValue === 'Due this week') {
+                    if (!task.dueDateTime) return false;
+                    const due = new Date(task.dueDateTime);
+                    due.setHours(0, 0, 0, 0);
+                    const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
+                    return diffDays >= 0 && diffDays <= 7;
+                }
+                if (filterValue === 'Due this month') {
+                    if (!task.dueDateTime) return false;
+                    const due = new Date(task.dueDateTime);
+                    due.setHours(0, 0, 0, 0);
+                    const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
+                    return diffDays > 7 && diffDays <= 30;
+                }
+                if (filterValue === 'Future') {
+                    if (!task.dueDateTime) return false;
+                    const due = new Date(task.dueDateTime);
+                    due.setHours(0, 0, 0, 0);
+                    const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
+                    return diffDays > 30;
+                }
+                return false;
+            case 'assignee':
+                const taskDetails = allTaskDetails[task.id];
+                const assignments = taskDetails?.assignments || task.assignments || {};
+                if (filterValue === 'Unassigned') {
+                    return !assignments || Object.keys(assignments).length === 0;
+                }
+                return Object.values(assignments).some(a => a.displayName === filterValue);
+            case 'theme':
+                const categories = task.appliedCategories || {};
+                return Object.keys(categories).some(cat => {
+                    const themeName = getThemeDisplayName(cat);
+                    return themeName === filterValue;
+                });
+            default:
+                return false;
+        }
+    });
+
+    showDrillDownModal(filterType, filterValue, filtered);
+}
+
+function showDrillDownModal(filterType, filterValue, tasks) {
+    const modal = document.createElement('div');
+    modal.className = 'drill-down-modal';
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+    const bucketMap = {};
+    allBuckets.forEach(b => bucketMap[b.id] = b.name);
+
+    const taskRows = tasks.map(task => {
+        const details = allTaskDetails[task.id] || {};
+        const assignments = details.assignments || task.assignments || {};
+        const assignees = Object.values(assignments).map(a => a.displayName || '').filter(Boolean).join(', ') || 'Unassigned';
+        const progress = getProgressLabel(task.percentComplete);
+        const priority = getPriorityLabel(task.priority);
+        const bucket = bucketMap[task.bucketId] || '';
+        const dueDate = formatDateForDisplay(task.dueDateTime);
+
+        return `
+            <div class="drill-task-item" onclick="event.stopPropagation(); openTaskDetail('${task.id}')">
+                <div class="drill-task-title">${escapeHtml(task.title || 'Untitled')}</div>
+                <div class="drill-task-meta">
+                    <div class="drill-task-meta-item"><strong>Progress:</strong> ${progress}</div>
+                    <div class="drill-task-meta-item"><strong>Priority:</strong> ${priority}</div>
+                    <div class="drill-task-meta-item"><strong>Bucket:</strong> ${escapeHtml(bucket)}</div>
+                    <div class="drill-task-meta-item"><strong>Assigned:</strong> ${escapeHtml(assignees)}</div>
+                    ${dueDate ? `<div class="drill-task-meta-item"><strong>Due:</strong> ${dueDate}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    modal.innerHTML = `
+        <div class="drill-down-content" onclick="event.stopPropagation()">
+            <div class="drill-down-header">
+                <div>
+                    <div class="drill-down-title">${escapeHtml(filterValue)}</div>
+                    <div class="drill-down-subtitle">${tasks.length} task${tasks.length !== 1 ? 's' : ''}</div>
+                </div>
+                <button class="drill-down-close" onclick="this.closest('.drill-down-modal').remove()">×</button>
+            </div>
+            <div class="drill-down-body">
+                ${tasks.length > 0 ? taskRows : '<div class="drill-empty">No tasks match this filter</div>'}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
 }
 
 function exportDashboardCsv() {

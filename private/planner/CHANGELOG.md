@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.2] - 2025-12-30
+
+### Added
+- **Interactive Charts**: Click any bar in dashboard charts to drill down and see filtered task list
+- **Task Details**: Click any task in drill-down modal to open full task details
+- Charts now include: Progress, Priority, Due timeline, Assignee load, Themes
+
+### Fixed
+- **Dashboard Layout**: Fixed horizontal sizing issues with responsive grid
+- Bar chart labels now properly truncate with ellipsis
+- Improved spacing and hover states on chart bars
+
 ## [2.1.1] - 2025-12-30
 
 ### Fixed
