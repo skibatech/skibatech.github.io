@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.17] - 2025-12-30
+
+### Fixed
+- **Update Navigation**: UPDATE AVAILABLE now clears caches, preloads core assets with cache-bust, then navigates with a cache-busted URL (more reliable than prior reload)
+
 ## [2.1.16] - 2025-12-30
 
 ### Changed

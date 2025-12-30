@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.16'; // Dashboard card widths tweaked; labels wrap
+const APP_VERSION = '2.1.17'; // Update button now forces cache-busted navigation
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1098,6 +1098,7 @@ async function checkForVersionUpdate() {
 // Hard refresh the page (clears cache)
 async function doHardRefresh() {
     const bust = Date.now();
+    const target = `${window.location.origin}${window.location.pathname}?v=${bust}`;
 
     // Best-effort cache clear
     try {
@@ -1121,8 +1122,8 @@ async function doHardRefresh() {
         preload('./index.html')
     ]);
 
-    // Force hard reload (closest to Ctrl+Shift+R)
-    window.location.reload(true);
+    // Force navigation with cache-bust to guarantee fresh assets
+    window.location.replace(target);
 }
 
 // Evaluate whether the current user has admin privileges
