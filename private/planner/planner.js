@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.2'; // Interactive dashboard with clickable charts and drill-down
+const APP_VERSION = '2.1.3'; // Move tabs to header, fix compass to show in both views
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -970,6 +970,9 @@ async function updateAuthUI(isAuthenticated) {
     const mainWrapper = document.getElementById('mainContentWrapper');
     const profileContainer = document.getElementById('profileContainer');
     const adminModeItem = document.getElementById('adminModeItem');
+    const tabTasks = document.getElementById('tabTasks');
+    const tabDashboard = document.getElementById('tabDashboard');
+    const headerDivider = document.querySelector('.header-divider');
     
     if (isAuthenticated) {
         status.textContent = 'Connected';
@@ -978,13 +981,16 @@ async function updateAuthUI(isAuthenticated) {
         refreshBtn.style.display = 'inline-block';
         compassToggleBtn.style.display = 'inline-block';
         profileContainer.style.display = 'inline-block';
+        if (tabTasks) tabTasks.style.display = 'inline-block';
+        if (tabDashboard) tabDashboard.style.display = 'inline-block';
+        if (headerDivider) headerDivider.style.display = 'block';
         const gridEditBtn = document.getElementById('gridEditModeBtn');
         if (gridEditBtn) {
             gridEditBtn.style.display = 'inline-block';
             updateGridEditButtonState();
         }
         authRequired.style.display = 'none';
-        mainWrapper.style.display = 'block';
+        mainWrapper.style.display = 'flex';
         document.body.classList.remove('unauthenticated');
         
         // Fetch and display user info

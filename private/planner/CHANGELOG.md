@@ -12,6 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.3] - 2025-12-30
+
+### Changed
+- **Tab Location**: Moved Tasks/Dashboard tabs to header nav bar (second row, before New Task button)
+- **Weekly Compass**: Now appears in both Tasks and Dashboard views (was only showing in Tasks)
+- Added spacing divider between tabs and action buttons in header
+
+### Fixed
+- Compass panel no longer disappears when switching to Dashboard view
+- Improved layout consistency across both tabs
+
 ## [2.1.2] - 2025-12-30
 
 ### Added
