@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.20] - 2025-12-30
+
+### Changed
+- **Weekly Compass**: Date input width tightened (min 140px, max 190px) to match expected entries
+
 ## [2.1.19] - 2025-12-30
 
 ### Changed

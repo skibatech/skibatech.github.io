@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.19'; // Dashboard grid allows 3-4 columns with responsive min widths
+const APP_VERSION = '2.1.20'; // Compass date input tightened; dashboard grid remains responsive
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
