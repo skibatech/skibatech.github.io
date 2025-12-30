@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.61'; // Compass icons: increased size to 24-28px and fixed X alignment
+const APP_VERSION = '2.0.62'; // Compass: fix save icon centering (was sitting right/bottom)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

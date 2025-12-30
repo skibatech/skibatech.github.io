@@ -897,6 +897,7 @@ body.unauthenticated #refreshBtn {
 .icon-btn.primary {
     background: var(--primary-color);
     color: #fff;
+    padding: 0;
 }
 .icon-btn:hover {
     filter: brightness(1.05);
@@ -905,6 +906,9 @@ body.unauthenticated #refreshBtn {
     width: 24px;
     height: 24px;
     fill: currentColor;
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 .color-overlay {
     position: absolute;

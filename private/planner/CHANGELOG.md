@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.0.62] - 2025-12-30
+
+### Fixed
+- **Weekly Compass Save Icon**: Fixed alignment so save (disk) icon is now centered instead of sitting far right/bottom
+
 ## [2.0.61] - 2025-12-30
 
 ### Fixed
