@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.17'; // Update button now forces cache-busted navigation
+const APP_VERSION = '2.1.18'; // Dashboard cards wider; labels back to single-line ellipsis
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

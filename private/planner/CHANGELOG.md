@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.0.53] - 2025-12-29
+## [2.1.18] - 2025-12-30
 
 ### Changed
-- **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
+- **Dashboard Layout**: Cards use wider min width (500px) to reduce truncation; version bump
 
 ## [2.1.17] - 2025-12-30
 
@@ -55,10 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.9] - 2025-12-30
 
-### Improved
-- **Dashboard Grid Layout**: Flexible card sizing now allows 1, 2, 3, or 4 columns based on available space
-- Cards use minmax(300px, 1fr) to intelligently resize - narrower on small screens, multi-column on wide screens
-- Better responsive design when compass is visible
+### Changed
+- **Dashboard Layout**: Cards use minmax(300px, 1fr) to intelligently resize; better responsive behavior with compass visible
 
 ## [2.1.8] - 2025-12-30
 
@@ -117,6 +115,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Dashboard Layout**: Fixed horizontal sizing issues with responsive grid
+
+## [2.0.53] - 2025-12-29
+
+### Changed
+- **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 - Bar chart labels now properly truncate with ellipsis
 - Improved spacing and hover states on chart bars
 

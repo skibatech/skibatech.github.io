@@ -1545,10 +1545,8 @@ body.dark-mode .editable-cell.editing {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    gap: 16px;
-    width: 100%;
-    overflow: hidden;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 12px;
 }
 
 .dashboard-card {
@@ -1589,8 +1587,9 @@ body.dark-mode .editable-cell.editing {
 .bar-label {
     font-size: 13px;
     color: var(--text-primary);
-    white-space: normal;
-    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .bar-track {
