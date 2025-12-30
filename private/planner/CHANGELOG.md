@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.14] - 2025-12-30
+
+### Changed
+- **Badge Text**: UPDATE button now reads "UPDATE AVAILABLE" for clarity
+
 ## [2.1.13] - 2025-12-30
 
 ### Fixed

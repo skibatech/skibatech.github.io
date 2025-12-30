@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.13'; // Update button pre-fetches fresh planner.js before reload
+const APP_VERSION = '2.1.14'; // Rename update badge to "UPDATE AVAILABLE"
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
