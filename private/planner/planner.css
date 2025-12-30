@@ -1639,13 +1639,17 @@ body.dark-mode .editable-cell.editing {
 
 .bar-row {
     display: grid;
-    grid-template-columns: minmax(220px, 2fr) 2fr auto;
+    grid-template-columns: 15ch 2fr auto;
     align-items: center;
     gap: 8px;
     padding: 4px 6px;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.15s ease;
+}
+
+.wide-card .bar-row {
+    grid-template-columns: minmax(15ch, 2fr) 2fr auto;
 }
 
 .bar-row:hover {

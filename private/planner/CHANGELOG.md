@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.1.31] - 2025-12-30
+
+### Changed
+- **Dashboard Card Widths**: Cards dynamically resize based on content—labels ≤15 chars use narrow format (15ch label column), longer labels trigger wide format with flexible label column
+
 ## [2.1.30] - 2025-12-30
 
 ### Fixed

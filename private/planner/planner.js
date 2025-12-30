@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.30'; // Assignee grouping shows real names; card menu visuals remain
+const APP_VERSION = '2.1.31'; // Dynamic card width based on label length
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -2306,6 +2306,18 @@ function renderBarGroup(containerId, data, filterType) {
         container.innerHTML = '<div class="chart-empty">No data</div>';
         return;
     }
+    
+    // Determine if card needs wide format based on max label length
+    const maxLabelLength = Math.max(...data.map(d => (d.label || '').length));
+    const cardEl = container.closest('.dashboard-card');
+    if (cardEl) {
+        if (maxLabelLength > 15) {
+            cardEl.classList.add('wide-card');
+        } else {
+            cardEl.classList.remove('wide-card');
+        }
+    }
+    
     const visual = cardVisualPrefs[containerId] || 'bar';
     const maxValue = Math.max(...data.map(d => d.value), 1);
     container.innerHTML = data.map(item => {
