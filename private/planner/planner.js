@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.12'; // Cache-busted hard refresh for update badge
+const APP_VERSION = '2.1.13'; // Update button pre-fetches fresh planner.js before reload
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1097,17 +1097,21 @@ async function checkForVersionUpdate() {
 
 // Hard refresh the page (clears cache)
 function doHardRefresh() {
-    // Clear caches then force a cache-busted reload
     const bust = Date.now();
     const go = () => {
         const url = `${window.location.origin}${window.location.pathname}?v=${bust}`;
         window.location.replace(url);
     };
 
+    const warmPlannerJs = () => fetch(`./planner.js?bust=${bust}`, { cache: 'reload' }).catch(() => {});
+
     if ('caches' in window) {
-        caches.keys().then(names => Promise.all(names.map(n => caches.delete(n)))).finally(go);
+        caches.keys()
+            .then(names => Promise.all(names.map(n => caches.delete(n))))
+            .then(warmPlannerJs)
+            .finally(go);
     } else {
-        go();
+        warmPlannerJs().finally(go);
     }
 }
 
