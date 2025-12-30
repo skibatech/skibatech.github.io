@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.9'; // Flexible dashboard grid layout (1-4 columns)
+const APP_VERSION = '2.1.10'; // Fix version polling to read planner.js
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1051,38 +1051,47 @@ async function updateAuthUI(isAuthenticated) {
 // Check if a new version is available
 async function checkForVersionUpdate() {
     try {
-        // Fetch the current index.html to extract version
-        const response = await fetch('./index.html?t=' + Date.now(), { cache: 'no-store' });
-        if (response.ok) {
-            const html = await response.text();
-            const versionMatch = html.match(/const APP_VERSION = '([^']+)'/);
-            if (versionMatch) {
-                const latestVersion = versionMatch[1];
-                const updateBadge = document.getElementById('updateBadge');
-                
-                // Only show badge if server version is newer than current version
-                if (latestVersion !== APP_VERSION && updateBadge) {
-                    const currentParts = APP_VERSION.split('.').map(Number);
-                    const latestParts = latestVersion.split('.').map(Number);
-                    
-                    let isNewer = false;
-                    for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
-                        const curr = currentParts[i] || 0;
-                        const latest = latestParts[i] || 0;
-                        if (latest > curr) {
-                            isNewer = true;
-                            break;
-                        } else if (latest < curr) {
-                            break;
-                        }
-                    }
-                    
-                    if (isNewer) {
-                        updateBadge.style.display = 'inline-block';
-                        console.log(`✓ New version available: ${latestVersion} (current: ${APP_VERSION})`);
-                    }
-                }
+        // Fetch planner.js directly (APP_VERSION lives there, not in index.html)
+        const response = await fetch('./planner.js?t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) {
+            console.log('Version check fetch failed with status:', response.status);
+            return;
+        }
+
+        const jsText = await response.text();
+        const match = jsText.match(/const APP_VERSION = '([^']+)'/);
+        if (!match) {
+            console.log('Version check: APP_VERSION not found in planner.js');
+            return;
+        }
+
+        const latestVersion = match[1];
+        const updateBadge = document.getElementById('updateBadge');
+        if (!updateBadge) return;
+
+        if (latestVersion === APP_VERSION) {
+            // Already on latest; hide badge just in case
+            updateBadge.style.display = 'none';
+            return;
+        }
+
+        const currentParts = APP_VERSION.split('.').map(Number);
+        const latestParts = latestVersion.split('.').map(Number);
+        let isNewer = false;
+        for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
+            const curr = currentParts[i] || 0;
+            const latest = latestParts[i] || 0;
+            if (latest > curr) {
+                isNewer = true;
+                break;
+            } else if (latest < curr) {
+                break;
             }
+        }
+
+        if (isNewer) {
+            updateBadge.style.display = 'inline-block';
+            console.log(`✓ New version available: ${latestVersion} (current: ${APP_VERSION})`);
         }
     } catch (err) {
         console.log('Could not check for version update:', err);

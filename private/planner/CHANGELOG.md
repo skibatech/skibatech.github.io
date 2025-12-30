@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.10] - 2025-12-30
+
+### Fixed
+- **Version Polling**: Update checker now reads planner.js (where APP_VERSION is defined) so the UPDATE badge appears correctly
+
 ## [2.1.9] - 2025-12-30
 
 ### Improved
