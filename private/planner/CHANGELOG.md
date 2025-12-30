@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2025-12-30
+
+### Fixed
+- **Card menu button accessibility**: Added z-index to card headers and menu buttons to prevent them from being hidden behind other cards when resizing
+
 ## [2.2.0] - 2025-12-30
 
 ### Added

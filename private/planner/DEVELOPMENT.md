@@ -17,32 +17,34 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.1.50
-- **Last Commit**: "v2.1.50: Fix vertical bars chart auto-resize container"
+- **Last Committed Version**: 2.2.0
+- **Last Commit**: "v2.2.0: Add drag-and-drop card reordering and resize options"
 - **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.2.0 (in progress)
+- **Current Working Version**: 2.2.1 (in progress)
 
 ## Version History (Most Recent First)
 
-### v2.2.0 (In Progress)
+### v2.2.1 (In Progress)
 **Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
 **Changes**:
-- Dashboard card drag-and-drop reordering with visual feedback
-- Card resize options: 1x Normal, 2x Wide, Full Width (accessible via card menu ⋯)
-- Layout persistence: cardOrderPrefs and cardSizePrefs saved to localStorage
-- New functions: initCardDragDrop(), handleCardDragStart/Over/Drop/End(), applyCardLayoutPreferences(), selectCardSize()
-- CSS classes: card-size-normal, card-size-wide, card-size-full
-- Expanded card menu to show both Chart Type and Card Size sections
+- Fixed z-index stacking for card headers and menu buttons to prevent overlap when cards reflow after resizing
+- Added `position: relative; z-index: 10;` to .dashboard-card-header
+- Added `position: relative; z-index: 11;` to .card-menu-btn
 **Files Modified**:
-- `planner.js`: APP_VERSION updated to 2.2.0, drag-drop handlers, card size logic, layout persistence
-- `planner.css`: Card size classes with grid-column span rules
-- `index.html`: Cache-bust versions updated to v=2.2.0
-- `CHANGELOG.md`: v2.2.0 entry added
+- `planner.js`: APP_VERSION updated to 2.2.1
+- `planner.css`: Added z-index values to card header and menu button
+- `index.html`: Cache-bust versions updated to v=2.2.1
+- `CHANGELOG.md`: v2.2.1 entry added
 - `DEVELOPMENT.md`: Updated status tracking
 **Git Command When Ready**:
 ```powershell
-git add private/planner/planner.js private/planner/planner.css private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.2.0: Add drag-and-drop card reordering and resize options"; git push origin main
+git add private/planner/planner.js private/planner/planner.css private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.2.1: Fix card menu button z-index to prevent overlap"; git push origin main
 ```
+
+### v2.2.0 (Committed ✅)
+- Dashboard card drag-and-drop reordering with visual feedback
+- Card resize options: 1x Normal, 2x Wide, Full Width
+- Layout persistence with localStorage
 
 ### v2.1.50 (Committed ✅)
 - Fixed vertical bars chart container: Changed from fixed height to flexible min-height

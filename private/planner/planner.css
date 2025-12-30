@@ -1592,6 +1592,8 @@ body.dark-mode .editable-cell.editing {
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 8px;
+    position: relative;
+    z-index: 10;
 }
 
 .card-menu-btn {
@@ -1603,6 +1605,8 @@ body.dark-mode .editable-cell.editing {
     cursor: pointer;
     font-weight: 700;
     line-height: 1;
+    position: relative;
+    z-index: 11;
 }
 
 .card-menu-btn:hover {
