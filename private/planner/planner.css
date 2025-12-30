@@ -1033,8 +1033,8 @@ body.unauthenticated #refreshBtn {
     justify-content: center;
     text-align: left;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--compass-border);
+    background: transparent;
+    border: none;
     border-radius: 4px;
     padding: 6px 10px;
 }
@@ -1043,6 +1043,7 @@ body.unauthenticated #refreshBtn {
     font-size: 12px;
     color: var(--compass-text);
     white-space: nowrap;
+    font-weight: 600;
 }
 
 .compass-date-range input {
@@ -1056,6 +1057,7 @@ body.unauthenticated #refreshBtn {
     background: var(--bg-secondary);
     color: var(--text-primary);
     height: 28px;
+    font-weight: 600;
 }
 
 .compass-section {

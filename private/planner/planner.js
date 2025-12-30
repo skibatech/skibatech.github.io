@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.41'; // Add configurable update check interval
+const APP_VERSION = '2.1.42'; // Remove white outline from compass date, bold date and text
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
