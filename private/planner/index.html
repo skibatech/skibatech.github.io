@@ -171,37 +171,39 @@
         </div>
 
         <div id="dashboardContainer" style="display:none;">
-            <div class="dashboard-header">
-                <div>
-                    <div class="dashboard-title">Dashboard</div>
-                    <div class="dashboard-subtitle">Uses current filters (View, Group by, Filter, Show completed)</div>
+            <div class="dashboard-wrapper">
+                <div class="dashboard-header">
+                    <div>
+                        <div class="dashboard-title">Dashboard</div>
+                        <div class="dashboard-subtitle">Uses current filters (View, Group by, Filter, Show completed)</div>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button class="ghost-btn" onclick="exportDashboardCsv()">Export CSV</button>
+                    </div>
                 </div>
-                <div class="dashboard-actions">
-                    <button class="ghost-btn" onclick="exportDashboardCsv()">Export CSV</button>
-                </div>
-            </div>
-            <div id="dashboardSummary" class="dashboard-summary"></div>
-            <div id="dashboardEmpty" class="dashboard-empty" style="display:none;">No tasks to summarize. Adjust filters or sign in.</div>
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <div class="dashboard-card-title">Progress</div>
-                    <div id="chartProgress" class="bar-group"></div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-title">Priority</div>
-                    <div id="chartPriority" class="bar-group"></div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-title">Due date timeline</div>
-                    <div id="chartDue" class="bar-group"></div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-title">Assignee load (top 8)</div>
-                    <div id="chartAssignees" class="bar-group"></div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-title">Themes (top 10)</div>
-                    <div id="chartThemes" class="bar-group"></div>
+                <div id="dashboardSummary" class="dashboard-summary"></div>
+                <div id="dashboardEmpty" class="dashboard-empty" style="display:none;">No tasks to summarize. Adjust filters or sign in.</div>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">Progress</div>
+                        <div id="chartProgress" class="bar-group"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">Priority</div>
+                        <div id="chartPriority" class="bar-group"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">Due date timeline</div>
+                        <div id="chartDue" class="bar-group"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">Assignee load (top 8)</div>
+                        <div id="chartAssignees" class="bar-group"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">Themes (top 10)</div>
+                        <div id="chartThemes" class="bar-group"></div>
+                    </div>
                 </div>
             </div>
         </div>
