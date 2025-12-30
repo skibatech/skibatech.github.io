@@ -902,8 +902,8 @@ body.unauthenticated #refreshBtn {
     filter: brightness(1.05);
 }
 .icon-btn svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     fill: currentColor;
 }
 .color-overlay {
@@ -917,9 +917,11 @@ body.unauthenticated #refreshBtn {
     padding: 0;
 }
 .icon-text {
-    font-size: 22px;
+    font-size: 20px;
     line-height: 1;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .icon-swatch {
     width: 18px !important;
@@ -931,8 +933,11 @@ body.unauthenticated #refreshBtn {
 }
 .icon-btn.icon-cancel {
     color: var(--compass-text);
-    font-size: 22px;
+    font-size: 26px;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .compass-header h2 {

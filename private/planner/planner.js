@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.59'; // Admin help now exactly matches README (removed internal note, added security sections)
+const APP_VERSION = '2.0.60'; // Compass header: palette, save, X icons now same size (20px) and aligned
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
