@@ -1,5 +1,6 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.22'; // Compass default visibility fix; dashboard grid/layout tweaks remain
+const APP_VERSION = '2.1.23'; // Update refresh uses server version bust; dashboard grid allows more columns; labels wrap
+let latestAvailableVersion = null;
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1066,6 +1067,7 @@ async function checkForVersionUpdate() {
         if (!match) return;
 
         const latestVersion = match[1];
+        latestAvailableVersion = latestVersion;
         const updateBadge = document.getElementById('updateBadge');
         if (!updateBadge) return;
 
@@ -1098,7 +1100,8 @@ async function checkForVersionUpdate() {
 // Hard refresh the page (clears cache)
 async function doHardRefresh() {
     const bust = Date.now();
-    const target = `${window.location.origin}${window.location.pathname}?v=${APP_VERSION}&bust=${bust}`;
+    const targetVersion = latestAvailableVersion || APP_VERSION;
+    const target = `${window.location.origin}${window.location.pathname}?v=${targetVersion}&bust=${bust}`;
 
     // Best-effort cache clear
     try {
@@ -1113,7 +1116,7 @@ async function doHardRefresh() {
     // Pre-fetch core assets with cache-bust
     const preload = async (url) => {
         try {
-            await fetch(`${url}?bust=${bust}`, { cache: 'no-store' });
+            await fetch(`${url}?bust=${targetVersion}-${bust}`, { cache: 'no-store' });
         } catch (e) { /* ignore */ }
     };
     await Promise.all([
