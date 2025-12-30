@@ -308,11 +308,11 @@ button:disabled {
     cursor: col-resize;
     user-select: none;
     z-index: 1;
-    background: rgba(0, 120, 212, 0.15);
+    border-right: 1px solid transparent;
 }
 
 .resize-handle:hover {
-    background: rgba(0, 120, 212, 0.4);
+    border-right: 2px solid rgba(0, 120, 212, 0.6);
 }
 
 .sortable-header {

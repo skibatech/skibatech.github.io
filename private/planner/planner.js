@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.63'; // Compass: replace disk icon with checkmark for better alignment
+const APP_VERSION = '2.0.64'; // Change resize handle from blue rectangle to thin border line
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
