@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.11'; // Archive sync and version bump
+const APP_VERSION = '2.1.12'; // Cache-busted hard refresh for update badge
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1097,15 +1097,18 @@ async function checkForVersionUpdate() {
 
 // Hard refresh the page (clears cache)
 function doHardRefresh() {
-    // Clear all caches and do a hard refresh
+    // Clear caches then force a cache-busted reload
+    const bust = Date.now();
+    const go = () => {
+        const url = `${window.location.origin}${window.location.pathname}?v=${bust}`;
+        window.location.replace(url);
+    };
+
     if ('caches' in window) {
-        caches.keys().then(cacheNames => {
-            cacheNames.forEach(cacheName => caches.delete(cacheName));
-        });
+        caches.keys().then(names => Promise.all(names.map(n => caches.delete(n)))).finally(go);
+    } else {
+        go();
     }
-    
-    // Hard refresh: Ctrl+Shift+R behavior
-    location.reload(true);
 }
 
 // Evaluate whether the current user has admin privileges
