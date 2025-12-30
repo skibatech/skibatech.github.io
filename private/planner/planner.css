@@ -1583,7 +1583,7 @@ body.dark-mode .editable-cell.editing {
 
 .bar-row {
     display: grid;
-    grid-template-columns: minmax(140px, 1fr) 3fr auto;
+    grid-template-columns: minmax(220px, 2fr) 2fr auto;
     align-items: center;
     gap: 8px;
     padding: 4px 6px;

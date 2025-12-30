@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.27] - 2025-12-30
+
+### Changed
+- **Dashboard Layout**: Bar rows give more width to labels (wider first column, slightly smaller bar column) to reduce truncation
+
 ## [2.1.26] - 2025-12-30
 
 ### Changed
