@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.21'; // Dashboard grid allows 3+ columns; bar labels wrap; update refresh uses versioned bust
+const APP_VERSION = '2.1.22'; // Compass default visibility fix; dashboard grid/layout tweaks remain
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3844,7 +3844,7 @@ async function saveOptions() {
     localStorage.setItem('plannerCompassVisible', showCompassDefault ? 'true' : 'false');
     
     // Save to To Do for sync
-    await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos);
+    await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos, showCompassDefault);
 
     // Apply compass visibility and position
     if (showCompassDefault) {
@@ -3893,7 +3893,7 @@ window.closeOptions = closeOptions;
 window.switchOptionsTab = switchOptionsTab;
 window.saveOptions = saveOptions;
 
-async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos) {
+async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos, showCompassDefault) {
     if (!optionsListId || !accessToken) return;
     
     try {
@@ -3925,6 +3925,7 @@ async function saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault
         await createTask('OPTION_DEFAULT_GROUPBY', defaultGroupBy);
         await createTask('OPTION_SHOW_COMPLETED', showCompletedDefault ? 'true' : 'false');
         await createTask('OPTION_COMPASS_POSITION', compassPos || 'right');
+        await createTask('OPTION_COMPASS_VISIBLE', showCompassDefault ? 'true' : 'false');
         
         // Delete old tasks
         await Promise.all(existingTasks.map(task =>
@@ -4282,7 +4283,8 @@ let compassData = {
 };
 let compassListId = null;
 let optionsListId = null;
-let compassVisible = localStorage.getItem('plannerCompassVisible') === 'true';
+const storedCompassVisible = localStorage.getItem('plannerCompassVisible');
+let compassVisible = storedCompassVisible === null ? true : storedCompassVisible === 'true';
 let compassEditMode = false;
 let compassAutoSaveTimer = null;
 
@@ -4419,6 +4421,12 @@ async function loadOptionsData() {
             compassPosition = compassPosTask.body.content;
             localStorage.setItem('plannerCompassPosition', compassPosition);
             applyCompassPosition();
+        }
+
+        const compassVisibleTask = tasks.find(t => t.title === 'OPTION_COMPASS_VISIBLE');
+        if (compassVisibleTask && compassVisibleTask.body?.content) {
+            compassVisible = compassVisibleTask.body.content === 'true';
+            localStorage.setItem('plannerCompassVisible', compassVisible ? 'true' : 'false');
         }
     } catch (err) {
         console.error('Failed to load options:', err);

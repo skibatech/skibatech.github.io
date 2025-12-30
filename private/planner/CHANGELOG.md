@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Bar Labels**: Wrapping restored (no ellipsis) for better readability
 - **Update Refresh**: Hard refresh uses versioned cache-bust URL and no-store preloads for better update reliability
 
+## [2.1.22] - 2025-12-30
+
+### Fixed
+- **Weekly Compass Default**: Persisted default visibility now loads correctly (defaults to on when unset; saved to To Do and localStorage)
+
 ## [2.1.19] - 2025-12-30
 
 ### Changed
