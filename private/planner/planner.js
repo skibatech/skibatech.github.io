@@ -1193,15 +1193,20 @@ async function loadTasks() {
         
         // Collect all unique user IDs from assignments and extract any available names
         const userIds = new Set();
+        console.log('🔎 Scanning tasks for assignment metadata...');
         tasks.forEach(task => {
             if (task.assignments) {
                 Object.keys(task.assignments).forEach(userId => {
                     userIds.add(userId);
                     // Try to extract displayName from assignment metadata
                     const assignment = task.assignments[userId];
+                    console.log(`  Task "${task.title.substring(0, 30)}..." assignment:`, assignment);
                     if (assignment?.displayName && !userDetailsMap[userId]) {
                         userDetailsMap[userId] = assignment.displayName;
-                        console.log(`  ✓ ${assignment.displayName} (from assignment metadata)`);
+                        console.log(`    ✓ Found name in assignment: ${assignment.displayName}`);
+                    } else if (assignment?.assignedBy?.user?.displayName) {
+                        userDetailsMap[userId] = assignment.assignedBy.user.displayName;
+                        console.log(`    ✓ Found name in assignedBy: ${assignment.assignedBy.user.displayName}`);
                     }
                 });
             }
@@ -1295,23 +1300,35 @@ async function loadTasks() {
                     { headers: { 'Authorization': `Bearer ${accessToken}` } }
                 ).then(r => r.ok ? r.json() : null);
                 
+                console.log('📊 Plan data structure:', planData?.container);
+                
                 if (planData?.container?.containerId) {
                     const groupId = planData.container.containerId;
                     console.log('📋 Fetching members of group:', groupId.substring(0, 8) + '...');
-                    const membersData = await fetchGraph(
+                    const response = await fetchGraph(
                         `https://graph.microsoft.com/v1.0/groups/${groupId}/members`,
                         { headers: { 'Authorization': `Bearer ${accessToken}` } }
-                    ).then(r => r.ok ? r.json() : null);
+                    );
                     
-                    if (membersData?.value) {
-                        membersData.value.forEach(m => {
-                            if (m.id && m.displayName) {
-                                userDetailsMap[m.id] = m.displayName;
-                                console.log(`  ✓ ${m.displayName} (group member)`);
-                            }
-                        });
-                        return true;
+                    if (response.ok) {
+                        const membersData = await response.json();
+                        console.log('✅ Group members response:', membersData);
+                        if (membersData?.value && membersData.value.length > 0) {
+                            membersData.value.forEach(m => {
+                                if (m.id && m.displayName) {
+                                    userDetailsMap[m.id] = m.displayName;
+                                    console.log(`  ✓ ${m.displayName} (group member)`);
+                                }
+                            });
+                            return true;
+                        } else {
+                            console.log('⚠️ Group members list is empty');
+                        }
+                    } else {
+                        console.error('❌ Group members fetch failed:', response.status, response.statusText);
                     }
+                } else {
+                    console.log('⚠️ No container found in plan data');
                 }
             } catch (e) {
                 console.warn('Could not fetch group members:', e.message);
