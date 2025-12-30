@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.65'; // Increase resize handle z-index to prevent accidental sorting
+const APP_VERSION = '2.0.66'; // Add click event prevention to resize handles
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1359,31 +1359,31 @@ function renderByBucket(container, buckets, tasks) {
                     <div><input type="checkbox" class="select-all-checkbox" ${allSelected && groupTasks.length > 0 ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
                     <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${group.id}', 'id')">
                         ID ${sortArrows('id')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-id')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-id')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${group.id}', 'title')">
                         Task name ${sortArrows('title')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="sortable-header col-assigned" onclick="event.stopPropagation(); sortBucket('${group.id}', 'assigned')">
                         Assigned to ${sortArrows('assigned')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-assigned')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-assigned')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="sortable-header col-start-date" onclick="event.stopPropagation(); sortBucket('${group.id}', 'startDate')">
                         Start date ${sortArrows('startDate')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-start-date')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-start-date')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="sortable-header col-due-date" onclick="event.stopPropagation(); sortBucket('${group.id}', 'dueDate')">
                         Due date ${sortArrows('dueDate')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-due-date')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-due-date')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="sortable-header col-progress" onclick="event.stopPropagation(); sortBucket('${group.id}', 'progress')">
                         Progress ${sortArrows('progress')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-progress')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-progress')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="sortable-header col-priority" onclick="event.stopPropagation(); sortBucket('${group.id}', 'priority')">
                         Priority ${sortArrows('priority')}
-                        <div class="resize-handle" onmousedown="startResize(event, 'col-priority')"></div>
+                        <div class="resize-handle" onmousedown="startResize(event, 'col-priority')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
                     <div class="col-labels">Themes</div>
                 </div>

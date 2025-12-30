@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.0.66] - 2025-12-30
+
+### Fixed
+- **Column Resize**: Added click event prevention to resize handles to stop sort from triggering when releasing mouse after resize
+
 ## [2.0.65] - 2025-12-30
 
 ### Fixed
