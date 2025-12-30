@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.36'; // Extract names from assignments and fetch group members first
+const APP_VERSION = '2.1.37'; // Add detailed assignment metadata and group members logging
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
