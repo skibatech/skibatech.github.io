@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.6] - 2025-12-30
+
+### Improved
+- **Version Update Check**: Automatically checks for new versions on startup
+- Shows red UPDATE badge next to version if newer version is available
+- Badge is clickable to perform a hard refresh (clears cache and reloads)
+- Update check runs 2 seconds after page load to avoid startup lag
+
 ## [2.1.5] - 2025-12-30
 
 ### Improved

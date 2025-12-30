@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.5'; // Detailed loading status messages during initial load
+const APP_VERSION = '2.1.6'; // Add version update check with hard refresh
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -955,6 +955,8 @@ function initializeVersion() {
     if (versionDisplay) {
         versionDisplay.textContent = APP_VERSION;
         console.log('✓ Version initialized:', APP_VERSION);
+        // Check for updates after a short delay to avoid startup lag
+        setTimeout(checkForVersionUpdate, 2000);
     } else {
         console.warn('⚠️ Version display element not found');
     }
@@ -1039,6 +1041,62 @@ async function updateAuthUI(isAuthenticated) {
         document.body.classList.add('unauthenticated');
         if (adminModeItem) adminModeItem.style.display = 'none';
     }
+    
+    // Check for new version
+    checkForVersionUpdate();
+}
+
+// Check if a new version is available
+async function checkForVersionUpdate() {
+    try {
+        // Fetch the current index.html to extract version
+        const response = await fetch('./index.html?t=' + Date.now(), { cache: 'no-store' });
+        if (response.ok) {
+            const html = await response.text();
+            const versionMatch = html.match(/const APP_VERSION = '([^']+)'/);
+            if (versionMatch) {
+                const latestVersion = versionMatch[1];
+                const updateBadge = document.getElementById('updateBadge');
+                
+                // Simple version comparison: split by dots and compare numerically
+                if (latestVersion !== APP_VERSION) {
+                    const currentParts = APP_VERSION.split('.').map(Number);
+                    const latestParts = latestVersion.split('.').map(Number);
+                    
+                    let isNewer = false;
+                    for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
+                        const curr = currentParts[i] || 0;
+                        const latest = latestParts[i] || 0;
+                        if (latest > curr) {
+                            isNewer = true;
+                            break;
+                        } else if (latest < curr) {
+                            break;
+                        }
+                    }
+                    
+                    if (isNewer && updateBadge) {
+                        updateBadge.style.display = 'inline-block';
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        console.log('Could not check for version update:', err);
+    }
+}
+
+// Hard refresh the page (clears cache)
+function doHardRefresh() {
+    // Clear all caches and do a hard refresh
+    if ('caches' in window) {
+        caches.keys().then(cacheNames => {
+            cacheNames.forEach(cacheName => caches.delete(cacheName));
+        });
+    }
+    
+    // Hard refresh: Ctrl+Shift+R behavior
+    location.reload(true);
 }
 
 // Evaluate whether the current user has admin privileges
