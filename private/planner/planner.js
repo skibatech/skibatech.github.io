@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.49'; // Add pie, donut, and vertical bar chart types
+const APP_VERSION = '2.1.50'; // Add pie, donut, and vertical bar chart types
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2430,7 +2430,7 @@ function renderBarGroup(containerId, data, filterType) {
     // Vertical bars
     if (visual === 'vertical') {
         const chartHtml = `
-            <div style="display:flex; align-items:flex-end; justify-content:center; gap:8px; height:200px; padding:16px 8px; background:var(--bg-primary); border-radius:4px;">
+            <div style="display:flex; align-items:flex-end; justify-content:center; gap:8px; min-height:200px; padding:16px 8px; background:var(--bg-primary); border-radius:4px;">
                 ${data.map(item => {
                     const pct = Math.max(10, Math.round((item.value / maxValue) * 100));
                     const height = (pct / 100) * 160;

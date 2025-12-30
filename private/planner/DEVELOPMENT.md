@@ -17,27 +17,29 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.1.48
-- **Last Commit**: "v2.1.48: Implement proper chart visualizations (Pie, Donut, Vertical Bars, Horizontal Bars)"
+- **Last Committed Version**: 2.1.49
+- **Last Commit**: "v2.1.49: Log all status updates to F12 Console"
 - **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.1.49 (in progress)
+- **Current Working Version**: 2.1.50 (in progress)
 
 ## Version History (Most Recent First)
 
-### v2.1.49 (In Progress)
+### v2.1.50 (In Progress)
 **Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
 **Changes**:
-- Console logging for status updates: All setStatus() calls now output to F12 Console
-- Added `console.log('Status: ${text}')` in setStatus() function
+- Fixed vertical bars chart container: Changed from fixed `height:200px` to flexible `min-height:200px` so it auto-resizes like Pie/Donut charts
 **Files Modified**:
-- `planner.js`: setStatus() function with console.log, APP_VERSION updated to 2.1.49
-- `index.html`: Cache-bust versions updated to v=2.1.49
-- `CHANGELOG.md`: v2.1.49 entry added
+- `planner.js`: renderBarGroup() vertical bars section, APP_VERSION updated to 2.1.50
+- `index.html`: Cache-bust versions updated to v=2.1.50
+- `CHANGELOG.md`: v2.1.50 entry added
 - `DEVELOPMENT.md`: Updated status tracking
 **Git Command When Ready**:
 ```powershell
-git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.1.49: Log all status updates to F12 Console"; git push origin main
+git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.1.50: Fix vertical bars chart auto-resize container"; git push origin main
 ```
+
+### v2.1.49 (Committed ✅)
+- Console logging for status updates: All setStatus() calls now output to F12 Console
 
 ### v2.1.48 (Committed ✅)
 - Chart visualization types: Pie, Donut, Vertical Bars, Horizontal Bars
