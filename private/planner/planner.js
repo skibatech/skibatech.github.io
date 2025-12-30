@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.10'; // Fix version polling to read planner.js
+const APP_VERSION = '2.1.11'; // Archive sync and version bump
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
