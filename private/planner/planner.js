@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.43'; // Remove verbose console logging for task metadata scanning
+const APP_VERSION = '2.1.44'; // Enlarge compass date range, change label, increase boldness
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
