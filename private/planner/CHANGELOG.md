@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.1] - 2025-12-30
+
+### Fixed
+- **Weekly Compass Layout**: Fixed compass panel positioning conflicts with new tab structure
+- Compass now properly stacks below tabs instead of overlapping
+
 ## [2.1.0] - 2025-12-30
 
 ### Added

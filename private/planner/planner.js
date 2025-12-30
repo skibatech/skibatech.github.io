@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.0'; // Dashboard tab with charts and CSV export
+const APP_VERSION = '2.1.1'; // Fix Weekly Compass layout with tab structure
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

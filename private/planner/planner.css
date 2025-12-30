@@ -824,6 +824,12 @@ body.unauthenticated #refreshBtn {
 /* Weekly Compass Panel */
 #mainContentWrapper {
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#tasksView {
+    display: flex;
     gap: 20px;
 }
 
@@ -841,10 +847,10 @@ body.unauthenticated #refreshBtn {
     border-radius: 8px;
     padding: 12px;
     box-shadow: 0 2px 8px var(--shadow);
-    max-height: calc(100vh - 140px);
+    max-height: calc(100vh - 180px);
     overflow-y: auto;
     position: sticky;
-    bottom: 20px;
+    top: 20px;
 }
 
 .compass-panel.compass-left {
