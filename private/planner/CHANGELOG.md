@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.0.68] - 2025-12-30
+
+### Fixed
+- **Column Resize**: Added capture-phase click guard during resize to fully block header sort triggers
+
+## [2.0.67] - 2025-12-30
+
+### Fixed
+- **Column Resize**: Prevent sorting while resizing by guarding header clicks when resize is active
+
 ## [2.0.66] - 2025-12-30
 
 ### Fixed

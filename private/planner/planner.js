@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.66'; // Add click event prevention to resize handles
+const APP_VERSION = '2.0.68'; // Block header sorts while resizing columns using capture click guard
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -211,6 +211,7 @@ const THEME_DEFAULTS = {
 };
 let taskSequentialIds = {}; // { taskId: number } assigned by createdDateTime order
 let selectedTasks = new Set(); // Track selected tasks for bulk operations
+let isResizing = false; // Suppress sort clicks while resizing columns
 let resizingColumn = null;
 let resizeStartX = 0;
 let resizeStartWidth = 0;
@@ -394,6 +395,8 @@ function getThemeDisplayNameWithPrefix(categoryId) {
 function startResize(event, columnClass) {
     event.preventDefault();
     event.stopPropagation();
+    isResizing = true;
+    document.addEventListener('click', blockClickDuringResize, true); // capture clicks while resizing
     
     resizingColumn = columnClass;
     resizeStartX = event.clientX;
@@ -424,10 +427,31 @@ function handleResize(event) {
     });
 }
 
+function headerSort(event, groupId, field) {
+    if (isResizing) {
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+    }
+    event.stopPropagation();
+    sortBucket(groupId, field);
+}
+
+function blockClickDuringResize(event) {
+    if (!isResizing) return;
+    event.stopPropagation();
+    event.preventDefault();
+}
+
 function stopResize() {
     resizingColumn = null;
     document.removeEventListener('mousemove', handleResize);
     document.removeEventListener('mouseup', stopResize);
+    // Delay clearing isResizing so the mouseup click does not trigger sort
+    setTimeout(() => {
+        isResizing = false;
+        document.removeEventListener('click', blockClickDuringResize, true);
+    }, 50);
 }
 
 function applyColumnWidths() {
@@ -1357,31 +1381,31 @@ function renderByBucket(container, buckets, tasks) {
             <div class="task-list">
                 <div class="column-headers">
                     <div><input type="checkbox" class="select-all-checkbox" ${allSelected && groupTasks.length > 0 ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleSelectAll(this)"></div>
-                    <div class="sortable-header col-id" onclick="event.stopPropagation(); sortBucket('${group.id}', 'id')">
+                    <div class="sortable-header col-id" onclick="headerSort(event, '${group.id}', 'id')">
                         ID ${sortArrows('id')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-id')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
-                    <div class="sortable-header col-task-name" onclick="event.stopPropagation(); sortBucket('${group.id}', 'title')">
+                    <div class="sortable-header col-task-name" onclick="headerSort(event, '${group.id}', 'title')">
                         Task name ${sortArrows('title')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-task-name')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
-                    <div class="sortable-header col-assigned" onclick="event.stopPropagation(); sortBucket('${group.id}', 'assigned')">
+                    <div class="sortable-header col-assigned" onclick="headerSort(event, '${group.id}', 'assigned')">
                         Assigned to ${sortArrows('assigned')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-assigned')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
-                    <div class="sortable-header col-start-date" onclick="event.stopPropagation(); sortBucket('${group.id}', 'startDate')">
+                    <div class="sortable-header col-start-date" onclick="headerSort(event, '${group.id}', 'startDate')">
                         Start date ${sortArrows('startDate')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-start-date')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
-                    <div class="sortable-header col-due-date" onclick="event.stopPropagation(); sortBucket('${group.id}', 'dueDate')">
+                    <div class="sortable-header col-due-date" onclick="headerSort(event, '${group.id}', 'dueDate')">
                         Due date ${sortArrows('dueDate')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-due-date')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
-                    <div class="sortable-header col-progress" onclick="event.stopPropagation(); sortBucket('${group.id}', 'progress')">
+                    <div class="sortable-header col-progress" onclick="headerSort(event, '${group.id}', 'progress')">
                         Progress ${sortArrows('progress')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-progress')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
-                    <div class="sortable-header col-priority" onclick="event.stopPropagation(); sortBucket('${group.id}', 'priority')">
+                    <div class="sortable-header col-priority" onclick="headerSort(event, '${group.id}', 'priority')">
                         Priority ${sortArrows('priority')}
                         <div class="resize-handle" onmousedown="startResize(event, 'col-priority')" onclick="event.stopPropagation(); event.preventDefault();"></div>
                     </div>
