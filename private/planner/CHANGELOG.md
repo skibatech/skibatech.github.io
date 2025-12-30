@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.8] - 2025-12-30
+
+### Improved
+- **Background Update Polling**: Version check now runs every 60 seconds instead of just once
+- Shows UPDATE badge silently when new version is available - no page interruption
+- User can click UPDATE badge whenever ready to hard refresh and get new version
+- Better UX for long sessions - users aware of updates without workflow interruption
+
 ## [2.1.7] - 2025-12-30
 
 ### Improved

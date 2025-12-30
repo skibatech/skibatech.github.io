@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.7'; // Add option to default show/hide Weekly Compass
+const APP_VERSION = '2.1.8'; // Background polling for version updates every 60 seconds
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -957,6 +957,8 @@ function initializeVersion() {
         console.log('✓ Version initialized:', APP_VERSION);
         // Check for updates after a short delay to avoid startup lag
         setTimeout(checkForVersionUpdate, 2000);
+        // Then check periodically every 60 seconds
+        setInterval(checkForVersionUpdate, 60000);
     } else {
         console.warn('⚠️ Version display element not found');
     }
@@ -1058,8 +1060,8 @@ async function checkForVersionUpdate() {
                 const latestVersion = versionMatch[1];
                 const updateBadge = document.getElementById('updateBadge');
                 
-                // Simple version comparison: split by dots and compare numerically
-                if (latestVersion !== APP_VERSION) {
+                // Only show badge if server version is newer than current version
+                if (latestVersion !== APP_VERSION && updateBadge) {
                     const currentParts = APP_VERSION.split('.').map(Number);
                     const latestParts = latestVersion.split('.').map(Number);
                     
@@ -1075,8 +1077,9 @@ async function checkForVersionUpdate() {
                         }
                     }
                     
-                    if (isNewer && updateBadge) {
+                    if (isNewer) {
                         updateBadge.style.display = 'inline-block';
+                        console.log(`✓ New version available: ${latestVersion} (current: ${APP_VERSION})`);
                     }
                 }
             }
