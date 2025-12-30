@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.64'; // Change resize handle from blue rectangle to thin border line
+const APP_VERSION = '2.0.65'; // Increase resize handle z-index to prevent accidental sorting
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

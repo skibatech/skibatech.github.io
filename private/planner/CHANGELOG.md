@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.0.65] - 2025-12-30
+
+### Fixed
+- **Column Resize**: Increased z-index of resize handle to prevent accidental sorting when grabbing to resize
+
 ## [2.0.64] - 2025-12-30
 
 ### Changed
