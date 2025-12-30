@@ -7,10 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.1.20] - 2025-12-30
+## [2.1.24] - 2025-12-30
+
+### Fixed
+- **Update Delivery**: index.html now cache-busts planner.js/planner.css with version query strings so clicking UPDATE loads the fresh assets
+
+## [2.1.25] - 2025-12-30
 
 ### Changed
-- **Weekly Compass**: Date input width tightened (min 140px, max 190px) to match expected entries
+- **Dashboard Layout**: Summary tiles and cards use smaller min widths (120px stats, 260px cards; 320px on very wide screens) so stats stay single-box and charts can expand to 3–4 columns
+
+## [2.1.23] - 2025-12-30
+
+### Changed
+- **Update Refresh**: Uses the server version when launching the cache-busted reload to avoid sticking on the prior build; preloads use versioned bust tags
+- **Dashboard Layout**: Card min width reduced (300px base, 360px on wide screens) to allow 3–4 columns
+
+## [2.1.22] - 2025-12-30
+
+### Fixed
+- **Weekly Compass Default**: Persisted default visibility now loads correctly (defaults to on when unset; saved to To Do and localStorage)
 
 ## [2.1.21] - 2025-12-30
 
@@ -19,21 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Bar Labels**: Wrapping restored (no ellipsis) for better readability
 - **Update Refresh**: Hard refresh uses versioned cache-bust URL and no-store preloads for better update reliability
 
-## [2.1.22] - 2025-12-30
-
-### Fixed
-- **Weekly Compass Default**: Persisted default visibility now loads correctly (defaults to on when unset; saved to To Do and localStorage)
-
-## [2.1.23] - 2025-12-30
+## [2.1.20] - 2025-12-30
 
 ### Changed
-- **Update Refresh**: Uses the server version when launching the cache-busted reload to avoid sticking on the prior build; preloads use versioned bust tags
-- **Dashboard Layout**: Card min width reduced (300px base, 360px on wide screens) to allow 3–4 columns
-
-## [2.1.24] - 2025-12-30
-
-### Fixed
-- **Update Delivery**: index.html now cache-busts planner.js/planner.css with version query strings so clicking UPDATE loads the fresh assets
+- **Weekly Compass**: Date input width tightened (min 140px, max 190px) to match expected entries
 
 ## [2.1.19] - 2025-12-30
 
@@ -148,13 +153,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Dashboard Layout**: Fixed horizontal sizing issues with responsive grid
-
-## [2.0.53] - 2025-12-29
-
-### Changed
-- **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
-- Bar chart labels now properly truncate with ellipsis
-- Improved spacing and hover states on chart bars
 
 ## [2.1.1] - 2025-12-30
 
