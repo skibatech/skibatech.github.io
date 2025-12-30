@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.19] - 2025-12-30
+
+### Changed
+- **Dashboard Layout**: Grid now uses min widths that allow 3–4 columns on typical screens (420px base, 480px on very wide viewports); dense flow reduces gaps
+
 ## [2.1.18] - 2025-12-30
 
 ### Changed

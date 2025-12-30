@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.18'; // Dashboard cards wider; labels back to single-line ellipsis
+const APP_VERSION = '2.1.19'; // Dashboard grid allows 3-4 columns with responsive min widths
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

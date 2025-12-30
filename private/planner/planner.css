@@ -1545,8 +1545,15 @@ body.dark-mode .editable-cell.editing {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
     gap: 12px;
+    grid-auto-flow: row dense;
+}
+
+@media (min-width: 1800px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    }
 }
 
 .dashboard-card {
