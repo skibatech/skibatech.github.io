@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.46] - 2025-12-30
+
+### Fixed
+- **UPDATE AVAILABLE badge positioning**: Increased left margin from 8px to 12px to prevent overlap with version number
+
 ## [2.1.45] - 2025-12-30
 
 ### Changed

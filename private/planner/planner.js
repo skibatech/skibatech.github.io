@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.45'; // Clean up verbose console logging, keep informational headers
+const APP_VERSION = '2.1.46'; // Increase margin on UPDATE AVAILABLE badge
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
