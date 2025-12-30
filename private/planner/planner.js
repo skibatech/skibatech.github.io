@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.20'; // Compass date input tightened; dashboard grid remains responsive
+const APP_VERSION = '2.1.21'; // Dashboard grid allows 3+ columns; bar labels wrap; update refresh uses versioned bust
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1098,7 +1098,7 @@ async function checkForVersionUpdate() {
 // Hard refresh the page (clears cache)
 async function doHardRefresh() {
     const bust = Date.now();
-    const target = `${window.location.origin}${window.location.pathname}?v=${bust}`;
+    const target = `${window.location.origin}${window.location.pathname}?v=${APP_VERSION}&bust=${bust}`;
 
     // Best-effort cache clear
     try {
@@ -1113,7 +1113,7 @@ async function doHardRefresh() {
     // Pre-fetch core assets with cache-bust
     const preload = async (url) => {
         try {
-            await fetch(`${url}?bust=${bust}`, { cache: 'reload' });
+            await fetch(`${url}?bust=${bust}`, { cache: 'no-store' });
         } catch (e) { /* ignore */ }
     };
     await Promise.all([

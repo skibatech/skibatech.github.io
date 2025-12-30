@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Weekly Compass**: Date input width tightened (min 140px, max 190px) to match expected entries
 
+## [2.1.21] - 2025-12-30
+
+### Changed
+- **Dashboard Layout**: Grid min width reduced (340px base, 420px on very wide screens) to allow 3–4 columns; dense flow retained
+- **Bar Labels**: Wrapping restored (no ellipsis) for better readability
+- **Update Refresh**: Hard refresh uses versioned cache-bust URL and no-store preloads for better update reliability
+
 ## [2.1.19] - 2025-12-30
 
 ### Changed

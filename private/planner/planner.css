@@ -1545,14 +1545,14 @@ body.dark-mode .editable-cell.editing {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 12px;
     grid-auto-flow: row dense;
 }
 
 @media (min-width: 1800px) {
     .dashboard-grid {
-        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
     }
 }
 
@@ -1594,9 +1594,9 @@ body.dark-mode .editable-cell.editing {
 .bar-label {
     font-size: 13px;
     color: var(--text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.2;
 }
 
 .bar-track {
