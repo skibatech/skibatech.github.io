@@ -5,6 +5,17 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.45] - 2025-12-30
+
+### Changed
+- **Cleaner console output**: Removed verbose data dumps from F12 Console
+  - Removed full userDetailsMap object logging
+  - Removed individual member listings (group members, batch-fetched users)
+  - Removed plan data structure dumps
+  - Removed task category details logging
+  - Kept informational headers and status messages (batch counts, member counts, etc.)
+  - Version checking logs remain unchanged
+
 ## [2.1.44] - 2025-12-30
 
 ### Changed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.44'; // Enlarge compass date range, change label, increase boldness
+const APP_VERSION = '2.1.45'; // Clean up verbose console logging, keep informational headers
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -1277,9 +1277,7 @@ async function loadTasks() {
         planMembers.forEach(m => {
             if (m && m.id && m.displayName) userDetailsMap[m.id] = m.displayName;
         });
-        console.log('📋 User details from plan members:', userDetailsMap);
         const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);
-        console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
         // Fetch remaining users via directoryObjects/getByIds in chunks, with fallback
         async function fetchUsersByIds(ids) {
             const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
@@ -1295,7 +1293,7 @@ async function loadTasks() {
                 return null; // Signal to fall back to individual fetches
             }
             const data = await r.json();
-            console.log('✅ Batch-fetched users:', data.value?.length || 0);
+            console.log('✅ Batch-fetched users: ' + (data.value?.length || 0) + ' users');
             return data.value || [];
         }
         
@@ -1324,11 +1322,9 @@ async function loadTasks() {
                     { headers: { 'Authorization': `Bearer ${accessToken}` } }
                 ).then(r => r.ok ? r.json() : null);
                 
-                console.log('📊 Plan data structure:', planData?.container);
-                
                 if (planData?.container?.containerId) {
                     const groupId = planData.container.containerId;
-                    console.log('📋 Fetching members of group:', groupId.substring(0, 8) + '...');
+                    console.log('📋 Fetching group members...');
                     const response = await fetchGraph(
                         `https://graph.microsoft.com/v1.0/groups/${groupId}/members`,
                         { headers: { 'Authorization': `Bearer ${accessToken}` } }
@@ -1336,20 +1332,19 @@ async function loadTasks() {
                     
                     if (response.ok) {
                         const membersData = await response.json();
-                        console.log('✅ Group members response:', membersData);
                         if (membersData?.value && membersData.value.length > 0) {
                             membersData.value.forEach(m => {
                                 if (m.id && m.displayName) {
                                     userDetailsMap[m.id] = m.displayName;
-                                    console.log(`  ✓ ${m.displayName} (group member)`);
                                 }
                             });
+                            console.log('✅ Group members loaded: ' + membersData.value.length + ' members');
                             return true;
                         } else {
-                            console.log('⚠️ Group members list is empty');
+                            console.log('⚠️ No group members found');
                         }
                     } else {
-                        console.error('❌ Group members fetch failed:', response.status, response.statusText);
+                        console.error('❌ Group members fetch failed: ' + response.status);
                     }
                 } else {
                     console.log('⚠️ No container found in plan data');
@@ -1382,7 +1377,6 @@ async function loadTasks() {
                         users.forEach(u => {
                             if (u && u.id && u.displayName) {
                                 userDetailsMap[u.id] = u.displayName;
-                                console.log(`  ✓ ${u.displayName} (${u.id.substring(0, 8)}...)`);
                             }
                         });
                         continue;
@@ -1395,14 +1389,13 @@ async function loadTasks() {
                         const user = await fetchUserById(userId);
                         if (user && user.displayName) {
                             userDetailsMap[user.id] = user.displayName;
-                            console.log(`  ✓ ${user.displayName} (${userId.substring(0, 8)}...)`);
                         }
                     }
                 }
             }
         }
         
-        console.log('👥 Final userDetailsMap:', userDetailsMap);
+        console.log('👥 Users loaded: ' + Object.keys(userDetailsMap).length + ' total');
         // Store users globally for assignment dropdown
         allUsers = { ...userDetailsMap };
         
@@ -2740,11 +2733,7 @@ function renderTask(task) {
     // Get categories
     const appliedCategories = task.appliedCategories || {};
     
-    // Debug logging for TEST123
-    if (task.title && task.title.includes('Microsoft Learn')) {
-        console.log('📋 Task:', task.title, '| Applied Categories:', Object.keys(appliedCategories), '| Category Descriptions:', planCategoryDescriptions);
-    }
-    
+    // Applied categories for task rendering
     const categoryBadges = Object.keys(appliedCategories).map(cat => {
         const colors = {
             'category1': '#c2185b',
