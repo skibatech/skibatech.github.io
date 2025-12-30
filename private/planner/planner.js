@@ -1,10 +1,15 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.50'; // Add pie, donut, and vertical bar chart types
+const APP_VERSION = '2.2.0'; // Drag-and-drop card reordering and resize options
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
     { id: 'pie', label: 'Pie Chart' },
     { id: 'donut', label: 'Donut Chart' }
+];
+const CARD_SIZE_OPTIONS = [
+    { id: 'normal', label: '1x Normal' },
+    { id: 'wide', label: '2x Wide' },
+    { id: 'full', label: 'Full Width' }
 ];
 let latestAvailableVersion = null;
 
@@ -139,6 +144,9 @@ let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || f
 let compassPosition = localStorage.getItem('plannerCompassPosition') || 'right'; // 'left' or 'right'
 let updateCheckIntervalSeconds = parseInt(localStorage.getItem('plannerUpdateCheckInterval') || '60'); // Update check interval in seconds (minimum 60)
 let cardVisualPrefs = JSON.parse(localStorage.getItem('plannerCardVisuals') || '{}'); // { chartId: 'bar' | 'dot' }
+let cardSizePrefs = JSON.parse(localStorage.getItem('plannerCardSizes') || '{}'); // { chartId: 'normal' | 'wide' | 'full' }
+let cardOrderPrefs = JSON.parse(localStorage.getItem('plannerCardOrder') || '[]'); // ['chartProgress', 'chartPriority', ...]
+let draggedCard = null; // Store the dragged card element
 let draggedColumnElement = null; // Store the dragged column header element
 let columnWidths = {
     'col-id': 90,
@@ -2320,12 +2328,27 @@ function openCardMenu(event, chartId) {
         document.body.appendChild(menu);
         document.addEventListener('click', closeCardMenu, { capture: true });
     }
-    const current = cardVisualPrefs[chartId] || 'bar';
-    menu.innerHTML = CARD_VISUAL_OPTIONS.map(opt => {
-        const active = opt.id === current ? 'active' : '';
-        const check = opt.id === current ? ' ✓' : '';
+    const currentVisual = cardVisualPrefs[chartId] || 'bar';
+    const currentSize = cardSizePrefs[chartId] || 'normal';
+    
+    const visualHtml = CARD_VISUAL_OPTIONS.map(opt => {
+        const active = opt.id === currentVisual ? 'active' : '';
+        const check = opt.id === currentVisual ? ' ✓' : '';
         return `<button class="card-menu-item ${active}" onclick="selectCardVisual('${chartId}','${opt.id}'); event.stopPropagation();">${opt.label}${check}</button>`;
     }).join('');
+    
+    const sizeHtml = CARD_SIZE_OPTIONS.map(opt => {
+        const active = opt.id === currentSize ? 'active' : '';
+        const check = opt.id === currentSize ? ' ✓' : '';
+        return `<button class="card-menu-item ${active}" onclick="selectCardSize('${chartId}','${opt.id}'); event.stopPropagation();">${opt.label}${check}</button>`;
+    }).join('');
+    
+    menu.innerHTML = `
+        <div style="font-weight:700; font-size:11px; color:var(--text-secondary); padding:4px 8px; border-bottom:1px solid var(--border-color);">CHART TYPE</div>
+        ${visualHtml}
+        <div style="font-weight:700; font-size:11px; color:var(--text-secondary); padding:4px 8px; border-bottom:1px solid var(--border-color); margin-top:4px;">CARD SIZE</div>
+        ${sizeHtml}
+    `;
 
     const rect = event.target.getBoundingClientRect();
     menu.style.display = 'block';
@@ -2343,6 +2366,86 @@ function selectCardVisual(chartId, visual) {
     localStorage.setItem('plannerCardVisuals', JSON.stringify(cardVisualPrefs));
     closeCardMenu();
     renderDashboard();
+}
+
+function selectCardSize(chartId, size) {
+    cardSizePrefs[chartId] = size;
+    localStorage.setItem('plannerCardSizes', JSON.stringify(cardSizePrefs));
+    closeCardMenu();
+    renderDashboard();
+}
+
+function initCardDragDrop() {
+    const grid = document.querySelector('.dashboard-grid');
+    if (!grid) return;
+    
+    const cards = grid.querySelectorAll('.dashboard-card');
+    cards.forEach(card => {
+        card.setAttribute('draggable', 'true');
+        card.addEventListener('dragstart', handleCardDragStart);
+        card.addEventListener('dragover', handleCardDragOver);
+        card.addEventListener('drop', handleCardDrop);
+        card.addEventListener('dragend', handleCardDragEnd);
+        
+        // Add drag handle cursor to header
+        const header = card.querySelector('.dashboard-card-header');
+        if (header) header.style.cursor = 'move';
+    });
+}
+
+function handleCardDragStart(e) {
+    draggedCard = e.currentTarget;
+    e.currentTarget.style.opacity = '0.4';
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleCardDragOver(e) {
+    if (e.preventDefault) e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    const target = e.currentTarget;
+    if (target !== draggedCard && target.classList.contains('dashboard-card')) {
+        target.style.borderTop = '3px solid var(--link-color)';
+    }
+    return false;
+}
+
+function handleCardDrop(e) {
+    if (e.stopPropagation) e.stopPropagation();
+    
+    const target = e.currentTarget;
+    if (draggedCard !== target) {
+        const grid = target.parentElement;
+        const allCards = Array.from(grid.querySelectorAll('.dashboard-card'));
+        const draggedIndex = allCards.indexOf(draggedCard);
+        const targetIndex = allCards.indexOf(target);
+        
+        if (draggedIndex < targetIndex) {
+            target.parentNode.insertBefore(draggedCard, target.nextSibling);
+        } else {
+            target.parentNode.insertBefore(draggedCard, target);
+        }
+        
+        // Save new order
+        const newOrder = Array.from(grid.querySelectorAll('.dashboard-card')).map(card => {
+            const chartEl = card.querySelector('[id^="chart"]');
+            return chartEl ? chartEl.id : null;
+        }).filter(id => id);
+        
+        cardOrderPrefs = newOrder;
+        localStorage.setItem('plannerCardOrder', JSON.stringify(cardOrderPrefs));
+    }
+    
+    target.style.borderTop = '';
+    return false;
+}
+
+function handleCardDragEnd(e) {
+    e.currentTarget.style.opacity = '1';
+    document.querySelectorAll('.dashboard-card').forEach(card => {
+        card.style.borderTop = '';
+    });
+    draggedCard = null;
 }
 
 function renderBarGroup(containerId, data, filterType) {
@@ -2626,6 +2729,44 @@ function renderDashboard() {
         .sort((a, b) => b.value - a.value)
         .slice(0, 10);
     renderBarGroup('chartThemes', themeData, 'theme');
+    
+    // Apply card sizes and reorder
+    applyCardLayoutPreferences();
+    initCardDragDrop();
+}
+
+function applyCardLayoutPreferences() {
+    const grid = document.querySelector('.dashboard-grid');
+    if (!grid) return;
+    
+    // Apply sizes
+    Object.keys(cardSizePrefs).forEach(chartId => {
+        const size = cardSizePrefs[chartId];
+        const container = document.getElementById(chartId);
+        if (!container) return;
+        
+        const card = container.closest('.dashboard-card');
+        if (!card) return;
+        
+        card.classList.remove('card-size-normal', 'card-size-wide', 'card-size-full');
+        card.classList.add(`card-size-${size}`);
+    });
+    
+    // Apply order
+    if (cardOrderPrefs && cardOrderPrefs.length > 0) {
+        const cards = Array.from(grid.querySelectorAll('.dashboard-card'));
+        const cardMap = new Map();
+        
+        cards.forEach(card => {
+            const chartEl = card.querySelector('[id^="chart"]');
+            if (chartEl) cardMap.set(chartEl.id, card);
+        });
+        
+        cardOrderPrefs.forEach(chartId => {
+            const card = cardMap.get(chartId);
+            if (card) grid.appendChild(card);
+        });
+    }
 }
 
 function drillDownTasks(filterType, filterValue) {

@@ -5,6 +5,18 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-12-30
+
+### Added
+- **Dashboard card drag-and-drop**: Reorder cards by dragging them to new positions
+- **Dashboard card resizing**: Each card can be resized via menu (⋯) to 1x Normal, 2x Wide, or Full Width
+- **Layout persistence**: Card order and sizes are saved to localStorage and restored on page load
+- **Visual drag feedback**: Cards show opacity change while dragging and drop zones with colored borders
+
+### Changed
+- **Card menu expanded**: Now includes both Chart Type and Card Size sections
+- **Version bump to 2.2.0**: Major feature upgrade from 2.1.x series
+
 ## [2.1.50] - 2025-12-30
 
 ### Fixed

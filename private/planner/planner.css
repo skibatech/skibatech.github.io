@@ -1570,6 +1570,20 @@ body.dark-mode .editable-cell.editing {
     border-radius: 8px;
     padding: 12px;
     box-shadow: 0 1px 3px var(--shadow);
+    transition: opacity 0.2s, border 0.2s;
+}
+
+.dashboard-card.card-size-normal {
+    grid-column: span 1;
+}
+
+.dashboard-card.card-size-wide {
+    grid-column: span 2;
+    min-width: 520px;
+}
+
+.dashboard-card.card-size-full {
+    grid-column: 1 / -1;
 }
 
 .dashboard-card-header {
