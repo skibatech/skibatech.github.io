@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.0.61] - 2025-12-30
+
+### Fixed
+- **Weekly Compass Header Icons**: Increased all icons to 24-28px for better visibility; fixed X icon alignment to center properly instead of sitting bottom-right
+
 ## [2.0.60] - 2025-12-30
 
 ### Changed

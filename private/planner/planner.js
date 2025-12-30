@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.60'; // Compass header: palette, save, X icons now same size (20px) and aligned
+const APP_VERSION = '2.0.61'; // Compass icons: increased size to 24-28px and fixed X alignment
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
