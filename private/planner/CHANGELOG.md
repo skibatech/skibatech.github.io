@@ -5,7 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.40] - 2025-12-30
 
+### Changed
+- **Tighter vertical spacing in grouped views**: Reduced margins and padding in assignee containers and nested buckets for more compact display when View and Group By are selected
+  - Assignee container margin reduced from 20px to 12px
+  - Assignee header padding reduced from 12px to 10px
+  - Bucket-in-assignee margin reduced from 8px to 6px
+  - Nested bucket header padding reduced from 8px to 6px
 ## [2.1.39] - 2024-12-30
 
 ### Changed
