@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.68'; // Block header sorts while resizing columns using capture click guard
+const APP_VERSION = '2.1.0'; // Dashboard tab with charts and CSV export
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -158,6 +158,7 @@ let expandedBuckets = new Set(); // Track which buckets are expanded
 let expandedAssignees = new Set(); // Track which assignees are expanded
 let currentView = localStorage.getItem('plannerDefaultView') || 'assigned'; // Current view: assigned, bucket, progress, dueDate, priority
 let currentGroupBy = localStorage.getItem('plannerDefaultGroupBy') || 'bucket'; // Current secondary grouping field (or 'none' for no grouping)
+let currentTab = localStorage.getItem('plannerCurrentTab') || 'tasks'; // tasks | dashboard
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
@@ -1284,6 +1285,8 @@ async function loadTasks() {
 
         // Apply filters and render
         applyFilters();
+        // Restore last tab selection
+        switchTab(currentTab || 'tasks');
         setStatus('Connected', '#107c10');
         
         // Initialize compass on first load (with delay to avoid rate limiting)
@@ -2090,19 +2093,13 @@ function changeGroupBy() {
     applyFilters();
 }
 
-function applyFilters() {
-    if (allTasks.length === 0) return;
-    
+function getFilteredTasks() {
+    if (allTasks.length === 0) return [];
     currentFilter = document.getElementById('filterSelect').value;
     showCompleted = document.getElementById('showCompletedCheckbox').checked;
-    
-    let filteredTasks = allTasks.filter(task => {
-        // Filter by completion status
-        if (!showCompleted && task.percentComplete === 100) {
-            return false;
-        }
-        
-        // Apply other filters
+
+    return allTasks.filter(task => {
+        if (!showCompleted && task.percentComplete === 100) return false;
         switch(currentFilter) {
             case 'all':
                 return true;
@@ -2143,8 +2140,251 @@ function applyFilters() {
                 return true;
         }
     });
-    
+}
+
+function applyFilters() {
+    const filteredTasks = getFilteredTasks();
     renderTasks(allBuckets, filteredTasks);
+    if (currentTab === 'dashboard') {
+        renderDashboard();
+    }
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    localStorage.setItem('plannerCurrentTab', tab);
+    const tasksView = document.getElementById('tasksView');
+    const dashboardView = document.getElementById('dashboardContainer');
+    const tasksBtn = document.getElementById('tabTasks');
+    const dashBtn = document.getElementById('tabDashboard');
+    if (!tasksView || !dashboardView || !tasksBtn || !dashBtn) return;
+    if (tab === 'dashboard') {
+        tasksView.style.display = 'none';
+        dashboardView.style.display = 'block';
+        tasksBtn.classList.remove('active');
+        dashBtn.classList.add('active');
+        renderDashboard();
+    } else {
+        tasksView.style.display = 'block';
+        dashboardView.style.display = 'none';
+        tasksBtn.classList.add('active');
+        dashBtn.classList.remove('active');
+    }
+}
+
+function renderBarGroup(containerId, data) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    if (!Array.isArray(data) || data.length === 0) {
+        container.innerHTML = '<div class="chart-empty">No data</div>';
+        return;
+    }
+    const maxValue = Math.max(...data.map(d => d.value), 1);
+    container.innerHTML = data.map(item => {
+        const pct = Math.max(4, Math.round((item.value / maxValue) * 100));
+        return `
+            <div class="bar-row">
+                <div class="bar-label">${item.label}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width:${pct}%; background:${item.color};"></div>
+                </div>
+                <div class="bar-value">${item.value}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function getProgressLabel(percentComplete) {
+    if (percentComplete === 100) return 'Completed';
+    if (percentComplete > 0) return 'In progress';
+    return 'Not started';
+}
+
+function getPriorityLabel(priority) {
+    const map = { 0: 'Urgent', 1: 'Important', 3: 'Important', 5: 'Medium', 9: 'Low' };
+    return map[priority] || 'Unspecified';
+}
+
+function renderDashboard() {
+    const dashboard = document.getElementById('dashboardContainer');
+    if (!dashboard) return;
+
+    const tasks = getFilteredTasks();
+    const summaryEl = document.getElementById('dashboardSummary');
+    const emptyEl = document.getElementById('dashboardEmpty');
+
+    if (!tasks || tasks.length === 0) {
+        if (summaryEl) summaryEl.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'block';
+        renderBarGroup('chartProgress', []);
+        renderBarGroup('chartPriority', []);
+        renderBarGroup('chartDue', []);
+        renderBarGroup('chartAssignees', []);
+        renderBarGroup('chartThemes', []);
+        return;
+    }
+
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const summary = {
+        total: tasks.length,
+        completed: 0,
+        inProgress: 0,
+        notStarted: 0,
+        overdue: 0,
+        dueThisWeek: 0
+    };
+
+    const statusCounts = { 'Not started': 0, 'In progress': 0, 'Completed': 0 };
+    const priorityCounts = {};
+    const dueCounts = { 'Overdue': 0, 'Due this week': 0, 'Due this month': 0, 'Future': 0, 'No due date': 0 };
+    const assigneeCounts = {};
+    const themeCounts = {};
+
+    tasks.forEach(task => {
+        const progress = getProgressLabel(task.percentComplete);
+        statusCounts[progress] = (statusCounts[progress] || 0) + 1;
+        if (progress === 'Completed') summary.completed++;
+        else if (progress === 'In progress') summary.inProgress++;
+        else summary.notStarted++;
+
+        const priorityLabel = getPriorityLabel(task.priority);
+        priorityCounts[priorityLabel] = (priorityCounts[priorityLabel] || 0) + 1;
+
+        if (task.dueDateTime) {
+            const due = new Date(task.dueDateTime);
+            due.setHours(0, 0, 0, 0);
+            const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0 && task.percentComplete !== 100) {
+                dueCounts['Overdue']++;
+                summary.overdue++;
+            } else if (diffDays <= 7) {
+                dueCounts['Due this week']++;
+                summary.dueThisWeek++;
+            } else if (diffDays <= 30) {
+                dueCounts['Due this month']++;
+            } else {
+                dueCounts['Future']++;
+            }
+        } else {
+            dueCounts['No due date']++;
+        }
+
+        const taskDetails = allTaskDetails[task.id];
+        const assignments = taskDetails?.assignments || task.assignments || {};
+        if (assignments && Object.keys(assignments).length > 0) {
+            Object.values(assignments).forEach(a => {
+                const name = a.displayName || 'Assigned';
+                assigneeCounts[name] = (assigneeCounts[name] || 0) + 1;
+            });
+        } else {
+            assigneeCounts['Unassigned'] = (assigneeCounts['Unassigned'] || 0) + 1;
+        }
+
+        const categories = task.appliedCategories || {};
+        Object.keys(categories).forEach(cat => {
+            const themeName = getThemeDisplayName ? getThemeDisplayName(cat) : cat;
+            themeCounts[themeName] = (themeCounts[themeName] || 0) + 1;
+        });
+    });
+
+    if (summaryEl) {
+        summaryEl.innerHTML = `
+            <div class="summary-item"><div class="summary-label">Total</div><div class="summary-value">${summary.total}</div></div>
+            <div class="summary-item"><div class="summary-label">In progress</div><div class="summary-value">${summary.inProgress}</div></div>
+            <div class="summary-item"><div class="summary-label">Not started</div><div class="summary-value">${summary.notStarted}</div></div>
+            <div class="summary-item"><div class="summary-label">Completed</div><div class="summary-value">${summary.completed}</div></div>
+            <div class="summary-item"><div class="summary-label">Overdue</div><div class="summary-value warning">${summary.overdue}</div></div>
+            <div class="summary-item"><div class="summary-label">Due in 7 days</div><div class="summary-value">${summary.dueThisWeek}</div></div>
+        `;
+    }
+
+    const palette = ['#0078d4', '#f7630c', '#107c10', '#6f4bbf', '#0099bc', '#d13438', '#498205', '#9a9a9a'];
+
+    renderBarGroup('chartProgress', [
+        { label: 'Not started', value: statusCounts['Not started'] || 0, color: palette[1] },
+        { label: 'In progress', value: statusCounts['In progress'] || 0, color: palette[0] },
+        { label: 'Completed', value: statusCounts['Completed'] || 0, color: palette[2] }
+    ]);
+
+    const priorityData = Object.keys(priorityCounts).map((label, idx) => ({
+        label,
+        value: priorityCounts[label],
+        color: palette[idx % palette.length]
+    })).sort((a, b) => b.value - a.value);
+    renderBarGroup('chartPriority', priorityData);
+
+    const dueData = Object.keys(dueCounts).map((label, idx) => ({
+        label,
+        value: dueCounts[label],
+        color: palette[idx % palette.length]
+    })).sort((a, b) => b.value - a.value);
+    renderBarGroup('chartDue', dueData);
+
+    const assigneeData = Object.keys(assigneeCounts)
+        .map((label, idx) => ({ label, value: assigneeCounts[label], color: palette[idx % palette.length] }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 8);
+    renderBarGroup('chartAssignees', assigneeData);
+
+    const themeData = Object.keys(themeCounts)
+        .map((label, idx) => ({ label, value: themeCounts[label], color: palette[idx % palette.length] }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10);
+    renderBarGroup('chartThemes', themeData);
+}
+
+function exportDashboardCsv() {
+    const tasks = getFilteredTasks();
+    if (!tasks || tasks.length === 0) {
+        alert('No tasks to export. Adjust filters or load tasks.');
+        return;
+    }
+
+    const bucketMap = {};
+    allBuckets.forEach(b => bucketMap[b.id] = b.name);
+
+    const rows = tasks.map(task => {
+        const details = allTaskDetails[task.id] || {};
+        const assignments = details.assignments || task.assignments || {};
+        const assignees = Object.values(assignments).map(a => a.displayName || '').filter(Boolean).join('; ') || 'Unassigned';
+        const categories = task.appliedCategories || {};
+        const themes = Object.keys(categories).map(cat => getThemeDisplayName ? getThemeDisplayName(cat) : cat).join('; ');
+        return {
+            Title: task.title || '',
+            Progress: getProgressLabel(task.percentComplete),
+            Priority: getPriorityLabel(task.priority),
+            Bucket: bucketMap[task.bucketId] || '',
+            Assignees: assignees,
+            'Start Date': formatDateForDisplay(task.startDateTime),
+            'Due Date': formatDateForDisplay(task.dueDateTime),
+            Themes: themes
+        };
+    });
+
+    const headers = Object.keys(rows[0]);
+    const csvLines = [headers.join(',')];
+    rows.forEach(row => {
+        const line = headers.map(h => {
+            const val = row[h] || '';
+            const escaped = String(val).replace(/"/g, '""');
+            return `"${escaped}"`;
+        }).join(',');
+        csvLines.push(line);
+    });
+
+    const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'planner-dashboard.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 function renderTask(task) {

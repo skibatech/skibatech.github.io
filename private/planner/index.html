@@ -106,61 +106,104 @@
     </div>
 
     <div id="mainContentWrapper" style="display:none;">
-        <div id="tasksContainer"></div>
-        
-        <!-- Weekly Compass Panel -->
-        <div id="weeklyCompassPanel" class="compass-panel compass-readonly" style="display:none;">
-            <div class="compass-header">
-                <h3 class="compass-title" style="margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                    Weekly Compass
-                </h3>
-                <div class="compass-header-actions">
-                    <button id="compassEditBtn" onclick="toggleCompassEdit()" title="Edit" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px; color: var(--primary-color);">✎</button>
-                    <div class="compass-commit-actions">
-                        <button id="compassColorBtn" class="icon-btn" style="display:none; color: var(--compass-text); position: relative;" title="Background Color" aria-label="Background Color">
-                            <span class="icon-text" aria-hidden="true">🎨</span>
-                            <input type="color" id="compassBgColorInput" class="color-overlay" title="Background Color" aria-hidden="true">
-                        </button>
-                        <button id="compassSaveBtn" onclick="saveCompass()" class="icon-btn primary" style="display:none;" title="Save" aria-label="Save">✓</button>
-                        <button id="compassCancelBtn" onclick="cancelCompassEdit()" class="icon-btn icon-cancel" style="display:none;" title="Cancel">×</button>
+        <div class="tab-bar">
+            <button id="tabTasks" class="tab-btn active" onclick="switchTab('tasks')">Tasks</button>
+            <button id="tabDashboard" class="tab-btn" onclick="switchTab('dashboard')">Dashboard</button>
+        </div>
+
+        <div id="tasksView">
+            <div id="tasksContainer"></div>
+            
+            <!-- Weekly Compass Panel -->
+            <div id="weeklyCompassPanel" class="compass-panel compass-readonly" style="display:none;">
+                <div class="compass-header">
+                    <h3 class="compass-title" style="margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        Weekly Compass
+                    </h3>
+                    <div class="compass-header-actions">
+                        <button id="compassEditBtn" onclick="toggleCompassEdit()" title="Edit" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px; color: var(--primary-color);">✎</button>
+                        <div class="compass-commit-actions">
+                            <button id="compassColorBtn" class="icon-btn" style="display:none; color: var(--compass-text); position: relative;" title="Background Color" aria-label="Background Color">
+                                <span class="icon-text" aria-hidden="true">🎨</span>
+                                <input type="color" id="compassBgColorInput" class="color-overlay" title="Background Color" aria-hidden="true">
+                            </button>
+                            <button id="compassSaveBtn" onclick="saveCompass()" class="icon-btn primary" style="display:none;" title="Save" aria-label="Save">✓</button>
+                            <button id="compassCancelBtn" onclick="cancelCompassEdit()" class="icon-btn icon-cancel" style="display:none;" title="Cancel">×</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="compass-quote-inline">
-                <input type="text" id="compassQuoteInput" placeholder="Enter a motivational quote..." readonly>
-            </div>
-            
-            <div class="compass-date-range">
-                <label>Date:</label> <input type="text" id="compassDateRange" placeholder="MM/DD/YYYY - MM/DD/YYYY">
-            </div>
-            
-            <!-- Sharpen the Saw Section -->
-            <div class="compass-section sharpen-saw">
-                <div class="compass-role-header">Role: Sharpen the Saw</div>
-                <div class="compass-category-inline">
-                    <label class="saw-label" data-category="physical" title="Click for suggestions">Physical:</label>
-                    <input type="text" id="sawPhysical" placeholder="e.g., Walk 10,000 steps">
+                
+                <div class="compass-quote-inline">
+                    <input type="text" id="compassQuoteInput" placeholder="Enter a motivational quote..." readonly>
                 </div>
-                <div class="compass-category-inline">
-                    <label class="saw-label" data-category="socialEmotional" title="Click for suggestions">Social/Emotional:</label>
-                    <input type="text" id="sawSocialEmotional" placeholder="e.g., Call a friend">
+                
+                <div class="compass-date-range">
+                    <label>Date:</label> <input type="text" id="compassDateRange" placeholder="MM/DD/YYYY - MM/DD/YYYY">
                 </div>
-                <div class="compass-category-inline">
-                    <label class="saw-label" data-category="mental" title="Click for suggestions">Mental:</label>
-                    <input type="text" id="sawMental" placeholder="e.g., Read 30 minutes">
+                
+                <!-- Sharpen the Saw Section -->
+                <div class="compass-section sharpen-saw">
+                    <div class="compass-role-header">Role: Sharpen the Saw</div>
+                    <div class="compass-category-inline">
+                        <label class="saw-label" data-category="physical" title="Click for suggestions">Physical:</label>
+                        <input type="text" id="sawPhysical" placeholder="e.g., Walk 10,000 steps">
+                    </div>
+                    <div class="compass-category-inline">
+                        <label class="saw-label" data-category="socialEmotional" title="Click for suggestions">Social/Emotional:</label>
+                        <input type="text" id="sawSocialEmotional" placeholder="e.g., Call a friend">
+                    </div>
+                    <div class="compass-category-inline">
+                        <label class="saw-label" data-category="mental" title="Click for suggestions">Mental:</label>
+                        <input type="text" id="sawMental" placeholder="e.g., Read 30 minutes">
+                    </div>
+                    <div class="compass-category-inline">
+                        <label class="saw-label" data-category="spiritual" title="Click for suggestions">Spiritual:</label>
+                        <input type="text" id="sawSpiritual" placeholder="e.g., Meditate">
+                    </div>
                 </div>
-                <div class="compass-category-inline">
-                    <label class="saw-label" data-category="spiritual" title="Click for suggestions">Spiritual:</label>
-                    <input type="text" id="sawSpiritual" placeholder="e.g., Meditate">
+                
+                <!-- Dynamic Roles Section -->
+                <div id="compassRoles"></div>
+                
+                <div class="compass-actions">
+                    <button onclick="addCompassRole()" class="secondary-btn">+ Add Role</button>
                 </div>
             </div>
-            
-            <!-- Dynamic Roles Section -->
-            <div id="compassRoles"></div>
-            
-            <div class="compass-actions">
-                <button onclick="addCompassRole()" class="secondary-btn">+ Add Role</button>
+        </div>
+
+        <div id="dashboardContainer" style="display:none;">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">Dashboard</div>
+                    <div class="dashboard-subtitle">Uses current filters (View, Group by, Filter, Show completed)</div>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="ghost-btn" onclick="exportDashboardCsv()">Export CSV</button>
+                </div>
+            </div>
+            <div id="dashboardSummary" class="dashboard-summary"></div>
+            <div id="dashboardEmpty" class="dashboard-empty" style="display:none;">No tasks to summarize. Adjust filters or sign in.</div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">Progress</div>
+                    <div id="chartProgress" class="bar-group"></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">Priority</div>
+                    <div id="chartPriority" class="bar-group"></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">Due date timeline</div>
+                    <div id="chartDue" class="bar-group"></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">Assignee load (top 8)</div>
+                    <div id="chartAssignees" class="bar-group"></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">Themes (top 10)</div>
+                    <div id="chartThemes" class="bar-group"></div>
+                </div>
             </div>
         </div>
     </div>

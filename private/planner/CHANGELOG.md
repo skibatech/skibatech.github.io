@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.0] - 2025-12-30
+
+### Added
+- **Dashboard Tab**: New in-app reporting interface with tab switcher
+- **Charts**: Progress, Priority, Due timeline, Assignee load, Themes (top 10) using lightweight bar charts
+- **Filters**: Dashboard respects current View, Group by, Filter, and Show completed settings
+- **CSV Export**: Export filtered dataset to CSV (Title, Progress, Priority, Bucket, Assignees, Dates, Themes)
+- All data aggregated client-side in-memory; no external dependencies or backend
+
 ## [2.0.68] - 2025-12-30
 
 ### Fixed
