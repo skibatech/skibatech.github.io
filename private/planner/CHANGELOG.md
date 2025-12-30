@@ -5,6 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2025-12-30
+
+### Fixed
+- **Card sizing conflict**: Manual card size preferences now override automatic wide-card expansion for long labels
+
+### Added
+- **Reset Dashboard Layout**: Added button in Options modal to clear saved card positions and sizes, restoring default layout
+
 ## [2.2.1] - 2025-12-30
 
 ### Fixed

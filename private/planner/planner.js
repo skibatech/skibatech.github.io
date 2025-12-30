@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.2.1'; // Drag-and-drop card reordering and resize options
+const APP_VERSION = '2.2.2'; // Drag-and-drop card reordering and resize options
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2375,6 +2375,17 @@ function selectCardSize(chartId, size) {
     renderDashboard();
 }
 
+function resetDashboardLayout() {
+    if (confirm('Reset dashboard layout to default? This will clear all saved card positions and sizes.')) {
+        cardSizePrefs = {};
+        cardOrderPrefs = [];
+        localStorage.removeItem('plannerCardSizes');
+        localStorage.removeItem('plannerCardOrder');
+        renderDashboard();
+        alert('Dashboard layout reset to default.');
+    }
+}
+
 function initCardDragDrop() {
     const grid = document.querySelector('.dashboard-grid');
     if (!grid) return;
@@ -2456,10 +2467,12 @@ function renderBarGroup(containerId, data, filterType) {
         return;
     }
     
-    // Determine if card needs wide format based on max label length
-    const maxLabelLength = Math.max(...data.map(d => (d.label || '').length));
+    // Only apply automatic wide format if no manual size preference is set
     const cardEl = container.closest('.dashboard-card');
-    if (cardEl) {
+    const hasManualSize = cardSizePrefs[containerId];
+    
+    if (cardEl && !hasManualSize) {
+        const maxLabelLength = Math.max(...data.map(d => (d.label || '').length));
         if (maxLabelLength > 15) {
             cardEl.classList.add('wide-card');
         } else {
