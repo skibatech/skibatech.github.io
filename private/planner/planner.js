@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.34'; // Debug user fetching with console logs
+const APP_VERSION = '2.1.35'; // Add Directory.Read.All scope and individual user fetch fallback
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -58,7 +58,7 @@ let config = {
     clientId: '',
     authority: '',
     redirectUri: window.location.origin + window.location.pathname,
-    scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read'],
+    scopes: ['Tasks.ReadWrite', 'Group.ReadWrite.All', 'User.Read', 'Directory.Read.All'],
     allowedTenants: [],
     adminGroupId: '',
     adminGroupName: ''
@@ -1243,7 +1243,7 @@ async function loadTasks() {
         console.log('📋 User details from plan members:', userDetailsMap);
         const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);
         console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
-        // Fetch remaining users via directoryObjects/getByIds in chunks
+        // Fetch remaining users via directoryObjects/getByIds in chunks, with fallback
         async function fetchUsersByIds(ids) {
             const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
                 method: 'POST',
@@ -1254,20 +1254,60 @@ async function loadTasks() {
                 body: JSON.stringify({ ids, types: ['user'] })
             });
             if (!r.ok) {
-                console.error('Failed to fetch users by IDs:', r.status, r.statusText);
-                return [];
+                console.warn(`⚠️ Batch user fetch failed (${r.status}), will try individual fetches`);
+                return null; // Signal to fall back to individual fetches
             }
             const data = await r.json();
-            console.log('✅ Fetched users:', data.value);
+            console.log('✅ Batch-fetched users:', data.value?.length || 0);
             return data.value || [];
         }
+        
+        // Fallback: fetch individual user
+        async function fetchUserById(userId) {
+            try {
+                const r = await fetchGraph(`https://graph.microsoft.com/v1.0/users/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (r.ok) {
+                    return await r.json();
+                }
+            } catch (e) {
+                console.warn(`Could not fetch user ${userId.substring(0, 8)}...`);
+            }
+            return null;
+        }
+        
         const chunkSize = 100;
+        let batchFailed = false;
         for (let i = 0; i < missingUserIds.length; i += chunkSize) {
             const chunk = missingUserIds.slice(i, i + chunkSize);
-            const users = await fetchUsersByIds(chunk);
-            users.forEach(u => {
-                if (u && u.id && u.displayName) userDetailsMap[u.id] = u.displayName;
-            });
+            if (!batchFailed) {
+                const users = await fetchUsersByIds(chunk);
+                if (users === null) {
+                    // Batch fetch failed, fall back to individual
+                    batchFailed = true;
+                    console.log('🔄 Switching to individual user fetches...');
+                } else {
+                    users.forEach(u => {
+                        if (u && u.id && u.displayName) {
+                            userDetailsMap[u.id] = u.displayName;
+                            console.log(`  ✓ ${u.displayName} (${u.id.substring(0, 8)}...)`);
+                        }
+                    });
+                    continue;
+                }
+            }
+            
+            // Individual fetch fallback
+            if (batchFailed) {
+                for (const userId of chunk) {
+                    const user = await fetchUserById(userId);
+                    if (user && user.displayName) {
+                        userDetailsMap[user.id] = user.displayName;
+                        console.log(`  ✓ ${user.displayName} (${userId.substring(0, 8)}...)`);
+                    }
+                }
+            }
         }
         
         console.log('👥 Final userDetailsMap:', userDetailsMap);
