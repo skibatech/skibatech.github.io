@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.4'; // Fixed layout overlap - content flows beside compass properly
+const APP_VERSION = '2.1.5'; // Detailed loading status messages during initial load
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1100,7 +1100,7 @@ async function loadTasks() {
     }
 
     try {
-        setStatus('Loading...');
+        setStatus('Loading plan details...');
 
         // Get buckets
             const bucketsResponse = await fetchGraph(
@@ -1128,6 +1128,8 @@ async function loadTasks() {
         const bucketsData = await bucketsResponse.json();
         const buckets = bucketsData.value;
 
+        setStatus('Loading bucket details...');
+
         // Get plan details for category descriptions
         const planDetailsResponse = await fetchGraph(
             `https://graph.microsoft.com/v1.0/planner/plans/${planId}/details`,
@@ -1144,6 +1146,7 @@ async function loadTasks() {
         }
 
         // Get tasks
+        setStatus('Loading tasks...');
             const tasksResponse = await fetchGraph(
                 `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
                 {
@@ -1171,6 +1174,7 @@ async function loadTasks() {
         ordered.forEach((t, idx) => { taskSequentialIds[t.id] = idx + 1; });
 
         // Fetch task details for categories (use lower concurrency on startup to avoid rate limiting)
+        setStatus(`Loading ${tasks.length} task details...`);
         const details = await mapWithConcurrency(
             tasks,
             async (task) => {
@@ -1190,6 +1194,8 @@ async function loadTasks() {
                 Object.keys(task.assignments).forEach(userId => userIds.add(userId));
             }
         });
+        
+        setStatus('Loading assignee information...');
         
         // Also fetch all plan members for the assignee dropdown
         let planMembers = [];
@@ -1290,6 +1296,7 @@ async function loadTasks() {
         changeView();
 
         // Apply filters and render
+        setStatus('Rendering tasks...');
         applyFilters();
         // Restore last tab selection
         switchTab(currentTab || 'tasks');

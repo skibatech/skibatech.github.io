@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.5] - 2025-12-30
+
+### Improved
+- **Loading Status**: More detailed status messages during initial load (plan details → task details → assignees → rendering)
+- Users can now see what's being loaded instead of generic "Loading..."
+- Helps identify which API calls are slower or causing delays
+
 ## [2.1.4] - 2025-12-30
 
 ### Fixed
