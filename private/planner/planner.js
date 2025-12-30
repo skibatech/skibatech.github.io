@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.35'; // Add Directory.Read.All scope and individual user fetch fallback
+const APP_VERSION = '2.1.36'; // Extract names from assignments and fetch group members first
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -1191,11 +1191,19 @@ async function loadTasks() {
             3  // Lower concurrency on initial load to avoid 429 errors
         );
         
-        // Collect all unique user IDs from assignments
+        // Collect all unique user IDs from assignments and extract any available names
         const userIds = new Set();
         tasks.forEach(task => {
             if (task.assignments) {
-                Object.keys(task.assignments).forEach(userId => userIds.add(userId));
+                Object.keys(task.assignments).forEach(userId => {
+                    userIds.add(userId);
+                    // Try to extract displayName from assignment metadata
+                    const assignment = task.assignments[userId];
+                    if (assignment?.displayName && !userDetailsMap[userId]) {
+                        userDetailsMap[userId] = assignment.displayName;
+                        console.log(`  ✓ ${assignment.displayName} (from assignment metadata)`);
+                    }
+                });
             }
         });
         
@@ -1241,8 +1249,7 @@ async function loadTasks() {
             if (m && m.id && m.displayName) userDetailsMap[m.id] = m.displayName;
         });
         console.log('📋 User details from plan members:', userDetailsMap);
-        const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);
-        console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
+        const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);\n        console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
         // Fetch remaining users via directoryObjects/getByIds in chunks, with fallback
         async function fetchUsersByIds(ids) {
             const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
@@ -1262,7 +1269,7 @@ async function loadTasks() {
             return data.value || [];
         }
         
-        // Fallback: fetch individual user
+        // Fallback: fetch individual user (limited to current user + group members)
         async function fetchUserById(userId) {
             try {
                 const r = await fetchGraph(`https://graph.microsoft.com/v1.0/users/${userId}`, {
@@ -1270,6 +1277,8 @@ async function loadTasks() {
                 });
                 if (r.ok) {
                     return await r.json();
+                } else if (r.status === 403) {
+                    console.warn(`⚠️ No permission to read user ${userId.substring(0, 8)}...`);
                 }
             } catch (e) {
                 console.warn(`Could not fetch user ${userId.substring(0, 8)}...`);
@@ -1277,34 +1286,75 @@ async function loadTasks() {
             return null;
         }
         
+        // Try to fetch group members if we have the plan's group ID
+        async function fetchGroupMembers() {
+            try {
+                const planData = await fetchGraph(
+                    `https://graph.microsoft.com/v1.0/planner/plans/${planId}`,
+                    { headers: { 'Authorization': `Bearer ${accessToken}` } }
+                ).then(r => r.ok ? r.json() : null);
+                
+                if (planData?.container?.containerId) {
+                    const groupId = planData.container.containerId;
+                    console.log('📋 Fetching members of group:', groupId.substring(0, 8) + '...');
+                    const membersData = await fetchGraph(
+                        `https://graph.microsoft.com/v1.0/groups/${groupId}/members`,
+                        { headers: { 'Authorization': `Bearer ${accessToken}` } }
+                    ).then(r => r.ok ? r.json() : null);
+                    
+                    if (membersData?.value) {
+                        membersData.value.forEach(m => {
+                            if (m.id && m.displayName) {
+                                userDetailsMap[m.id] = m.displayName;
+                                console.log(`  ✓ ${m.displayName} (group member)`);
+                            }
+                        });
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not fetch group members:', e.message);
+            }
+            return false;
+        }
+        
         const chunkSize = 100;
         let batchFailed = false;
-        for (let i = 0; i < missingUserIds.length; i += chunkSize) {
-            const chunk = missingUserIds.slice(i, i + chunkSize);
-            if (!batchFailed) {
-                const users = await fetchUsersByIds(chunk);
-                if (users === null) {
-                    // Batch fetch failed, fall back to individual
-                    batchFailed = true;
-                    console.log('🔄 Switching to individual user fetches...');
-                } else {
-                    users.forEach(u => {
-                        if (u && u.id && u.displayName) {
-                            userDetailsMap[u.id] = u.displayName;
-                            console.log(`  ✓ ${u.displayName} (${u.id.substring(0, 8)}...)`);
-                        }
-                    });
-                    continue;
+        
+        // First, try group members fetch (most reliable)
+        const hasGroupMembers = await fetchGroupMembers();
+        
+        // Update missing list after group fetch
+        const stillMissingUserIds = missingUserIds.filter(uid => !userDetailsMap[uid]);
+        
+        if (stillMissingUserIds.length > 0) {
+            for (let i = 0; i < stillMissingUserIds.length; i += chunkSize) {
+                const chunk = stillMissingUserIds.slice(i, i + chunkSize);
+                if (!batchFailed) {
+                    const users = await fetchUsersByIds(chunk);
+                    if (users === null) {
+                        // Batch fetch failed, fall back to individual
+                        batchFailed = true;
+                        console.log('🔄 Switching to individual user fetches...');
+                    } else {
+                        users.forEach(u => {
+                            if (u && u.id && u.displayName) {
+                                userDetailsMap[u.id] = u.displayName;
+                                console.log(`  ✓ ${u.displayName} (${u.id.substring(0, 8)}...)`);
+                            }
+                        });
+                        continue;
+                    }
                 }
-            }
-            
-            // Individual fetch fallback
-            if (batchFailed) {
-                for (const userId of chunk) {
-                    const user = await fetchUserById(userId);
-                    if (user && user.displayName) {
-                        userDetailsMap[user.id] = user.displayName;
-                        console.log(`  ✓ ${user.displayName} (${userId.substring(0, 8)}...)`);
+                
+                // Individual fetch fallback (limited by permission)
+                if (batchFailed) {
+                    for (const userId of chunk) {
+                        const user = await fetchUserById(userId);
+                        if (user && user.displayName) {
+                            userDetailsMap[user.id] = user.displayName;
+                            console.log(`  ✓ ${user.displayName} (${userId.substring(0, 8)}...)`);
+                        }
                     }
                 }
             }
