@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.23'; // Update refresh uses server version bust; dashboard grid allows more columns; labels wrap
+const APP_VERSION = '2.1.24'; // Asset cache-bust via index.html; update refresh uses server version bust; dashboard grid allows more columns; labels wrap
 let latestAvailableVersion = null;
 
 // Suggestions for Sharpen the Saw categories

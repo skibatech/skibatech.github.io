@@ -30,6 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Update Refresh**: Uses the server version when launching the cache-busted reload to avoid sticking on the prior build; preloads use versioned bust tags
 - **Dashboard Layout**: Card min width reduced (300px base, 360px on wide screens) to allow 3–4 columns
 
+## [2.1.24] - 2025-12-30
+
+### Fixed
+- **Update Delivery**: index.html now cache-busts planner.js/planner.css with version query strings so clicking UPDATE loads the fresh assets
+
 ## [2.1.19] - 2025-12-30
 
 ### Changed
