@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.31'; // Dynamic card width based on label length
+const APP_VERSION = '2.1.32'; // Fix assignee name resolution
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -1365,7 +1365,7 @@ async function loadTasks() {
                 Object.keys(task.assignments).forEach(userId => {
                     taskWithNames.assignments[userId] = {
                         ...task.assignments[userId],
-                        displayName: userDetailsMap[userId] || 'Assigned'
+                        displayName: userDetailsMap[userId]
                     };
                 });
             }
@@ -2355,14 +2355,22 @@ function getAssigneeNames(task) {
     const detailsAssignments = allTaskDetails[task.id]?.assignments || {};
     const rawAssignments = task.assignments || {};
     const ids = Object.keys(rawAssignments);
+    if (ids.length === 0) return ['Unassigned'];
+    
     const names = ids.map(id => {
         const detailName = detailsAssignments[id]?.displayName;
         const userMapName = allUsers[id];
         const rawDisplay = rawAssignments[id]?.displayName;
         const assignedByName = rawAssignments[id]?.assignedBy?.user?.displayName;
-        return detailName || userMapName || rawDisplay || assignedByName;
-    }).filter(Boolean);
-    return names.length > 0 ? names : ['Unassigned'];
+        const name = detailName || userMapName || rawDisplay || assignedByName;
+        
+        // If still no name, show truncated user ID as last resort
+        if (!name) {
+            return id.substring(0, 8) + '...';
+        }
+        return name;
+    });
+    return names;
 }
 
 function getProgressLabel(percentComplete) {
