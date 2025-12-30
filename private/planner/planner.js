@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.15'; // Update button now performs full hard reload
+const APP_VERSION = '2.1.16'; // Dashboard card widths tweaked; labels wrap
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {

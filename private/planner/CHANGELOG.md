@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.16] - 2025-12-30
+
+### Changed
+- **Dashboard Layout**: Cards use wider min width (360px) and bar labels wrap instead of truncating; legend column widened to reduce ellipsis
+
 ## [2.1.15] - 2025-12-30
 
 ### Fixed
