@@ -1053,25 +1053,25 @@ async function checkForVersionUpdate() {
     try {
         // Fetch planner.js directly (APP_VERSION lives there, not in index.html)
         const response = await fetch('./planner.js?t=' + Date.now(), { cache: 'no-store' });
+        console.log('[version-check] fetch status', response.status);
         if (!response.ok) {
-            console.log('Version check fetch failed with status:', response.status);
+            console.log('[version-check] fetch failed');
             return;
         }
 
         const jsText = await response.text();
+        console.log('[version-check] script length', jsText.length);
         const match = jsText.match(/const APP_VERSION = '([^']+)'/);
-        if (!match) {
-            console.log('Version check: APP_VERSION not found in planner.js');
-            return;
-        }
+        console.log('[version-check] match', match ? match[1] : 'none');
+        if (!match) return;
 
         const latestVersion = match[1];
         const updateBadge = document.getElementById('updateBadge');
         if (!updateBadge) return;
 
         if (latestVersion === APP_VERSION) {
-            // Already on latest; hide badge just in case
             updateBadge.style.display = 'none';
+            console.log('[version-check] already on latest');
             return;
         }
 
@@ -1081,20 +1081,17 @@ async function checkForVersionUpdate() {
         for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
             const curr = currentParts[i] || 0;
             const latest = latestParts[i] || 0;
-            if (latest > curr) {
-                isNewer = true;
-                break;
-            } else if (latest < curr) {
-                break;
-            }
+            if (latest > curr) { isNewer = true; break; }
+            if (latest < curr) { break; }
         }
 
+        console.log('[version-check] isNewer', isNewer, 'server', latestVersion, 'local', APP_VERSION);
         if (isNewer) {
             updateBadge.style.display = 'inline-block';
             console.log(`✓ New version available: ${latestVersion} (current: ${APP_VERSION})`);
         }
     } catch (err) {
-        console.log('Could not check for version update:', err);
+        console.log('[version-check] error', err);
     }
 }
 
