@@ -1,11 +1,10 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.47'; // Move saw-suggestions.csv to csv folder, add Line/Circle/Square visuals
+const APP_VERSION = '2.1.48'; // Add pie, donut, and vertical bar chart types
 const CARD_VISUAL_OPTIONS = [
-    { id: 'bar', label: 'Bars' },
-    { id: 'dot', label: 'Dots' },
-    { id: 'line', label: 'Line' },
-    { id: 'circle', label: 'Circles' },
-    { id: 'square', label: 'Squares' }
+    { id: 'bar', label: 'Horizontal Bars' },
+    { id: 'vertical', label: 'Vertical Bars' },
+    { id: 'pie', label: 'Pie Chart' },
+    { id: 'donut', label: 'Donut Chart' }
 ];
 let latestAvailableVersion = null;
 
@@ -2366,52 +2365,92 @@ function renderBarGroup(containerId, data, filterType) {
     
     const visual = cardVisualPrefs[containerId] || 'bar';
     const maxValue = Math.max(...data.map(d => d.value), 1);
+    const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+    
+    // Pie and Donut charts
+    if (visual === 'pie' || visual === 'donut') {
+        let cumulativePercent = 0;
+        const slices = data.map(item => {
+            const slicePercent = (item.value / totalValue) * 100;
+            const startPercent = cumulativePercent;
+            cumulativePercent += slicePercent;
+            const gradientId = 'slice-' + Math.random().toString(36).substr(2, 9);
+            return {
+                item,
+                percent: slicePercent,
+                start: startPercent,
+                end: cumulativePercent,
+                gradientId
+            };
+        });
+        
+        const pieSize = 120;
+        const donutHoleSize = visual === 'donut' ? 60 : 0;
+        
+        let svgSlices = '';
+        slices.forEach(slice => {
+            const startAngle = (slice.start / 100) * 360 - 90;
+            const endAngle = (slice.end / 100) * 360 - 90;
+            const isLarge = slice.percent > 50 ? 1 : 0;
+            
+            const startRad = startAngle * Math.PI / 180;
+            const endRad = endAngle * Math.PI / 180;
+            
+            const x1 = pieSize + pieSize * Math.cos(startRad);
+            const y1 = pieSize + pieSize * Math.sin(startRad);
+            const x2 = pieSize + pieSize * Math.cos(endRad);
+            const y2 = pieSize + pieSize * Math.sin(endRad);
+            
+            const pathData = visual === 'donut' 
+                ? `M ${x1} ${y1} A ${pieSize} ${pieSize} 0 ${isLarge} 1 ${x2} ${y2} L ${pieSize + donutHoleSize * Math.cos(endRad)} ${pieSize + donutHoleSize * Math.sin(endRad)} A ${donutHoleSize} ${donutHoleSize} 0 ${isLarge} 0 ${pieSize + donutHoleSize * Math.cos(startRad)} ${pieSize + donutHoleSize * Math.sin(startRad)} Z`
+                : `M ${pieSize} ${pieSize} L ${x1} ${y1} A ${pieSize} ${pieSize} 0 ${isLarge} 1 ${x2} ${y2} Z`;
+            
+            svgSlices += `<path d="${pathData}" fill="${slice.item.color}" stroke="var(--bg-secondary)" stroke-width="1" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(slice.item.label)}');" style="cursor:pointer;" title="${slice.item.label}: ${slice.item.value}"/>`;
+        });
+        
+        const svgSize = pieSize * 2 + 10;
+        const chartHtml = `
+            <svg width="${svgSize}" height="${svgSize}" style="margin:0 auto; display:block;">
+                ${svgSlices}
+            </svg>
+            <div style="margin-top:8px; font-size:12px;">
+                ${data.map(item => `
+                    <div style="display:flex; justify-content:space-between; gap:8px; padding:4px 0; cursor:pointer;" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}');">
+                        <span><span style="display:inline-block; width:10px; height:10px; background:${item.color}; margin-right:6px;"></span>${escapeHtml(item.label)}</span>
+                        <strong>${item.value}</strong>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        container.innerHTML = chartHtml;
+        return;
+    }
+    
+    // Vertical bars
+    if (visual === 'vertical') {
+        const chartHtml = `
+            <div style="display:flex; align-items:flex-end; justify-content:center; gap:8px; height:200px; padding:16px 8px; background:var(--bg-primary); border-radius:4px;">
+                ${data.map(item => {
+                    const pct = Math.max(10, Math.round((item.value / maxValue) * 100));
+                    const height = (pct / 100) * 160;
+                    return `
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}');" title="${item.label}: ${item.value}">
+                            <span style="font-size:11px; font-weight:600; color:var(--text-primary);">${item.value}</span>
+                            <div style="width:32px; height:${height}px; background:${item.color}; border-radius:2px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"></div>
+                            <span style="font-size:11px; color:var(--text-secondary); text-align:center; max-width:50px; word-break:break-word;">${escapeHtml(item.label)}</span>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+        container.innerHTML = chartHtml;
+        return;
+    }
+    
+    // Horizontal bars (default)
     container.innerHTML = data.map(item => {
         const pct = Math.max(4, Math.round((item.value / maxValue) * 100));
         const escapedLabel = escapeHtml(item.label);
-        
-        if (visual === 'dot') {
-            return `
-                <div class="bar-row dot-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
-                    <div class="bar-label">${escapedLabel}</div>
-                    <div class="dot-track">
-                        <div class="dot-bullet" style="left: calc(${pct}% - 6px); background:${item.color};"></div>
-                    </div>
-                    <div class="bar-value">${item.value}</div>
-                </div>
-            `;
-        } else if (visual === 'line') {
-            return `
-                <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
-                    <div class="bar-label">${escapedLabel}</div>
-                    <div class="bar-track">
-                        <div class="line-fill" style="width:${pct}%; border-top: 2px solid ${item.color};"></div>
-                    </div>
-                    <div class="bar-value">${item.value}</div>
-                </div>
-            `;
-        } else if (visual === 'circle') {
-            return `
-                <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
-                    <div class="bar-label">${escapedLabel}</div>
-                    <div class="bar-track">
-                        <div class="circle-fill" style="width:${pct}%; background: radial-gradient(circle, ${item.color} 30%, transparent 70%);"></div>
-                    </div>
-                    <div class="bar-value">${item.value}</div>
-                </div>
-            `;
-        } else if (visual === 'square') {
-            return `
-                <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
-                    <div class="bar-label">${escapedLabel}</div>
-                    <div class="bar-track">
-                        <div class="square-fill" style="width:${pct}%; background-color:${item.color}; opacity:0.6;"></div>
-                    </div>
-                    <div class="bar-value">${item.value}</div>
-                </div>
-            `;
-        }
-        // Default: bar
         return `
             <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
                 <div class="bar-label">${escapedLabel}</div>

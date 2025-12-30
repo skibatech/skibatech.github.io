@@ -5,17 +5,19 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.48] - 2025-12-30
+
+### Changed
+- **Dashboard visualization types**: Replaced symbol-based visuals with proper chart types
+  - **Horizontal Bars** (default): Traditional horizontal bar chart
+  - **Vertical Bars**: Vertical column chart with interactive hover effect
+  - **Pie Chart**: Full circular pie visualization with color-coded slices and legend
+  - **Donut Chart**: Pie chart with hollow center, same slicing as pie
+
 ## [2.1.47] - 2025-12-30
 
 ### Added
-- **New dashboard visual options**: Line, Circle, and Square visualizations added alongside existing Bars and Dots
-  - Line: Horizontal line graph representation
-  - Circle: Circular gradient visualization
-  - Square: Rectangular block visualization with transparency
-
-### Changed
 - **CSV file organization**: Moved `saw-suggestions.csv` to `csv/` subdirectory for better file organization
-  - Updated file path reference from root to `csv/saw-suggestions.csv`
 
 ## [2.1.46] - 2025-12-30
 
