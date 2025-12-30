@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.37'; // Add detailed assignment metadata and group members logging
+const APP_VERSION = '2.1.38'; // Fix userDetailsMap initialization order
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -1193,6 +1193,7 @@ async function loadTasks() {
         
         // Collect all unique user IDs from assignments and extract any available names
         const userIds = new Set();
+        const userDetailsMap = {}; // Initialize early so assignment metadata extraction can use it
         console.log('🔎 Scanning tasks for assignment metadata...');
         tasks.forEach(task => {
             if (task.assignments) {
@@ -1249,7 +1250,6 @@ async function loadTasks() {
         }
         
         // Build user details for display names (prefer planMembers to avoid per-user GETs)
-        const userDetailsMap = {};
         planMembers.forEach(m => {
             if (m && m.id && m.displayName) userDetailsMap[m.id] = m.displayName;
         });

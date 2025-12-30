@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Assignee Debugging**: Added detailed console logging to diagnose assignment metadata and group member lookups
 
+## [2.1.38] - 2025-12-30
+
+### Fixed
+- **Assignee Lookup**: Moved userDetailsMap initialization before assignment metadata extraction to prevent reference errors
+
 ## [2.1.37] - 2025-12-30
 
 ### Fixed
