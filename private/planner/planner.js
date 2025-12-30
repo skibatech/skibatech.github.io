@@ -1,131 +1,41 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.32'; // Fix assignee name resolution
+const APP_VERSION = '2.1.33'; // SAW suggestions loaded from CSV
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
 ];
 let latestAvailableVersion = null;
 
-// Suggestions for Sharpen the Saw categories
+// Suggestions for Sharpen the Saw categories (loaded from CSV)
 const SAW_SUGGESTIONS = {
-    physical: [
-        'Take the stairs instead of elevator',
-        'Avoid caffeine',
-        'Drink eight glasses of water daily',
-        'Research your nutritional needs',
-        'Swim',
-        'Do water aerobics',
-        'Garden',
-        'Dance',
-        'Park further away to walk more',
-        'Lift weights',
-        'Add raw fruit or vegetable daily',
-        'Start a stretching program',
-        'Research vitamin and mineral information',
-        'Join a bowling league',
-        'Learn to golf',
-        'Drink only purified water',
-        'Delete empty-calorie food items',
-        'Get to bed 20 minutes earlier',
-        'Cut out all carbonated beverages',
-        'Set up health check-up system',
-        'Bike',
-        'Ride horseback',
-        'Kick-box',
-        'Do aerobics',
-        'Power-walk',
-        'Play racquetball',
-        'Get massage therapy',
-        'Improve sleeping patterns',
-        'Hire a fitness trainer',
-        'Play soccer',
-        'Play tennis',
-        'Use treadmill while watching TV'
-    ],
-    mental: [
-        'Read a book',
-        'Take a course or class',
-        'Learn a new language',
-        'Practice meditation or mindfulness',
-        'Solve puzzles or play chess',
-        'Write in a journal',
-        'Study subjects that interest you',
-        'Listen to educational podcasts',
-        'Attend seminars or workshops',
-        'Discuss ideas with smart people',
-        'Learn a musical instrument',
-        'Practice public speaking',
-        'Read biographies of great people',
-        'Visit a museum or gallery',
-        'Learn photography',
-        'Study philosophy or ethics',
-        'Take online courses',
-        'Engage in strategic games',
-        'Learn about different cultures',
-        'Practice memory techniques'
-    ],
-    socialEmotional: [
-        'Take a hot bath by candlelight',
-        'Eliminate things keeping you from people',
-        'Give yourself permission to say no',
-        'Give yourself permission to say yes',
-        'Clean or refresh part of room',
-        'Reorganize your desk or closet',
-        'Buy yourself an inexpensive treat',
-        'Allow time for appointments without rushing',
-        'Schedule routine calls with support people',
-        'Read from favorite book daily',
-        'Surround yourself with uplifting items',
-        'Get quiet time to clear thinking',
-        'Drink warm beverage each morning',
-        'Pack yourself a wholesome meal',
-        'Sign up for daily jokes',
-        'Develop a talent for yourself',
-        'Watch a movie you want',
-        'Join a volunteer organization',
-        'Listen and understand others\'perspectives',
-        'Stop controlling others\' life outcomes',
-        'Drop engagements not matching priorities',
-        'Hold door and greet people',
-        'Call to check on loved ones',
-        'Write letters or emails regularly',
-        'Send cards with personal messages',
-        'Compliment someone regularly',
-        'Strengthen habit of keeping promises',
-        'Send weekly notes of encouragement',
-        'Meet someone for lunch regularly',
-        'Smile at other people',
-        'Practice the Platinum Rule always',
-        'Provide goodies at office monthly',
-        'Send flowers to someone special',
-        'Read to a child',
-        'Volunteer at a homeless shelter',
-        'Invite someone to dinner',
-        'Send anonymous encouragement gifts'
-    ],
-    spiritual: [
-        'Pray or meditate daily',
-        'Read spiritual or religious texts',
-        'Attend worship services',
-        'Reflect on your values',
-        'Practice gratitude daily',
-        'Spend time in nature',
-        'Journal about meaningful experiences',
-        'Study spiritual leader works',
-        'Practice forgiveness and letting go',
-        'Serve others without reward',
-        'Examine your purpose and mission',
-        'Practice yoga',
-        'Spend time in contemplation',
-        'Keep a gratitude jar',
-        'Connect with your higher power',
-        'Practice mindfulness',
-        'Read inspirational books',
-        'Participate in faith community',
-        'Write letters to future self',
-        'Create a vision board'
-    ]
+    physical: [],
+    mental: [],
+    socialEmotional: [],
+    spiritual: []
 };
+
+// Load SAW suggestions from CSV file
+async function loadSawSuggestions() {
+    try {
+        const response = await fetch('saw-suggestions.csv');
+        if (!response.ok) {
+            console.warn('Could not load saw-suggestions.csv, using empty suggestions');
+            return;
+        }
+        const text = await response.text();
+        const lines = text.split('\n').slice(1); // Skip header
+        lines.forEach(line => {
+            if (!line.trim()) return;
+            const [category, suggestion] = line.split(',');
+            if (category && suggestion && SAW_SUGGESTIONS[category]) {
+                SAW_SUGGESTIONS[category].push(suggestion.trim());
+            }
+        });
+        console.log('Loaded SAW suggestions:', Object.keys(SAW_SUGGESTIONS).map(k => `${k}: ${SAW_SUGGESTIONS[k].length}`).join(', '));
+    } catch (err) {
+        console.error('Error loading SAW suggestions:', err);
+    }
+}
 
 // Compact set of one-line motivational quotes (max ~60 chars)
 const MOTIVATIONAL_QUOTES = [
@@ -769,6 +679,7 @@ async function loadConfig() {
 window.addEventListener('DOMContentLoaded', async () => {
     initializeVersion();
     initializeTheme();
+    await loadSawSuggestions();
     
     // Load config first
     const configLoaded = await loadConfig();
