@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.29'; // Assignee grouping shows real names; card menu visuals remain
+const APP_VERSION = '2.1.30'; // Assignee grouping shows real names; card menu visuals remain
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -2039,18 +2039,15 @@ function groupTasksBy(tasks, buckets, groupBy) {
 
         switch (groupBy) {
             case 'assigned': {
-                if (task.assignments && Object.keys(task.assignments).length > 0) {
-                    const assigneeId = Object.keys(task.assignments)[0];
-                    key = assigneeId;
-                    // Prefer enriched names from allTaskDetails, then allUsers
-                    const enriched = allTaskDetails[task.id]?.assignments?.[assigneeId]?.displayName;
-                    const fromUsers = allUsers[assigneeId];
-                    name = enriched || fromUsers || 'Assigned';
-                } else {
-                    key = 'unassigned';
-                    name = 'Unassigned';
-                }
-                break;
+                const assigneeNames = getAssigneeNames(task);
+                assigneeNames.forEach(assigneeName => {
+                    const groupKey = assigneeName.toLowerCase().replace(/\s+/g, '-');
+                    if (!groups[groupKey]) {
+                        groups[groupKey] = { id: groupKey, name: assigneeName, tasks: [] };
+                    }
+                    groups[groupKey].tasks.push(task);
+                });
+                return; // Skip default grouping logic after assigning to all assignee groups
             }
             case 'bucket': {
                 key = task.bucketId || 'no-bucket';
@@ -2348,11 +2345,12 @@ function getAssigneeNames(task) {
     const ids = Object.keys(rawAssignments);
     const names = ids.map(id => {
         const detailName = detailsAssignments[id]?.displayName;
+        const userMapName = allUsers[id];
+        const rawDisplay = rawAssignments[id]?.displayName;
         const assignedByName = rawAssignments[id]?.assignedBy?.user?.displayName;
-        return detailName || assignedByName;
+        return detailName || userMapName || rawDisplay || assignedByName;
     }).filter(Boolean);
-    if (names.length === 0) return ['Unassigned'];
-    return names;
+    return names.length > 0 ? names : ['Unassigned'];
 }
 
 function getProgressLabel(percentComplete) {
@@ -2434,16 +2432,10 @@ function renderDashboard() {
             dueCounts['No due date']++;
         }
 
-        const taskDetails = allTaskDetails[task.id];
-        const assignments = taskDetails?.assignments || task.assignments || {};
-        if (assignments && Object.keys(assignments).length > 0) {
-            Object.values(assignments).forEach(a => {
-                const name = a.displayName || 'Assigned';
-                assigneeCounts[name] = (assigneeCounts[name] || 0) + 1;
-            });
-        } else {
-            assigneeCounts['Unassigned'] = (assigneeCounts['Unassigned'] || 0) + 1;
-        }
+        const assigneeNames = getAssigneeNames(task);
+        assigneeNames.forEach(name => {
+            assigneeCounts[name] = (assigneeCounts[name] || 0) + 1;
+        });
 
         const categories = task.appliedCategories || {};
         Object.keys(categories).forEach(cat => {
