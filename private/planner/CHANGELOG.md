@@ -5,6 +5,13 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.43] - 2025-12-30
+
+### Changed
+- **Reduced console verbosity**: Removed verbose logging for task assignment metadata scanning
+  - Removed console.log output that printed task title and assignment details for each task
+  - Quieter F12 console during task loading
+
 ## [2.1.42] - 2025-12-30
 
 ### Changed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.42'; // Remove white outline from compass date, bold date and text
+const APP_VERSION = '2.1.43'; // Remove verbose console logging for task metadata scanning
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -1222,20 +1222,16 @@ async function loadTasks() {
         // Collect all unique user IDs from assignments and extract any available names
         const userIds = new Set();
         const userDetailsMap = {}; // Initialize early so assignment metadata extraction can use it
-        console.log('🔎 Scanning tasks for assignment metadata...');
         tasks.forEach(task => {
             if (task.assignments) {
                 Object.keys(task.assignments).forEach(userId => {
                     userIds.add(userId);
                     // Try to extract displayName from assignment metadata
                     const assignment = task.assignments[userId];
-                    console.log(`  Task "${task.title.substring(0, 30)}..." assignment:`, assignment);
                     if (assignment?.displayName && !userDetailsMap[userId]) {
                         userDetailsMap[userId] = assignment.displayName;
-                        console.log(`    ✓ Found name in assignment: ${assignment.displayName}`);
                     } else if (assignment?.assignedBy?.user?.displayName) {
                         userDetailsMap[userId] = assignment.assignedBy.user.displayName;
-                        console.log(`    ✓ Found name in assignedBy: ${assignment.assignedBy.user.displayName}`);
                     }
                 });
             }
