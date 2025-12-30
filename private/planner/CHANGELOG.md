@@ -7,15 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.1.24] - 2025-12-30
+## [2.1.26] - 2025-12-30
 
-### Fixed
-- **Update Delivery**: index.html now cache-busts planner.js/planner.css with version query strings so clicking UPDATE loads the fresh assets
+### Changed
+- **Dashboard Layout**: Themes card now spans two columns (≈4 boxes) and labels no longer wrap/ellipsis; asset cache-bust updated
 
 ## [2.1.25] - 2025-12-30
 
 ### Changed
 - **Dashboard Layout**: Summary tiles and cards use smaller min widths (120px stats, 260px cards; 320px on very wide screens) so stats stay single-box and charts can expand to 3–4 columns
+
+## [2.1.24] - 2025-12-30
+
+### Fixed
+- **Update Delivery**: index.html now cache-busts planner.js/planner.css with version query strings so clicking UPDATE loads the fresh assets
 
 ## [2.1.23] - 2025-12-30
 

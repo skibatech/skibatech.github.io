@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.25'; // Dashboard cards/summaries tighter for 4-column fit; cache-bust remains
+const APP_VERSION = '2.1.26'; // Themes card spans 2 columns; no label wrap; cache-bust updated
 let latestAvailableVersion = null;
 
 // Suggestions for Sharpen the Saw categories
