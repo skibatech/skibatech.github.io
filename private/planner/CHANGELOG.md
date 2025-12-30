@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.7] - 2025-12-30
+
+### Improved
+- **Weekly Compass Default**: New option in Settings to show/hide compass by default
+- Compass visibility preference is saved to localStorage and persists across sessions
+- Users can toggle compass visibility with the button, but default behavior is configurable
+
 ## [2.1.6] - 2025-12-30
 
 ### Improved

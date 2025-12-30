@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.6'; // Add version update check with hard refresh
+const APP_VERSION = '2.1.7'; // Add option to default show/hide Weekly Compass
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -3624,6 +3624,7 @@ function showOptions() {
     document.getElementById('defaultGroupByInput').value = currentGroupBy;
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('compassPositionInput').value = compassPosition;
+    document.getElementById('showCompassDefaultInput').checked = compassVisible;
     
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
@@ -3801,6 +3802,7 @@ async function saveOptions() {
     const defaultGroupBy = document.getElementById('defaultGroupByInput').value;
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
     const compassPos = document.getElementById('compassPositionInput').value;
+    const showCompassDefault = document.getElementById('showCompassDefaultInput').checked;
     
     // Save to local state and localStorage
     currentView = defaultView;
@@ -3811,11 +3813,24 @@ async function saveOptions() {
     localStorage.setItem('plannerShowCompleted', showCompletedDefault ? 'true' : 'false');
     compassPosition = compassPos;
     localStorage.setItem('plannerCompassPosition', compassPos);
+    compassVisible = showCompassDefault;
+    localStorage.setItem('plannerCompassVisible', showCompassDefault ? 'true' : 'false');
     
     // Save to To Do for sync
     await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos);
 
-    // Apply compass position immediately
+    // Apply compass visibility and position
+    if (showCompassDefault) {
+        const panel = document.getElementById('weeklyCompassPanel');
+        const wrapper = document.getElementById('mainContentWrapper');
+        if (panel) panel.style.display = 'block';
+        if (wrapper) wrapper.style.display = 'flex';
+    } else {
+        const panel = document.getElementById('weeklyCompassPanel');
+        const wrapper = document.getElementById('mainContentWrapper');
+        if (panel) panel.style.display = 'none';
+        if (wrapper) wrapper.style.display = 'block';
+    }
     applyCompassPosition();
 
     // Immediately apply the new view/group/filter to the main screen
@@ -4240,7 +4255,7 @@ let compassData = {
 };
 let compassListId = null;
 let optionsListId = null;
-let compassVisible = false;
+let compassVisible = localStorage.getItem('plannerCompassVisible') === 'true';
 let compassEditMode = false;
 let compassAutoSaveTimer = null;
 
@@ -4287,6 +4302,20 @@ async function initializeCompass() {
         compassListId = compassList.id;
         await loadCompassData();
         await initializeOptions();
+        
+        // Apply saved compass visibility preference
+        if (compassVisible) {
+            const panel = document.getElementById('weeklyCompassPanel');
+            const wrapper = document.getElementById('mainContentWrapper');
+            if (panel) panel.style.display = 'block';
+            if (wrapper) wrapper.style.display = 'flex';
+        } else {
+            const panel = document.getElementById('weeklyCompassPanel');
+            const wrapper = document.getElementById('mainContentWrapper');
+            if (panel) panel.style.display = 'none';
+            if (wrapper) wrapper.style.display = 'block';
+        }
+        applyCompassPosition();
     } catch (err) {
         console.error('Failed to initialize compass:', err);
     }
