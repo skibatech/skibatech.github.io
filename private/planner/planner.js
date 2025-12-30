@@ -1,5 +1,9 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.27'; // Bar layout favors text width; cache-bust updated
+const APP_VERSION = '2.1.28'; // Card menus allow choosing visual types; cache-bust updated
+const CARD_VISUAL_OPTIONS = [
+    { id: 'bar', label: 'Bars' },
+    { id: 'dot', label: 'Dots' }
+];
 let latestAvailableVersion = null;
 
 // Suggestions for Sharpen the Saw categories
@@ -220,6 +224,7 @@ let resizeStartWidth = 0;
 let currentFilter = 'all';
 let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || false;
 let compassPosition = localStorage.getItem('plannerCompassPosition') || 'right'; // 'left' or 'right'
+let cardVisualPrefs = JSON.parse(localStorage.getItem('plannerCardVisuals') || '{}'); // { chartId: 'bar' | 'dot' }
 let draggedColumnElement = null; // Store the dragged column header element
 let columnWidths = {
     'col-id': 90,
@@ -2273,6 +2278,41 @@ function switchTab(tab) {
     }
 }
 
+function openCardMenu(event, chartId) {
+    event.stopPropagation();
+    let menu = document.getElementById('cardMenu');
+    if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'cardMenu';
+        menu.className = 'card-menu';
+        document.body.appendChild(menu);
+        document.addEventListener('click', closeCardMenu, { capture: true });
+    }
+    const current = cardVisualPrefs[chartId] || 'bar';
+    menu.innerHTML = CARD_VISUAL_OPTIONS.map(opt => {
+        const active = opt.id === current ? 'active' : '';
+        const check = opt.id === current ? ' ✓' : '';
+        return `<button class="card-menu-item ${active}" onclick="selectCardVisual('${chartId}','${opt.id}'); event.stopPropagation();">${opt.label}${check}</button>`;
+    }).join('');
+
+    const rect = event.target.getBoundingClientRect();
+    menu.style.display = 'block';
+    menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
+    menu.style.left = `${rect.right + window.scrollX - menu.offsetWidth}px`;
+}
+
+function closeCardMenu() {
+    const menu = document.getElementById('cardMenu');
+    if (menu) menu.style.display = 'none';
+}
+
+function selectCardVisual(chartId, visual) {
+    cardVisualPrefs[chartId] = visual;
+    localStorage.setItem('plannerCardVisuals', JSON.stringify(cardVisualPrefs));
+    closeCardMenu();
+    renderDashboard();
+}
+
 function renderBarGroup(containerId, data, filterType) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -2280,12 +2320,25 @@ function renderBarGroup(containerId, data, filterType) {
         container.innerHTML = '<div class="chart-empty">No data</div>';
         return;
     }
+    const visual = cardVisualPrefs[containerId] || 'bar';
     const maxValue = Math.max(...data.map(d => d.value), 1);
     container.innerHTML = data.map(item => {
         const pct = Math.max(4, Math.round((item.value / maxValue) * 100));
+        const escapedLabel = escapeHtml(item.label);
+        if (visual === 'dot') {
+            return `
+                <div class="bar-row dot-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
+                    <div class="bar-label">${escapedLabel}</div>
+                    <div class="dot-track">
+                        <div class="dot-bullet" style="left: calc(${pct}% - 6px); background:${item.color};"></div>
+                    </div>
+                    <div class="bar-value">${item.value}</div>
+                </div>
+            `;
+        }
         return `
             <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
-                <div class="bar-label">${escapeHtml(item.label)}</div>
+                <div class="bar-label">${escapedLabel}</div>
                 <div class="bar-track">
                     <div class="bar-fill" style="width:${pct}%; background:${item.color};"></div>
                 </div>

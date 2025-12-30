@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <title>SkibaTech Engineering - Planner Pro</title>
-    <link rel="stylesheet" href="planner.css?v=2.1.27">
+    <link rel="stylesheet" href="planner.css?v=2.1.28">
 </head>
 <body class="unauthenticated">
     <div class="header">
@@ -185,23 +185,38 @@
                 <div id="dashboardEmpty" class="dashboard-empty" style="display:none;">No tasks to summarize. Adjust filters or sign in.</div>
                 <div class="dashboard-grid">
                     <div class="dashboard-card">
-                        <div class="dashboard-card-title">Progress</div>
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-title">Progress</div>
+                            <button class="card-menu-btn" aria-label="Configure chart" onclick="openCardMenu(event, 'chartProgress')">⋯</button>
+                        </div>
                         <div id="chartProgress" class="bar-group"></div>
                     </div>
                     <div class="dashboard-card">
-                        <div class="dashboard-card-title">Priority</div>
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-title">Priority</div>
+                            <button class="card-menu-btn" aria-label="Configure chart" onclick="openCardMenu(event, 'chartPriority')">⋯</button>
+                        </div>
                         <div id="chartPriority" class="bar-group"></div>
                     </div>
                     <div class="dashboard-card">
-                        <div class="dashboard-card-title">Due date timeline</div>
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-title">Due date timeline</div>
+                            <button class="card-menu-btn" aria-label="Configure chart" onclick="openCardMenu(event, 'chartDue')">⋯</button>
+                        </div>
                         <div id="chartDue" class="bar-group"></div>
                     </div>
                     <div class="dashboard-card">
-                        <div class="dashboard-card-title">Assignee load (top 8)</div>
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-title">Assignee load (top 8)</div>
+                            <button class="card-menu-btn" aria-label="Configure chart" onclick="openCardMenu(event, 'chartAssignees')">⋯</button>
+                        </div>
                         <div id="chartAssignees" class="bar-group"></div>
                     </div>
                     <div class="dashboard-card wide-card">
-                        <div class="dashboard-card-title">Themes (top 10)</div>
+                        <div class="dashboard-card-header">
+                            <div class="dashboard-card-title">Themes (top 10)</div>
+                            <button class="card-menu-btn" aria-label="Configure chart" onclick="openCardMenu(event, 'chartThemes')">⋯</button>
+                        </div>
                         <div id="chartThemes" class="bar-group"></div>
                     </div>
                 </div>
@@ -610,6 +625,7 @@
         </div>
     </div>
 
-    <script src="planner.js?v=2.1.27"></script>
+    <script src="planner.js?v=2.1.28"></script>
+    <div id="cardMenu" class="card-menu" style="display:none"></div>
 </body>
 </html>

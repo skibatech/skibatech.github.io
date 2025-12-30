@@ -1569,6 +1569,62 @@ body.dark-mode .editable-cell.editing {
     box-shadow: 0 1px 3px var(--shadow);
 }
 
+.dashboard-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.card-menu-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.card-menu-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--link-color);
+}
+
+.card-menu {
+    position: absolute;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    padding: 6px;
+    z-index: 9999;
+    min-width: 160px;
+}
+
+.card-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.card-menu-item:hover {
+    background: var(--bg-hover);
+}
+
+.card-menu-item.active {
+    color: var(--link-color);
+}
+
 .dashboard-card-title {
     font-weight: 700;
     margin-bottom: 10px;
@@ -1603,6 +1659,24 @@ body.dark-mode .editable-cell.editing {
     overflow: visible;
     text-overflow: clip;
     line-height: 1.2;
+}
+
+.dot-row .dot-track {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    height: 8px;
+    position: relative;
+}
+
+.dot-row .dot-bullet {
+    position: absolute;
+    top: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
 }
 
 .bar-track {

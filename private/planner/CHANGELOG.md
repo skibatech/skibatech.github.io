@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.28] - 2025-12-30
+
+### Added
+- **Dashboard Card Menus**: Three-dot menu on each dashboard card to choose visualization type (bars or dots); preference saved per card
+
 ## [2.1.27] - 2025-12-30
 
 ### Changed
