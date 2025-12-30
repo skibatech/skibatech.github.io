@@ -1249,7 +1249,8 @@ async function loadTasks() {
             if (m && m.id && m.displayName) userDetailsMap[m.id] = m.displayName;
         });
         console.log('📋 User details from plan members:', userDetailsMap);
-        const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);\n        console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
+        const missingUserIds = Array.from(userIds).filter(uid => !userDetailsMap[uid]);
+        console.log('🔍 Missing user IDs that need fetching:', missingUserIds);
         // Fetch remaining users via directoryObjects/getByIds in chunks, with fallback
         async function fetchUsersByIds(ids) {
             const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
