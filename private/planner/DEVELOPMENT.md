@@ -17,29 +17,32 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.1.47
-- **Last Commit**: "v2.1.47: Move saw-suggestions.csv to csv folder, add Line/Circle/Square visuals"
+- **Last Committed Version**: 2.1.48
+- **Last Commit**: "v2.1.48: Implement proper chart visualizations (Pie, Donut, Vertical Bars, Horizontal Bars)"
 - **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.1.48 (in progress)
+- **Current Working Version**: 2.1.49 (in progress)
 
 ## Version History (Most Recent First)
 
-### v2.1.48 (In Progress)
+### v2.1.49 (In Progress)
 **Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
 **Changes**:
-- Chart visualization types: Pie, Donut, Vertical Bars, Horizontal Bars
-- Updated `renderChart()` function with SVG path calculations for circular charts
-- All version numbers bumped to 2.1.48 in planner.js and index.html cache-bust refs
-- CHANGELOG.md updated with correct v2.1.48 description
+- Console logging for status updates: All setStatus() calls now output to F12 Console
+- Added `console.log('Status: ${text}')` in setStatus() function
 **Files Modified**:
-- `planner.js`: renderChart() refactored, APP_VERSION updated to 2.1.48
-- `planner.css`: Removed symbol CSS classes (.line-fill, .circle-fill, .square-fill)
-- `index.html`: Cache-bust versions updated to v=2.1.48
-- `CHANGELOG.md`: v2.1.48 entry added above v2.1.47
+- `planner.js`: setStatus() function with console.log, APP_VERSION updated to 2.1.49
+- `index.html`: Cache-bust versions updated to v=2.1.49
+- `CHANGELOG.md`: v2.1.49 entry added
+- `DEVELOPMENT.md`: Updated status tracking
 **Git Command When Ready**:
 ```powershell
-git add private/planner/planner.js private/planner/planner.css private/planner/index.html private/planner/CHANGELOG.md; git commit -m "v2.1.48: Implement proper chart visualizations (Pie, Donut, Vertical Bars, Horizontal Bars)"; git push origin main
+git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.1.49: Log all status updates to F12 Console"; git push origin main
 ```
+
+### v2.1.48 (Committed ✅)
+- Chart visualization types: Pie, Donut, Vertical Bars, Horizontal Bars
+- Updated renderChart() function with SVG path calculations for circular charts
+- Added DEVELOPMENT.md tracking file
 
 ### v2.1.47 (Committed ✅)
 - Moved `saw-suggestions.csv` to `csv/` subdirectory

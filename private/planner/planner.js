@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.48'; // Add pie, donut, and vertical bar chart types
+const APP_VERSION = '2.1.49'; // Add pie, donut, and vertical bar chart types
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -232,6 +232,7 @@ function setStatus(text, color = null) {
     const statusElement = document.getElementById('status');
     if (statusElement) {
         statusElement.textContent = text;
+        console.log(`Status: ${text}`);
         if (color) {
             statusElement.style.color = color;
         } else {
