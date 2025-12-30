@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.40'; // Tighten vertical spacing in grouped views
+const APP_VERSION = '2.1.41'; // Add configurable update check interval
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -135,6 +135,7 @@ let resizeStartWidth = 0;
 let currentFilter = 'all';
 let showCompleted = localStorage.getItem('plannerShowCompleted') === 'true' || false;
 let compassPosition = localStorage.getItem('plannerCompassPosition') || 'right'; // 'left' or 'right'
+let updateCheckIntervalSeconds = parseInt(localStorage.getItem('plannerUpdateCheckInterval') || '60'); // Update check interval in seconds (minimum 60)
 let cardVisualPrefs = JSON.parse(localStorage.getItem('plannerCardVisuals') || '{}'); // { chartId: 'bar' | 'dot' }
 let draggedColumnElement = null; // Store the dragged column header element
 let columnWidths = {
@@ -900,8 +901,9 @@ function initializeVersion() {
         console.log('✓ Version initialized:', APP_VERSION);
         // Check for updates after a short delay to avoid startup lag
         setTimeout(checkForVersionUpdate, 2000);
-        // Then check periodically every 60 seconds
-        setInterval(checkForVersionUpdate, 60000);
+        // Then check periodically at configured interval (minimum 60 seconds)
+        const intervalMs = Math.max(updateCheckIntervalSeconds * 1000, 60000);
+        setInterval(checkForVersionUpdate, intervalMs);
     } else {
         console.warn('⚠️ Version display element not found');
     }
@@ -3767,6 +3769,7 @@ function showOptions() {
     document.getElementById('showCompletedDefaultInput').checked = showCompleted;
     document.getElementById('compassPositionInput').value = compassPosition;
     document.getElementById('showCompassDefaultInput').checked = compassVisible;
+    document.getElementById('updateCheckIntervalInput').value = updateCheckIntervalSeconds;
     
     document.getElementById('optionsModal').style.display = 'flex';
     switchOptionsTab('views');
@@ -3945,6 +3948,13 @@ async function saveOptions() {
     const showCompletedDefault = document.getElementById('showCompletedDefaultInput').checked;
     const compassPos = document.getElementById('compassPositionInput').value;
     const showCompassDefault = document.getElementById('showCompassDefaultInput').checked;
+    let updateInterval = parseInt(document.getElementById('updateCheckIntervalInput').value) || 60;
+    
+    // Enforce minimum 60 seconds
+    if (updateInterval < 60) {
+        updateInterval = 60;
+        document.getElementById('updateCheckIntervalInput').value = 60;
+    }
     
     // Save to local state and localStorage
     currentView = defaultView;
@@ -3957,6 +3967,8 @@ async function saveOptions() {
     localStorage.setItem('plannerCompassPosition', compassPos);
     compassVisible = showCompassDefault;
     localStorage.setItem('plannerCompassVisible', showCompassDefault ? 'true' : 'false');
+    updateCheckIntervalSeconds = updateInterval;
+    localStorage.setItem('plannerUpdateCheckInterval', updateInterval.toString());
     
     // Save to To Do for sync
     await saveOptionsData(defaultView, defaultGroupBy, showCompletedDefault, compassPos, showCompassDefault);

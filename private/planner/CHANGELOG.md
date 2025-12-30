@@ -5,6 +5,15 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.41] - 2025-12-30
+
+### Added
+- **Configurable update check interval**: New setting in Options to control how frequently the app checks for updates
+  - Stored in localStorage as `plannerUpdateCheckInterval` (in seconds)
+  - Minimum enforced at 60 seconds (cannot set lower)
+  - Default is 60 seconds
+  - Updates immediately saved when options are saved
+
 ## [2.1.40] - 2025-12-30
 
 ### Changed
