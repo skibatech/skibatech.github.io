@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.4] - 2025-12-30
+
+### Fixed
+- **Layout Overlap**: Content (tasks and dashboard) now properly flows beside Weekly Compass instead of underneath
+- Improved flex layout structure for proper side-by-side display
+- Content scrolls independently while compass remains sticky in its position
+
 ## [2.1.3] - 2025-12-30
 
 ### Changed

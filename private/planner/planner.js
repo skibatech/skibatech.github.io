@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.3'; // Move tabs to header, fix compass to show in both views
+const APP_VERSION = '2.1.4'; // Fixed layout overlap - content flows beside compass properly
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
