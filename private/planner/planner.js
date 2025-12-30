@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.38'; // Fix userDetailsMap initialization order
+const APP_VERSION = '2.1.39'; // Remove hard-coded company references, make configurable
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
     { id: 'dot', label: 'Dots' }
@@ -55,6 +55,7 @@ const MOTIVATIONAL_QUOTES = [
 
 // Configuration - will be loaded from config.json
 let config = {
+    companyName: 'Planner Pro',
     clientId: '',
     authority: '',
     redirectUri: window.location.origin + window.location.pathname,
@@ -657,14 +658,18 @@ async function loadConfig() {
         const configData = await response.json();
         
         // Apply config
+        config.companyName = configData.companyName || 'Planner Pro';
         config.clientId = configData.clientId;
         config.authority = configData.authority;
         config.allowedTenants = configData.allowedTenants || [];
         config.adminGroupId = configData.adminGroupId || '';
         config.adminGroupName = configData.adminGroupName || '';
         planId = configData.planId;
-        taskIdPrefix = configData.taskIdPrefix || 'STE';
+        taskIdPrefix = configData.taskIdPrefix || 'PRJ';
         adminUsers = (configData.adminUsers || []).map(e => e.trim().toLowerCase()).filter(e => e);
+        
+        // Update page title and header with company name
+        updateBrandingFromConfig();
         
         console.log('✅ Configuration loaded from config.json');
         return true;
@@ -672,6 +677,27 @@ async function loadConfig() {
         console.error('❌ Failed to load config.json:', err);
         alert('Failed to load application configuration. Please ensure config.json exists.');
         return false;
+    }
+}
+
+// Update page branding with company name from config
+function updateBrandingFromConfig() {
+    const title = `${config.companyName} - Planner Pro`;
+    document.title = title;
+    
+    const dashboardTitle = document.getElementById('dashboardTitle');
+    if (dashboardTitle) {
+        // Preserve the version pill HTML, just update the title text
+        const versionPill = dashboardTitle.querySelector('.version-pill');
+        dashboardTitle.textContent = title + ' ';
+        if (versionPill) {
+            dashboardTitle.appendChild(versionPill);
+        }
+    }
+    
+    const authMessage = document.getElementById('authRequiredMessage');
+    if (authMessage) {
+        authMessage.textContent = `This is a secure area. Please sign in with your ${config.companyName} Microsoft account to access Planner Pro.`;
     }
 }
 
@@ -773,7 +799,7 @@ async function handleRedirectCallback() {
                 localStorage.removeItem('plannerAccessToken');
                 localStorage.removeItem('tokenExpiration');
                 accessToken = null;
-                alert('Access denied. This dashboard is only available to SkibaTech users.');
+                alert(`Access denied. This dashboard is only available to ${config.companyName} users.`);
                 updateAuthUI(false);
             }
         } catch (error) {

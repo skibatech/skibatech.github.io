@@ -98,7 +98,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Admin Users (Emails)</label>
-                        <textarea id="adminUsersInput" class="task-input" placeholder="admin1@skibatech.com, admin2@skibatech.com" style="min-height: 80px;"></textarea>
+                        <textarea id="adminUsersInput" class="task-input" placeholder="admin1@yourdomain.com, admin2@yourdomain.com" style="min-height: 80px;"></textarea>
                         <div class="muted">Comma-separated admin emails. Leave blank to allow any authenticated user with the PlannerAdmin role.</div>
                     </div>
                 </div>
@@ -201,6 +201,7 @@
                             <li><strong>Custom theme names not showing in Planner</strong>: Make sure you clicked "Save & Sync" and give it a moment.</li>
                             <li><strong>Too Many Requests</strong>: Wait a bit; the app auto-retries up to 5 times.</li>
                             <li><strong>Settings not sticking</strong>: Local to your browser until you update <code>config.json</code> in the repo and deploy.</li>
+                            <li><strong>Assignee names showing as GUIDs instead of names</strong>: Your Azure app needs <code>Directory.Read.All</code> permission with admin consent granted. Go to Azure Portal → App registrations → your app → API permissions → Add permission → Microsoft Graph → Delegated permissions → <code>Directory.Read.All</code> → Grant admin consent for your tenant → Sign out and back in to the dashboard.</li>
                         </ul>
                     </div>
 

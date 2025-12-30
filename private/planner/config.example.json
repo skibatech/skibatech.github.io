@@ -2,6 +2,9 @@
   "_comment1": "=== PUBLIC CONFIGURATION (safe to expose via web) ===",
   "_comment2": "No secrets should ever be in this file - only identifiers that require authentication to use",
   
+  "companyName": "Your Company Name",
+  "_companyNameNote": "Company name displayed in the dashboard header and sign-in page",
+  
   "clientId": "your-azure-app-client-id-here",
   "_clientIdNote": "Azure App Registration Client ID (public by design for MSAL)",
   
@@ -15,7 +18,7 @@
   "_allowedTenantsNote": "List of allowed tenant domains for authentication",
   
   "taskIdPrefix": "PRJ",
-  "_taskIdPrefixNote": "Prefix for task IDs (e.g., 'PRJ-001', 'STE-042')",
+  "_taskIdPrefixNote": "Prefix for task IDs (e.g., 'PRJ-001', 'TSK-042')",
   
   "_comment3": "=== ADMIN ACCESS CONTROL (choose ONE method) ===",
   

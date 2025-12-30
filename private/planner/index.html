@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
-    <title>SkibaTech Engineering - Planner Pro</title>
-    <link rel="stylesheet" href="planner.css?v=2.1.38">
+    <title>Planner Pro</title>
+    <link rel="stylesheet" href="planner.css?v=2.1.39">
 </head>
 <body class="unauthenticated">
     <div class="header">
         <div class="header-top">
-            <h1>SkibaTech Engineering - Planner Pro <span class="version-pill">v<span id="versionDisplay">-</span><span id="updateBadge" style="display:none; margin-left: 8px; background: #b4373b; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 700;" onclick="doHardRefresh()" title="Click to update">UPDATE AVAILABLE</span></span></h1>
+            <h1 id="dashboardTitle">Planner Pro <span class="version-pill">v<span id="versionDisplay">-</span><span id="updateBadge" style="display:none; margin-left: 8px; background: #b4373b; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 700;" onclick="doHardRefresh()" title="Click to update">UPDATE AVAILABLE</span></span></h1>
             <div class="header-top-actions">
                 <span class="status" id="status" style="font-weight: bold; white-space: nowrap; margin-right: 8px; font-size: 13px;">Not connected</span>
                 <button id="refreshBtn" onclick="loadTasks()" class="primary-btn" style="display:none; margin-right: 12px;">Refresh</button>
@@ -105,7 +105,7 @@
     <div id="authRequired" class="auth-required">
         <div class="lock-icon">🔒</div>
         <h2>Authentication Required</h2>
-        <p>This is a secure area. Please sign in with your SkibaTech Microsoft account to access Planner Pro.</p>
+        <p id="authRequiredMessage">This is a secure area. Please sign in with your Microsoft account to access Planner Pro.</p>
         <button onclick="login()">Sign In with Microsoft</button>
     </div>
 
@@ -625,7 +625,7 @@
         </div>
     </div>
 
-    <script src="planner.js?v=2.1.38"></script>
+    <script src="planner.js?v=2.1.39"></script>
     <div id="cardMenu" class="card-menu" style="display:none"></div>
 </body>
 </html>

@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.1.39] - 2024-12-30
+
+### Changed
+- **Removed hard-coded company references**: All mentions of "SkibaTech" removed from main files
+- **Added `companyName` configuration field**: Company name now configurable via config.json
+- **Generic examples in templates**: config.example.json and admin.html now use generic domain examples (yourdomain.com)
+- **Dynamic branding**: Page title, header, and authentication messages now use companyName from config
+- **Documentation updates**: README.md and admin.html updated with Directory.Read.All permission troubleshooting
+
+## [2.1.38] - 2024-12-30
+
+### Fixed
+- **Fixed userDetailsMap initialization order**: Moved initialization earlier in code to prevent reference errors
+
 ## [2.1.37] - 2025-12-30
 
 ### Fixed

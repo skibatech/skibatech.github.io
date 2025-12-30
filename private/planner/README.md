@@ -13,7 +13,8 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
    - `Tasks.ReadWrite`
    - `Group.ReadWrite.All`
    - `User.Read`
-5. Click **Grant admin consent** (requires tenant admin)
+   - `Directory.Read.All` (required for displaying assignee names)
+5. Click **Grant admin consent for [Your Tenant]** (requires tenant admin) — **This step is critical for assignee names to display properly**
 
 ### 2. Get Your Planner Plan ID
 
@@ -110,8 +111,7 @@ A Microsoft Graph-powered task management interface for Microsoft Planner with W
 - **Config changes** (Plan ID, admins, etc.): Update fields, click “Save & Sync,” copy the generated `config.json` to your repo, commit, push.  
 - **Source of truth**: The portal form generates the config; keep the repo in sync.
 
-### Troubleshooting
-- **Not authorized for admin actions**: Add your email to `adminUsers` or ensure you’re in the admin group; sign out/in.  
+### Troubleshooting- **Assignee names showing as GUIDs instead of names**: Your Azure app needs `Directory.Read.All` permission with admin consent granted. Go to Azure Portal → App registrations → API permissions → Add `Directory.Read.All` → Grant admin consent → Re-sign in to the app- **Not authorized for admin actions**: Add your email to `adminUsers` or ensure you’re in the admin group; sign out/in.  
 - **Custom theme names not showing in Planner**: Make sure you clicked “Save & Sync” and give it a moment.  
 - **Too Many Requests**: Wait a bit; the app auto-retries up to 5 times.  
 - **Settings not sticking**: Local to your browser until you update `config.json` in the repo and deploy.
