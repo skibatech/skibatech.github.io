@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.0.62'; // Compass: fix save icon centering (was sitting right/bottom)
+const APP_VERSION = '2.0.63'; // Compass: replace disk icon with checkmark for better alignment
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
