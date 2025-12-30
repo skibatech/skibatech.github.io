@@ -1,8 +1,11 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.46'; // Increase margin on UPDATE AVAILABLE badge
+const APP_VERSION = '2.1.47'; // Move saw-suggestions.csv to csv folder, add Line/Circle/Square visuals
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Bars' },
-    { id: 'dot', label: 'Dots' }
+    { id: 'dot', label: 'Dots' },
+    { id: 'line', label: 'Line' },
+    { id: 'circle', label: 'Circles' },
+    { id: 'square', label: 'Squares' }
 ];
 let latestAvailableVersion = null;
 
@@ -17,7 +20,7 @@ const SAW_SUGGESTIONS = {
 // Load SAW suggestions from CSV file
 async function loadSawSuggestions() {
     try {
-        const response = await fetch('saw-suggestions.csv');
+        const response = await fetch('csv/saw-suggestions.csv');
         if (!response.ok) {
             console.warn('Could not load saw-suggestions.csv, using empty suggestions');
             return;
@@ -2366,6 +2369,7 @@ function renderBarGroup(containerId, data, filterType) {
     container.innerHTML = data.map(item => {
         const pct = Math.max(4, Math.round((item.value / maxValue) * 100));
         const escapedLabel = escapeHtml(item.label);
+        
         if (visual === 'dot') {
             return `
                 <div class="bar-row dot-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
@@ -2376,7 +2380,38 @@ function renderBarGroup(containerId, data, filterType) {
                     <div class="bar-value">${item.value}</div>
                 </div>
             `;
+        } else if (visual === 'line') {
+            return `
+                <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
+                    <div class="bar-label">${escapedLabel}</div>
+                    <div class="bar-track">
+                        <div class="line-fill" style="width:${pct}%; border-top: 2px solid ${item.color};"></div>
+                    </div>
+                    <div class="bar-value">${item.value}</div>
+                </div>
+            `;
+        } else if (visual === 'circle') {
+            return `
+                <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
+                    <div class="bar-label">${escapedLabel}</div>
+                    <div class="bar-track">
+                        <div class="circle-fill" style="width:${pct}%; background: radial-gradient(circle, ${item.color} 30%, transparent 70%);"></div>
+                    </div>
+                    <div class="bar-value">${item.value}</div>
+                </div>
+            `;
+        } else if (visual === 'square') {
+            return `
+                <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
+                    <div class="bar-label">${escapedLabel}</div>
+                    <div class="bar-track">
+                        <div class="square-fill" style="width:${pct}%; background-color:${item.color}; opacity:0.6;"></div>
+                    </div>
+                    <div class="bar-value">${item.value}</div>
+                </div>
+            `;
         }
+        // Default: bar
         return `
             <div class="bar-row" onclick="drillDownTasks('${filterType}', '${escapeForAttribute(item.label)}')">
                 <div class="bar-label">${escapedLabel}</div>
