@@ -824,13 +824,14 @@ body.unauthenticated #refreshBtn {
 /* Weekly Compass Panel */
 #mainContentWrapper {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    gap: 20px;
+    align-items: flex-start;
 }
 
-#tasksView {
-    display: flex;
-    gap: 20px;
+#tasksView,
+#dashboardContainer {
+    flex: 1;
+    min-width: 0;
 }
 
 #tasksContainer {
@@ -852,6 +853,7 @@ body.unauthenticated #refreshBtn {
     position: sticky;
     top: 20px;
     flex-shrink: 0;
+    align-self: flex-start;
 }
 
 .compass-panel.compass-left {
@@ -863,7 +865,9 @@ body.unauthenticated #refreshBtn {
 }
 
 /* Dashboard */
-#dashboardContainer {
+#dashboardContainer > .dashboard-wrapper {
+    flex: 1;
+    min-width: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
