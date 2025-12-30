@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.9] - 2025-12-30
+
+### Improved
+- **Dashboard Grid Layout**: Flexible card sizing now allows 1, 2, 3, or 4 columns based on available space
+- Cards use minmax(300px, 1fr) to intelligently resize - narrower on small screens, multi-column on wide screens
+- Better responsive design when compass is visible
+
 ## [2.1.8] - 2025-12-30
 
 ### Improved

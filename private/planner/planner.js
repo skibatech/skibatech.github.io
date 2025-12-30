@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.8'; // Background polling for version updates every 60 seconds
+const APP_VERSION = '2.1.9'; // Flexible dashboard grid layout (1-4 columns)
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
