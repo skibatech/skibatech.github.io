@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Docs**: README now mirrors the Admin Portal help content (setup, ongoing management, troubleshooting, advanced)
 
+## [2.1.15] - 2025-12-30
+
+### Fixed
+- **Update Button Reload**: Clicking UPDATE AVAILABLE now clears caches, preloads fresh planner.js/css/html with cache-bust, then hard-reloads (matches Ctrl+Shift+R behavior)
+
 ## [2.1.14] - 2025-12-30
 
 ### Changed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.1.14'; // Rename update badge to "UPDATE AVAILABLE"
+const APP_VERSION = '2.1.15'; // Update button now performs full hard reload
 
 // Suggestions for Sharpen the Saw categories
 const SAW_SUGGESTIONS = {
@@ -1096,23 +1096,33 @@ async function checkForVersionUpdate() {
 }
 
 // Hard refresh the page (clears cache)
-function doHardRefresh() {
+async function doHardRefresh() {
     const bust = Date.now();
-    const go = () => {
-        const url = `${window.location.origin}${window.location.pathname}?v=${bust}`;
-        window.location.replace(url);
-    };
 
-    const warmPlannerJs = () => fetch(`./planner.js?bust=${bust}`, { cache: 'reload' }).catch(() => {});
-
-    if ('caches' in window) {
-        caches.keys()
-            .then(names => Promise.all(names.map(n => caches.delete(n))))
-            .then(warmPlannerJs)
-            .finally(go);
-    } else {
-        warmPlannerJs().finally(go);
+    // Best-effort cache clear
+    try {
+        if ('caches' in window) {
+            const names = await caches.keys();
+            await Promise.all(names.map(n => caches.delete(n)));
+        }
+    } catch (e) {
+        console.log('cache clear failed', e);
     }
+
+    // Pre-fetch core assets with cache-bust
+    const preload = async (url) => {
+        try {
+            await fetch(`${url}?bust=${bust}`, { cache: 'reload' });
+        } catch (e) { /* ignore */ }
+    };
+    await Promise.all([
+        preload('./planner.js'),
+        preload('./planner.css'),
+        preload('./index.html')
+    ]);
+
+    // Force hard reload (closest to Ctrl+Shift+R)
+    window.location.reload(true);
 }
 
 // Evaluate whether the current user has admin privileges
