@@ -24,6 +24,23 @@
 
 ## Version History (Most Recent First)
 
+### v2.2.5 (In Progress)
+**Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
+**Changes**:
+- Moved motivational quotes from code into csv/quotes.csv and load dynamically via loadQuotes()
+- Added loader invocation during startup
+- Version bump to 2.2.5, cache-bust updates
+**Files Modified**:
+- `planner.js`: APP_VERSION updated to 2.2.5, added loadQuotes(), quotes now loaded from CSV
+- `index.html`: Cache-bust versions updated to v=2.2.5
+- `CHANGELOG.md`: v2.2.5 entry added
+- `DEVELOPMENT.md`: Updated status tracking
+- `csv/quotes.csv`: New file with motivational quotes
+**Git Command When Ready**:
+```powershell
+git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md private/planner/csv/quotes.csv; git commit -m "v2.2.5: Load motivational quotes from CSV"; git push origin main
+```
+
 ### v2.2.4 (Committed ✅)
 - Housekeeping: Synced development tracking and tidied config.json formatting; version bump to 2.2.4
 

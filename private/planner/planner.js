@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.2.4'; // Drag-and-drop card reordering and resize options
+const APP_VERSION = '2.2.5'; // Drag-and-drop card reordering and resize options
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -44,21 +44,29 @@ async function loadSawSuggestions() {
     }
 }
 
-// Compact set of one-line motivational quotes (max ~60 chars)
-const MOTIVATIONAL_QUOTES = [
-    'Begin with the end in mind. — Covey',
-    'Put first things first. — Covey',
-    'The main thing is the main thing. — Covey',
-    'Get what you want; want what you get. — Carnegie',
-    'Do one thing well today. — Carnegie',
-    'The obstacle is the way. — Holiday',
-    'Discipline equals freedom. — Holiday',
-    'No great thing is created suddenly. — Epictetus',
-    'We suffer more in imagination. — Seneca',
-    'Well done beats well said. — Franklin',
-    'Small deeds, big results. — Anonymous',
-    'Your thoughts create your world. — Peale'
-];
+async function loadQuotes() {
+    try {
+        const response = await fetch('csv/quotes.csv');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        const withoutHeader = lines.slice(1); // first line is header
+        MOTIVATIONAL_QUOTES = withoutHeader.map(line => {
+            // Support CSV with simple quotes; split on first comma if present
+            if (line.startsWith('"') && line.endsWith('"')) {
+                return line.slice(1, -1);
+            }
+            return line;
+        }).filter(q => q.length > 0);
+        console.log('Loaded quotes:', MOTIVATIONAL_QUOTES.length);
+    } catch (err) {
+        console.error('Error loading quotes:', err);
+        MOTIVATIONAL_QUOTES = [];
+    }
+}
+
+// Compact set of one-line motivational quotes (loaded from CSV)
+let MOTIVATIONAL_QUOTES = [];
 
 // Configuration - will be loaded from config.json
 let config = {
@@ -718,6 +726,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     initializeVersion();
     initializeTheme();
     await loadSawSuggestions();
+    await loadQuotes();
     
     // Load config first
     const configLoaded = await loadConfig();
