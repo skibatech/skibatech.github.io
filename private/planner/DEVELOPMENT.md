@@ -17,29 +17,31 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.2.1
-- **Last Commit**: "v2.2.1: Fix card menu button z-index to prevent overlap"
+- **Last Committed Version**: 2.2.2
+- **Last Commit**: "v2.2.2: Fix card sizing override and add dashboard reset"
 - **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.2.2 (in progress)
+- **Current Working Version**: 2.2.3 (in progress)
 
 ## Version History (Most Recent First)
 
-### v2.2.2 (In Progress)
+### v2.2.3 (In Progress)
 **Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
 **Changes**:
-- Fixed card sizing conflict: Manual card size preferences now override automatic wide-card expansion
-- Automatic wide-card only applies when no manual size preference exists (hasManualSize check)
-- Added "Reset Dashboard Layout" button in Options modal to clear saved card preferences
-- New function: resetDashboardLayout() - clears cardSizePrefs and cardOrderPrefs from localStorage
+- Bar label layout fix: Long labels widen the label column inside the card (wide-labels class) so bars don't overlap text, without forcing the card to span 2 columns
 **Files Modified**:
-- `planner.js`: APP_VERSION updated to 2.2.2, renderBarGroup() logic fixed, resetDashboardLayout() added
-- `index.html`: Added Reset Dashboard Layout button in Options, cache-bust versions updated to v=2.2.2
-- `CHANGELOG.md`: v2.2.2 entry added
+- `planner.js`: APP_VERSION updated to 2.2.3, renderBarGroup() adds/removes wide-labels class based on label length
+- `planner.css`: Added .bar-group.wide-labels to widen label column
+- `index.html`: Cache-bust versions updated to v=2.2.3
+- `CHANGELOG.md`: v2.2.3 entry added
 - `DEVELOPMENT.md`: Updated status tracking
 **Git Command When Ready**:
 ```powershell
-git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.2.2: Fix card sizing override and add dashboard reset"; git push origin main
+git add private/planner/planner.js private/planner/planner.css private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.2.3: Fix bar label layout without forcing card span"; git push origin main
 ```
+
+### v2.2.2 (Committed ✅)
+- Fixed card sizing conflict: Manual card size preferences now override automatic wide-card expansion
+- Added "Reset Dashboard Layout" button in Options modal
 
 ### v2.2.1 (Committed ✅)
 - Fixed z-index stacking for card headers and menu buttons to prevent overlap

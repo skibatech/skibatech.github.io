@@ -84,12 +84,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Removed console.log output that printed task title and assignment details for each task
   - Quieter F12 console during task loading
 
-## [2.1.42] - 2025-12-30
+## [2.2.3] - 2025-12-30
 
-### Changed
-- **Weekly Compass styling**: Removed white outline/border around date range field
-- **Bold date text**: Date label and input field text now displayed in bold (font-weight: 600)
+### Fixed
+- **Bar label layout**: Long labels now widen the label column inside the card (without forcing the card to span 2 columns), preventing bars from overlapping text while keeping manual card sizes
 
+## [2.2.2] - 2025-12-30
+
+### Added
+- **Reset Dashboard Layout**: Added button in Options modal to clear saved card positions and sizes, restoring default layout
+
+## [2.2.1] - 2025-12-30
 ## [2.1.41] - 2025-12-30
 
 ### Added

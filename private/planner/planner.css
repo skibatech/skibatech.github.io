@@ -1669,6 +1669,10 @@ body.dark-mode .editable-cell.editing {
     transition: background 0.15s ease;
 }
 
+.bar-group.wide-labels .bar-row {
+    grid-template-columns: minmax(18ch, 2fr) 2fr auto;
+}
+
 .wide-card .bar-row {
     grid-template-columns: minmax(15ch, 2fr) 2fr auto;
 }

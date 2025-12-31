@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.2.2'; // Drag-and-drop card reordering and resize options
+const APP_VERSION = '2.2.3'; // Drag-and-drop card reordering and resize options
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2467,17 +2467,12 @@ function renderBarGroup(containerId, data, filterType) {
         return;
     }
     
-    // Only apply automatic wide format if no manual size preference is set
-    const cardEl = container.closest('.dashboard-card');
-    const hasManualSize = cardSizePrefs[containerId];
-    
-    if (cardEl && !hasManualSize) {
-        const maxLabelLength = Math.max(...data.map(d => (d.label || '').length));
-        if (maxLabelLength > 15) {
-            cardEl.classList.add('wide-card');
-        } else {
-            cardEl.classList.remove('wide-card');
-        }
+    // Adjust label layout: add wide-labels class to bar group when labels are long
+    const maxLabelLength = Math.max(...data.map(d => (d.label || '').length));
+    if (maxLabelLength >= 15) {
+        container.classList.add('wide-labels');
+    } else {
+        container.classList.remove('wide-labels');
     }
     
     const visual = cardVisualPrefs[containerId] || 'bar';
