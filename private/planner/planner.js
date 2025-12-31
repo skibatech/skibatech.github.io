@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.2.5'; // Drag-and-drop card reordering and resize options
+const APP_VERSION = '2.2.6'; // Drag-and-drop card reordering and resize options
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -4005,8 +4005,8 @@ function switchOptionsTab(tabName) {
     if (target) target.style.display = 'block';
     const navItems = document.querySelectorAll('.options-nav-item');
     navItems.forEach(item => item.classList.remove('active'));
-    // Mark the corresponding nav item active (first match by onclick signature)
-    const activeItem = Array.from(navItems).find(i => (i.getAttribute('onclick') || '').includes(`'${tabName}'`));
+    // Mark the corresponding nav item active using data-tab attribute
+    const activeItem = Array.from(navItems).find(i => i.getAttribute('data-tab') === tabName);
     if (activeItem) activeItem.classList.add('active');
 }
 

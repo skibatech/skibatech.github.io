@@ -5,11 +5,20 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.4] - 2025-12-31
+## [2.2.6] - 2025-12-31
+
+### Changed
+- **Options modal reorganized**: Split settings into 3 tabs (Views, Dashboard, Advanced) to eliminate scrollbar and improve organization
+- Views tab: Task list views and Weekly Compass settings
+- Dashboard tab: Dashboard-specific settings (reset layout)
+- Advanced tab: System settings (update check interval)
+
+## [2.2.5] - 2025-12-31
 
 ### Changed
 - **Motivational quotes moved to CSV**: Quotes now load from csv/quotes.csv instead of being hardcoded in planner.js
 
+## [2.2.4] - 2025-12-31
 
 ### Changed
 - **Housekeeping**: Synced development tracking and tidied config.json formatting; version bump to 2.2.4

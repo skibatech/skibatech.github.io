@@ -17,29 +17,33 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.2.4
-- **Last Commit**: "v2.2.4: Housekeeping sync (config formatting, tracking)"
+- **Last Committed Version**: 2.2.5
+- **Last Commit**: "v2.2.5: Load motivational quotes from CSV"
 - **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.2.5 (in progress)
+- **Current Working Version**: 2.2.6 (in progress)
 
 ## Version History (Most Recent First)
 
-### v2.2.5 (In Progress)
+### v2.2.6 (In Progress)
 **Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
 **Changes**:
-- Moved motivational quotes from code into csv/quotes.csv and load dynamically via loadQuotes()
-- Added loader invocation during startup
-- Version bump to 2.2.5, cache-bust updates
+- Reorganized Options modal into 3 tabs: Views, Dashboard, Advanced
+- Views: Task list views and Weekly Compass settings
+- Dashboard: Dashboard-specific settings (reset layout)
+- Advanced: System settings (update check interval)
+- Updated switchOptionsTab() to use data-tab attribute
 **Files Modified**:
-- `planner.js`: APP_VERSION updated to 2.2.5, added loadQuotes(), quotes now loaded from CSV
-- `index.html`: Cache-bust versions updated to v=2.2.5
-- `CHANGELOG.md`: v2.2.5 entry added
+- `planner.js`: APP_VERSION updated to 2.2.6, switchOptionsTab() uses data-tab
+- `index.html`: Split Options into 3 tabs with navigation, cache-bust versions updated to v=2.2.6
+- `CHANGELOG.md`: v2.2.6 entry added
 - `DEVELOPMENT.md`: Updated status tracking
-- `csv/quotes.csv`: New file with motivational quotes
 **Git Command When Ready**:
 ```powershell
-git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md private/planner/csv/quotes.csv; git commit -m "v2.2.5: Load motivational quotes from CSV"; git push origin main
+git add private/planner/planner.js private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v2.2.6: Reorganize Options modal into 3 tabs"; git push origin main
 ```
+
+### v2.2.5 (Committed ✅)
+- Moved motivational quotes from code into csv/quotes.csv and load dynamically via loadQuotes()
 
 ### v2.2.4 (Committed ✅)
 - Housekeeping: Synced development tracking and tidied config.json formatting; version bump to 2.2.4
