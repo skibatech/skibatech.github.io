@@ -2,110 +2,44 @@
 
 **Published on January 8, 2025 • 12 min read**
 
-For the last 30 days, I've been coding almost every day on pet projects and ideas I've wanted to try. My entire development process has changed thanks to GitHub Copilot. Instead of learning JavaScript syntax and best practices first, I focus on defining the solution and let Copilot build it alongside me. It's learning in reverse: show me what to do, then teach me how you did it. This article shares what I've learned about this new approach to development and the tools that make it possible.
+For the last 30 days, I've been coding almost every day on pet projects and ideas I've wanted to try. My entire development process has changed thanks to GitHub Copilot. Instead of learning JavaScript syntax and best practices first, I focus on defining the solution and let Copilot build it alongside me. It's learning in reverse: show me what to do, then teach me how you did it. Below is the streamlined playbook, with real examples from the past month.
 
-## Visual Studio Code
+## How I Work with Copilot (Solution-First)
 
-### Extensions I Actually Use
+1. **Describe outcomes, not tech:** I tell Copilot what I want (e.g., "nightly Intune device export into Azure SQL with a Logic App trigger"), then let it pick the stack.
+2. **Iterate fast:** Generate code → run it → adjust. If it loops, I say "get off the highway and try something else" and it pivots.
+3. **Secure after it works:** Ask "make this more secure" once it functions; add secrets to config files, not code.
+4. **Understand afterward:** "Explain how you did this like I'm 8" to cement the learning.
 
-VS Code is powerful out of the box, but a few key extensions make my workflow much more efficient:
+**Guardrails (rolled into the flow):** small commits by version, never commit secrets, pull before push, verify Copilot's one-liners before running.
 
-- **GitHub Copilot Chat:** My AI pair programming partner - helps with debugging, code explanations, and problem-solving (more below)
-- **PowerShell:** Essential for writing and debugging PowerShell scripts - syntax highlighting, IntelliSense, and integrated debugging
-- **Markdown Editor:** WYSIWYG editor for markdown files - makes editing documentation and blog posts much easier
-- **HTML Preview:** Quick preview of HTML files as I edit them
-- **Microsoft Edge Tools:** Browser DevTools integration directly in VS Code for web development
-- **vscode-pdf:** View PDF documentation without leaving the editor
+## VS Code Setup (kept lean)
 
-## Git Version Control
+- **GitHub Copilot Chat:** Daily debugging, code explanations, prompt iteration.
+- **PowerShell:** For the PowerShell-heavy plumbing around Azure Functions/Logic Apps.
+- **Markdown Editor + HTML Preview:** WYSIWYG blogging; keep markdown the source of truth.
+- **Microsoft Edge Tools:** In-editor DevTools for site tweaks.
+- **vscode-pdf:** Quick reference to docs without leaving VS Code.
 
-### My Current Git Workflow
+## Git: One-Liner, Versioned, Auditable
 
-I keep Git simple and fast by having Copilot script the full commit/push on one line and by baking versioning into both code and commits. Copilot still prompts with a single **Allow?** before running the combined command, so I get one confirmation instead of three:
+- **One-line commit/push:** `git add .; git commit -m "v2.2.7: Describe change"; git push` (Copilot proposes; I click **Allow?** once).
+- **Version in code + commit:** Bump `APP_VERSION`, start the commit with the version so I can say "works in v2.2.6, broke in v2.2.7."
+- **Changelog touch:** Copilot appends a bullet under the new version; optional notes go to `DEVELOPMENT.md`.
+- **Example prompt:** "Stage/commit/push in one line, bump APP_VERSION to v2.2.7, update CHANGELOG with the Options modal tab split." Copilot returns a single command; I scan and run.
 
-- **One-line commit/push:** `git add .; git commit -m "v2.2.7: Describe change"; git push` (Copilot proposes it, I click **Allow?** once)
-- **Version in code:** I update an `APP_VERSION` or similar constant before committing so behavior can be tied to a version
-- **Version in commit message:** The commit message starts with the version (e.g., `v2.2.7:`) so I can say "it worked in v2.2.6 but not v2.2.7"
-- **Update CHANGELOG.md:** Copilot appends a brief bullet under the new version with what changed
-- **Optionally update DEVELOPMENT.md:** Notes about in-progress work, decisions, and TODOs for the next session
+## Copilot Chat Prompts (with outcomes)
 
-### What I Ask Copilot to Do
+- **"Build me a solution that does X"** → Copilot produced the Intune → Azure SQL → Power BI pipeline scaffolding (Functions + Logic App schedule).
+- **"This isn't working, try a different approach"** → Swapped from direct SQL writes to queue + batch insert when throttling hit.
+- **"Make this more secure"** → Moved connection strings to `local.settings.json` and key vault; added parameterized queries.
+- **"Explain what this code does"** → Used after the Planner Pro overlay Options modal refactor to validate tab wiring.
+- **"Is there a cheaper way?"** → Replaced an always-on Function with a Logic App timer + consumption plan to cut cost.
+- **When Copilot shows "Summarizing conversation history"** → Let it finish, then restate anchor details (one-line git, version in code+commit, secure configs) to keep it on track.
 
-1) **"Stage/commit/push in one line"** – avoid multiple prompts
+## Licensing and Models (what I’m using)
 
-2) **"Add versioning"** – bump the version constant and include the version in the commit message
-
-3) **"Update CHANGELOG.md (and DEVELOPMENT.md)"** – append a concise entry describing the change and status
-
-### Guardrails I Follow
-
-- Keep commits focused and small - easier to trace regressions by version
-- Never commit secrets - use .gitignore and environment/config files instead
-- Pull before pushing if others might have changed the branch
-- Verify the generated one-liner before running it; adjust the commit message if needed
-
-## GitHub
-
-### Repository Organization
-
-I lean on Copilot to keep code and data separated so the solution stays reusable:
-
-- **Data/config out of code:** For example, I created a folder (e.g., `csv/`) and told Copilot to move related static data into a new CSV there; it was smart enough to move the data and update the code to load it so nothing broke.
-- **Reusable packaging:** Keeping config/data in separate files makes it easy to bundle or reuse the core code for other projects
-- **Docs:** Keep `README.md` for how to run/use it, `CHANGELOG.md` for version history, and a sensible `.gitignore`
-- **Structure:** Organize by purpose (src/, assets/, docs/, data/) and have Copilot refactor imports/loads when moving files
-
-### GitHub Pages
-
-- **Free hosting:** Perfect for static sites, documentation, and portfolios
-- **Custom domains:** Use CNAME file to point your own domain
-- **Automatic deployment:** Push to main and site updates automatically
-- **Jekyll integration:** Built-in support for Jekyll static site generator
-- **Limitations:** Static only - no server-side code, but that's fine for many use cases
-
-## GitHub Copilot: The Game Changer
-
-### My Development Workflow (Solution-First Approach)
-
-This is how I actually build things now:
-
-1. **Define the solution:** I describe what I want to build, not how to build it
-2. **Let Copilot choose the approach:** I don't tell it to use JavaScript or a specific framework - it picks the tools
-3. **Build iteratively:** Copilot generates code, I test it, we iterate
-4. **Guide when it gets stuck:** Sometimes Copilot loops on the same approach - I tell it to "get off the highway and try something else"
-5. **Make it fit for purpose:** Copilot gives you *a* way to do something, but you adapt it to your needs
-6. **Secure it:** Once it works, run a security pass (ask "is this secure?" or "make this more secure")
-7. **Learn what you built:** Ask Copilot to explain the code after it's working
-
-This is learning in reverse: build first, understand second.
-
-### Your Role: Absolutely Necessary
-
-Copilot is powerful, but it needs human guidance:
-
-- **Course correction:** When it loops on the same failed approach, you need to redirect it
-- **Validation:** You must test and verify everything it generates
-- **Context switching:** Sometimes you need to tell it to try a completely different approach
-- **Fit for purpose:** Generic solutions need customization for your specific use case
-- **Security review:** Always do a security pass after it works
-
-**You're not writing less code - you're writing smarter code with a partner who never gets tired.**
-
-### Copilot Chat: My Co-Pilot, Literally
-
-How I use GitHub Copilot Chat in my daily workflow:
-
-- **"Build me a solution that does X"** - Describe the goal, not the implementation; let Copilot pick the approach
-- **"This isn't working, try a different approach"** - When it gets stuck or loops
-- **"Make this secure/more secure"** - Security pass after it works
-- **"Explain what this code does" / "Why this approach?" / "Explain how you did this like I am an 8 year old"** - Learn after building
-- **Paste screenshots of errors and ask "Seeing this error now"**
-- **Is this the cheapest way to do this?** - Often the solution will get built and there is a cheaper solution available that will do the same thing.
-- **When Copilot pops a "Summarizing conversation history":** Let it run, then restate key details it might drop (combining git commands on one line, use versions in code and with commits, etc). Don't close the chat—re-anchor it with specifics right after
-
-### Licensing and Model Choices
-
-- **Started Free, moved to Pro, then Pro+:** I upgraded as I needed more throughput and features
+- **Started Free → Pro → Pro+:** Upgraded as I needed more throughput and premium requests.
 
 | Plan | Pricing | Premium requests included | Buy extra premium requests |
 | --- | --- | --- | --- |
@@ -115,29 +49,23 @@ How I use GitHub Copilot Chat in my daily workflow:
 | Copilot Business | $19 per granted seat per month | 300 per user per month | Yes at $0.04/request |
 | Copilot Enterprise | $39 per granted seat per month | 1000 per user per month | Yes at $0.04/request |
 
-- **Auto model (10% discount):** Let Copilot choose the model automatically to save about 10% on requests
-- **Step up the model when stuck:** If the default is not working, temporarily select a more powerful model, but expect more request churn and cost
+- **Auto model (10% discount):** Let Copilot pick models to save ~10% on requests.
+- **Step up only when stuck:** Switch to a higher model briefly if the default spins; expect more request churn.
 
-### What I've Learned in 30 Days
+## Real Examples from the Last 30 Days
 
-- **You don't need to learn syntax first:** Focus on the problem, learn the language as you go
-- **Copilot makes decisions too:** Don't dictate the tech stack - see what it recommends
-- **Working code is the first milestone:** Optimization and understanding come after
-- **Human oversight is non-negotiable:** Copilot will confidently go down wrong paths; you own validation and security
-- **Ask "why" after "how":** Build it, then understand it
-- **Security is a second pass:** Get it working, then make it secure
-- **Iteration beats perfection:** Build, test, adjust, repeat
-- **Experience helps, but isn't required:** Dev experience speeds up debugging, but it is not mandatory anymore. You can say, "build me an army," like Sauron to Saruman in Lord of the Rings, and a working solution can appear fast. The tradeoff is you must validate and harden it, especially security, because you may not spot subtle risks without experience.
+- **Intune → Azure SQL → Power BI pipeline:** Prompted Copilot to scaffold an Azure Function to pull Intune devices, a Logic App to schedule/rerun failed batches, and parameterized inserts into Azure SQL. Power BI now reads that table for daily dashboards.
+- **Planner Pro overlay:** Built from scratch with Copilot into a Planner-native overlay (no separate SQL store) that adds richer list views, dashboards/graphs, themes, and a weekly compass while saving directly to Microsoft Planner tasks.
+- **Site/blog workflow:** Markdown-first edits; Copilot generated the matching HTML page and I linked it on `blog.html`. One-line git command shipped it.
+- **Troubleshooting:** Pasted stack traces from the Function runtime; Copilot suggested retry policies and connection pooling tweaks that removed transient failures.
 
-## Use Cases
+## Key Lessons (condensed)
 
-- **This website:** Built and maintained the entire site with Copilot
-- **Blog posts:** Drafted and iterated articles (like this one) end-to-end
-- **Azure Functions and Logic Apps:** Built serverless automations to pull Microsoft Intune data on a schedule
-- **Azure SQL:** Ingested Intune data into Azure SQL for downstream use
-- **Power BI:** Consumed the Azure SQL Intune data in Power BI dashboards
-- **Troubleshooting:** Frequent debugging assistance across stacks
-- **Planner Pro overlay:** Created a Planner Pro tool as an overlay for Microsoft Planner
+- You can learn syntax after shipping; start with the problem.
+- Copilot makes stack decisions—test and override when needed.
+- Working code first, security and polish second.
+- Human oversight is non-negotiable; you own validation and cost control.
+- Iteration beats perfection; keep commits small and versioned.
 
 ## Conclusion
 
