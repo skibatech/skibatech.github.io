@@ -24,258 +24,231 @@
 			</div>
 		</nav>
 
-		<section class='container' style='padding-top:40px; padding-bottom:40px'>
-			<div class="blog-layout">
-				<!-- Sidebar -->
-				<aside class="blog-sidebar">
-					<!-- Dynamically populated by blog-sidebar.js -->
-				</aside>
-				
-				<!-- Main Content -->
-				<article class="blog-content">
-					<header>
-						<h1 style="margin:0 0 8px; font-size:28px">Coding Tools: Tips & Lessons Learned</h1>
-						<p style="color:var(--muted); font-size:14px; margin:0 0 12px">Published on January 8, 2025 • 12 min read</p>
-						<button id="toggleWidth" onclick="toggleWideView()" style="background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'">
-							<span id="toggleIcon">⇾</span> <span id="toggleText">Wide</span>
-						</button>
-					</header>
+	<section class='container' style='padding-top:40px; padding-bottom:40px'>
+		<div class="blog-layout">
+			<!-- Sidebar -->
+			<aside class="blog-sidebar">
+				<!-- Dynamically populated by blog-sidebar.js -->
+			</aside>
+			
+			<!-- Main Content -->
+			<article class="blog-content">
+				<header>
+					<h1 style="margin:0 0 8px; font-size:28px">Coding Tools: Tips & Lessons Learned from 30 Days of AI-Assisted Development</h1>
+					<p style="color:var(--muted); font-size:14px; margin:0 0 12px">Published on January 8, 2025 • 12 min read</p>
+					<button id="toggleWidth" onclick="toggleWideView()" style="background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'"><span id="toggleIcon">⇾</span> <span id="toggleText">Wide</span>
+					</button>
+				</header>
 
-					<div style="margin-top:32px; line-height:1.8">
-						<p>Over the years of building projects—from automation scripts to full-stack web applications—I've accumulated a collection of lessons learned, workflow tips, and hard-won insights about the tools that make modern development possible. This article shares what I've learned about GitHub, GitHub Copilot, VS Code, Git, and the ecosystem surrounding them.</p>
+				<div style="margin-top:32px; line-height:1.8">
+					<p>For the last 30 days, I've been coding almost every day on pet projects and ideas I've wanted to try. My entire development process has changed thanks to GitHub Copilot. Instead of learning JavaScript syntax and best practices first, I focus on defining the solution and let Copilot build it alongside me. It's learning in reverse: show me what to do, then teach me how you did it. This article shares what I've learned about this new approach to development and the tools that make it possible.</p>
 
-						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Visual Studio Code</h2>
-						
-						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Extensions That Changed My Workflow</h3>
-						<p style="margin-bottom:12px">VS Code is powerful out of the box, but extensions transform it from a good editor into an indispensable development environment:</p>
-						<ul style="line-height:2">
-							<li><strong>GitHub Copilot:</strong> More on this below, but it's become my pair programming partner</li>
-							<li><strong>GitLens:</strong> Visualizes code authorship, blame annotations, and Git history inline—invaluable for understanding "why" behind code changes</li>
-							<li><strong>Better Comments:</strong> Color-codes comments (TODO, FIXME, NOTE) making them easier to scan</li>
-							<li><strong>Error Lens:</strong> Shows errors and warnings inline instead of just in the Problems panel</li>
-							<li><strong>Prettier:</strong> Automatic code formatting on save—no more debates about semicolons</li>
-							<li><strong>Path Intellisense:</strong> Autocompletes file paths as you type</li>
-							<li><strong>Live Server:</strong> Quick local development server with live reload for static sites</li>
-						</ul>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Visual Studio Code</h2>
 
-						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Keyboard Shortcuts That Save Time</h3>
-						<p style="margin-bottom:12px">These shortcuts have saved me countless hours:</p>
-						<ul style="line-height:2">
-							<li><strong>Ctrl+P:</strong> Quick open any file by name (fuzzy search works great)</li>
-							<li><strong>Ctrl+Shift+P:</strong> Command palette—access everything VS Code can do</li>
-							<li><strong>Ctrl+`:</strong> Toggle integrated terminal (I use this constantly)</li>
-							<li><strong>Ctrl+D:</strong> Multi-cursor selection for next occurrence—edit multiple instances at once</li>
-							<li><strong>Alt+Up/Down:</strong> Move entire lines up or down</li>
-							<li><strong>Ctrl+/:</strong> Toggle line comment (works with block selections too)</li>
-							<li><strong>Ctrl+B:</strong> Toggle sidebar visibility for more screen real estate</li>
-							<li><strong>F2:</strong> Rename symbol across entire workspace (understands code scope)</li>
-						</ul>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Extensions I Actually Use</h3>
+					<p style="margin-bottom:12px">VS Code is powerful out of the box, but a few key extensions make my workflow much more efficient:</p>
+					<ul style="line-height:2">
+						<li><strong>GitHub Copilot Chat:</strong> My AI pair programming partner - helps with debugging, code explanations, and problem-solving (more below)</li>
+						<li><strong>PowerShell:</strong> Essential for writing and debugging PowerShell scripts - syntax highlighting, IntelliSense, and integrated debugging</li>
+						<li><strong>Markdown Editor:</strong> WYSIWYG editor for markdown files - makes editing documentation and blog posts much easier</li>
+						<li><strong>HTML Preview:</strong> Quick preview of HTML files as I edit them</li>
+						<li><strong>Microsoft Edge Tools:</strong> Browser DevTools integration directly in VS Code for web development</li>
+						<li><strong>vscode-pdf:</strong> View PDF documentation without leaving the editor</li>
+					</ul>
 
-						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Settings Worth Configuring</h3>
-						<ul style="line-height:2">
-							<li><strong>Auto Save:</strong> Set to "onFocusChange"—no more losing work because you forgot to save</li>
-							<li><strong>Format On Save:</strong> Keeps code consistently formatted without thinking about it</li>
-							<li><strong>Minimap:</strong> I initially disabled it, but learned to love it for navigating large files</li>
-							<li><strong>Breadcrumbs:</strong> Shows file path and symbol hierarchy at the top—essential for deep nested structures</li>
-							<li><strong>Word Wrap:</strong> Enable for markdown and text files (Alt+Z toggles it)</li>
-						</ul>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Git Version Control</h2>
 
-						<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Git Version Control</h2>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">My Current Git Workflow</h3>
+					<p style="margin-bottom:12px">I keep Git simple and fast by having Copilot script the full commit/push on one line and by baking versioning into both code and commits. Copilot still prompts with a single <strong>Allow?</strong> before running the combined command, so I get one confirmation instead of three:</p>
+					<ul style="line-height:2">
+						<li><strong>One-line commit/push:</strong> <code>git add .; git commit -m "v2.2.7: Describe change"; git push</code> (Copilot proposes it, I click <strong>Allow?</strong> once)</li>
+						<li><strong>Version in code:</strong> I update an <code>APP_VERSION</code> or similar constant before committing so behavior can be tied to a version</li>
+						<li><strong>Version in commit message:</strong> The commit message starts with the version (e.g., <code>v2.2.7:</code>) so I can say "it worked in v2.2.6 but not v2.2.7"</li>
+						<li><strong>Update CHANGELOG.md:</strong> Copilot appends a brief bullet under the new version with what changed</li>
+						<li><strong>Optionally update DEVELOPMENT.md:</strong> Notes about in-progress work, decisions, and TODOs for the next session</li>
+					</ul>
 
-						<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Commit Message Best Practices</h3>
-						<p style="margin-bottom:12px">I learned the hard way that commit messages matter. Your future self (and teammates) will thank you:</p>
-						<ul style="line-height:2">
-							<li><strong>Use present tense:</strong> "Add feature" not "Added feature"</li>
-							<li><strong>First line is a summary:</strong> 50 characters or less</li>
-							<li><strong>Be specific:</strong> "Fix authentication timeout bug" vs "Fix bug"</li>
-							<article class="blog-content">
-								<header>
-									<h1 style="margin:0 0 8px; font-size:28px">Coding Tools: Tips & Lessons Learned from 30 Days of AI-Assisted Development</h1>
-									<p style="color:var(--muted); font-size:14px; margin:0 0 12px">Published on January 8, 2025 • 12 min read</p>
-									<button id="toggleWidth" onclick="toggleWideView()" style="background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; color:var(--text); font-size:13px; transition:all 0.2s" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--card)'"><span id="toggleIcon">⇾</span> <span id="toggleText">Wide</span>
-									</button>
-								</header>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">What I Ask Copilot to Do</h3>
+					<ol style="line-height:2; padding-left:20px">
+						<li><strong>"Stage/commit/push in one line"</strong> - avoid multiple prompts</li>
+						<li><strong>"Add versioning"</strong> - bump the version constant and include the version in the commit message</li>
+						<li><strong>"Update CHANGELOG.md (and DEVELOPMENT.md)"</strong> - append a concise entry describing the change and status</li>
+					</ol>
 
-								<div style="margin-top:32px; line-height:1.8">
-									<p>For the last 30 days, I've been coding almost every day on pet projects and ideas I've wanted to try. My entire development process has changed thanks to GitHub Copilot. Instead of learning JavaScript syntax and best practices first, I focus on defining the solution and let Copilot build it alongside me. It's learning in reverse: show me what to do, then teach me how you did it. This article shares what I've learned about this new approach to development and the tools that make it possible.</p>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Guardrails I Follow</h3>
+					<ul style="line-height:2">
+						<li>Keep commits focused and small - easier to trace regressions by version</li>
+						<li>Never commit secrets - use .gitignore and environment/config files instead</li>
+						<li>Pull before pushing if others might have changed the branch</li>
+						<li>Verify the generated one-liner before running it; adjust the commit message if needed</li>
+					</ul>
 
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Visual Studio Code</h2>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">GitHub</h2>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Extensions I Actually Use</h3>
-									<p style="margin-bottom:12px">VS Code is powerful out of the box, but a few key extensions make my workflow much more efficient:</p>
-									<ul style="line-height:2">
-										<li><strong>GitHub Copilot Chat:</strong> My AI pair programming partner - helps with debugging, code explanations, and problem-solving (more below)</li>
-										<li><strong>PowerShell:</strong> Essential for writing and debugging PowerShell scripts - syntax highlighting, IntelliSense, and integrated debugging</li>
-										<li><strong>Markdown Editor:</strong> WYSIWYG editor for markdown files - makes editing documentation and blog posts much easier</li>
-										<li><strong>HTML Preview:</strong> Quick preview of HTML files as I edit them</li>
-										<li><strong>Microsoft Edge Tools:</strong> Browser DevTools integration directly in VS Code for web development</li>
-										<li><strong>vscode-pdf:</strong> View PDF documentation without leaving the editor</li>
-									</ul>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Repository Organization</h3>
+					<p style="margin-bottom:12px">I lean on Copilot to keep code and data separated so the solution stays reusable:</p>
+					<ul style="line-height:2">
+						<li><strong>Data/config out of code:</strong> For example, I created a folder (e.g., <code>csv/</code>) and told Copilot to move related static data into a new CSV there; it was smart enough to move the data and update the code to load it so nothing broke.</li>
+						<li><strong>Reusable packaging:</strong> Keeping config/data in separate files makes it easy to bundle or reuse the core code for other projects</li>
+						<li><strong>Docs:</strong> Keep <code>README.md</code> for how to run/use it, <code>CHANGELOG.md</code> for version history, and a sensible <code>.gitignore</code></li>
+						<li><strong>Structure:</strong> Organize by purpose (src/, assets/, docs/, data/) and have Copilot refactor imports/loads when moving files</li>
+					</ul>
 
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Git Version Control</h2>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">GitHub Pages</h3>
+					<ul style="line-height:2">
+						<li><strong>Free hosting:</strong> Perfect for static sites, documentation, and portfolios</li>
+						<li><strong>Custom domains:</strong> Use CNAME file to point your own domain</li>
+						<li><strong>Automatic deployment:</strong> Push to main and site updates automatically</li>
+						<li><strong>Jekyll integration:</strong> Built-in support for Jekyll static site generator</li>
+						<li><strong>Limitations:</strong> Static only - no server-side code, but that's fine for many use cases</li>
+					</ul>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">My Current Git Workflow</h3>
-									<p style="margin-bottom:12px">I keep Git simple and fast by having Copilot script the full commit/push on one line and by baking versioning into both code and commits. Copilot still prompts with a single <strong>Allow?</strong> before running the combined command, so I get one confirmation instead of three:</p>
-									<ul style="line-height:2">
-										<li><strong>One-line commit/push:</strong> <code>git add .; git commit -m "v2.2.7: Describe change"; git push</code> (Copilot proposes it, I click <strong>Allow?</strong> once)</li>
-										<li><strong>Version in code:</strong> I update an <code>APP_VERSION</code> or similar constant before committing so behavior can be tied to a version</li>
-										<li><strong>Version in commit message:</strong> The commit message starts with the version (e.g., <code>v2.2.7:</code>) so I can say "it worked in v2.2.6 but not v2.2.7"</li>
-										<li><strong>Update CHANGELOG.md:</strong> Copilot appends a brief bullet under the new version with what changed</li>
-										<li><strong>Optionally update DEVELOPMENT.md:</strong> Notes about in-progress work, decisions, and TODOs for the next session</li>
-									</ul>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">GitHub Copilot: The Game Changer</h2>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">What I Ask Copilot to Do</h3>
-									<ol style="line-height:2; padding-left:20px">
-										<li><strong>"Stage/commit/push in one line"</strong> - avoid multiple prompts</li>
-										<li><strong>"Add versioning"</strong> - bump the version constant and include the version in the commit message</li>
-										<li><strong>"Update CHANGELOG.md (and DEVELOPMENT.md)"</strong> - append a concise entry describing the change and status</li>
-									</ol>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">My Development Workflow (Solution-First Approach)</h3>
+					<p style="margin-bottom:12px">This is how I actually build things now:</p>
+					<ol style="line-height:2; padding-left:20px">
+						<li><strong>Define the solution:</strong> I describe what I want to build, not how to build it</li>
+						<li><strong>Let Copilot choose the approach:</strong> I don't tell it to use JavaScript or a specific framework - it picks the tools</li>
+						<li><strong>Build iteratively:</strong> Copilot generates code, I test it, we iterate</li>
+						<li><strong>Guide when it gets stuck:</strong> Sometimes Copilot loops on the same approach - I tell it to "get off the highway and try something else"</li>
+						<li><strong>Make it fit for purpose:</strong> Copilot gives you a way to do something, but you adapt it to your needs</li>
+						<li><strong>Secure it:</strong> Once it works, run a security pass (ask "is this secure?" or "make this more secure")</li>
+						<li><strong>Learn what you built:</strong> Ask Copilot to explain the code after it's working</li>
+					</ol>
+					<p style="margin-bottom:12px">This is learning in reverse: build first, understand second.</p>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Guardrails I Follow</h3>
-									<ul style="line-height:2">
-										<li>Keep commits focused and small - easier to trace regressions by version</li>
-										<li>Never commit secrets - use .gitignore and environment/config files instead</li>
-										<li>Pull before pushing if others might have changed the branch</li>
-										<li>Verify the generated one-liner before running it; adjust the commit message if needed</li>
-									</ul>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Your Role: Absolutely Necessary</h3>
+					<ul style="line-height:2">
+						<li><strong>Course correction:</strong> When it loops on the same failed approach, you need to redirect it</li>
+						<li><strong>Validation:</strong> You must test and verify everything it generates</li>
+						<li><strong>Context switching:</strong> Sometimes you need to tell it to try a completely different approach</li>
+						<li><strong>Fit for purpose:</strong> Generic solutions need customization for your specific use case</li>
+						<li><strong>Security review:</strong> Always do a security pass after it works</li>
+					</ul>
+					<p><strong>You're not writing less code - you're writing smarter code with a partner who never gets tired.</strong></p>
 
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">GitHub</h2>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Copilot Chat: My Co-Pilot, Literally</h3>
+					<p style="margin-bottom:12px">How I use GitHub Copilot Chat in my daily workflow:</p>
+					<ul style="line-height:2">
+						<li><strong>"Build me a solution that does X"</strong> - Describe the goal, not the implementation; let Copilot pick the approach</li>
+						<li><strong>"This isn't working, try a different approach"</strong> - When it gets stuck or loops</li>
+						<li><strong>"Make this secure/more secure"</strong> - Security pass after it works</li>
+						<li><strong>"Explain what this code does" / "Why this approach?" / "Explain how you did this like I am an 8 year old"</strong> - Learn after building</li>
+						<li><strong>Paste screenshots of errors and ask "Seeing this error now"</strong></li>
+						<li><strong>Is this the cheapest way to do this?</strong> - Often the solution will get built and there is a cheaper solution available that will do the same thing.</li>
+						<li><strong>When Copilot pops a "Summarizing conversation history":</strong> Let it run, then restate key details it might drop (combining git commands on one line, use versions in code and with commits, etc). Don't close the chat - re-anchor it with specifics right after</li>
+					</ul>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Repository Organization</h3>
-									<p style="margin-bottom:12px">I lean on Copilot to keep code and data separated so the solution stays reusable:</p>
-									<ul style="line-height:2">
-										<li><strong>Data/config out of code:</strong> For example, I created a folder (e.g., <code>csv/</code>) and told Copilot to move related static data into a new CSV there; it was smart enough to move the data and update the code to load it so nothing broke.</li>
-										<li><strong>Reusable packaging:</strong> Keeping config/data in separate files makes it easy to bundle or reuse the core code for other projects</li>
-										<li><strong>Docs:</strong> Keep <code>README.md</code> for how to run/use it, <code>CHANGELOG.md</code> for version history, and a sensible <code>.gitignore</code></li>
-										<li><strong>Structure:</strong> Organize by purpose (src/, assets/, docs/, data/) and have Copilot refactor imports/loads when moving files</li>
-									</ul>
+					<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Licensing and Model Choices</h3>
+					<ul style="line-height:2">
+						<li><strong>Started Free, moved to Pro, then Pro+:</strong> I upgraded as I needed more throughput and features</li>
+					</ul>
+					<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px">
+						<thead>
+							<tr>
+								<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Plan</th>
+								<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Pricing</th>
+								<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Premium requests included</th>
+								<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Buy extra premium requests</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Free</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$0</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">50 per month</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">No</td>
+							</tr>
+							<tr>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Pro</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$10/month or $100/year (free for some users)</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">300 per month</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Yes at $0.04/request</td>
+							</tr>
+							<tr>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Pro+</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$39/month or $390/year</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">1500 per month</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Yes at $0.04/request</td>
+							</tr>
+							<tr>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Business</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$19 per granted seat per month</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">300 per user per month</td>
+								<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Yes at $0.04/request</td>
+							</tr>
+							<tr>
+								<td style="padding:8px 6px">Copilot Enterprise</td>
+								<td style="padding:8px 6px">$39 per granted seat per month</td>
+								<td style="padding:8px 6px">1000 per user per month</td>
+								<td style="padding:8px 6px">Yes at $0.04/request</td>
+							</tr>
+						</tbody>
+					</table>
+					<ul style="line-height:2">
+						<li><strong>Auto model (10% discount):</strong> Let Copilot choose the model automatically to save about 10% on requests</li>
+						<li><strong>Step up the model when stuck:</strong> If the default is not working, temporarily select a more powerful model, but expect more request churn and cost</li>
+					</ul>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">GitHub Pages</h3>
-									<ul style="line-height:2">
-										<li><strong>Free hosting:</strong> Perfect for static sites, documentation, and portfolios</li>
-										<li><strong>Custom domains:</strong> Use CNAME file to point your own domain</li>
-										<li><strong>Automatic deployment:</strong> Push to main and site updates automatically</li>
-										<li><strong>Jekyll integration:</strong> Built-in support for Jekyll static site generator</li>
-										<li><strong>Limitations:</strong> Static only - no server-side code, but that's fine for many use cases</li>
-									</ul>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">What I've Learned in 30 Days</h2>
+					<ul style="line-height:2">
+						<li><strong>You don't need to learn syntax first:</strong> Focus on the problem, learn the language as you go</li>
+						<li><strong>Copilot makes decisions too:</strong> Don't dictate the tech stack - see what it recommends</li>
+						<li><strong>Working code is the first milestone:</strong> Optimization and understanding come after</li>
+						<li><strong>Human oversight is non-negotiable:</strong> Copilot will confidently go down wrong paths; you own validation and security</li>
+						<li><strong>Ask "why" after "how":</strong> Build it, then understand it</li>
+						<li><strong>Security is a second pass:</strong> Get it working, then make it secure</li>
+						<li><strong>Iteration beats perfection:</strong> Build, test, adjust, repeat</li>
+						<li><strong>Experience helps, but isn't required:</strong> Dev experience speeds up debugging, but it is not mandatory anymore. You can say, "build me an army," like Sauron to Saruman in Lord of the Rings, and a working solution can appear fast. The tradeoff is you must validate and harden it, especially security, because you may not spot subtle risks without experience.</li>
+					</ul>
 
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">GitHub Copilot: The Game Changer</h2>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Use Cases</h2>
+					<ul style="line-height:2">
+						<li><strong>This website:</strong> Built and maintained the entire site with Copilot</li>
+						<li><strong>Blog posts:</strong> Drafted and iterated articles (like this one) end-to-end</li>
+						<li><strong>Azure Functions and Logic Apps:</strong> Built serverless automations to pull Microsoft Intune data on a schedule</li>
+						<li><strong>Azure SQL:</strong> Ingested Intune data into Azure SQL for downstream use</li>
+						<li><strong>Power BI:</strong> Consumed the Azure SQL Intune data in Power BI dashboards</li>
+						<li><strong>Troubleshooting:</strong> Frequent debugging assistance across stacks</li>
+						<li><strong>Planner Pro overlay:</strong> Created a Planner Pro tool as an overlay for Microsoft Planner</li>
+					</ul>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">My Development Workflow (Solution-First Approach)</h3>
-									<p style="margin-bottom:12px">This is how I actually build things now:</p>
-									<ol style="line-height:2; padding-left:20px">
-										<li><strong>Define the solution:</strong> I describe what I want to build, not how to build it</li>
-										<li><strong>Let Copilot choose the approach:</strong> I don't tell it to use JavaScript or a specific framework - it picks the tools</li>
-										<li><strong>Build iteratively:</strong> Copilot generates code, I test it, we iterate</li>
-										<li><strong>Guide when it gets stuck:</strong> Sometimes Copilot loops on the same approach - I tell it to "get off the highway and try something else"</li>
-										<li><strong>Make it fit for purpose:</strong> Copilot gives you a way to do something, but you adapt it to your needs</li>
-										<li><strong>Secure it:</strong> Once it works, run a security pass (ask "is this secure?" or "make this more secure")</li>
-										<li><strong>Learn what you built:</strong> Ask Copilot to explain the code after it's working</li>
-									</ol>
-									<p style="margin-bottom:12px">This is learning in reverse: build first, understand second.</p>
+					<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Conclusion</h2>
+					<p>These tools - VS Code, Git, GitHub, and GitHub Copilot - have transformed how I build software. They're not just utilities; they're force multipliers that free me to focus on solving problems rather than fighting with tooling. The best investment you can make as a developer is learning to use your tools effectively.</p>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Your Role: Absolutely Necessary</h3>
-									<ul style="line-height:2">
-										<li><strong>Course correction:</strong> When it loops on the same failed approach, you need to redirect it</li>
-										<li><strong>Validation:</strong> You must test and verify everything it generates</li>
-										<li><strong>Context switching:</strong> Sometimes you need to tell it to try a completely different approach</li>
-										<li><strong>Fit for purpose:</strong> Generic solutions need customization for your specific use case</li>
-										<li><strong>Security review:</strong> Always do a security pass after it works</li>
-									</ul>
-									<p><strong>You're not writing less code - you're writing smarter code with a partner who never gets tired.</strong></p>
+					<p style="margin-top:16px">The landscape of development tools continues to evolve. What remains constant is the principle: master the fundamentals, stay curious about new tools, and never stop learning. Your toolset should empower you, not constrain you.</p>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Copilot Chat: My Co-Pilot, Literally</h3>
-									<p style="margin-bottom:12px">How I use GitHub Copilot Chat in my daily workflow:</p>
-									<ul style="line-height:2">
-										<li><strong>"Build me a solution that does X"</strong> - Describe the goal, not the implementation; let Copilot pick the approach</li>
-										<li><strong>"This isn't working, try a different approach"</strong> - When it gets stuck or loops</li>
-										<li><strong>"Make this secure/more secure"</strong> - Security pass after it works</li>
-										<li><strong>"Explain what this code does" / "Why this approach?" / "Explain how you did this like I am an 8 year old"</strong> - Learn after building</li>
-										<li><strong>Paste screenshots of errors and ask "Seeing this error now"</strong></li>
-										<li><strong>Is this the cheapest way to do this?</strong> - Often the solution will get built and there is a cheaper solution available that will do the same thing.</li>
-										<li><strong>When Copilot pops a "Summarizing conversation history":</strong> Let it run, then restate key details it might drop (combining git commands on one line, use versions in code and with commits, etc). Don't close the chat - re-anchor it with specifics right after</li>
-									</ul>
+					<hr style="margin:32px 0; border:0; border-top:1px solid var(--border)">
+					<p style="margin-top:0; color:var(--muted)">What tools have transformed your development workflow? Have a tip I missed? Reach out at <a href="mailto:maskiba@skibatech.com">maskiba@skibatech.com</a> - I'd love to hear what's working for you.</p>
+				</div>
+			</article>
+		</div>
+	</section>
 
-									<h3 style="margin-top:24px; margin-bottom:12px; font-size:18px; color:var(--brand)">Licensing and Model Choices</h3>
-									<ul style="line-height:2">
-										<li><strong>Started Free, moved to Pro, then Pro+:</strong> I upgraded as I needed more throughput and features</li>
-									</ul>
-									<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px">
-										<thead>
-											<tr>
-												<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Plan</th>
-												<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Pricing</th>
-												<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Premium requests included</th>
-												<th style="text-align:left; border-bottom:1px solid var(--border); padding:8px 6px">Buy extra premium requests</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Free</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$0</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">50 per month</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">No</td>
-											</tr>
-											<tr>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Pro</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$10/month or $100/year (free for some users)</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">300 per month</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Yes at $0.04/request</td>
-											</tr>
-											<tr>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Pro+</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$39/month or $390/year</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">1500 per month</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Yes at $0.04/request</td>
-											</tr>
-											<tr>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Copilot Business</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">$19 per granted seat per month</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">300 per user per month</td>
-												<td style="padding:8px 6px; border-bottom:1px solid var(--border)">Yes at $0.04/request</td>
-											</tr>
-											<tr>
-												<td style="padding:8px 6px">Copilot Enterprise</td>
-												<td style="padding:8px 6px">$39 per granted seat per month</td>
-												<td style="padding:8px 6px">1000 per user per month</td>
-												<td style="padding:8px 6px">Yes at $0.04/request</td>
-											</tr>
-										</tbody>
-									</table>
-									<ul style="line-height:2">
-										<li><strong>Auto model (10% discount):</strong> Let Copilot choose the model automatically to save about 10% on requests</li>
-										<li><strong>Step up the model when stuck:</strong> If the default is not working, temporarily select a more powerful model, but expect more request churn and cost</li>
-									</ul>
+	<footer>
+		<div class='container'>© SkibaTech</div>
+	</footer>
 
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">What I've Learned in 30 Days</h2>
-									<ul style="line-height:2">
-										<li><strong>You don't need to learn syntax first:</strong> Focus on the problem, learn the language as you go</li>
-										<li><strong>Copilot makes decisions too:</strong> Don't dictate the tech stack - see what it recommends</li>
-										<li><strong>Working code is the first milestone:</strong> Optimization and understanding come after</li>
-										<li><strong>Human oversight is non-negotiable:</strong> Copilot will confidently go down wrong paths; you own validation and security</li>
-										<li><strong>Ask "why" after "how":</strong> Build it, then understand it</li>
-										<li><strong>Security is a second pass:</strong> Get it working, then make it secure</li>
-										<li><strong>Iteration beats perfection:</strong> Build, test, adjust, repeat</li>
-										<li><strong>Experience helps, but isn't required:</strong> Dev experience speeds up debugging, but it is not mandatory anymore. You can say, "build me an army," like Sauron to Saruman in Lord of the Rings, and a working solution can appear fast. The tradeoff is you must validate and harden it, especially security, because you may not spot subtle risks without experience.</li>
-									</ul>
-
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Use Cases</h2>
-									<ul style="line-height:2">
-										<li><strong>This website:</strong> Built and maintained the entire site with Copilot</li>
-										<li><strong>Blog posts:</strong> Drafted and iterated articles (like this one) end-to-end</li>
-										<li><strong>Azure Functions and Logic Apps:</strong> Built serverless automations to pull Microsoft Intune data on a schedule</li>
-										<li><strong>Azure SQL:</strong> Ingested Intune data into Azure SQL for downstream use</li>
-										<li><strong>Power BI:</strong> Consumed the Azure SQL Intune data in Power BI dashboards</li>
-										<li><strong>Troubleshooting:</strong> Frequent debugging assistance across stacks</li>
-										<li><strong>Planner Pro overlay:</strong> Created a Planner Pro tool as an overlay for Microsoft Planner</li>
-									</ul>
-
-									<h2 style="margin-top:32px; margin-bottom:16px; font-size:20px">Conclusion</h2>
-									<p>These tools - VS Code, Git, GitHub, and GitHub Copilot - have transformed how I build software. They're not just utilities; they're force multipliers that free me to focus on solving problems rather than fighting with tooling. The best investment you can make as a developer is learning to use your tools effectively.</p>
-
-									<p style="margin-top:16px">The landscape of development tools continues to evolve. What remains constant is the principle: master the fundamentals, stay curious about new tools, and never stop learning. Your toolset should empower you, not constrain you.</p>
-
-									<p style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border); color:var(--muted)">What tools have transformed your development workflow? Have a tip I missed? Reach out at <a href="mailto:maskiba@skibatech.com">maskiba@skibatech.com</a> - I'd love to hear what's working for you.</p>
-								</div>
-							</article>
-
+	<script>
+		function toggleWideView() {
+			const sidebar = document.querySelector('.blog-sidebar');
+			const layout = document.querySelector('.blog-layout');
+			const icon = document.getElementById('toggleIcon');
+			const text = document.getElementById('toggleText');
+			
+			if (sidebar.style.display === 'none') {
+				sidebar.style.display = 'block';
+				layout.style.gridTemplateColumns = '240px 1fr';
+				icon.textContent = '⇾';
+				text.textContent = 'Wide';
+			} else {
+				sidebar.style.display = 'none';
+				layout.style.gridTemplateColumns = '1fr';
+				icon.textContent = '⇽';
+				text.textContent = 'Sidebar';
+			}
+		}
+	</script>
+	</body>
+</html>
