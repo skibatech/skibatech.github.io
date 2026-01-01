@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.8'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.9'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1022,7 +1022,7 @@ async function updateAuthUI(isAuthenticated) {
 async function checkForVersionUpdate() {
     try {
         // Fetch planner.js directly (APP_VERSION lives there, not in index.html)
-        const response = await fetch('./planner.js?t=' + Date.now(), { cache: 'no-store' });
+        const response = await fetch('./js/planner.js?t=' + Date.now(), { cache: 'no-store' });
         console.log('[version-check] fetch status', response.status);
         if (!response.ok) {
             console.log('[version-check] fetch failed');
@@ -1089,8 +1089,8 @@ async function doHardRefresh() {
         } catch (e) { /* ignore */ }
     };
     await Promise.all([
-        preload('./planner.js'),
-        preload('./planner.css'),
+        preload('./js/planner.js'),
+        preload('./css/planner.css'),
         preload('./index.html')
     ]);
 

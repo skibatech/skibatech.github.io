@@ -17,10 +17,10 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.8
-**Last Commit**: "v3.0.8: Align version after asset move"
+**Last Committed Version**: 3.0.9
+**Last Commit**: "v3.0.9: Fix version-check paths after asset move"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.8 (complete)
+**Current Working Version**: 3.0.9 (complete)
 
 ## Version History (Most Recent First)
  
@@ -100,6 +100,16 @@
 - Hide header when unauthenticated for cleaner login experience
 - Added CSS rule: `body.unauthenticated .header { display: none !important; }`
 ### v2.2.6 (Committed ✅)
+### v3.0.9 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Fixed version-check and hard refresh to use js/ and css/ asset paths after folder move
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.9; version-check fetches js/planner.js and preloads js/css assets
+- `index.html`: Cache-bust references updated to v=3.0.9
+- `CHANGELOG.md`: Added v3.0.9 entry
+- `DEVELOPMENT.md`: Updated status and history
+
 ### v3.0.8 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:
