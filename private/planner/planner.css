@@ -920,6 +920,7 @@ body.unauthenticated #refreshBtn {
 
 .compass-title {
     color: var(--compass-text) !important;
+    font-weight: 700;
 }
 
 .compass-header-actions {

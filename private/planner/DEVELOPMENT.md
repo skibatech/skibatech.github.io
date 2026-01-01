@@ -17,13 +17,24 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.4
-**Last Commit**: "v3.0.4: Tighter bucket goals icon spacing"
+**Last Committed Version**: 3.0.5
+**Last Commit**: "v3.0.5: Bold Weekly Compass title"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.4 (complete)
+**Current Working Version**: 3.0.5 (complete)
 
 ## Version History (Most Recent First)
  
+### v3.0.5 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Weekly Compass title text is now explicitly bold for emphasis
+**Files Modified**:
+- `planner.css`: Added font-weight to .compass-title
+- `planner.js`: APP_VERSION = 3.0.5
+- `index.html`: Cache-bust references updated to v=3.0.5
+- `CHANGELOG.md`: Added v3.0.5 entry
+- `DEVELOPMENT.md`: Updated status and history
+
 ### v3.0.4 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:
