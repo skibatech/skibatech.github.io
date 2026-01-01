@@ -539,10 +539,22 @@ button:disabled {
 .task-input {
     width: 100%;
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 13px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.task-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.task-input:focus {
+    border-color: var(--link-color);
+    outline: none;
 }
 
 .control-select {
