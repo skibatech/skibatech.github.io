@@ -17,13 +17,24 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.3
-**Last Commit**: "v3.0.3: Fix modal input colors in dark mode"
+**Last Committed Version**: 3.0.4
+**Last Commit**: "v3.0.4: Tighter bucket goals icon spacing"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.3 (complete)
+**Current Working Version**: 3.0.4 (complete)
 
 ## Version History (Most Recent First)
  
+### v3.0.4 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Tightened spacing and alignment for the bucket goals (🎯) icon and let it inherit text color for themed headers
+**Files Modified**:
+- `planner.js`: APP_VERSION = 3.0.4; bucket goals button now uses CSS class
+- `planner.css`: Added .bucket-goals-btn styling for spacing/alignment and inherited color
+- `index.html`: Cache-bust references updated to v=3.0.4
+- `CHANGELOG.md`: Added v3.0.4 entry
+- `DEVELOPMENT.md`: Updated status and history
+
 ### v3.0.3 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:

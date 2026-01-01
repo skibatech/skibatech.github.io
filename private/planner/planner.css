@@ -186,6 +186,24 @@ button:disabled {
     border-radius: 4px;
 }
 
+.bucket-goals-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.9;
+    font-size: 14px;
+    padding: 2px 6px;
+    margin-left: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bucket-goals-btn:hover {
+    opacity: 1;
+}
+
 /* Override text color for theme headers with background colors */
 .bucket-header[style*="background"][style*="color: white"] {
     color: white !important;

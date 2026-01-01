@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.3'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.4'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2031,7 +2031,7 @@ function renderGroup(container, group, buckets, isNested = false) {
     // Add goals button for bucket view
     let goalsButton = '';
     if (currentView === 'bucket') {
-        goalsButton = `<button class="bucket-goals-btn" onclick="event.stopPropagation(); showBucketGoalsModal('${group.id}')" title="Manage Goals" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.9; font-size: 14px; padding: 4px 8px; margin-left: 8px;">🎯</button>`;
+        goalsButton = `<button class="bucket-goals-btn" onclick="event.stopPropagation(); showBucketGoalsModal('${group.id}')" title="Manage Goals">🎯</button>`;
     }
     
     bucketDiv.innerHTML = `
