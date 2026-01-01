@@ -4,7 +4,8 @@
   "planId": "nwc8iIFj8U2MvA4RQReZpWUABC_U",
   "allowedTenants": [
     "skibatech.com",
-    "skibatech.onmicrosoft.com"
+    "skibatech.onmicrosoft.com",
+    "skibalab.onmicrosoft.com"
   ],
   "adminGroupId": "86a10061-2983-4b11-80a6-8476796fa19c",
   "adminUsers": [],
