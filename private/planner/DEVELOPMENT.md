@@ -17,13 +17,55 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.9
-**Last Commit**: "v3.0.9: Fix version-check paths after asset move"
+**Last Committed Version**: 3.0.10
+**Last Commit**: "v3.0.10: Update key file locations paths"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.9 (complete)
+**Current Working Version**: 3.0.10 (complete)
 
 ## Version History (Most Recent First)
  
+### v3.0.10 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Updated Key File Locations to reflect css/ and js/ asset paths after folder moves
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.10
+- `index.html`: Cache-bust references updated to v=3.0.10
+- `CHANGELOG.md`: Added v3.0.10 entry
+- `DEVELOPMENT.md`: Current status, version history, and Key File Locations updated
+
+### v3.0.9 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Fixed version-check and hard refresh to use js/ and css/ asset paths after folder move
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.9; version-check fetches js/planner.js and preloads js/css assets
+- `index.html`: Cache-bust references updated to v=3.0.9
+- `CHANGELOG.md`: Added v3.0.9 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.8 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Finalize asset move by aligning version/cache-bust with admin-core.js relocation
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.8
+- `index.html`: Cache-bust references updated to v=3.0.8
+- `admin.html`: Script reference points to js/admin-core.js
+- `CHANGELOG.md`: Added v3.0.8 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.7 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Moved admin-core.js into the js/ folder alongside planner.js; updated references and cache-busts
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.7
+- `index.html`: Cache-bust references updated to v=3.0.7
+- `admin.html`: Script reference updated to js/admin-core.js
+- `CHANGELOG.md`: Added v3.0.7 entry
+- `DEVELOPMENT.md`: Updated status and history
+
 ### v3.0.6 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:
@@ -100,48 +142,8 @@
 - Hide header when unauthenticated for cleaner login experience
 - Added CSS rule: `body.unauthenticated .header { display: none !important; }`
 ### v2.2.6 (Committed ✅)
-### v3.0.9 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:
-- Fixed version-check and hard refresh to use js/ and css/ asset paths after folder move
-**Files Modified**:
-- `js/planner.js`: APP_VERSION = 3.0.9; version-check fetches js/planner.js and preloads js/css assets
-- `index.html`: Cache-bust references updated to v=3.0.9
-- `CHANGELOG.md`: Added v3.0.9 entry
-- `DEVELOPMENT.md`: Updated status and history
-
-### v3.0.8 (Committed ✅)
-**Status**: Committed and pushed
-**Changes**:
-- Finalize asset move by aligning version/cache-bust with admin-core.js relocation
-**Files Modified**:
-- `js/planner.js`: APP_VERSION = 3.0.8
-- `index.html`: Cache-bust references updated to v=3.0.8
-- `admin.html`: Script reference points to js/admin-core.js
-- `CHANGELOG.md`: Added v3.0.8 entry
-- `DEVELOPMENT.md`: Updated status and history
-
-### v3.0.7 (Committed ✅)
-**Status**: Committed and pushed
-**Changes**:
-- Moved admin-core.js into the js/ folder alongside planner.js; updated references and cache-busts
-**Files Modified**:
-- `js/planner.js`: APP_VERSION = 3.0.7
-- `index.html`: Cache-bust references updated to v=3.0.7
-- `admin.html`: Script reference updated to js/admin-core.js
-- `CHANGELOG.md`: Added v3.0.7 entry
-- `DEVELOPMENT.md`: Updated status and history
-
-### v3.0.6 (Committed ✅)
-**Status**: Committed and pushed
-**Changes**:
-- Moved planner assets into `css/` and `js/` folders; updated all HTML references and cache-busts
-**Files Modified**:
-- `js/planner.js`: APP_VERSION = 3.0.6
-- `index.html`: References updated to css/planner.css and js/planner.js with v=3.0.6
-- `admin.html`: Stylesheet reference updated to css/planner.css
-- `CHANGELOG.md`: Added v3.0.6 entry
-- `DEVELOPMENT.md`: Updated status and history
 - Advanced: System settings (update check interval)
 - Updated switchOptionsTab() to use data-tab attribute
 **Files Modified**:
@@ -232,13 +234,14 @@ When resuming work:
 6. Update this file's "Current Status" and "Version History" sections
 
 ## Key File Locations
-- Main app: `private/planner/planner.js`
-- Styling: `private/planner/planner.css`
+- Main app: `private/planner/js/planner.js`
+- Styling: `private/planner/css/planner.css`
 - HTML: `private/planner/index.html`
 - Config: `private/planner/config.json`
 - Changelog: `private/planner/CHANGELOG.md`
 - CSV data: `private/planner/csv/` (saw-suggestions.csv)
 - Admin page: `private/planner/admin.html`
+- Admin logic: `private/planner/js/admin-core.js`
 
 ## Important Notes
 - **Graph API**: Requires Directory.Read.All scope + admin consent in Azure for assignee name lookup
