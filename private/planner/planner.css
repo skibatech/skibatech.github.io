@@ -608,6 +608,10 @@ textarea.task-input {
 }
 
 /* Security: Hide content until authenticated */
+body.unauthenticated .header {
+    display: none !important;
+}
+
 body.unauthenticated .bucket-container,
 body.unauthenticated #tasksContainer,
 body.unauthenticated #refreshBtn {
