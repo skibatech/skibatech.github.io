@@ -20,10 +20,21 @@
 **Last Committed Version**: 3.0.10
 **Last Commit**: "v3.0.10: Update key file locations paths"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.10 (complete)
+**Current Working Version**: 3.0.11 (in progress)
 
 ## Version History (Most Recent First)
  
+### v3.0.11 (In Progress)
+**Status**: In progress
+**Changes**:
+- Fixed task details modal z-index so it appears above drill-down modal
+**Files Modified**:
+- `css/planner.css`: Modal z-index increased from 1000 to 1001
+- `js/planner.js`: APP_VERSION = 3.0.11
+- `index.html`: Cache-bust updated to v=3.0.11
+- `CHANGELOG.md`: Added v3.0.11 entry
+- `DEVELOPMENT.md`: Updated current status and history
+
 ### v3.0.10 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:

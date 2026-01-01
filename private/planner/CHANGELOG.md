@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.11] - 2026-01-01
+
+### Fixed
+- **Task details modal z-index**: Modal now appears above drill-down modal when clicking a task from dashboard drill-down view
+
 ## [3.0.10] - 2026-01-01
 
 ### Changed
