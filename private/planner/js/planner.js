@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.11'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.12'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -159,6 +159,10 @@ let cardSizePrefs = JSON.parse(localStorage.getItem('plannerCardSizes') || '{}')
 let cardOrderPrefs = JSON.parse(localStorage.getItem('plannerCardOrder') || '[]'); // ['chartProgress', 'chartPriority', ...]
 let draggedCard = null; // Store the dragged card element
 let draggedColumnElement = null; // Store the dragged column header element
+const COMPASS_BUCKET_ID = 'weekly-compass-bucket';
+const COMPASS_BUCKET_NAME = 'Weekly Compass';
+let compassTasks = [];
+let compassTaskIds = new Set();
 let columnWidths = {
     'col-id': 90,
     'col-task-name': 300,
@@ -574,6 +578,11 @@ function toggleSelectAll(el) {
     rows.forEach(row => {
         const tid = row.getAttribute('data-task-id');
         if (!tid) return;
+        if (row.dataset.source === 'compass' || compassTaskIds.has(tid)) {
+            const checkbox = row.querySelector('.task-checkbox');
+            if (checkbox) checkbox.checked = false;
+            return;
+        }
         const checkbox = row.querySelector('.task-checkbox');
         if (checked) {
             selectedTasks.add(tid);
@@ -1447,6 +1456,7 @@ async function loadTasks() {
         // Store for re-grouping
         allBuckets = buckets;
         allTasks = tasks;
+        injectCompassBucket();
 
         // Set view dropdown to match current view
         document.getElementById('viewSelect').value = currentView;
@@ -1725,17 +1735,19 @@ function renderByAssignedBucket(container, buckets, tasks) {
                 taskList.appendChild(taskDiv.firstElementChild);
             });
             
-            // Add "Add task" button
-            const addTaskBtn = document.createElement('button');
-            addTaskBtn.className = 'add-task-btn';
-            addTaskBtn.textContent = '+ Add task';
-            addTaskBtn.onclick = () => {
-                const bucket = buckets.find(b => b.name === bucketName);
-                if (bucket) {
-                    showAddTask(bucket.id, bucket.name);
-                }
-            };
-            taskList.appendChild(addTaskBtn);
+            const isCompassBucket = buckets.some(b => b.name === bucketName && b.isCompass);
+            if (!isCompassBucket) {
+                const addTaskBtn = document.createElement('button');
+                addTaskBtn.className = 'add-task-btn';
+                addTaskBtn.textContent = '+ Add task';
+                addTaskBtn.onclick = () => {
+                    const bucket = buckets.find(b => b.name === bucketName);
+                    if (bucket) {
+                        showAddTask(bucket.id, bucket.name);
+                    }
+                };
+                taskList.appendChild(addTaskBtn);
+            }
             
             bucketDiv.appendChild(bucketHeader);
             bucketDiv.appendChild(taskList);
@@ -1932,21 +1944,24 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             });
             
             // Add \"Add task\" button
-            const addTaskBtn = document.createElement('button');
-            addTaskBtn.className = 'add-task-btn';
-            addTaskBtn.textContent = '+ Add task';
-            addTaskBtn.onclick = () => {
-                // Find bucket ID if secondary group is bucket
-                if (secondaryGroup === 'bucket') {
-                    const bucket = buckets.find(b => b.name === secondaryGrp.name);
-                    if (bucket) {
-                        showAddTask(bucket.id, bucket.name);
+            const isCompassBucket = secondaryGroup === 'bucket' && buckets.some(b => b.name === secondaryGrp.name && b.isCompass);
+            if (!isCompassBucket) {
+                const addTaskBtn = document.createElement('button');
+                addTaskBtn.className = 'add-task-btn';
+                addTaskBtn.textContent = '+ Add task';
+                addTaskBtn.onclick = () => {
+                    // Find bucket ID if secondary group is bucket
+                    if (secondaryGroup === 'bucket') {
+                        const bucket = buckets.find(b => b.name === secondaryGrp.name);
+                        if (bucket) {
+                            showAddTask(bucket.id, bucket.name);
+                        }
+                    } else {
+                        showAddTask(null, null);
                     }
-                } else {
-                    showAddTask(null, null);
-                }
-            };
-            taskList.appendChild(addTaskBtn);
+                };
+                taskList.appendChild(addTaskBtn);
+            }
             
             bucketDiv.appendChild(bucketHeader);
             bucketDiv.appendChild(taskList);
@@ -1991,7 +2006,65 @@ function getThemeColorForCategoryId(categoryId) {
     return colors[categoryId] || null;
 }
 
+function renderCompassTask(task) {
+    const done = task.percentComplete === 100;
+    const roleLabel = task.compassRole ? `<span class="compass-task-role">${escapeHtml(task.compassRole)}</span>` : '';
+    const checkbox = task.compassType === 'rock'
+        ? `<input type="checkbox" class="compass-task-checkbox" ${done ? 'checked' : ''} onchange="handleCompassTaskToggle('${task.id}', this.checked)">`
+        : '';
+    return `
+        <div class="compass-task-row ${done ? 'rock-done' : ''}" data-task-id="${task.id}" data-source="compass">
+            ${checkbox}
+            <span class="compass-task-title">${escapeHtml(task.title)}</span>
+            ${roleLabel}
+        </div>
+    `;
+}
+
+function renderCompassBucket(group) {
+    const bucketDiv = document.createElement('div');
+    bucketDiv.className = 'bucket-container compass-bucket';
+    bucketDiv.setAttribute('data-bucket-id', group.id);
+
+    const isExpanded = expandedBuckets.has(group.id);
+    const groupedByRole = {};
+    (group.tasks || []).forEach(task => {
+        const roleName = task.compassRole || COMPASS_BUCKET_NAME;
+        if (!groupedByRole[roleName]) groupedByRole[roleName] = [];
+        groupedByRole[roleName].push(task);
+    });
+
+    bucketDiv.innerHTML = `
+        <div class="bucket-header compass-bucket-header${isExpanded ? ' expanded' : ''}" onclick="toggleBucket(this)">
+            <div class="bucket-title">
+                <span class="expand-icon">${isExpanded ? '▼' : '▶'}</span>
+                ${COMPASS_BUCKET_NAME}
+                <span class="task-count">${group.tasks.length}</span>
+            </div>
+        </div>
+        <div class="task-list compass-task-list${isExpanded ? ' expanded' : ''}">
+            ${Object.keys(groupedByRole).length === 0 ? '<div class="compass-empty">No compass items</div>' : ''}
+            ${Object.entries(groupedByRole).map(([roleName, tasks]) => `
+                <div class="compass-role-row">
+                    <div class="compass-role-name">${escapeHtml(roleName)}</div>
+                    <div class="compass-role-tasks">
+                        ${tasks.map(t => renderCompassTask(t)).join('')}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    return bucketDiv;
+}
+
 function renderGroup(container, group, buckets, isNested = false) {
+    if (group.id === COMPASS_BUCKET_ID) {
+        const compassBucket = renderCompassBucket(group);
+        container.appendChild(compassBucket);
+        return;
+    }
+
     let groupTasks = group.tasks;
     
     // Apply sorting if set
@@ -2288,12 +2361,13 @@ function changeGroupBy() {
     applyFilters();
 }
 
-function getFilteredTasks() {
-    if (allTasks.length === 0) return [];
+function getFilteredTasks(includeCompass = false) {
+    const pool = includeCompass ? [...allTasks, ...compassTasks] : [...allTasks];
+    if (pool.length === 0) return [];
     currentFilter = document.getElementById('filterSelect').value;
     showCompleted = document.getElementById('showCompletedCheckbox').checked;
 
-    return allTasks.filter(task => {
+    return pool.filter(task => {
         if (!showCompleted && task.percentComplete === 100) return false;
         switch(currentFilter) {
             case 'all':
@@ -2338,8 +2412,10 @@ function getFilteredTasks() {
 }
 
 function applyFilters() {
-    const filteredTasks = getFilteredTasks();
-    renderTasks(allBuckets, filteredTasks);
+    const includeCompass = currentView === 'bucket';
+    const filteredTasks = getFilteredTasks(includeCompass);
+    const bucketsToRender = includeCompass ? allBuckets : allBuckets.filter(b => !b.isCompass);
+    renderTasks(bucketsToRender, filteredTasks);
     if (currentTab === 'dashboard') {
         renderDashboard();
     }
@@ -2999,6 +3075,31 @@ function exportDashboardCsv() {
 }
 
 function renderTask(task) {
+    if (task.source === 'compass') {
+        const displayId = `WC-${(task.roleIndex ?? 0) + 1}.${(task.rockIndex ?? 0) + 1}`;
+        const done = task.percentComplete === 100;
+        const rolePill = task.compassRole ? `<span class="label-badge compass-role-pill">${escapeHtml(task.compassRole)}</span>` : '';
+        return `
+            <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass">
+                <input type="checkbox" class="task-checkbox" disabled>
+                <div class="task-id col-id">${displayId}</div>
+                <div class="task-title col-task-name">
+                    <span>${escapeHtml(task.title)}</span>
+                    ${rolePill}
+                </div>
+                <div class="task-assignee col-assigned"><span class="placeholder">Compass</span></div>
+                <div class="task-date col-start-date"><span class="placeholder">--</span></div>
+                <div class="task-date col-due-date"><span class="placeholder">--</span></div>
+                <div class="task-progress col-progress">
+                    <span class="progress-dot ${done ? 'completed' : 'not-started'}"></span>
+                    ${done ? 'Completed' : 'Not started'}
+                </div>
+                <div class="task-priority col-priority"><span class="placeholder">--</span></div>
+                <div class="task-labels col-labels">${rolePill}</div>
+            </div>
+        `;
+    }
+
     // Use sequential ID assigned by createdDateTime (oldest -> 1)
     const seq = taskSequentialIds[task.id];
     const taskDisplayId = seq ? `${taskIdPrefix}-${seq}` : `${taskIdPrefix}-?`;
@@ -3756,6 +3857,7 @@ async function openTaskDetail(taskId) {
         const bucketSelect = document.getElementById('detailTaskBucket');
         bucketSelect.innerHTML = allBuckets
             .slice()
+            .filter(b => !b.isCompass)
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(b => 
                 `<option value="${b.id}" ${b.id === task.bucketId ? 'selected' : ''}>${b.name}</option>`
@@ -4440,6 +4542,7 @@ function sortTasks(tasks, column, direction) {
 
 // Bulk selection and operations
 function toggleTaskSelection(taskId) {
+    if (compassTaskIds.has(taskId)) return; // Compass tasks are read-only in bulk operations
     if (selectedTasks.has(taskId)) {
         selectedTasks.delete(taskId);
     } else {
@@ -4472,7 +4575,7 @@ function updateBulkEditSidebar() {
         
         // Populate bucket dropdown if we haven't already
         if (bucketSelect && bucketSelect.options.length === 1) { // Only "No change" option exists
-            (allBuckets || []).slice().sort((a, b) => a.name.localeCompare(b.name)).forEach(b => {
+            (allBuckets || []).slice().filter(b => !b.isCompass).sort((a, b) => a.name.localeCompare(b.name)).forEach(b => {
                 const opt = document.createElement('option');
                 opt.value = b.id;
                 opt.textContent = b.name;
@@ -4693,6 +4796,59 @@ const storedCompassVisible = localStorage.getItem('plannerCompassVisible');
 let compassVisible = storedCompassVisible === null ? true : storedCompassVisible === 'true';
 let compassEditMode = false;
 let compassAutoSaveTimer = null;
+
+function injectCompassBucket() {
+    if (compassTasks.length === 0) {
+        allBuckets = allBuckets.filter(b => b.id !== COMPASS_BUCKET_ID);
+        return;
+    }
+    const exists = allBuckets.some(b => b.id === COMPASS_BUCKET_ID);
+    if (!exists) {
+        allBuckets = [...allBuckets, { id: COMPASS_BUCKET_ID, name: COMPASS_BUCKET_NAME, isCompass: true }];
+    }
+}
+
+function refreshCompassTasksFromData(shouldRender = false) {
+    const tasks = [];
+    (compassData.roles || []).forEach((role, roleIndex) => {
+        const rocks = role.rocks || [];
+        rocks.forEach((rock, rockIndex) => {
+            const rockObj = typeof rock === 'string' ? { text: rock, done: false } : (rock || { text: '', done: false });
+            if (!rockObj.text) return;
+            tasks.push({
+                id: `compass-${roleIndex}-${rockIndex}`,
+                bucketId: COMPASS_BUCKET_ID,
+                title: rockObj.text,
+                percentComplete: rockObj.done ? 100 : 0,
+                priority: 5,
+                startDateTime: null,
+                dueDateTime: null,
+                assignments: {},
+                appliedCategories: {},
+                compassRole: role.name || `Role ${roleIndex + 1}`,
+                compassType: 'rock',
+                roleIndex,
+                rockIndex,
+                source: 'compass'
+            });
+        });
+    });
+
+    compassTasks = tasks;
+    compassTaskIds = new Set(tasks.map(t => t.id));
+    injectCompassBucket();
+    if (shouldRender) {
+        applyFilters();
+    }
+}
+
+function handleCompassTaskToggle(taskId, isDone) {
+    const task = compassTasks.find(t => t.id === taskId);
+    if (!task) return;
+    if (task.compassType === 'rock') {
+        toggleCompassRockDone(task.roleIndex, task.rockIndex, isDone);
+    }
+}
 
 async function initializeCompass() {
     try {
@@ -4915,6 +5071,7 @@ async function loadCompassData() {
         });
         
         renderCompass();
+        refreshCompassTasksFromData(true);
     } catch (err) {
         console.error('Failed to load compass data:', err);
     }
@@ -5180,6 +5337,7 @@ async function saveCompass() {
     updateCompassEditUI();
     renderCompass();
     renderCompassRoles();
+    refreshCompassTasksFromData(true);
 }
 
 function cancelCompassEdit() {
@@ -5288,12 +5446,14 @@ function addCompassRole() {
     captureCompassInputs();
     compassData.roles.push({ name: '', rocks: [] });
     renderCompassRoles();
+    refreshCompassTasksFromData(true);
 }
 
 function removeCompassRole(index) {
     captureCompassInputs();
     compassData.roles.splice(index, 1);
     renderCompassRoles();
+    refreshCompassTasksFromData(true);
 }
 
 function addCompassRock(roleIndex) {
@@ -5301,6 +5461,7 @@ function addCompassRock(roleIndex) {
     if (!compassData.roles[roleIndex]) return;
     compassData.roles[roleIndex].rocks.push({ text: '', done: false });
     renderCompassRoles();
+    refreshCompassTasksFromData(true);
 }
 
 function removeCompassRock(roleIndex, rockIndex) {
@@ -5308,6 +5469,7 @@ function removeCompassRock(roleIndex, rockIndex) {
     if (!compassData.roles[roleIndex]) return;
     compassData.roles[roleIndex].rocks.splice(rockIndex, 1);
     renderCompassRoles();
+    refreshCompassTasksFromData(true);
 }
 
 function toggleCompassRockDone(roleIndex, rockIndex, isDone) {
@@ -5322,6 +5484,7 @@ function toggleCompassRockDone(roleIndex, rockIndex, isDone) {
     }
     renderCompassRoles();
     scheduleCompassAutoSave();
+    refreshCompassTasksFromData(true);
 }
 
 // Drag and drop handlers for role reordering
@@ -5384,6 +5547,7 @@ window.removeCompassRole = removeCompassRole;
 window.toggleCompassEdit = toggleCompassEdit;
 window.addCompassRock = addCompassRock;
 window.removeCompassRock = removeCompassRock;
+window.handleCompassTaskToggle = handleCompassTaskToggle;
 // ============ Goals Management ============
 
 async function initializeGoals() {

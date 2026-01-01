@@ -5,6 +5,16 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.12] - 2026-01-01
+
+### Added
+- **Weekly Compass virtual bucket**: Shows To Do–backed compass items grouped by role in a read-only bucket alongside Planner buckets (bucket view only)
+
+### Changed
+- **Compass completion sync**: Big Rock checkboxes toggle completion in both the compass panel and the virtual bucket, preserving To Do state
+- **Bulk/creation safeguards**: Compass items are excluded from bulk edits, select-all, and add-task UI to avoid Planner writes
+
+
 ## [3.0.11] - 2026-01-01
 
 ### Fixed

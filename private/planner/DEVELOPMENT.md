@@ -17,15 +17,26 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.10
-**Last Commit**: "v3.0.10: Update key file locations paths"
+**Last Committed Version**: 3.0.11
+**Last Commit**: "v3.0.11: Fix task details modal z-index"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.11 (in progress)
+**Current Working Version**: 3.0.12 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.11 (In Progress)
+### v3.0.12 (In Progress)
 **Status**: In progress
+**Changes**:
+- Weekly Compass virtual bucket shows To Do–backed compass items grouped by role in bucket view
+- Compass rock completion syncs between compass panel and virtual bucket; compass items are excluded from bulk edits/add-task flows
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.12; virtual bucket rendering and compass task sync
+- `index.html`: Cache-bust updated to v=3.0.12
+- `CHANGELOG.md`: Added v3.0.12 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.11 (Committed ✅)
+**Status**: Committed and pushed
 **Changes**:
 - Fixed task details modal z-index so it appears above drill-down modal
 **Files Modified**:
