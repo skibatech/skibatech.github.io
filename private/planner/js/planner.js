@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.13'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.14'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1605,7 +1605,7 @@ function renderByBucket(container, buckets, tasks) {
                     <div class="col-labels">Themes</div>
                 </div>
                 ${groupTasks.map(task => renderTask(task)).join('')}
-                <button class="add-task-btn" onclick="showAddTask('${group.id}', '${group.name.replace(/'/g, "\\'")}')">+ Add task</button>
+                    ${isCompassBucket ? '' : `<button class="add-task-btn" onclick="showAddTask('${group.id}', '${group.name.replace(/'/g, "\\'")}')">+ Add task</button>`}
             </div>
         `;
         
@@ -2011,64 +2011,8 @@ function getThemeColorForCategoryId(categoryId) {
     return colors[categoryId] || null;
 }
 
-function renderCompassTask(task) {
-    const done = task.percentComplete === 100;
-    const roleLabel = task.compassRole ? `<span class="compass-task-role">${escapeHtml(task.compassRole)}</span>` : '';
-    const checkbox = task.compassType === 'rock'
-        ? `<input type="checkbox" class="compass-task-checkbox" ${done ? 'checked' : ''} onchange="handleCompassTaskToggle('${task.id}', this.checked)">`
-        : '';
-    return `
-        <div class="compass-task-row ${done ? 'rock-done' : ''}" data-task-id="${task.id}" data-source="compass">
-            ${checkbox}
-            <span class="compass-task-title">${escapeHtml(task.title)}</span>
-            ${roleLabel}
-        </div>
-    `;
-}
-
-function renderCompassBucket(group) {
-    const bucketDiv = document.createElement('div');
-    bucketDiv.className = 'bucket-container compass-bucket';
-    bucketDiv.setAttribute('data-bucket-id', group.id);
-
-    const isExpanded = expandedBuckets.has(group.id);
-    const groupedByRole = {};
-    (group.tasks || []).forEach(task => {
-        const roleName = task.compassRole || COMPASS_BUCKET_NAME;
-        if (!groupedByRole[roleName]) groupedByRole[roleName] = [];
-        groupedByRole[roleName].push(task);
-    });
-
-    bucketDiv.innerHTML = `
-        <div class="bucket-header compass-bucket-header${isExpanded ? ' expanded' : ''}" onclick="toggleBucket(this)">
-            <div class="bucket-title">
-                <span class="expand-icon">${isExpanded ? '▼' : '▶'}</span>
-                ${COMPASS_BUCKET_NAME}
-                <span class="task-count">${group.tasks.length}</span>
-            </div>
-        </div>
-        <div class="task-list compass-task-list${isExpanded ? ' expanded' : ''}">
-            ${Object.keys(groupedByRole).length === 0 ? '<div class="compass-empty">No compass items</div>' : ''}
-            ${Object.entries(groupedByRole).map(([roleName, tasks]) => `
-                <div class="compass-role-row">
-                    <div class="compass-role-name">${escapeHtml(roleName)}</div>
-                    <div class="compass-role-tasks">
-                        ${tasks.map(t => renderCompassTask(t)).join('')}
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-
-    return bucketDiv;
-}
-
 function renderGroup(container, group, buckets, isNested = false) {
-    if (group.id === COMPASS_BUCKET_ID) {
-        const compassBucket = renderCompassBucket(group);
-        container.appendChild(compassBucket);
-        return;
-    }
+    const isCompassBucket = group.id === COMPASS_BUCKET_ID;
 
     let groupTasks = group.tasks;
     
@@ -2107,9 +2051,9 @@ function renderGroup(container, group, buckets, isNested = false) {
         }
     }
     
-    // Add goals button for bucket view
+    // Add goals button for bucket view (skip for virtual compass bucket)
     let goalsButton = '';
-    if (currentView === 'bucket') {
+    if (currentView === 'bucket' && !isCompassBucket) {
         goalsButton = `<button class="bucket-goals-btn" onclick="event.stopPropagation(); showBucketGoalsModal('${group.id}')" title="Manage Goals">🎯</button>`;
     }
     

@@ -15,12 +15,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Bulk/creation safeguards**: Compass items are excluded from bulk edits, select-all, and add-task UI to avoid Planner writes
 
 
-## [3.0.11] - 2026-01-01
+## [3.0.14] - 2026-01-01
+
+### Changed
+- **Compass bucket layout**: Virtual Weekly Compass now uses the standard bucket table layout (same arrow/orientation and columns) while keeping goals/add-task controls hidden for safety
 
 ## [3.0.13] - 2026-01-01
 
 ### Fixed
 - **Compass bucket refresh**: Compass bucket now stays visible after toggling Big Rock checkboxes or editing roles/rocks (refresh rebuilds the virtual list immediately)
+
+## [3.0.12] - 2026-01-01
 
 ### Fixed
 - **Task details modal z-index**: Modal now appears above drill-down modal when clicking a task from dashboard drill-down view
