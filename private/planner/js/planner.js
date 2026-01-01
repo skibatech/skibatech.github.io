@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.20'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.21'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -97,6 +97,7 @@ let allUsers = {}; // Store user details: { userId: displayName }
 let taskIdPrefix = ''; // Configurable task ID prefix
 let adminUsers = []; // Admin users list
 let currentUserEmail = null; // Store current user's email
+let currentUserName = null; // Store current user's display name
 let currentUserIsAdmin = false; // Cache admin status after auth
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
@@ -1001,6 +1002,7 @@ async function updateAuthUI(isAuthenticated) {
                 const name = user.displayName || 'User';
                 const email = user.userPrincipalName || user.mail || '';
                 currentUserEmail = email.toLowerCase(); // Store for admin checks
+                currentUserName = name; // Store display name for compass tasks
                 document.getElementById('profileName').textContent = name;
                 document.getElementById('profileEmail').textContent = email;
                 
@@ -2370,9 +2372,9 @@ function getFilteredTasks(includeCompass = false) {
 }
 
 function applyFilters() {
-    const includeCompass = currentView === 'bucket';
+    const includeCompass = true; // Always include compass tasks in all views
     const filteredTasks = getFilteredTasks(includeCompass);
-    const bucketsToRender = includeCompass ? allBuckets : allBuckets.filter(b => !b.isCompass);
+    const bucketsToRender = allBuckets; // Show all buckets including compass
     renderTasks(bucketsToRender, filteredTasks);
     if (currentTab === 'dashboard') {
         renderDashboard();
@@ -3037,15 +3039,17 @@ function renderTask(task) {
         const displayId = `WC-${(task.roleIndex ?? 0) + 1}.${(task.rockIndex ?? 0) + 1}`;
         const done = task.percentComplete === 100;
         const rolePill = task.compassRole ? `<span class="label-badge compass-role-pill">${escapeHtml(task.compassRole)}</span>` : '';
+        const assigneeName = currentUserName || 'Me';
+        const titleClickHandler = gridEditMode ? `onclick="openCompassTaskDetail(${task.roleIndex}, ${task.rockIndex})"` : `onclick="openCompassTaskDetail(${task.roleIndex}, ${task.rockIndex})"`;
         return `
             <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass" data-role-index="${task.roleIndex}" data-rock-index="${task.rockIndex}">
                 <input type="checkbox" class="task-checkbox" disabled>
                 <div class="task-id col-id">${displayId}</div>
-                <div class="task-title col-task-name" onclick="scrollToCompassItem(${task.roleIndex}, ${task.rockIndex})" style="cursor: pointer;">
+                <div class="task-title col-task-name" ${titleClickHandler} style="cursor: pointer;">
                     <span>${escapeHtml(task.title)}</span>
                     ${rolePill}
                 </div>
-                <div class="task-assignee col-assigned"><span class="placeholder">Compass</span></div>
+                <div class="task-assignee col-assigned">${assigneeName}</div>
                 <div class="task-date col-start-date"><span class="placeholder">--</span></div>
                 <div class="task-date col-due-date"><span class="placeholder">--</span></div>
                 <div class="task-progress col-progress" onclick="toggleCompassTaskFromGrid(${task.roleIndex}, ${task.rockIndex})" style="cursor: pointer;" title="Click to toggle completion">
@@ -5545,8 +5549,68 @@ function toggleCompassTaskFromGrid(roleIndex, rockIndex) {
     toggleCompassRockDone(roleIndex, rockIndex, !currentDone);
 }
 
+// Open compass task detail modal
+function openCompassTaskDetail(roleIndex, rockIndex) {
+    const role = compassData.roles[roleIndex];
+    if (!role || !role.rocks[rockIndex]) return;
+    
+    const rock = role.rocks[rockIndex];
+    const rockObj = typeof rock === 'object' ? rock : { text: rock, done: false };
+    
+    // Store current edit context
+    window.currentCompassEdit = { roleIndex, rockIndex };
+    
+    // Populate modal
+    document.getElementById('compassTaskTitle').textContent = rockObj.text || 'Edit Task';
+    document.getElementById('compassTaskName').value = rockObj.text || '';
+    document.getElementById('compassTaskProgress').value = rockObj.done ? '100' : '0';
+    document.getElementById('compassTaskRole').value = role.name || `Role ${roleIndex + 1}`;
+    
+    // Show modal
+    document.getElementById('compassTaskModal').classList.add('show');
+}
+
+// Close compass task modal
+function closeCompassTaskModal() {
+    document.getElementById('compassTaskModal').classList.remove('show');
+    window.currentCompassEdit = null;
+}
+
+// Save compass task details from modal
+function saveCompassTaskDetails() {
+    if (!window.currentCompassEdit) return;
+    
+    const { roleIndex, rockIndex } = window.currentCompassEdit;
+    const role = compassData.roles[roleIndex];
+    if (!role || !role.rocks[rockIndex]) return;
+    
+    const newName = document.getElementById('compassTaskName').value.trim();
+    const newProgress = parseInt(document.getElementById('compassTaskProgress').value);
+    
+    if (!newName) {
+        alert('Task name cannot be empty');
+        return;
+    }
+    
+    // Update the rock
+    const rock = role.rocks[rockIndex];
+    const rockObj = typeof rock === 'object' ? rock : { text: rock, done: false };
+    rockObj.text = newName;
+    rockObj.done = newProgress === 100;
+    role.rocks[rockIndex] = rockObj;
+    
+    // Save and re-render
+    renderCompassRoles();
+    scheduleCompassAutoSave();
+    refreshCompassTasksFromData(true);
+    closeCompassTaskModal();
+}
+
 window.scrollToCompassItem = scrollToCompassItem;
 window.toggleCompassTaskFromGrid = toggleCompassTaskFromGrid;
+window.openCompassTaskDetail = openCompassTaskDetail;
+window.closeCompassTaskModal = closeCompassTaskModal;
+window.saveCompassTaskDetails = saveCompassTaskDetails;
 // ============ Goals Management ============
 
 async function initializeGoals() {
