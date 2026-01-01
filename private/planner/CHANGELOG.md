@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Compass init**: Removed stray pre-initialization refresh calls so compassData is not touched before it exists, eliminating the sign-in page ReferenceError
 
+## [3.0.23] - 2026-01-01
+### Performance
+- Progressive loading: loads incomplete tasks first for immediate display, then loads completed tasks in background
+- Reduces initial page load time, especially for plans with many completed tasks
+- Status message now shows "Loading active tasks..." during initial phase
+
 ## [3.0.22] - 2026-01-01
 ### Fixed
 - Fixed compass task title click handler - now properly opens edit modal instead of just highlighting panel

@@ -17,21 +17,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.21
-**Last Commit**: "v3.0.21: Compass tasks now user-centric with edit dialog"
+**Last Committed Version**: 3.0.22
+**Last Commit**: "v3.0.22: Fix compass task click and assignment grouping"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.22 (in progress)
+**Current Working Version**: 3.0.23 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.22 (In Progress)
+### v3.0.23 (In Progress)
 **Status**: In progress
 **Changes**:
-- Fixed click handler on compass task title (removed wrapping span, onclick directly on div)
-- Compass tasks now properly assigned to current user (stored currentUserId on auth)
-- Compass tasks appear under user's name in "By Assigned To" view
+- Progressive task loading: fetch incomplete tasks first ($filter=percentComplete ne 100), render immediately
+- Load completed tasks in background 800ms later, merge seamlessly
+- Auto re-render if "Show completed" enabled when background load finishes
 
-### v3.0.21 (Committed 2026-01-01)
+### v3.0.22 (Committed 2026-01-01)
 **Status**: Committed
 **Changes**:
 - Increased dark-mode contrast for compass/theme badges so Weekly Compass items remain legible
