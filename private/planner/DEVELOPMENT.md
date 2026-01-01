@@ -17,14 +17,18 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.2.5
-- **Last Commit**: "v2.2.5: Load motivational quotes from CSV"
+- **Last Committed Version**: 2.2.7
+- **Last Commit**: "v2.2.7: Hide header when unauthenticated"
 - **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.2.6 (in progress)
+- **Current Working Version**: 2.2.7 (complete)
 
 ## Version History (Most Recent First)
 
-### v2.2.6 (In Progress)
+### v2.2.7 (Committed ✅)
+- Hide header when unauthenticated for cleaner login experience
+- Added CSS rule: `body.unauthenticated .header { display: none !important; }`
+
+### v2.2.6 (Committed ✅)
 **Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
 **Changes**:
 - Reorganized Options modal into 3 tabs: Views, Dashboard, Advanced
