@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.17] - 2026-01-01
+
+### Fixed
+- **Compass init**: Removed stray pre-initialization refresh calls so compassData is not touched before it exists, eliminating the sign-in page ReferenceError
+
 ## [3.0.16] - 2026-01-01
 
 ### Fixed

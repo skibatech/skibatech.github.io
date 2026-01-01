@@ -20,12 +20,22 @@
 **Last Committed Version**: 3.0.15
 **Last Commit**: "v3.0.15: Guard compass init"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.16 (in progress)
+**Current Working Version**: 3.0.17 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.16 (In Progress)
+### v3.0.17 (In Progress)
 **Status**: In progress
+**Changes**:
+- Removed stray pre-initialization compass refresh calls that triggered `compassData` ReferenceErrors on the sign-in page
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.17; removed early refresh calls
+- `index.html`: Cache-bust updated to v=3.0.17
+- `CHANGELOG.md`: Added v3.0.17 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.16 (Completed)
+**Status**: Completed (unreleased)
 **Changes**:
 - Block sign-in when `authority` or `clientId` are missing; reload config and default to the Microsoft common authority to prevent broken authorize URLs/404s
 **Files Modified**:
