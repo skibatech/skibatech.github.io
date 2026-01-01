@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '2.2.7'; // Hide header when unauthenticated for cleaner login experience
+const APP_VERSION = '3.0.0'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -89,7 +89,7 @@ let expandedBuckets = new Set(); // Track which buckets are expanded
 let expandedAssignees = new Set(); // Track which assignees are expanded
 let currentView = localStorage.getItem('plannerDefaultView') || 'assigned'; // Current view: assigned, bucket, progress, dueDate, priority
 let currentGroupBy = localStorage.getItem('plannerDefaultGroupBy') || 'bucket'; // Current secondary grouping field (or 'none' for no grouping)
-let currentTab = localStorage.getItem('plannerCurrentTab') || 'tasks'; // tasks | dashboard
+let currentTab = localStorage.getItem('plannerCurrentTab') || 'tasks'; // tasks | dashboard | goals
 let allBuckets = []; // Store buckets for reference
 let allTasks = []; // Store tasks for re-grouping
 let allTaskDetails = {}; // Store task details (categories, etc.) by task ID
@@ -101,6 +101,9 @@ let currentUserIsAdmin = false; // Cache admin status after auth
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
 let customThemeNames = JSON.parse(localStorage.getItem('customThemeNames') || '{}');
+let allGoals = []; // Store goals: [{ id, name, description, color, targetDate }]
+let goalsListId = null; // Store goals list ID
+let bucketGoalMap = {}; // Store bucket-to-goals mapping: { bucketId: [goalId1, goalId2, ...] }
 // Force default OFF each load (ignores prior stored state to honor requested default view mode)
 let gridEditMode = false;
 localStorage.setItem('gridEditMode', 'false');
@@ -952,6 +955,8 @@ async function updateAuthUI(isAuthenticated) {
         profileContainer.style.display = 'inline-block';
         if (tabTasks) tabTasks.style.display = 'inline-block';
         if (tabDashboard) tabDashboard.style.display = 'inline-block';
+        const tabGoals = document.getElementById('tabGoals');
+        if (tabGoals) tabGoals.style.display = 'inline-block';
         if (headerDivider) headerDivider.style.display = 'block';
         const gridEditBtn = document.getElementById('gridEditModeBtn');
         if (gridEditBtn) {
@@ -2006,7 +2011,7 @@ function renderGroup(container, group, buckets, isNested = false) {
     // Check if all tasks in this group are selected
     const allSelected = groupTasks.every(t => selectedTasks.has(t.id));
     
-    // Get theme color if viewing by theme
+    // Get theme color if viewing by theme, or goal color if viewing by goal
     let themeColorStyle = '';
     let groupDisplayName = group.name;
     if (currentView === 'theme') {
@@ -2016,6 +2021,17 @@ function renderGroup(container, group, buckets, isNested = false) {
         }
         // Use prefixed theme name for display
         groupDisplayName = getThemeDisplayNameWithPrefix(group.id);
+    } else if (currentView === 'goal') {
+        const goal = getGoalById(group.id);
+        if (goal && goal.color) {
+            themeColorStyle = ` style="background: ${goal.color}; color: white;"`;
+        }
+    }
+    
+    // Add goals button for bucket view
+    let goalsButton = '';
+    if (currentView === 'bucket') {
+        goalsButton = `<button class="bucket-goals-btn" onclick="event.stopPropagation(); showBucketGoalsModal('${group.id}')" title="Manage Goals" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.9; font-size: 14px; padding: 4px 8px; margin-left: 8px;">🎯</button>`;
     }
     
     bucketDiv.innerHTML = `
@@ -2024,6 +2040,7 @@ function renderGroup(container, group, buckets, isNested = false) {
                 <span class=\"expand-icon\">▶</span>
                 ${groupDisplayName}
                 <span class=\"task-count\">${groupTasks.length}</span>
+                ${goalsButton}
             </div>
         </div>
         <div class=\"task-list\">
@@ -2188,6 +2205,28 @@ function groupTasksBy(tasks, buckets, groupBy) {
                 }
                 break;
             }
+            case 'goal': {
+                // Find goals for this task's bucket
+                const taskGoals = getGoalsForBucket(task.bucketId);
+                
+                if (taskGoals.length > 0) {
+                    // Add task to each goal group
+                    taskGoals.forEach(goalId => {
+                        const goal = getGoalById(goalId);
+                        if (goal) {
+                            if (!groups[goalId]) {
+                                groups[goalId] = { id: goalId, name: goal.name, tasks: [] };
+                            }
+                            groups[goalId].tasks.push(task);
+                        }
+                    });
+                    return; // Skip the default grouping logic below
+                } else {
+                    key = 'no-goal';
+                    name = 'No goal';
+                }
+                break;
+            }
             default: {
                 key = 'other';
                 name = 'Other';
@@ -2310,20 +2349,33 @@ function switchTab(tab) {
     localStorage.setItem('plannerCurrentTab', tab);
     const tasksView = document.getElementById('tasksView');
     const dashboardView = document.getElementById('dashboardContainer');
+    const goalsView = document.getElementById('goalsContainer');
     const tasksBtn = document.getElementById('tabTasks');
     const dashBtn = document.getElementById('tabDashboard');
-    if (!tasksView || !dashboardView || !tasksBtn || !dashBtn) return;
+    const goalsBtn = document.getElementById('tabGoals');
+    
+    if (!tasksView || !dashboardView || !goalsView || !tasksBtn || !dashBtn || !goalsBtn) return;
+    
+    // Hide all views
+    tasksView.style.display = 'none';
+    dashboardView.style.display = 'none';
+    goalsView.style.display = 'none';
+    tasksBtn.classList.remove('active');
+    dashBtn.classList.remove('active');
+    goalsBtn.classList.remove('active');
+    
+    // Show selected view
     if (tab === 'dashboard') {
-        tasksView.style.display = 'none';
         dashboardView.style.display = 'block';
-        tasksBtn.classList.remove('active');
         dashBtn.classList.add('active');
         renderDashboard();
+    } else if (tab === 'goals') {
+        goalsView.style.display = 'block';
+        goalsBtn.classList.add('active');
+        renderGoalsView();
     } else {
         tasksView.style.display = 'block';
-        dashboardView.style.display = 'none';
         tasksBtn.classList.add('active');
-        dashBtn.classList.remove('active');
     }
 }
 
@@ -2963,6 +3015,14 @@ function renderTask(task) {
     
     const assignee = getAssigneeNames(task).join(', ');
     
+    // Get goals for this task's bucket
+    const taskGoals = getGoalsForBucket(task.bucketId);
+    const goalBadges = taskGoals.map(goalId => {
+        const goal = getGoalById(goalId);
+        if (!goal) return '';
+        return `<span class="goal-badge" style="background: ${goal.color};" title="${escapeHtml(goal.name)}">${escapeHtml(goal.name)}</span>`;
+    }).join('');
+    
     // Get categories
     const appliedCategories = task.appliedCategories || {};
     
@@ -3051,7 +3111,7 @@ function renderTask(task) {
                 ${priorityClickHandler}>
                 ${priorityText || '<span class="placeholder">--</span>'}
             </div>
-            <div class="task-labels col-labels">${categoryBadges}</div>
+            <div class="task-labels col-labels">${goalBadges}${categoryBadges}</div>
         </div>
     `;
 }
@@ -4675,6 +4735,7 @@ async function initializeCompass() {
         
         compassListId = compassList.id;
         await loadCompassData();
+        await initializeGoals(); // Initialize goals list and data
         await initializeOptions();
         
         // Apply saved compass visibility preference
@@ -5322,3 +5383,532 @@ window.removeCompassRole = removeCompassRole;
 window.toggleCompassEdit = toggleCompassEdit;
 window.addCompassRock = addCompassRock;
 window.removeCompassRock = removeCompassRock;
+// ============ Goals Management ============
+
+async function initializeGoals() {
+    try {
+        if (!accessToken) return;
+        
+        // Try to find existing goals list
+        const listsResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (!listsResponse.ok) {
+            console.error('Failed to fetch To Do lists for goals:', listsResponse.status);
+            return;
+        }
+        
+        const listsData = await listsResponse.json();
+        let goalsList = listsData.value.find(list => list.displayName === 'PlannerGoals_Data');
+        
+        if (!goalsList) {
+            // Create the list if it doesn't exist
+            const createResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    displayName: 'PlannerGoals_Data'
+                })
+            });
+            
+            if (!createResponse.ok) {
+                console.error('Failed to create goals list:', createResponse.status);
+                return;
+            }
+            
+            goalsList = await createResponse.json();
+        }
+        
+        goalsListId = goalsList.id;
+        await loadGoalsData();
+    } catch (err) {
+        console.error('Error initializing goals:', err);
+    }
+}
+
+async function loadGoalsData() {
+    if (!goalsListId || !accessToken) return;
+    
+    try {
+        const response = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            }
+        );
+        
+        if (!response.ok) {
+            console.error('Failed to load goals data:', response.status);
+            return;
+        }
+        
+        const data = await response.json();
+        allGoals = [];
+        bucketGoalMap = {};
+        
+        data.value.forEach(item => {
+            try {
+                const parsed = JSON.parse(item.body.content || '{}');
+                
+                if (parsed.type === 'goal') {
+                    allGoals.push({
+                        id: item.id,
+                        name: parsed.name || 'Unnamed Goal',
+                        description: parsed.description || '',
+                        color: parsed.color || '#0078d4',
+                        targetDate: parsed.targetDate || null
+                    });
+                } else if (parsed.type === 'bucket-goal-map') {
+                    bucketGoalMap[parsed.bucketId] = parsed.goalIds || [];
+                }
+            } catch (err) {
+                console.error('Error parsing goal item:', err);
+            }
+        });
+        
+        console.log('Loaded goals:', allGoals.length);
+    } catch (err) {
+        console.error('Error loading goals data:', err);
+    }
+}
+
+async function saveGoal(goal) {
+    if (!goalsListId || !accessToken) return null;
+    
+    try {
+        const taskData = {
+            title: `Goal: ${goal.name}`,
+            body: {
+                contentType: 'text',
+                content: JSON.stringify({
+                    type: 'goal',
+                    name: goal.name,
+                    description: goal.description,
+                    color: goal.color,
+                    targetDate: goal.targetDate
+                })
+            }
+        };
+        
+        let response;
+        if (goal.id) {
+            // Update existing
+            response = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks/${goal.id}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(taskData)
+                }
+            );
+        } else {
+            // Create new
+            response = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(taskData)
+                }
+            );
+        }
+        
+        if (!response.ok) {
+            throw new Error('Failed to save goal');
+        }
+        
+        const saved = await response.json();
+        await loadGoalsData();
+        return saved.id;
+    } catch (err) {
+        console.error('Error saving goal:', err);
+        alert('Failed to save goal: ' + err.message);
+        return null;
+    }
+}
+
+async function deleteGoal(goalId) {
+    if (!goalsListId || !accessToken || !goalId) return false;
+    
+    try {
+        const response = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks/${goalId}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            }
+        );
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete goal');
+        }
+        
+        await loadGoalsData();
+        return true;
+    } catch (err) {
+        console.error('Error deleting goal:', err);
+        alert('Failed to delete goal: ' + err.message);
+        return false;
+    }
+}
+
+async function saveBucketGoalMapping(bucketId, goalIds) {
+    if (!goalsListId || !accessToken) return false;
+    
+    try {
+        // Find existing mapping item
+        const response = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            }
+        );
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch goal mappings');
+        }
+        
+        const data = await response.json();
+        let mappingItem = null;
+        
+        for (const item of data.value) {
+            try {
+                const parsed = JSON.parse(item.body.content || '{}');
+                if (parsed.type === 'bucket-goal-map' && parsed.bucketId === bucketId) {
+                    mappingItem = item;
+                    break;
+                }
+            } catch (err) {}
+        }
+        
+        const taskData = {
+            title: `Bucket-Goal Map: ${bucketId}`,
+            body: {
+                contentType: 'text',
+                content: JSON.stringify({
+                    type: 'bucket-goal-map',
+                    bucketId: bucketId,
+                    goalIds: goalIds
+                })
+            }
+        };
+        
+        let saveResponse;
+        if (mappingItem) {
+            // Update existing
+            saveResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks/${mappingItem.id}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(taskData)
+                }
+            );
+        } else {
+            // Create new
+            saveResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/me/todo/lists/${goalsListId}/tasks`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(taskData)
+                }
+            );
+        }
+        
+        if (!saveResponse.ok) {
+            throw new Error('Failed to save bucket-goal mapping');
+        }
+        
+        bucketGoalMap[bucketId] = goalIds;
+        return true;
+    } catch (err) {
+        console.error('Error saving bucket-goal mapping:', err);
+        return false;
+    }
+}
+
+function getGoalsForBucket(bucketId) {
+    const goalIds = bucketGoalMap[bucketId] || [];
+    return allGoals.filter(g => goalIds.includes(g.id));
+}
+
+function getGoalById(goalId) {
+    return allGoals.find(g => g.id === goalId);
+}
+
+// ========================================
+// Goals UI Functions
+// ========================================
+
+function renderGoalsView() {
+    const grid = document.getElementById('goalsGrid');
+    const empty = document.getElementById('goalsEmpty');
+    
+    if (!allGoals || allGoals.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    
+    empty.style.display = 'none';
+    
+    // Calculate progress for each goal
+    const goalsWithProgress = allGoals.map(goal => {
+        // Find buckets associated with this goal
+        const bucketIds = Object.keys(bucketGoalMap).filter(bucketId => 
+            bucketGoalMap[bucketId].includes(goal.id)
+        );
+        
+        // Get tasks from those buckets
+        const goalTasks = allTasks.filter(task => bucketIds.includes(task.bucketId));
+        const totalTasks = goalTasks.length;
+        const completedTasks = goalTasks.filter(t => t.percentComplete === 100).length;
+        const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        return {
+            ...goal,
+            bucketCount: bucketIds.length,
+            taskCount: totalTasks,
+            completedTasks,
+            progress
+        };
+    });
+    
+    grid.innerHTML = goalsWithProgress.map(goal => {
+        const targetDate = goal.targetDate ? new Date(goal.targetDate).toLocaleDateString() : 'No target date';
+        const daysRemaining = goal.targetDate ? Math.ceil((new Date(goal.targetDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+        
+        return `
+            <div class="goal-card" style="border-left-color: ${goal.color}" onclick="editGoal('${goal.id}')">
+                <div class="goal-card-header">
+                    <div>
+                        <div class="goal-card-title">${escapeHtml(goal.name)}</div>
+                    </div>
+                    <div class="goal-card-actions">
+                        <button class="goal-card-btn" onclick="event.stopPropagation(); editGoal('${goal.id}')" title="Edit">✏️</button>
+                        <button class="goal-card-btn" onclick="event.stopPropagation(); confirmDeleteGoalFromCard('${goal.id}')" title="Delete">🗑️</button>
+                    </div>
+                </div>
+                
+                ${goal.description ? `<div class="goal-card-description">${escapeHtml(goal.description)}</div>` : ''}
+                
+                <div class="goal-card-meta">
+                    <div class="goal-card-meta-item">
+                        <span>📊</span>
+                        <span>${goal.bucketCount} bucket${goal.bucketCount !== 1 ? 's' : ''} • ${goal.taskCount} task${goal.taskCount !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="goal-card-meta-item">
+                        <span>📅</span>
+                        <span>${targetDate}${daysRemaining !== null ? ` (${daysRemaining} days)` : ''}</span>
+                    </div>
+                </div>
+                
+                <div class="goal-card-progress">
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" style="width: ${goal.progress}%; background: ${goal.color};"></div>
+                    </div>
+                    <div class="goal-progress-text">
+                        <span>${goal.completedTasks} of ${goal.taskCount} tasks complete</span>
+                        <span>${goal.progress}%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function showGoalModal(goalId = null) {
+    const modal = document.getElementById('goalModal');
+    const title = document.getElementById('goalModalTitle');
+    const idInput = document.getElementById('goalIdInput');
+    const nameInput = document.getElementById('goalNameInput');
+    const descInput = document.getElementById('goalDescriptionInput');
+    const colorInput = document.getElementById('goalColorInput');
+    const targetInput = document.getElementById('goalTargetDateInput');
+    const deleteBtn = document.getElementById('goalDeleteBtn');
+    
+    if (goalId) {
+        const goal = getGoalById(goalId);
+        if (!goal) return;
+        
+        title.textContent = 'Edit Goal';
+        idInput.value = goal.id;
+        nameInput.value = goal.name;
+        descInput.value = goal.description || '';
+        colorInput.value = goal.color || '#0078d4';
+        targetInput.value = goal.targetDate || '';
+        deleteBtn.style.display = 'block';
+    } else {
+        title.textContent = 'Add Goal';
+        idInput.value = '';
+        nameInput.value = '';
+        descInput.value = '';
+        colorInput.value = '#0078d4';
+        targetInput.value = '';
+        deleteBtn.style.display = 'none';
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function closeGoalModal() {
+    const modal = document.getElementById('goalModal');
+    modal.style.display = 'none';
+}
+
+async function saveGoalModal() {
+    const idInput = document.getElementById('goalIdInput');
+    const nameInput = document.getElementById('goalNameInput');
+    const descInput = document.getElementById('goalDescriptionInput');
+    const colorInput = document.getElementById('goalColorInput');
+    const targetInput = document.getElementById('goalTargetDateInput');
+    
+    const name = nameInput.value.trim();
+    if (!name) {
+        alert('Please enter a goal name');
+        return;
+    }
+    
+    const goal = {
+        id: idInput.value || generateId(),
+        name: name,
+        description: descInput.value.trim(),
+        color: colorInput.value,
+        targetDate: targetInput.value || null
+    };
+    
+    await saveGoal(goal);
+    closeGoalModal();
+    renderGoalsView();
+}
+
+function editGoal(goalId) {
+    showGoalModal(goalId);
+}
+
+function confirmDeleteGoalFromCard(goalId) {
+    const goal = getGoalById(goalId);
+    if (!goal) return;
+    
+    if (confirm(`Are you sure you want to delete the goal "${goal.name}"? This will not delete the associated buckets or tasks.`)) {
+        deleteGoalAndRefresh(goalId);
+    }
+}
+
+function confirmDeleteGoal() {
+    const idInput = document.getElementById('goalIdInput');
+    const goalId = idInput.value;
+    
+    if (!goalId) return;
+    
+    const goal = getGoalById(goalId);
+    if (!goal) return;
+    
+    if (confirm(`Are you sure you want to delete the goal "${goal.name}"? This will not delete the associated buckets or tasks.`)) {
+        deleteGoalAndRefresh(goalId);
+        closeGoalModal();
+    }
+}
+
+async function deleteGoalAndRefresh(goalId) {
+    await deleteGoal(goalId);
+    
+    // Remove goal from bucket mappings
+    for (const bucketId in bucketGoalMap) {
+        const index = bucketGoalMap[bucketId].indexOf(goalId);
+        if (index > -1) {
+            bucketGoalMap[bucketId].splice(index, 1);
+            await saveBucketGoalMapping(bucketId, bucketGoalMap[bucketId]);
+        }
+    }
+    
+    renderGoalsView();
+}
+
+function generateId() {
+    return 'goal_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function showBucketGoalsModal(bucketId) {
+    const modal = document.getElementById('bucketGoalsModal');
+    const bucketIdInput = document.getElementById('bucketGoalsModalBucketId');
+    const bucketNameInput = document.getElementById('bucketGoalsModalBucketName');
+    const checkboxesContainer = document.getElementById('bucketGoalsCheckboxes');
+    
+    const bucket = allBuckets.find(b => b.id === bucketId);
+    if (!bucket) return;
+    
+    bucketIdInput.value = bucketId;
+    bucketNameInput.value = bucket.name;
+    
+    // Get currently assigned goals for this bucket
+    const assignedGoals = bucketGoalMap[bucketId] || [];
+    
+    // Render goal checkboxes
+    checkboxesContainer.innerHTML = allGoals.map(goal => `
+        <label style="display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border-light);">
+            <input type="checkbox" value="${goal.id}" ${assignedGoals.includes(goal.id) ? 'checked' : ''} style="cursor: pointer;">
+            <div style="width: 16px; height: 16px; border-radius: 4px; background: ${goal.color}; flex-shrink: 0;"></div>
+            <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--text-primary);">${escapeHtml(goal.name)}</div>
+                ${goal.description ? `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">${escapeHtml(goal.description)}</div>` : ''}
+            </div>
+        </label>
+    `).join('');
+    
+    if (allGoals.length === 0) {
+        checkboxesContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No goals available. Create a goal first.</div>';
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function closeBucketGoalsModal() {
+    const modal = document.getElementById('bucketGoalsModal');
+    modal.style.display = 'none';
+}
+
+async function saveBucketGoalsModal() {
+    const bucketIdInput = document.getElementById('bucketGoalsModalBucketId');
+    const checkboxesContainer = document.getElementById('bucketGoalsCheckboxes');
+    
+    const bucketId = bucketIdInput.value;
+    const checkboxes = checkboxesContainer.querySelectorAll('input[type="checkbox"]:checked');
+    const selectedGoalIds = Array.from(checkboxes).map(cb => cb.value);
+    
+    await saveBucketGoalMapping(bucketId, selectedGoalIds);
+    closeBucketGoalsModal();
+    
+    // Refresh the current view if needed
+    if (currentTab === 'tasks') {
+        applyFilters();
+    } else if (currentTab === 'goals') {
+        renderGoalsView();
+    }
+}
+

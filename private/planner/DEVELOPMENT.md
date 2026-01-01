@@ -17,12 +17,34 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-- **Last Committed Version**: 2.2.7
-- **Last Commit**: "v2.2.7: Hide header when unauthenticated"
-- **Last Push**: ✅ Pushed to main
-- **Current Working Version**: 2.2.7 (complete)
++ **Last Committed Version**: 2.2.7
++ **Last Commit**: "v2.2.7: Hide header when unauthenticated"
++ **Last Push**: ✅ Pushed to main
++ **Current Working Version**: 3.0.0 (complete)
 
 ## Version History (Most Recent First)
++
++### v3.0.0 (Committed ✅)
++**Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
++**Changes**:
+- Goals feature: Strategic planning with Goals → Buckets (Epics) → Tasks hierarchy
+- Goals tab with goal cards showing progress, target dates, associated buckets/tasks
+- Goal CRUD: Create, edit, delete goals with name, description, color, target date
+- Bucket-to-goals mapping: Buckets can belong to multiple goals
+- "By Goal" view and "Group by Goal" options
+- Goal badges on task cards (inherited from bucket assignments)
+- Goals stored in Microsoft To Do List "PlannerGoals_Data"
+- Real-time progress tracking per goal
++**Files Modified**:
+- `planner.js`: APP_VERSION = 3.0.0, Goals data layer (initializeGoals, loadGoalsData, saveGoal, deleteGoal, saveBucketGoalMapping, getGoalsForBucket, getGoalById), Goals UI (renderGoalsView, showGoalModal, closeGoalModal, saveGoalModal, editGoal, confirmDeleteGoal, deleteGoalAndRefresh, showBucketGoalsModal, closeBucketGoalsModal, saveBucketGoalsModal), updated switchTab for goals, added goal view/grouping logic, goal badges in renderTask, goal button in bucket headers
+- `index.html`: Added Goals tab button, Goals view container, Goal modal, Bucket Goals modal, added "By Goal" to View and Group By dropdowns, cache-bust v=3.0.0
+- `planner.css`: Added Goals view styles (goals-wrapper, goals-header, goals-grid, goal-card, goal-badge, etc.)
+- `CHANGELOG.md`: v3.0.0 entry added
+- `DEVELOPMENT.md`: Updated status tracking
++**Git Command When Ready**:
+```powershell
+git add private/planner/planner.js private/planner/index.html private/planner/planner.css private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v3.0.0: Goals feature with strategic planning hierarchy"; git push origin main
+```
 
 ### v2.2.7 (Committed ✅)
 - Hide header when unauthenticated for cleaner login experience

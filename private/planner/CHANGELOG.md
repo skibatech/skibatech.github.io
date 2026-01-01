@@ -5,6 +5,18 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2025-12-31
+
+### Added
+- **Goals Feature (Major)**: Strategic planning layer with Goals → Buckets (Epics) → Tasks hierarchy
+  - Goals tab with visual goal cards showing progress, target dates, and associated buckets/tasks
+  - Goal management: Create, edit, delete goals with name, description, color, and target date
+  - Bucket-to-goals mapping: Buckets can belong to multiple goals (many-to-many relationship)
+  - "By Goal" view and "Group by Goal" options in task list
+  - Goal badges on task cards showing inherited goals from bucket assignments
+  - Goals stored in Microsoft To Do List "PlannerGoals_Data" (Planner-native, no external database)
+  - Real-time progress tracking: Goals show completion % based on tasks in associated buckets
+
 ## [2.2.7] - 2025-12-31
 
 ### Changed

@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <title>Planner Pro</title>
-    <link rel="stylesheet" href="planner.css?v=2.2.6">
+    <link rel="stylesheet" href="planner.css?v=3.0.0">
 </head>
 <body class="unauthenticated">
     <div class="header">
@@ -46,6 +46,7 @@
             <div class="header-controls">
                 <button id="tabTasks" class="tab-btn active" onclick="switchTab('tasks')" style="display:none;">Tasks</button>
                 <button id="tabDashboard" class="tab-btn" onclick="switchTab('dashboard')" style="display:none;">Dashboard</button>
+                <button id="tabGoals" class="tab-btn" onclick="switchTab('goals')" style="display:none;">Goals</button>
                 <div class="header-divider" style="display:none;"></div>
                 
                 <button onclick="showAddTask(null, null)" class="primary-btn">+New Task</button>
@@ -62,6 +63,7 @@
                         <option value="dueDate">By Due Date</option>
                         <option value="priority">By Priority</option>
                         <option value="theme">By Theme</option>
+                        <option value="goal">By Goal</option>
                     </select>
                 </div>
 
@@ -75,6 +77,7 @@
                         <option value="dueDate">Due date</option>
                         <option value="priority">Priority</option>
                         <option value="theme">Theme</option>
+                        <option value="goal">Goal</option>
                     </select>
                 </div>
 
@@ -219,6 +222,20 @@
                         </div>
                         <div id="chartThemes" class="bar-group"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals View -->
+        <div id="goalsContainer" style="display:none;">
+            <div class="goals-wrapper">
+                <div class="goals-header">
+                    <h2>Strategic Goals</h2>
+                    <button class="primary-btn" onclick="showGoalModal()">+ Add Goal</button>
+                </div>
+                <div id="goalsGrid" class="goals-grid"></div>
+                <div id="goalsEmpty" class="goals-empty" style="display:none;">
+                    <p>No goals yet. Create a goal to organize your buckets and track strategic objectives.</p>
                 </div>
             </div>
         </div>
@@ -653,7 +670,81 @@
         </div>
     </div>
 
-    <script src="planner.js?v=2.2.6"></script>
+    <!-- Goal Modal -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="goalModalTitle" style="font-size: 18px; font-weight: 600; margin: 0;">Add Goal</h2>
+                <button class="modal-close" onclick="closeGoalModal()">×</button>
+            </div>
+            
+            <div class="modal-body" style="padding: 20px; max-height: calc(85vh - 140px); overflow-y: auto;">
+                <input type="hidden" id="goalIdInput">
+                
+                <div class="form-group">
+                    <label class="form-label">Goal Name <span style="color: red;">*</span></label>
+                    <input type="text" id="goalNameInput" class="task-input" placeholder="Enter goal name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="goalDescriptionInput" class="task-input" rows="3" placeholder="Enter goal description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Color</label>
+                    <input type="color" id="goalColorInput" class="task-input" value="#0078d4" style="height: 40px; cursor: pointer;">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Target Date</label>
+                    <input type="date" id="goalTargetDateInput" class="task-input">
+                </div>
+            </div>
+            
+            <div class="modal-actions" style="border-top: 1px solid var(--border-color); padding: 16px 20px; display: flex; justify-content: space-between;">
+                <button id="goalDeleteBtn" class="danger-btn" onclick="confirmDeleteGoal()" style="display:none;">Delete Goal</button>
+                <div style="display: flex; gap: 8px; margin-left: auto;">
+                    <button class="cancel-btn" onclick="closeGoalModal()">Cancel</button>
+                    <button class="primary-btn" onclick="saveGoalModal()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bucket Goals Modal -->
+    <div id="bucketGoalsModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 18px; font-weight: 600; margin: 0;">Assign Goals to Bucket</h2>
+                <button class="modal-close" onclick="closeBucketGoalsModal()">×</button>
+            </div>
+            
+            <div class="modal-body" style="padding: 20px; max-height: calc(85vh - 140px); overflow-y: auto;">
+                <input type="hidden" id="bucketGoalsModalBucketId">
+                
+                <div class="form-group">
+                    <label class="form-label">Bucket Name</label>
+                    <input type="text" id="bucketGoalsModalBucketName" class="task-input" readonly style="background: var(--bg-tertiary);">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Goals</label>
+                    <div id="bucketGoalsCheckboxes" style="border: 1px solid var(--border-color); border-radius: 4px; max-height: 300px; overflow-y: auto;">
+                        <!-- Goal checkboxes will be inserted here -->
+                    </div>
+                    <div class="muted" style="margin-top: 8px;">Select which strategic goals this bucket contributes to.</div>
+                </div>
+            </div>
+            
+            <div class="modal-actions" style="border-top: 1px solid var(--border-color); padding: 16px 20px;">
+                <button class="cancel-btn" onclick="closeBucketGoalsModal()">Cancel</button>
+                <button class="primary-btn" onclick="saveBucketGoalsModal()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="planner.js?v=3.0.0"></script>
     <div id="cardMenu" class="card-menu" style="display:none"></div>
 </body>
 </html>
