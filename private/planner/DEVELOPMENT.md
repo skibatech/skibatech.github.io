@@ -17,10 +17,10 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.6
-**Last Commit**: "v3.0.6: Move assets into css/js"
+**Last Committed Version**: 3.0.8
+**Last Commit**: "v3.0.8: Align version after asset move"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.6 (complete)
+**Current Working Version**: 3.0.8 (complete)
 
 ## Version History (Most Recent First)
  
@@ -99,13 +99,39 @@
 ### v2.2.7 (Committed ✅)
 - Hide header when unauthenticated for cleaner login experience
 - Added CSS rule: `body.unauthenticated .header { display: none !important; }`
-
 ### v2.2.6 (Committed ✅)
-**Status**: Code changes completed, CHANGELOG updated, **PENDING COMMIT**
+### v3.0.8 (Committed ✅)
+**Status**: Committed and pushed
 **Changes**:
-- Reorganized Options modal into 3 tabs: Views, Dashboard, Advanced
-- Views: Task list views and Weekly Compass settings
-- Dashboard: Dashboard-specific settings (reset layout)
+- Finalize asset move by aligning version/cache-bust with admin-core.js relocation
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.8
+- `index.html`: Cache-bust references updated to v=3.0.8
+- `admin.html`: Script reference points to js/admin-core.js
+- `CHANGELOG.md`: Added v3.0.8 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.7 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Moved admin-core.js into the js/ folder alongside planner.js; updated references and cache-busts
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.7
+- `index.html`: Cache-bust references updated to v=3.0.7
+- `admin.html`: Script reference updated to js/admin-core.js
+- `CHANGELOG.md`: Added v3.0.7 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.6 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Moved planner assets into `css/` and `js/` folders; updated all HTML references and cache-busts
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.6
+- `index.html`: References updated to css/planner.css and js/planner.js with v=3.0.6
+- `admin.html`: Stylesheet reference updated to css/planner.css
+- `CHANGELOG.md`: Added v3.0.6 entry
+- `DEVELOPMENT.md`: Updated status and history
 - Advanced: System settings (update check interval)
 - Updated switchOptionsTab() to use data-tab attribute
 **Files Modified**:
