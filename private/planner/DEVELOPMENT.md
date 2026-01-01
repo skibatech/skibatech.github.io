@@ -17,15 +17,20 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.17
-**Last Commit**: "v3.0.17: Fix compass init error"
+**Last Committed Version**: 3.0.18
+**Last Commit**: "v3.0.18: Improve compass dark contrast"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.18 (in progress)
+**Current Working Version**: 3.0.19 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.18 (In Progress)
+### v3.0.19 (In Progress)
 **Status**: In progress
+**Changes**:
+- Fixed compass rock checkbox duplication bug: removed `captureCompassInputs()` call from `toggleCompassRockDone()` to prevent duplicating all compass items when toggling checkboxes
+
+### v3.0.18 (Committed 2026-01-01)
+**Status**: Committed
 **Changes**:
 - Increased dark-mode contrast for compass/theme badges so Weekly Compass items remain legible
 **Files Modified**:
