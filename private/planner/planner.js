@@ -5795,7 +5795,8 @@ async function saveGoalModal() {
     }
     
     const goal = {
-        id: idInput.value || generateId(),
+        // Leave id null for new goals so saveGoal can create instead of patching
+        id: idInput.value.trim() || null,
         name: name,
         description: descInput.value.trim(),
         color: colorInput.value,
