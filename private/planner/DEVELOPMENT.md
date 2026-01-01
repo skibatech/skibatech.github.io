@@ -17,31 +17,31 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.13
-**Last Commit**: "v3.0.13: Fix compass bucket refresh"
+**Last Committed Version**: 3.0.14
+**Last Commit**: "v3.0.14: Align compass bucket layout"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.14 (in progress)
+**Current Working Version**: 3.0.15 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.14 (In Progress)
+### v3.0.15 (In Progress)
 **Status**: In progress
+**Changes**:
+- Guard compass refresh so it doesn’t run before compassData is initialized (fixes sign-in page error)
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.15; guard in refreshCompassTasksFromData
+- `index.html`: Cache-bust updated to v=3.0.15
+- `CHANGELOG.md`: Added v3.0.15 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.14 (Committed ✅)
+**Status**: Committed and pushed
 **Changes**:
 - Weekly Compass uses the standard bucket table layout (arrow orientation/columns) while suppressing goals/add-task controls
 **Files Modified**:
 - `js/planner.js`: APP_VERSION = 3.0.14; compass bucket renders with standard bucket UI
 - `index.html`: Cache-bust updated to v=3.0.14
 - `CHANGELOG.md`: Added v3.0.14 entry
-- `DEVELOPMENT.md`: Updated status and history
-
-### v3.0.13 (Committed ✅)
-**Status**: Committed and pushed
-**Changes**:
-- Compass bucket refreshes immediately after toggling Big Rock checkboxes or editing roles/rocks to stay visible
-**Files Modified**:
-- `js/planner.js`: APP_VERSION = 3.0.13; refreshCompassTasksFromData invoked after role/rock edits and save
-- `index.html`: Cache-bust updated to v=3.0.13
-- `CHANGELOG.md`: Added v3.0.13 entry
 - `DEVELOPMENT.md`: Updated status and history
 
 ### v3.0.11 (Committed ✅)

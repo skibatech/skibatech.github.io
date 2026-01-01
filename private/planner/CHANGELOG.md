@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Bulk/creation safeguards**: Compass items are excluded from bulk edits, select-all, and add-task UI to avoid Planner writes
 
 
+## [3.0.15] - 2026-01-01
+
+### Fixed
+- **Compass init**: Prevented refreshCompassTasksFromData from running before compassData is initialized, fixing sign-in page error
+
 ## [3.0.14] - 2026-01-01
 
 ### Changed
