@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Compass init**: Removed stray pre-initialization refresh calls so compassData is not touched before it exists, eliminating the sign-in page ReferenceError
 
+## [3.0.24] - 2026-01-01
+### Fixed
+- Fixed progressive loading: fetch all tasks in one call, client-side split incomplete/completed
+- Process incomplete task details first (renders immediately), completed details processed 100ms later in background
+- Status now shows "Loading X active task details..." reflecting actual incomplete count
+- Reduced delay from 800ms to 100ms for completed task processing (starts almost immediately after incomplete render)
+
 ## [3.0.23] - 2026-01-01
 ### Performance
 - Progressive loading: loads incomplete tasks first for immediate display, then loads completed tasks in background

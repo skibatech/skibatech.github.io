@@ -17,21 +17,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.22
-**Last Commit**: "v3.0.22: Fix compass task click and assignment grouping"
+**Last Committed Version**: 3.0.23
+**Last Commit**: "v3.0.23: Progressive task loading for faster startup"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.23 (in progress)
+**Current Working Version**: 3.0.24 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.23 (In Progress)
+### v3.0.24 (In Progress)
 **Status**: In progress
 **Changes**:
-- Progressive task loading: fetch incomplete tasks first ($filter=percentComplete ne 100), render immediately
-- Load completed tasks in background 800ms later, merge seamlessly
-- Auto re-render if "Show completed" enabled when background load finishes
+- Fixed progressive loading: single fetch, client-side split (Graph API doesn't support $filter on tasks endpoint)
+- Process incomplete details first → render → process completed details 100ms later
+- Status message shows accurate incomplete task count during detail load
 
-### v3.0.22 (Committed 2026-01-01)
+### v3.0.23 (Committed 2026-01-01)
 **Status**: Committed
 **Changes**:
 - Increased dark-mode contrast for compass/theme badges so Weekly Compass items remain legible

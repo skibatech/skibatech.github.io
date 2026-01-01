@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.23'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.24'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1230,10 +1230,10 @@ async function loadTasks() {
             planDetailsEtag = planDetails['@odata.etag'];
         }
 
-        // Get tasks (incomplete first for faster initial render)
-        setStatus('Loading active tasks...');
-        const incompleteTasksResponse = await fetchGraph(
-            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks?$filter=percentComplete ne 100`,
+        // Get tasks (fetch all, but process incomplete first for faster initial render)
+        setStatus('Loading tasks...');
+        const tasksResponse = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
@@ -1241,12 +1241,22 @@ async function loadTasks() {
             }
         );
 
-        if (!incompleteTasksResponse.ok) {
+        if (!tasksResponse.ok) {
             throw new Error('Failed to load tasks');
         }
 
-        const incompleteTasksData = await incompleteTasksResponse.json();
-        const tasks = incompleteTasksData.value;
+        const tasksData = await tasksResponse.json();
+        const allFetchedTasks = tasksData.value;
+        
+        // Split into incomplete and completed
+        const incompleteTasks = allFetchedTasks.filter(t => t.percentComplete !== 100);
+        const completedTasks = allFetchedTasks.filter(t => t.percentComplete === 100);
+        
+        console.log(`📊 Loaded ${incompleteTasks.length} active, ${completedTasks.length} completed tasks`);
+        
+        // Process incomplete tasks first
+        setStatus(`Loading ${incompleteTasks.length} active task details...`);
+        const tasks = incompleteTasks;
 
         // Assign sequential IDs based on createdDateTime (oldest -> 1)
         taskSequentialIds = {};
@@ -1504,133 +1514,114 @@ async function loadTasks() {
             }, 500);
         }
         
-        // Load completed tasks in background after initial render
-        setTimeout(async () => {
-            try {
-                console.log('📦 Loading completed tasks in background...');
-                const completedTasksResponse = await fetchGraph(
-                    `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks?$filter=percentComplete eq 100`,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`
-                        }
-                    }
-                );
-                
-                if (!completedTasksResponse.ok) {
-                    console.warn('Failed to load completed tasks');
-                    return;
-                }
-                
-                const completedTasksData = await completedTasksResponse.json();
-                const completedTasks = completedTasksData.value;
-                
-                if (completedTasks.length === 0) {
-                    console.log('✅ No completed tasks to load');
-                    return;
-                }
-                
-                console.log(`✅ Loaded ${completedTasks.length} completed tasks`);
-                
-                // Fetch details for completed tasks
-                const completedDetails = await mapWithConcurrency(
-                    completedTasks,
-                    async (task) => {
-                        const r = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
-                            headers: { 'Authorization': `Bearer ${accessToken}` }
-                        });
-                        if (!r.ok) return null;
-                        return r.json();
-                    },
-                    5
-                );
-                
-                // Merge completed tasks into allTasks
-                allTasks = [...allTasks, ...completedTasks];
-                
-                // Update sequential IDs for all tasks
-                taskSequentialIds = {};
-                const ordered = [...allTasks].sort((a, b) => {
-                    const at = a.createdDateTime ? new Date(a.createdDateTime).getTime() : 0;
-                    const bt = b.createdDateTime ? new Date(b.createdDateTime).getTime() : 0;
-                    if (at !== bt) return at - bt;
-                    return a.id.localeCompare(b.id);
-                });
-                ordered.forEach((t, idx) => { taskSequentialIds[t.id] = idx + 1; });
-                
-                // Extract any new user IDs from completed tasks
-                const newUserIds = new Set();
-                completedTasks.forEach(task => {
-                    if (task.assignments) {
-                        Object.keys(task.assignments).forEach(userId => {
-                            if (!allUsers[userId]) {
-                                newUserIds.add(userId);
-                            }
-                        });
-                    }
-                });
-                
-                // Fetch new user details if needed
-                if (newUserIds.size > 0) {
-                    const newUserDetailsMap = {};
-                    const userIdArray = Array.from(newUserIds);
-                    const chunkSize = 100;
+        // Process completed tasks in background after initial render
+        if (completedTasks.length > 0) {
+            setTimeout(async () => {
+                try {
+                    console.log(`📦 Processing ${completedTasks.length} completed tasks in background...`);
                     
-                    for (let i = 0; i < userIdArray.length; i += chunkSize) {
-                        const chunk = userIdArray.slice(i, i + chunkSize);
-                        try {
-                            const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
-                                method: 'POST',
-                                headers: {
-                                    'Authorization': `Bearer ${accessToken}`,
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ ids: chunk, types: ['user'] })
+                    // Fetch details for completed tasks
+                    const completedDetails = await mapWithConcurrency(
+                        completedTasks,
+                        async (task) => {
+                            const r = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`, {
+                                headers: { 'Authorization': `Bearer ${accessToken}` }
                             });
-                            if (r.ok) {
-                                const data = await r.json();
-                                (data.value || []).forEach(u => {
-                                    if (u && u.id && u.displayName) {
-                                        newUserDetailsMap[u.id] = u.displayName;
-                                    }
-                                });
-                            }
-                        } catch (e) {
-                            console.warn('Could not fetch new users for completed tasks:', e);
+                            if (!r.ok) return null;
+                            return r.json();
+                        },
+                        5
+                    );
+                    
+                    // Merge completed tasks into allTasks
+                    allTasks = [...allTasks, ...completedTasks];
+                    
+                    // Update sequential IDs for all tasks
+                    taskSequentialIds = {};
+                    const ordered = [...allTasks].sort((a, b) => {
+                        const at = a.createdDateTime ? new Date(a.createdDateTime).getTime() : 0;
+                        const bt = b.createdDateTime ? new Date(b.createdDateTime).getTime() : 0;
+                        if (at !== bt) return at - bt;
+                        return a.id.localeCompare(b.id);
+                    });
+                    ordered.forEach((t, idx) => { taskSequentialIds[t.id] = idx + 1; });
+                    
+                    // Extract any new user IDs from completed tasks
+                    const newUserIds = new Set();
+                    completedTasks.forEach(task => {
+                        if (task.assignments) {
+                            Object.keys(task.assignments).forEach(userId => {
+                                if (!allUsers[userId]) {
+                                    newUserIds.add(userId);
+                                }
+                            });
                         }
+                    });
+                    
+                    // Fetch new user details if needed
+                    if (newUserIds.size > 0) {
+                        const newUserDetailsMap = {};
+                        const userIdArray = Array.from(newUserIds);
+                        const chunkSize = 100;
+                        
+                        for (let i = 0; i < userIdArray.length; i += chunkSize) {
+                            const chunk = userIdArray.slice(i, i + chunkSize);
+                            try {
+                                const r = await fetchGraph('https://graph.microsoft.com/v1.0/directoryObjects/getByIds', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': `Bearer ${accessToken}`,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ ids: chunk, types: ['user'] })
+                                });
+                                if (r.ok) {
+                                    const data = await r.json();
+                                    (data.value || []).forEach(u => {
+                                        if (u && u.id && u.displayName) {
+                                            newUserDetailsMap[u.id] = u.displayName;
+                                        }
+                                    });
+                                }
+                            } catch (e) {
+                                console.warn('Could not fetch new users for completed tasks:', e);
+                            }
+                        }
+                        
+                        allUsers = { ...allUsers, ...newUserDetailsMap };
                     }
                     
-                    allUsers = { ...allUsers, ...newUserDetailsMap };
-                }
-                
-                // Store completed task details
-                completedTasks.forEach((task, i) => {
-                    const taskWithNames = { ...task };
-                    if (task.assignments) {
-                        taskWithNames.assignments = {};
-                        Object.keys(task.assignments).forEach(userId => {
-                            taskWithNames.assignments[userId] = {
-                                ...task.assignments[userId],
-                                displayName: allUsers[userId]
-                            };
-                        });
+                    // Store completed task details
+                    completedTasks.forEach((task, i) => {
+                        const taskWithNames = { ...task };
+                        if (task.assignments) {
+                            taskWithNames.assignments = {};
+                            Object.keys(task.assignments).forEach(userId => {
+                                taskWithNames.assignments[userId] = {
+                                    ...task.assignments[userId],
+                                    displayName: allUsers[userId]
+                                };
+                            });
+                        }
+                        allTaskDetails[task.id] = {
+                            ...taskWithNames,
+                            details: completedDetails[i]
+                        };
+                    });
+                    
+                    console.log('✅ Completed tasks ready');
+                    
+                    // Re-render if "Show completed" is enabled
+                    if (showCompleted) {
+                        console.log('🔄 Re-rendering with completed tasks...');
+                        applyFilters();
                     }
-                    allTaskDetails[task.id] = {
-                        ...taskWithNames,
-                        details: completedDetails[i]
-                    };
-                });
-                
-                // Re-render if "Show completed" is enabled
-                if (showCompleted) {
-                    console.log('🔄 Re-rendering with completed tasks...');
-                    applyFilters();
+                    
+                } catch (error) {
+                    console.error('Error processing completed tasks:', error);
                 }
-                
-            } catch (error) {
-                console.error('Error loading completed tasks:', error);
-            }
-        }, 800);
+            }, 100); // Process completed tasks almost immediately after incomplete ones render
+        }
     } catch (error) {
         console.error('Error loading tasks:', error);
         setStatus('Error loading tasks', '#b00020');
