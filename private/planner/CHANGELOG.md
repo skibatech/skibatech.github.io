@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Compass init**: Removed stray pre-initialization refresh calls so compassData is not touched before it exists, eliminating the sign-in page ReferenceError
 
+## [3.0.22] - 2026-01-01
+### Fixed
+- Fixed compass task title click handler - now properly opens edit modal instead of just highlighting panel
+- Compass tasks now assigned to current user, so they appear under user's name in "By Assigned To" view grouped by Bucket
+
 ## [3.0.21] - 2026-01-01
 ### Changed
 - Compass tasks now appear in all views (not just "By Bucket")

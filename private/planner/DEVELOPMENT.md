@@ -17,21 +17,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.20
-**Last Commit**: "v3.0.20: Make compass tasks interactive in grid"
+**Last Committed Version**: 3.0.21
+**Last Commit**: "v3.0.21: Compass tasks now user-centric with edit dialog"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.21 (in progress)
+**Current Working Version**: 3.0.22 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.21 (In Progress)
+### v3.0.22 (In Progress)
 **Status**: In progress
 **Changes**:
-- Compass tasks visible in all views; assignee shows logged-in user name
-- Added custom compass edit modal (task name, progress, role read-only)
-- Clicking compass task title opens edit dialog; progress cell toggles completion
+- Fixed click handler on compass task title (removed wrapping span, onclick directly on div)
+- Compass tasks now properly assigned to current user (stored currentUserId on auth)
+- Compass tasks appear under user's name in "By Assigned To" view
 
-### v3.0.20 (Committed 2026-01-01)
+### v3.0.21 (Committed 2026-01-01)
 **Status**: Committed
 **Changes**:
 - Increased dark-mode contrast for compass/theme badges so Weekly Compass items remain legible

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.21'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.22'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -98,6 +98,7 @@ let taskIdPrefix = ''; // Configurable task ID prefix
 let adminUsers = []; // Admin users list
 let currentUserEmail = null; // Store current user's email
 let currentUserName = null; // Store current user's display name
+let currentUserId = null; // Store current user's ID for assignments
 let currentUserIsAdmin = false; // Cache admin status after auth
 let planCategoryDescriptions = {}; // Store custom label names for categories
 let planDetailsEtag = null; // Store etag for plan details updates
@@ -1003,6 +1004,7 @@ async function updateAuthUI(isAuthenticated) {
                 const email = user.userPrincipalName || user.mail || '';
                 currentUserEmail = email.toLowerCase(); // Store for admin checks
                 currentUserName = name; // Store display name for compass tasks
+                currentUserId = user.id; // Store user ID for compass task assignments
                 document.getElementById('profileName').textContent = name;
                 document.getElementById('profileEmail').textContent = email;
                 
@@ -3040,13 +3042,12 @@ function renderTask(task) {
         const done = task.percentComplete === 100;
         const rolePill = task.compassRole ? `<span class="label-badge compass-role-pill">${escapeHtml(task.compassRole)}</span>` : '';
         const assigneeName = currentUserName || 'Me';
-        const titleClickHandler = gridEditMode ? `onclick="openCompassTaskDetail(${task.roleIndex}, ${task.rockIndex})"` : `onclick="openCompassTaskDetail(${task.roleIndex}, ${task.rockIndex})"`;
         return `
             <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass" data-role-index="${task.roleIndex}" data-rock-index="${task.rockIndex}">
                 <input type="checkbox" class="task-checkbox" disabled>
                 <div class="task-id col-id">${displayId}</div>
-                <div class="task-title col-task-name" ${titleClickHandler} style="cursor: pointer;">
-                    <span>${escapeHtml(task.title)}</span>
+                <div class="task-title col-task-name" style="cursor: pointer;" onclick="openCompassTaskDetail(${task.roleIndex}, ${task.rockIndex})">
+                    ${escapeHtml(task.title)}
                     ${rolePill}
                 </div>
                 <div class="task-assignee col-assigned">${assigneeName}</div>
@@ -4778,6 +4779,16 @@ function refreshCompassTasksFromData(shouldRender = false) {
         rocks.forEach((rock, rockIndex) => {
             const rockObj = typeof rock === 'string' ? { text: rock, done: false } : (rock || { text: '', done: false });
             if (!rockObj.text) return;
+            
+            // Create assignment object for current user
+            const assignments = {};
+            if (currentUserId) {
+                assignments[currentUserId] = {
+                    '@odata.type': '#microsoft.graph.plannerAssignment',
+                    assignedDateTime: new Date().toISOString()
+                };
+            }
+            
             tasks.push({
                 id: `compass-${roleIndex}-${rockIndex}`,
                 bucketId: COMPASS_BUCKET_ID,
@@ -4786,7 +4797,7 @@ function refreshCompassTasksFromData(shouldRender = false) {
                 priority: 5,
                 startDateTime: null,
                 dueDateTime: null,
-                assignments: {},
+                assignments: assignments,
                 appliedCategories: {},
                 compassRole: role.name || `Role ${roleIndex + 1}`,
                 compassType: 'rock',
