@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.15'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.16'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -709,6 +709,11 @@ async function loadConfig() {
         updateBrandingFromConfig();
         
         console.log('✅ Configuration loaded from config.json');
+        if (!config.authority || !config.clientId) {
+            console.error('❌ Missing authority or clientId in config.json');
+            alert('Configuration is missing authority or clientId. Please update config.json.');
+            return false;
+        }
         return true;
     } catch (err) {
         console.error('❌ Failed to load config.json:', err);
@@ -882,6 +887,16 @@ async function generateCodeChallenge(verifier) {
 }
 
 async function login() {
+    if (!config.authority || !config.clientId) {
+        console.warn('Auth config missing; attempting reload of config.json');
+        const cfg = await loadConfig();
+        if (!cfg || !config.authority || !config.clientId) {
+            alert('Cannot sign in: missing authority or clientId in config.json');
+            return;
+        }
+    }
+
+    const authBase = config.authority || 'https://login.microsoftonline.com/common';
     // Use OAuth 2.0 Authorization Code Flow with PKCE (recommended for SPAs)
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = await generateCodeChallenge(codeVerifier);
@@ -889,7 +904,7 @@ async function login() {
     // Store code verifier for token exchange
     sessionStorage.setItem('pkce_code_verifier', codeVerifier);
     
-    const authUrl = `${config.authority}/oauth2/v2.0/authorize?` +
+    const authUrl = `${authBase}/oauth2/v2.0/authorize?` +
         `client_id=${config.clientId}` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(config.redirectUri)}` +

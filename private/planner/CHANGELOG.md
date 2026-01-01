@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.16] - 2026-01-01
+
+### Fixed
+- **Auth guard**: Block sign-in when `authority`/`clientId` are missing and fall back to the Microsoft common authority to avoid broken authorize URLs/404 redirects
+
 ## [3.0.12] - 2026-01-01
 
 ### Added

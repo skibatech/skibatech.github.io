@@ -17,15 +17,25 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.14
-**Last Commit**: "v3.0.14: Align compass bucket layout"
+**Last Committed Version**: 3.0.15
+**Last Commit**: "v3.0.15: Guard compass init"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.15 (in progress)
+**Current Working Version**: 3.0.16 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.15 (In Progress)
+### v3.0.16 (In Progress)
 **Status**: In progress
+**Changes**:
+- Block sign-in when `authority` or `clientId` are missing; reload config and default to the Microsoft common authority to prevent broken authorize URLs/404s
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.16; auth guard with common authority fallback
+- `index.html`: Cache-bust updated to v=3.0.16
+- `CHANGELOG.md`: Added v3.0.16 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.15 (Committed ✅)
+**Status**: Committed and pushed
 **Changes**:
 - Guard compass refresh so it doesn’t run before compassData is initialized (fixes sign-in page error)
 **Files Modified**:
