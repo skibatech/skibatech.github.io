@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Compass init**: Removed stray pre-initialization refresh calls so compassData is not touched before it exists, eliminating the sign-in page ReferenceError
 
+## [3.0.20] - 2026-01-01
+### Fixed
+- Made Weekly Compass tasks interactive in task grid: clicking title scrolls to item in compass panel with highlight; clicking progress toggles completion
+- "Add task" button already hidden for Weekly Compass bucket (no change needed)
+
 ## [3.0.19] - 2026-01-01
 ### Fixed
 - Fixed compass rock checkbox duplication bug: toggling a checkbox no longer duplicates all compass items in the panel, task grid, and To Do list

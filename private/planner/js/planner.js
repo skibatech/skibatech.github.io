@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.19'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.20'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3038,17 +3038,17 @@ function renderTask(task) {
         const done = task.percentComplete === 100;
         const rolePill = task.compassRole ? `<span class="label-badge compass-role-pill">${escapeHtml(task.compassRole)}</span>` : '';
         return `
-            <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass">
+            <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass" data-role-index="${task.roleIndex}" data-rock-index="${task.rockIndex}">
                 <input type="checkbox" class="task-checkbox" disabled>
                 <div class="task-id col-id">${displayId}</div>
-                <div class="task-title col-task-name">
+                <div class="task-title col-task-name" onclick="scrollToCompassItem(${task.roleIndex}, ${task.rockIndex})" style="cursor: pointer;">
                     <span>${escapeHtml(task.title)}</span>
                     ${rolePill}
                 </div>
                 <div class="task-assignee col-assigned"><span class="placeholder">Compass</span></div>
                 <div class="task-date col-start-date"><span class="placeholder">--</span></div>
                 <div class="task-date col-due-date"><span class="placeholder">--</span></div>
-                <div class="task-progress col-progress">
+                <div class="task-progress col-progress" onclick="toggleCompassTaskFromGrid(${task.roleIndex}, ${task.rockIndex})" style="cursor: pointer;" title="Click to toggle completion">
                     <span class="progress-dot ${done ? 'completed' : 'not-started'}"></span>
                     ${done ? 'Completed' : 'Not started'}
                 </div>
@@ -5507,6 +5507,46 @@ window.toggleCompassEdit = toggleCompassEdit;
 window.addCompassRock = addCompassRock;
 window.removeCompassRock = removeCompassRock;
 window.handleCompassTaskToggle = handleCompassTaskToggle;
+
+// Scroll to and highlight a compass item in the Weekly Compass panel
+function scrollToCompassItem(roleIndex, rockIndex) {
+    // Ensure compass panel is visible
+    if (!compassVisible) {
+        toggleCompass();
+    }
+    
+    // Find the role section
+    const sections = document.querySelectorAll('.compass-role-section');
+    const targetSection = sections[roleIndex];
+    if (!targetSection) return;
+    
+    // Find the specific rock item
+    const rocks = targetSection.querySelectorAll('.compass-rock-item');
+    const targetRock = rocks[rockIndex];
+    if (!targetRock) return;
+    
+    // Scroll into view
+    targetRock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Add temporary highlight
+    targetRock.style.transition = 'background 0.3s ease';
+    targetRock.style.background = 'var(--accent-yellow-bg, #fff3cd)';
+    setTimeout(() => {
+        targetRock.style.background = '';
+    }, 1500);
+}
+
+// Toggle compass task completion from grid view
+function toggleCompassTaskFromGrid(roleIndex, rockIndex) {
+    const role = compassData.roles[roleIndex];
+    if (!role || !role.rocks[rockIndex]) return;
+    const rock = role.rocks[rockIndex];
+    const currentDone = typeof rock === 'object' ? rock.done : false;
+    toggleCompassRockDone(roleIndex, rockIndex, !currentDone);
+}
+
+window.scrollToCompassItem = scrollToCompassItem;
+window.toggleCompassTaskFromGrid = toggleCompassTaskFromGrid;
 // ============ Goals Management ============
 
 async function initializeGoals() {

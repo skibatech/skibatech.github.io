@@ -17,19 +17,20 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.18
-**Last Commit**: "v3.0.18: Improve compass dark contrast"
+**Last Committed Version**: 3.0.19
+**Last Commit**: "v3.0.19: Fix compass checkbox duplication bug"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.19 (in progress)
+**Current Working Version**: 3.0.20 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.19 (In Progress)
+### v3.0.20 (In Progress)
 **Status**: In progress
 **Changes**:
-- Fixed compass rock checkbox duplication bug: removed `captureCompassInputs()` call from `toggleCompassRockDone()` to prevent duplicating all compass items when toggling checkboxes
+- Made Weekly Compass tasks clickable in grid view: title scrolls to compass panel, progress toggles completion
+- Added `scrollToCompassItem()` and `toggleCompassTaskFromGrid()` functions for grid→compass sync
 
-### v3.0.18 (Committed 2026-01-01)
+### v3.0.19 (Committed 2026-01-01)
 **Status**: Committed
 **Changes**:
 - Increased dark-mode contrast for compass/theme badges so Weekly Compass items remain legible
