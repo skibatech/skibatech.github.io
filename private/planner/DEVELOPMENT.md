@@ -17,13 +17,24 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.5
-**Last Commit**: "v3.0.5: Bold Weekly Compass title"
+**Last Committed Version**: 3.0.6
+**Last Commit**: "v3.0.6: Move assets into css/js"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.5 (complete)
+**Current Working Version**: 3.0.6 (complete)
 
 ## Version History (Most Recent First)
  
+### v3.0.6 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Moved planner assets into `css/` and `js/` folders; updated all HTML references and cache-busts
+**Files Modified**:
+- `js/planner.js`: APP_VERSION = 3.0.6
+- `index.html`: References updated to css/planner.css and js/planner.js with v=3.0.6
+- `admin.html`: Stylesheet reference updated to css/planner.css
+- `CHANGELOG.md`: Added v3.0.6 entry
+- `DEVELOPMENT.md`: Updated status and history
+
 ### v3.0.5 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:
