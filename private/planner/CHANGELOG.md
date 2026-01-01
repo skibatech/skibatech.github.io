@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Compass init**: Removed stray pre-initialization refresh calls so compassData is not touched before it exists, eliminating the sign-in page ReferenceError
 
+## [3.0.18] - 2026-01-01
+
+### Fixed
+- **Dark mode readability**: Increased contrast for compass/theme badges so Weekly Compass items stay legible in dark mode
+
 ## [3.0.16] - 2026-01-01
 
 ### Fixed

@@ -17,15 +17,26 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.15
-**Last Commit**: "v3.0.15: Guard compass init"
+**Last Committed Version**: 3.0.17
+**Last Commit**: "v3.0.17: Fix compass init error"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.17 (in progress)
+**Current Working Version**: 3.0.18 (in progress)
 
 ## Version History (Most Recent First)
  
-### v3.0.17 (In Progress)
+### v3.0.18 (In Progress)
 **Status**: In progress
+**Changes**:
+- Increased dark-mode contrast for compass/theme badges so Weekly Compass items remain legible
+**Files Modified**:
+- `css/planner.css`: Dark-mode label badges use darker background and lighter text/border
+- `js/planner.js`: APP_VERSION = 3.0.18
+- `index.html`: Cache-bust updated to v=3.0.18
+- `CHANGELOG.md`: Added v3.0.18 entry
+- `DEVELOPMENT.md`: Updated status and history
+
+### v3.0.17 (Committed ✅)
+**Status**: Committed and pushed
 **Changes**:
 - Removed stray pre-initialization compass refresh calls that triggered `compassData` ReferenceErrors on the sign-in page
 **Files Modified**:

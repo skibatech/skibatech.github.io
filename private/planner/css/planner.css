@@ -469,6 +469,13 @@ button:disabled {
     color: var(--text-primary);
 }
 
+/* Improve pill contrast in dark mode so compass/theme badges stay legible */
+body.dark-mode .label-badge {
+    background: #3a3a3a;
+    color: #f5f5f5;
+    border: 1px solid #555;
+}
+
 .add-task-btn {
     margin: 8px 10px;
     background: var(--link-color);
