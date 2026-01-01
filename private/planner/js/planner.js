@@ -883,6 +883,7 @@ async function login() {
         `&response_mode=query` +
         `&code_challenge=${codeChallenge}` +
         `&code_challenge_method=S256` +
+        `&prompt=select_account` +
         `&state=12345`;
     
     window.location.href = authUrl;
