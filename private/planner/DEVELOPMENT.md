@@ -17,13 +17,24 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.1
-**Last Commit**: "v3.0.1: Fix goal creation uses POST"
+**Last Committed Version**: 3.0.3
+**Last Commit**: "v3.0.3: Fix modal input colors in dark mode"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.1 (complete)
+**Current Working Version**: 3.0.3 (complete)
 
 ## Version History (Most Recent First)
  
+### v3.0.3 (Committed ✅)
+**Status**: Committed and pushed
+**Changes**:
+- Fixed dark-mode modal inputs using theme colors so text stays readable (e.g., Assign Goals to Bucket)
+**Files Modified**:
+- `planner.css`: Themed .task-input background, text, placeholder, and focus border for dark mode readability
+- `planner.js`: APP_VERSION = 3.0.3
+- `index.html`: Cache-bust references updated to v=3.0.3
+- `CHANGELOG.md`: Added v3.0.3 entry
+- `DEVELOPMENT.md`: Updated status and history
+
 ### v3.0.1 (Committed ✅)
 **Status**: Committed and pushed
 **Changes**:
