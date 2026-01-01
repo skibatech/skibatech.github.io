@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.11] - 2026-01-01
 
+## [3.0.13] - 2026-01-01
+
+### Fixed
+- **Compass bucket refresh**: Compass bucket now stays visible after toggling Big Rock checkboxes or editing roles/rocks (refresh rebuilds the virtual list immediately)
+
 ### Fixed
 - **Task details modal z-index**: Modal now appears above drill-down modal when clicking a task from dashboard drill-down view
 

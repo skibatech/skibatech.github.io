@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.12'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.13'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -192,12 +192,14 @@ function acquireGraphSlot() {
                 resolve();
             } else {
                 graphQueue.push(tryAcquire);
+    refreshCompassTasksFromData(true);
             }
         };
         tryAcquire();
     });
 }
 
+    refreshCompassTasksFromData(true);
 function releaseGraphSlot() {
     graphActive = Math.max(0, graphActive - 1);
     const next = graphQueue.shift();
@@ -205,6 +207,7 @@ function releaseGraphSlot() {
 }
 
 // Utility functions for consistent date handling (fixes timezone offset issues)
+    refreshCompassTasksFromData(true);
 function formatDateForInput(isoDateString) {
     // Convert ISO date string to local date string for input[type=date]
     // Extracts date portion directly to avoid timezone conversion issues
@@ -212,6 +215,7 @@ function formatDateForInput(isoDateString) {
     
     // Extract just the date portion (YYYY-MM-DD) from ISO string
     // This avoids timezone offset issues that occur when parsing the full timestamp
+    refreshCompassTasksFromData(true);
     const datePart = isoDateString.split('T')[0];
     return datePart;
 }
@@ -225,6 +229,7 @@ function formatDateForDisplay(isoDateString) {
 
 function inputDateToISO(dateInputValue) {
     // Convert input[type=date] value (YYYY-MM-DD string) to ISO 8601 string
+    refreshCompassTasksFromData(true);
     // Store as UTC noon to avoid timezone shifts that move the date backward/forward
     if (!dateInputValue) return null;
     
@@ -5185,7 +5190,8 @@ async function saveCompassData(showAlert = true) {
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             })
         ));
-        
+
+        refreshCompassTasksFromData(true);
         if (showAlert) alert('Weekly Compass saved successfully!');
     } catch (err) {
         console.error('Failed to save compass:', err);
