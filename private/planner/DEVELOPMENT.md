@@ -17,12 +17,20 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.5
-**Last Commit**: "v3.1.5: Fix Weekly Compass task sorting"
+**Last Committed Version**: 3.1.6
+**Last Commit**: "v3.1.6: Fix compass sorting in renderGroup function"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.5 (stable)
+**Current Working Version**: 3.1.6 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.6 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed missing default sort in renderGroup function
+- Weekly Compass now sorts alphabetically in all view modes and grouping options
+- Previous fix only applied to renderByBucket, now applies to renderGroup as well
 
 ### v3.1.5 (2026-01-02)
 **Status**: ✅ Committed & Pushed
