@@ -17,12 +17,19 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.29
-**Last Commit**: "v3.0.29: Fix compass task date display"
+**Last Committed Version**: 3.0.31
+**Last Commit**: "v3.0.31: Fix compass save duplicates"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.30 (ready to commit)
+**Current Working Version**: 3.0.31 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.0.31 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed saveCompassData to update existing tasks instead of create+delete (prevents duplicates)
+- Only deletes extra COMPASS_ROLE_X tasks when roles are removed
 
 ### v3.0.30 (2026-01-02)
 **Status**: ✅ Ready to commit
