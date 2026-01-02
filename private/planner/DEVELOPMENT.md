@@ -4,12 +4,20 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.25
-**Last Commit**: "v3.2.25: Reduce bucket selector modal font sizes for compact display"
+**Last Committed Version**: 3.2.26
+**Last Commit**: "v3.2.26: Wider bucket selector modal with shorter title and alphabetical sort"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.26 (ready to commit)
+**Current Working Version**: 3.2.27 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.27 (2026-01-02)
+**Changes**:
+- Fixed bucket selector modal button positioning
+- Close button (×) now properly positioned in upper right corner
+- Cancel and Save buttons properly aligned in bottom right corner
+- Added flexbox layout to modal header with justify-content: space-between
+- Added proper styling for modal-close button
 
 ### v3.2.26 (2026-01-02)
 **Changes**:

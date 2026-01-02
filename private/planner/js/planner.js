@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.26'; // Wider bucket selector modal with shorter title and alphabetical sort
+const APP_VERSION = '3.2.27'; // Fix bucket selector modal button positioning
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6958,7 +6958,7 @@ async function showBucketSelectorForGoal(goalId) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Assign Buckets: ${escapeHtml(goal.name)}</h2>
-                    <button class="close-btn" onclick="closeBucketSelector()">×</button>
+                    <button class="modal-close" onclick="closeBucketSelector()">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="bucket-selector-list">
