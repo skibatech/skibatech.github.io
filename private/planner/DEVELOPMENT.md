@@ -4,12 +4,23 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.19
-**Last Commit**: "v3.2.19: Fix bug report description not saving"
+**Last Committed Version**: 3.2.20
+**Last Commit**: "v3.2.20: Add submitter tracking to bug reports"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.20 (ready to commit)
+**Current Working Version**: 3.2.21 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.21 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Fixed Goals table column resizing persistence issue
+- Added goalsColumnWidths object to store custom column widths
+- Modified handleGoalsResize() to store widths in goalsColumnWidths
+- Created applyGoalsColumnWidths() function to reapply widths after table re-render
+- Called applyGoalsColumnWidths() at end of renderGoalsView()
+- Widths now persist when sorting columns or refreshing view
 
 ### v3.2.20 (2026-01-02)
 **Status**: 🔄 Ready to Commit

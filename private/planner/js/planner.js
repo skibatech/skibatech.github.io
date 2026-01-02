@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.20'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.21'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -415,6 +415,7 @@ function stopResize() {
 let goalsResizingColumn = null;
 let goalsResizeStartX = 0;
 let goalsResizeStartWidth = 0;
+let goalsColumnWidths = {}; // Store custom widths
 
 function startGoalsResize(event, columnClass) {
     event.preventDefault();
@@ -439,6 +440,9 @@ function handleGoalsResize(event) {
     const diff = event.clientX - goalsResizeStartX;
     const newWidth = Math.max(50, goalsResizeStartWidth + diff);
     
+    // Store the new width
+    goalsColumnWidths[goalsResizingColumn] = newWidth;
+    
     // Update the column width directly
     const th = document.querySelector(`.${goalsResizingColumn}`);
     if (th) {
@@ -450,6 +454,16 @@ function stopGoalsResize() {
     goalsResizingColumn = null;
     document.removeEventListener('mousemove', handleGoalsResize);
     document.removeEventListener('mouseup', stopGoalsResize);
+}
+
+function applyGoalsColumnWidths() {
+    // Apply stored column widths after table re-render
+    Object.keys(goalsColumnWidths).forEach(columnClass => {
+        const th = document.querySelector(`.${columnClass}`);
+        if (th) {
+            th.style.width = `${goalsColumnWidths[columnClass]}px`;
+        }
+    });
 }
 
 function applyColumnWidths() {
@@ -6795,6 +6809,9 @@ function renderGoalsView() {
             </table>
         </div>
     `;
+    
+    // Apply stored column widths
+    applyGoalsColumnWidths();
 }
 
 function showGoalModal(goalId = null) {
