@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.1'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.2'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6043,8 +6043,8 @@ async function loadGoalsData() {
         bucketGoalMap = {};
         
         for (const task of goalsTasks) {
-            if (task.title === 'BUCKET_GOAL_MAPPINGS') {
-                // This task stores bucket-to-goal mappings
+            if (task.title === 'BUCKET_GOAL_MAPPINGS' || task.title === '[System] Bucket-Goal Mappings') {
+                // This task stores bucket-to-goal mappings (hidden from UI)
                 try {
                     const detailsResponse = await fetchGraph(
                         `https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`,
@@ -6063,7 +6063,7 @@ async function loadGoalsData() {
                 } catch (err) {
                     console.error('Error loading bucket-goal mappings:', err);
                 }
-            } else {
+            } else if (!task.title.startsWith('[System]')) {
                 // Regular goal task
                 try {
                     const detailsResponse = await fetchGraph(
@@ -6140,24 +6140,38 @@ async function saveGoal(goal) {
             
             const newTask = await taskResponse.json();
             
-            // Update task details with JSON data
-            const detailsResponse = await fetchGraph(
+            // Fetch details first to get proper etag
+            const getDetailsResponse = await fetchGraph(
                 `https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`,
                 {
-                    method: 'PATCH',
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                        'If-Match': newTask['@odata.etag']
-                    },
-                    body: JSON.stringify({
-                        description: JSON.stringify(goalData)
-                    })
+                        'Authorization': `Bearer ${accessToken}`
+                    }
                 }
             );
             
-            if (!detailsResponse.ok) {
-                console.warn('Failed to update goal details, but task created');
+            if (getDetailsResponse.ok) {
+                const details = await getDetailsResponse.json();
+                
+                // Now update with correct etag
+                const updateDetailsResponse = await fetchGraph(
+                    `https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                            'If-Match': details['@odata.etag']
+                        },
+                        body: JSON.stringify({
+                            description: JSON.stringify(goalData)
+                        })
+                    }
+                );
+                
+                if (!updateDetailsResponse.ok) {
+                    console.warn('Failed to update goal details, but task created');
+                }
             }
             
             await loadGoalsData();
@@ -6296,7 +6310,7 @@ async function saveBucketGoalMappings() {
         
         const tasksData = await tasksResponse.json();
         const mappingTask = tasksData.value.find(t => 
-            t.bucketId === goalsBucketRealId && t.title === 'BUCKET_GOAL_MAPPINGS'
+            t.bucketId === goalsBucketRealId && (t.title === 'BUCKET_GOAL_MAPPINGS' || t.title === '[System] Bucket-Goal Mappings')
         );
         
         const mappingData = {
@@ -6351,7 +6365,8 @@ async function saveBucketGoalMappings() {
                     body: JSON.stringify({
                         planId: planId,
                         bucketId: goalsBucketRealId,
-                        title: 'BUCKET_GOAL_MAPPINGS'
+                        title: '[System] Bucket-Goal Mappings',
+                        percentComplete: 100  // Mark as complete so it's less visible
                     })
                 }
             );
@@ -6362,6 +6377,22 @@ async function saveBucketGoalMappings() {
             
             const newTask = await createResponse.json();
             
+            // Fetch details first to get proper etag
+            const getDetailsResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                }
+            );
+            
+            if (!getDetailsResponse.ok) {
+                throw new Error('Failed to fetch new mapping details');
+            }
+            
+            const details = await getDetailsResponse.json();
+            
             // Update details with mapping data
             const updateResponse = await fetchGraph(
                 `https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`,
@@ -6370,7 +6401,7 @@ async function saveBucketGoalMappings() {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',
-                        'If-Match': newTask['@odata.etag']
+                        'If-Match': details['@odata.etag']
                     },
                     body: JSON.stringify({
                         description: JSON.stringify(mappingData)
@@ -6500,7 +6531,16 @@ function showGoalModal(goalId = null) {
         nameInput.value = goal.name;
         descInput.value = goal.description || '';
         colorInput.value = goal.color || '#0078d4';
-        targetInput.value = goal.targetDate || '';
+        
+        // Format date for input (YYYY-MM-DD)
+        if (goal.targetDate) {
+            const date = new Date(goal.targetDate);
+            const formatted = date.toISOString().split('T')[0];
+            targetInput.value = formatted;
+        } else {
+            targetInput.value = '';
+        }
+        
         deleteBtn.style.display = 'block';
     } else {
         title.textContent = 'Add Goal';
@@ -6539,7 +6579,8 @@ async function saveGoalModal() {
         name: name,
         description: descInput.value.trim(),
         color: colorInput.value,
-        targetDate: targetInput.value || null
+        // Convert date to ISO format if provided
+        targetDate: targetInput.value ? new Date(targetInput.value + 'T00:00:00').toISOString() : null
     };
     
     await saveGoal(goal);

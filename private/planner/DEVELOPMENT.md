@@ -17,12 +17,24 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.1
-**Last Commit**: "v3.2.1: Implement goals as tasks in special bucket"
+**Last Committed Version**: 3.2.2
+**Last Commit**: "v3.2.2: Fix goals etag errors and date saving"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.1 (stable)
+**Current Working Version**: 3.2.2 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.2 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed 412 Precondition Failed errors by fetching task details first before PATCH
+- Applied fix to both goal creation and mapping task creation
+- Fixed goal date not saving: now converts date to/from ISO format properly
+- Renamed BUCKET_GOAL_MAPPINGS to "[System] Bucket-Goal Mappings"
+- System task marked as complete (percentComplete: 100) to be less visible
+- Updated loadGoalsData to filter out [System] tasks from goals list
+- Updated mapping task finder to check for both old and new names
 
 ### v3.2.1 (2026-01-02)
 **Status**: ✅ Committed & Pushed
