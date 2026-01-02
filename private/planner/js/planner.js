@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.32'; // Fix bulk edit: Add missing clearSelection function
+const APP_VERSION = '3.2.33'; // Fix priority filter - Correct urgent/important values
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2548,9 +2548,9 @@ function getFilteredTasks(includeCompass = false) {
             case 'all':
                 return true;
             case 'urgent':
-                return task.priority === 0;
-            case 'important':
                 return task.priority === 1;
+            case 'important':
+                return task.priority === 3;
             case 'assigned':
                 return task.assignments && Object.keys(task.assignments).length > 0;
             case 'unassigned':
@@ -2949,7 +2949,7 @@ function getProgressLabel(percentComplete) {
 }
 
 function getPriorityLabel(priority) {
-    const map = { 0: 'Urgent', 1: 'Important', 3: 'Important', 5: 'Medium', 9: 'Low' };
+    const map = { 1: 'Urgent', 3: 'Important', 5: 'Medium', 9: 'Low' };
     return map[priority] || 'Unspecified';
 }
 

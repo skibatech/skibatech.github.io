@@ -5,6 +5,15 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.33] - 2026-01-02
+
+### Fixed
+- Fixed priority filter values for Urgent and Important
+- Urgent filter now correctly checks for priority === 1 (was checking === 0)
+- Important filter now correctly checks for priority === 3 (was checking === 1)
+- Updated getPriorityLabel() to remove incorrect mappings (0 and duplicate 1)
+- Priority values: 1=Urgent, 3=Important, 5=Medium, 9=Low
+
 ## [3.2.32] - 2026-01-02
 
 ### Fixed

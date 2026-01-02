@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.31
-**Last Commit**: "v3.2.31: Hide task controls on Goals/Dashboard tabs"
+**Last Committed Version**: 3.2.32
+**Last Commit**: "v3.2.32: Fix bulk edit - Add missing clearSelection function"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.32 (ready to commit)
+**Current Working Version**: 3.2.33 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.33 (2026-01-02)
+**Changes**:
+- Fixed priority filtering that was completely broken
+- Urgent filter was checking priority === 0 (incorrect), now checks === 1 (correct)
+- Important filter was checking priority === 1 (incorrect), now checks === 3 (correct)
+- Corrected getPriorityLabel() mapping to match actual Planner API values
+- Removed incorrect priority value 0 and duplicate value 1 from priority map
+- Microsoft Planner priority values: 1=Urgent, 3=Important, 5=Medium, 9=Low
 
 ### v3.2.32 (2026-01-02)
 **Changes**:
