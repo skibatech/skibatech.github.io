@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.26'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.27'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -4861,10 +4861,13 @@ function refreshCompassTasksFromData(shouldRender = false) {
     let startDateTime = null;
     let dueDateTime = null;
     if (compassData.dateRange) {
+        console.log('[Compass] Parsing date range:', compassData.dateRange);
         const dateRangeParts = compassData.dateRange.split(' - ');
+        console.log('[Compass] Date parts:', dateRangeParts);
         if (dateRangeParts.length === 2) {
             const startDate = new Date(dateRangeParts[0]);
             const endDate = new Date(dateRangeParts[1]);
+            console.log('[Compass] Parsed dates:', { startDate, endDate, startValid: !isNaN(startDate.getTime()), endValid: !isNaN(endDate.getTime()) });
             if (!isNaN(startDate.getTime())) {
                 startDateTime = startDate.toISOString();
             }
@@ -4873,6 +4876,7 @@ function refreshCompassTasksFromData(shouldRender = false) {
                 endDate.setHours(23, 59, 59, 999);
                 dueDateTime = endDate.toISOString();
             }
+            console.log('[Compass] Final ISO dates:', { startDateTime, dueDateTime });
         }
     }
     
