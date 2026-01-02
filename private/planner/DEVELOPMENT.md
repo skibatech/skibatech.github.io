@@ -17,12 +17,19 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.3
-**Last Commit**: "v3.1.3: Better old-format cleanup and logging"
+**Last Committed Version**: 3.1.4
+**Last Commit**: "v3.1.4: Add detailed task listing for debugging"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.3 (stable)
+**Current Working Version**: 3.1.4 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.4 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Added logging to list all task titles found in PlannerCompass_Data
+- Helps debug why duplicates aren't being detected
 
 ### v3.1.3 (2026-01-02)
 **Status**: ✅ Committed & Pushed

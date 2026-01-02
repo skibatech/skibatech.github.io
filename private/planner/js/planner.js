@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.1.3'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.1.4'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -5321,6 +5321,12 @@ async function saveCompassData(showAlert = true) {
         }
         const metadataData = await metadataResponse.json();
         const metadataTasks = metadataData.value || [];
+        
+        // Log all tasks in PlannerCompass_Data
+        console.log(`[Compass Save] Found ${metadataTasks.length} total tasks in PlannerCompass_Data:`);
+        metadataTasks.forEach(task => {
+            console.log(`  - ${task.title}`);
+        });
         
         // Build map of existing metadata tasks
         const metadataMap = {};

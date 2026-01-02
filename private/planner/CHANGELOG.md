@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.4] - 2026-01-02
+
+### Added
+- Detailed console logging of all tasks found in PlannerCompass_Data during save
+
 ## [3.1.3] - 2026-01-02
 
 ### Fixed
