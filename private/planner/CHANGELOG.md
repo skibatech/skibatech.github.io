@@ -5,6 +5,12 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2026-01-02
+
+### Fixed
+- Added better error handling when Weekly Compass lists aren't fully initialized
+- Improved error messages to help debug save issues
+
 ## [3.1.0] - 2026-01-02
 
 ### Changed

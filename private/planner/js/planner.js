@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.1.0'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.1.1'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -5281,7 +5281,11 @@ function captureCompassInputs() {
 }
 
 async function saveCompassData(showAlert = true) {
-    if (!compassListId || !compassTasksListId || !accessToken) return;
+    if (!compassListId || !compassTasksListId || !accessToken) {
+        console.error('Cannot save compass data:', { compassListId, compassTasksListId, hasAccessToken: !!accessToken });
+        if (showAlert) alert('Weekly Compass not fully initialized. Please wait a moment and try again.');
+        return;
+    }
     
     try {
         // Capture unsaved UI changes before persisting

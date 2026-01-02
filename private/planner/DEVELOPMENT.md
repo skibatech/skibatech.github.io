@@ -17,12 +17,19 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.0
-**Last Commit**: "v3.1.0: Weekly Compass real tasks architecture"
+**Last Committed Version**: 3.1.1
+**Last Commit**: "v3.1.1: Better error handling for compass initialization"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.0 (stable)
+**Current Working Version**: 3.1.1 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.1 (2026-01-02)
+**Status**: ✅ Committed & Pushed  
+**Commit**: `TBD`
+**Changes**:
+- Added better initialization checks in saveCompassData
+- Improved error messages for debugging
 
 ### v3.1.0 (2026-01-02)
 **Status**: ✅ Committed & Pushed
