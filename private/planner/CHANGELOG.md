@@ -5,6 +5,16 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.34] - 2026-01-02
+
+### Fixed
+- Fixed bucket selector modal text and button width issues
+- Modal title now wraps properly instead of getting cut off
+- Added min-width: 400px to prevent modal from being too narrow
+- Header now uses flex-start alignment for proper multi-line title handling
+- Close button now has flex-shrink: 0 to maintain size
+- Added gap between title and close button for better spacing
+
 ## [3.2.33] - 2026-01-02
 
 ### Fixed

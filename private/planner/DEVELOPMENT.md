@@ -4,12 +4,22 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.32
-**Last Commit**: "v3.2.32: Fix bulk edit - Add missing clearSelection function"
+**Last Committed Version**: 3.2.33
+**Last Commit**: "v3.2.33: Fix priority filters - Correct urgent/important values"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.33 (ready to commit)
+**Current Working Version**: 3.2.34 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.34 (2026-01-02)
+**Changes**:
+- Fixed bucket selector modal layout issues
+- Modal title now properly wraps and expands to full width with word-wrap and overflow-wrap
+- Added min-width: 400px to modal to prevent excessive narrowing
+- Changed header alignment to flex-start for multi-line title support
+- Added gap: 12px between title and close button
+- Close button now has flex-shrink: 0 to maintain proper size
+- Title now has flex: 1 to take available space
 
 ### v3.2.33 (2026-01-02)
 **Changes**:

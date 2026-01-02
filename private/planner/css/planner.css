@@ -2085,6 +2085,7 @@ body.dark-mode .editable-cell.editing {
 .bucket-selector-modal {
     max-width: 700px;
     width: 90%;
+    min-width: 400px;
 }
 
 .bucket-selector-modal .modal-header {
@@ -2095,7 +2096,8 @@ body.dark-mode .editable-cell.editing {
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 12px;
 }
 
 .bucket-selector-modal .modal-header h2 {
@@ -2103,6 +2105,11 @@ body.dark-mode .editable-cell.editing {
     font-weight: 600;
     margin: 0;
     line-height: 1.4;
+    flex: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    min-width: 0;
 }
 
 .bucket-selector-modal .modal-close {
@@ -2118,6 +2125,7 @@ body.dark-mode .editable-cell.editing {
     align-items: center;
     justify-content: center;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .bucket-selector-modal .modal-close:hover {

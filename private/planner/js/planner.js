@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.33'; // Fix priority filter - Correct urgent/important values
+const APP_VERSION = '3.2.34'; // Fix bucket selector modal text/button widths
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
