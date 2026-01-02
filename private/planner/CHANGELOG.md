@@ -5,6 +5,13 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.12] - 2026-01-02
+
+### Changed
+- Extended compass task exclusion to "Group by: Theme" option
+- Weekly Compass tasks now excluded when theme is used in either View or Group By
+- Ensures compass items never appear in theme-based views/groupings
+
 ## [3.2.11] - 2026-01-02
 
 ### Changed

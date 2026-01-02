@@ -25,12 +25,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.10
-**Last Commit**: "v3.2.10: Fix Goals tab showing blank on refresh"
+**Last Committed Version**: 3.2.11
+**Last Commit**: "v3.2.11: Exclude Weekly Compass tasks from Theme view"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.11 (ready to commit)
+**Current Working Version**: 3.2.12 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.12 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Extended compass task exclusion to "Group by: Theme" option
+- Modified applyFilters() to check both currentView and currentGroupBy for 'theme'
+- Condition: includeCompass = currentView !== 'theme' && currentGroupBy !== 'theme'
+- Compass tasks now excluded whenever theme grouping/viewing is used
 
 ### v3.2.11 (2026-01-02)
 **Status**: 🔄 Ready to Commit
