@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.22'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.23'; // Goals table interactivity
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1993,6 +1993,30 @@ function renderSingleView(container, buckets, tasks, viewBy) {
 }
 
 function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGroup) {
+    // Check if we need to expand a specific goal
+    const expandGoalId = sessionStorage.getItem('expandGoalId');
+    if (expandGoalId && primaryGroup === 'goal') {
+        // Auto-expand this goal and its buckets
+        const goal = getGoalById(expandGoalId);
+        if (goal) {
+            const primaryId = goal.name.toLowerCase().replace(/\s+/g, '-');
+            expandedAssignees.add(primaryId);
+            
+            // Also expand all buckets for this goal
+            const goalBuckets = getGoalBuckets(expandGoalId);
+            goalBuckets.forEach(bucketId => {
+                const bucket = allBuckets.find(b => b.id === bucketId);
+                if (bucket) {
+                    const bucketName = bucket.name.toLowerCase().replace(/\s+/g, '-');
+                    const bucketExpandId = bucketName + '-' + primaryId;
+                    expandedBuckets.add(bucketExpandId);
+                }
+            });
+        }
+        // Clear the flag after using it
+        sessionStorage.removeItem('expandGoalId');
+    }
+    
     // Group by primary first
     const primaryGroups = groupTasksBy(tasks, buckets, primaryGroup);
     
@@ -2014,7 +2038,7 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
     
     // For each primary group, create nested secondary groups
     primaryGroups.forEach(primaryGrp => {
-        const primaryId = primaryGrp.name.toLowerCase().replace(/\\s+/g, '-');
+        const primaryId = primaryGrp.name.toLowerCase().replace(/\s+/g, '-');
         const isExpanded = expandedAssignees.has(primaryId);
         
         const primaryDiv = document.createElement('div');
@@ -6801,8 +6825,8 @@ function renderGoalsView() {
                                         ${daysText ? `<div class="goal-days-text ${daysRemaining < 0 ? 'overdue' : ''}">${daysText}</div>` : ''}
                                     </div>
                                 </td>
-                                <td class="goal-count-cell">${goal.bucketCount} bucket${goal.bucketCount !== 1 ? 's' : ''}</td>
-                                <td class="goal-count-cell">${goal.taskCount} task${goal.taskCount !== 1 ? 's' : ''}</td>
+                                <td class="goal-count-cell goal-count-clickable" onclick="event.stopPropagation(); showBucketSelectorForGoal('${goal.id}')" title="Click to manage buckets for this goal">${goal.bucketCount} bucket${goal.bucketCount !== 1 ? 's' : ''}</td>
+                                <td class="goal-count-cell goal-count-clickable" onclick="event.stopPropagation(); navigateToGoalTasks('${goal.id}')" title="Click to view tasks for this goal">${goal.taskCount} task${goal.taskCount !== 1 ? 's' : ''}</td>
                                 <td>
                                     <div class="goal-progress-cell">
                                         <div class="goal-progress-bar-small">
@@ -6907,6 +6931,129 @@ async function saveGoalModal() {
 
 function editGoal(goalId) {
     showGoalModal(goalId);
+}
+
+// Get all bucket IDs associated with a goal
+function getGoalBuckets(goalId) {
+    const buckets = [];
+    for (const [bucketId, goalIds] of Object.entries(bucketGoalMap)) {
+        if (goalIds.includes(goalId)) {
+            buckets.push(bucketId);
+        }
+    }
+    return buckets;
+}
+
+// Show bucket selector modal for a goal
+async function showBucketSelectorForGoal(goalId) {
+    const goal = getGoalById(goalId);
+    if (!goal) return;
+    
+    const currentBuckets = getGoalBuckets(goalId);
+    
+    // Create modal HTML
+    const modalHtml = `
+        <div class="modal-backdrop" id="bucketSelectorBackdrop" onclick="closeBucketSelector()"></div>
+        <div class="modal-dialog bucket-selector-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Manage Buckets for Goal: ${escapeHtml(goal.name)}</h2>
+                    <button class="close-btn" onclick="closeBucketSelector()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="bucket-selector-list">
+                        ${allBuckets.map(bucket => {
+                            const isChecked = currentBuckets.includes(bucket.id);
+                            return `
+                                <label class="bucket-checkbox-item">
+                                    <input type="checkbox" value="${bucket.id}" ${isChecked ? 'checked' : ''}>
+                                    <span>${escapeHtml(bucket.name)}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeBucketSelector()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveBucketSelection('${goalId}')">Save</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Insert modal into page
+    const modalContainer = document.createElement('div');
+    modalContainer.id = 'bucketSelectorModal';
+    modalContainer.innerHTML = modalHtml;
+    document.body.appendChild(modalContainer);
+}
+
+function closeBucketSelector() {
+    const modal = document.getElementById('bucketSelectorModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+async function saveBucketSelection(goalId) {
+    const checkboxes = document.querySelectorAll('.bucket-checkbox-item input[type="checkbox"]');
+    const selectedBucketIds = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+    
+    // Update bucketGoalMap
+    // First, remove this goal from all buckets
+    for (const bucketId in bucketGoalMap) {
+        bucketGoalMap[bucketId] = bucketGoalMap[bucketId].filter(gId => gId !== goalId);
+        if (bucketGoalMap[bucketId].length === 0) {
+            delete bucketGoalMap[bucketId];
+        }
+    }
+    
+    // Then add this goal to selected buckets
+    for (const bucketId of selectedBucketIds) {
+        if (!bucketGoalMap[bucketId]) {
+            bucketGoalMap[bucketId] = [];
+        }
+        if (!bucketGoalMap[bucketId].includes(goalId)) {
+            bucketGoalMap[bucketId].push(goalId);
+        }
+    }
+    
+    // Save the updated mapping to the system task
+    await saveBucketGoalMapping();
+    
+    closeBucketSelector();
+    renderGoalsView();
+}
+
+// Navigate to Tasks view with specific goal expanded
+function navigateToGoalTasks(goalId) {
+    const goal = getGoalById(goalId);
+    if (!goal) return;
+    
+    // Switch to Tasks tab
+    document.getElementById('goalsViewSection').style.display = 'none';
+    document.getElementById('tasksViewSection').style.display = 'block';
+    
+    // Update tab indicators
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    const tasksTab = document.querySelector('.tab-btn[onclick*="showTasksView"]');
+    if (tasksTab) tasksTab.classList.add('active');
+    
+    // Set view to 'goal' and grouping to 'bucket'
+    const viewSelect = document.getElementById('viewSelect');
+    const groupBySelect = document.getElementById('groupBySelect');
+    
+    viewSelect.value = 'goal';
+    groupBySelect.value = 'bucket';
+    
+    // Store the goal to expand
+    sessionStorage.setItem('expandGoalId', goalId);
+    
+    // Change view and render
+    changeView();
+    changeGrouping();
 }
 
 function confirmDeleteGoalFromCard(goalId) {

@@ -2039,6 +2039,53 @@ body.dark-mode .editable-cell.editing {
     font-size: 13px;
 }
 
+.goal-count-clickable {
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.goal-count-clickable:hover {
+    color: var(--primary-color);
+    background-color: var(--bg-tertiary);
+}
+
+/* Bucket Selector Modal */
+.bucket-selector-modal {
+    max-width: 500px;
+}
+
+.bucket-selector-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.bucket-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.bucket-checkbox-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.bucket-checkbox-item input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.bucket-checkbox-item span {
+    flex: 1;
+}
+
 .goal-progress-cell {
     display: flex;
     align-items: center;

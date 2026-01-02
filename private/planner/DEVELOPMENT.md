@@ -7,9 +7,32 @@
 **Last Committed Version**: 3.2.21
 **Last Commit**: "v3.2.21: Fix Goals table column widths persisting when sorting"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.22 (ready to commit)
+**Current Working Version**: 3.2.23 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.23 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Added interactive functionality to Goals table
+- **Bucket Count Column**: Now clickable with visual hover effect
+  - Opens modal showing all buckets with checkboxes
+  - Pre-checks buckets already associated with the goal
+  - Allows adding/removing bucket associations
+  - Saves changes to bucket-goal mapping
+- **Task Count Column**: Now clickable with visual hover effect
+  - Navigates to Tasks view with View: By Goal, Group by: Bucket
+  - Auto-expands the selected goal
+  - Auto-expands all buckets within that goal
+  - Uses sessionStorage flag for expansion state
+- Created showBucketSelectorForGoal() function with modal UI
+- Created navigateToGoalTasks() function for task navigation
+- Created getGoalBuckets() helper function for reverse bucket lookups
+- Modified renderNestedView() to handle auto-expansion on navigation
+- Added CSS styling for clickable cells and bucket selector modal
+- Updated version to 3.2.23 in planner.js and index.html
+- Updated CHANGELOG.md with new features
 
 ### v3.2.22 (2026-01-02)
 **Status**: 🔄 Ready to Commit

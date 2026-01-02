@@ -5,6 +5,23 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.23] - 2026-01-02
+
+### Added
+- Goals table interactivity: Bucket count column is now clickable
+- Clicking bucket count opens modal to add/remove bucket associations for that goal
+- Goals table interactivity: Task count column is now clickable
+- Clicking task count navigates to Tasks view filtered by goal with all buckets expanded
+- Auto-expands selected goal and its buckets when navigating from Goals page
+- Visual hover effects on clickable count cells
+
+### Technical
+- Added showBucketSelectorForGoal() function with modal UI
+- Added navigateToGoalTasks() function for goal-specific task navigation
+- Added getGoalBuckets() helper function for reverse bucket lookups
+- Auto-expansion logic in renderNestedView() via sessionStorage flag
+- CSS styling for clickable cells and bucket selector modal
+
 ## [3.2.22] - 2026-01-02
 
 ### Fixed
