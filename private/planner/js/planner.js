@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.27'; // Fix bucket selector modal button positioning
+const APP_VERSION = '3.2.28'; // Fix Goals task count navigation using switchTab()
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -7035,15 +7035,6 @@ function navigateToGoalTasks(goalId) {
     const goal = getGoalById(goalId);
     if (!goal) return;
     
-    // Switch to Tasks tab
-    document.getElementById('goalsViewSection').style.display = 'none';
-    document.getElementById('tasksViewSection').style.display = 'block';
-    
-    // Update tab indicators
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    const tasksTab = document.querySelector('.tab-btn[onclick*="showTasksView"]');
-    if (tasksTab) tasksTab.classList.add('active');
-    
     // Set view to 'goal' and grouping to 'bucket'
     const viewSelect = document.getElementById('viewSelect');
     const groupBySelect = document.getElementById('groupBySelect');
@@ -7053,6 +7044,9 @@ function navigateToGoalTasks(goalId) {
     
     // Store the goal to expand
     sessionStorage.setItem('expandGoalId', goalId);
+    
+    // Switch to Tasks tab (this will trigger rendering)
+    switchTab('tasks');
     
     // Change view and render
     changeView();

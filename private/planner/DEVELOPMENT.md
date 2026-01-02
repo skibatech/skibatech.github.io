@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.26
-**Last Commit**: "v3.2.26: Wider bucket selector modal with shorter title and alphabetical sort"
+**Last Committed Version**: 3.2.27
+**Last Commit**: "v3.2.27: Fix bucket selector modal button positioning"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.27 (ready to commit)
+**Current Working Version**: 3.2.28 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.28 (2026-01-02)
+**Changes**:
+- Fixed STE-92: Goals task count click now works properly
+- Changed navigateToGoalTasks() to use switchTab('tasks') instead of manual DOM manipulation
+- Task count navigation now correctly switches to Tasks view and expands the selected goal
+- Properly integrates with existing tab switching infrastructure
 
 ### v3.2.27 (2026-01-02)
 **Changes**:
