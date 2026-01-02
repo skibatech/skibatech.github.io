@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.4'; // Enhanced version check logging for debugging
+const APP_VERSION = '3.3.5'; // Add cache control headers to prevent HTML caching
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
