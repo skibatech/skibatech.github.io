@@ -4,12 +4,22 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.18
-**Last Commit**: "v3.2.18: Add bug report submission feature with dedicated button and modal"
+**Last Committed Version**: 3.2.19
+**Last Commit**: "v3.2.19: Fix bug report description not saving"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.19 (ready to commit)
+**Current Working Version**: 3.2.20 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.20 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Bug reports now automatically record submitter information
+- Added header to description with: submitter name, email, and submission date/time
+- Format: "Submitted by: [currentUserName] ([currentUserEmail])\nDate: [timestamp]\n---\n\n[user description]"
+- Always includes submitter info even if user leaves description empty
+- Uses currentUserName and currentUserEmail variables (captured at login)
 
 ### v3.2.19 (2026-01-02)
 **Status**: 🔄 Ready to Commit

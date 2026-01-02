@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.19'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.20'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3814,6 +3814,12 @@ async function submitBugReport() {
 
     const priority = parseInt(document.getElementById('bugPriority').value);
     const description = document.getElementById('bugDescription').value.trim();
+    
+    // Build description with submitter info
+    const submitterInfo = `Submitted by: ${currentUserName || 'Unknown'} (${currentUserEmail || 'unknown@email.com'})\n` +
+                         `Date: ${new Date().toLocaleString()}\n` +
+                         `---\n\n`;
+    const fullDescription = submitterInfo + (description || 'No additional details provided.');
 
     // Find or create "BUG: Planner Pro" bucket
     let bugBucket = allBuckets.find(b => b.name === 'BUG: Planner Pro');
@@ -3880,7 +3886,7 @@ async function submitBugReport() {
         const newTask = await response.json();
 
         // Add description if provided
-        if (description) {
+        if (fullDescription) {
             // First GET the task details to get its etag
             const detailsResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
                 method: 'GET',
@@ -3901,7 +3907,7 @@ async function submitBugReport() {
                         'If-Match': details['@odata.etag']
                     },
                     body: JSON.stringify({
-                        description: description
+                        description: fullDescription
                     })
                 });
             }
