@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.10'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.11'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2482,7 +2482,8 @@ function getFilteredTasks(includeCompass = false) {
 }
 
 function applyFilters() {
-    const includeCompass = true; // Always include compass tasks in all views
+    // Exclude compass tasks from Theme view (they're personal, not project-related)
+    const includeCompass = currentView !== 'theme';
     const filteredTasks = getFilteredTasks(includeCompass);
     // Filter out Goals bucket from normal task views
     const bucketsToRender = allBuckets.filter(b => b.id !== goalsBucketRealId);

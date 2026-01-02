@@ -28,9 +28,18 @@
 **Last Committed Version**: 3.2.10
 **Last Commit**: "v3.2.10: Fix Goals tab showing blank on refresh"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.10 (stable)
+**Current Working Version**: 3.2.11 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.11 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Excluded Weekly Compass tasks from Theme view
+- Modified applyFilters() to set includeCompass = false when currentView === 'theme'
+- Theme view now shows only project-related tasks (no personal Weekly Compass items)
+- Compass tasks remain visible in all other views (By Assigned To, By Bucket, etc.)
 
 ### v3.2.10 (2026-01-02)
 **Status**: ✅ Committed & Pushed
