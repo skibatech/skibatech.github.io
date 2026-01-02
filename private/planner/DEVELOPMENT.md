@@ -4,16 +4,16 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.21
-**Last Commit**: "v3.2.21: Fix Goals table column widths persisting when sorting"
+**Last Committed Version**: 3.2.23
+**Last Commit**: "v3.2.23: Add interactive Goals table - clickable bucket and task counts"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.23 (ready to commit)
+**Current Working Version**: 3.2.23 (clean)
 
 ## Version History (Most Recent First)
 
 ### v3.2.23 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed and Pushed
+**Commit**: `a65cf53`
 **Changes**:
 - Added interactive functionality to Goals table
 - **Bucket Count Column**: Now clickable with visual hover effect
