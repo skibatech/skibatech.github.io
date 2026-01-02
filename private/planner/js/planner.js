@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.9'; // Fix XSS vulnerabilities (DOM text reinterpreted as HTML)
+const APP_VERSION = '3.3.10'; // Fix remaining XSS and escaping vulnerabilities
 
 // Security: Escape HTML to prevent XSS attacks
 function escapeHtml(unsafe) {
@@ -2312,7 +2312,7 @@ function renderGroup(container, group, buckets, isNested = false) {
         <div class=\"bucket-header\"${themeColorStyle} onclick=\"toggleBucket(this)\">
             <div class=\"bucket-title\">
                 <span class=\"expand-icon\">▶</span>
-                ${groupDisplayName}
+                ${escapeHtml(groupDisplayName)}
                 <span class=\"task-count\">${groupTasks.length}</span>
                 ${goalsButton}
             </div>
@@ -2950,7 +2950,12 @@ function renderBarGroup(containerId, data, filterType) {
 }
 
 function escapeForAttribute(text) {
-    return String(text).replace(/'/g, '\\\'').replace(/"/g, '&quot;');
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/'/g, '&#039;')
+        .replace(/"/g, '&quot;');
 }
 
 // Helper: derive the most specific names for task assignees

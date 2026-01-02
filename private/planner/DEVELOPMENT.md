@@ -4,11 +4,18 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.3.9
-**Last Commit**: "v3.3.9: Fix XSS vulnerabilities (DOM text reinterpreted as HTML)"
+**Last Committed Version**: 3.3.10
+**Last Commit**: "v3.3.10: Fix remaining XSS and escaping vulnerabilities"
 **Last Push**: ✅ Pushed to main
 
 ## Version History (Most Recent First)
+
+### v3.3.10 (2026-01-02)
+**Changes**:
+- Fixed remaining HIGH severity XSS vulnerability in groupDisplayName (line 2315)
+- Improved escapeForAttribute() function to properly escape HTML characters
+- Now escapes &, <, >, ', and " to prevent attribute-based HTML injection
+- Completes security hardening identified by CodeQL automated scanning
 
 ### v3.3.9 (2026-01-02)
 **Changes**:
