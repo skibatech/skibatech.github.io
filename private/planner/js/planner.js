@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.3'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.4'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6580,8 +6580,8 @@ async function saveGoalModal() {
         name: name,
         description: descInput.value.trim(),
         color: colorInput.value,
-        // Convert date to ISO format if provided
-        targetDate: targetInput.value ? new Date(targetInput.value + 'T00:00:00').toISOString() : null
+        // Convert date to ISO format using UTC noon to avoid timezone shifts
+        targetDate: targetInput.value ? new Date(targetInput.value + 'T12:00:00Z').toISOString() : null
     };
     
     await saveGoal(goal);

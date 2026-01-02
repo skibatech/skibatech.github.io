@@ -17,12 +17,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.3
-**Last Commit**: "v3.2.3: Hide Goals bucket from task views"
+**Last Committed Version**: 3.2.4
+**Last Commit**: "v3.2.4: Fix goal date timezone issue"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.3 (stable)
+**Current Working Version**: 3.2.4 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.4 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed timezone issue where goal dates shifted by one day
+- Changed from local midnight (T00:00:00) to UTC noon (T12:00:00Z)
+- Using noon prevents date boundary issues across all timezones
+- Example: selecting 12/31/2026 now correctly saves as 12/31/2026 regardless of user timezone
 
 ### v3.2.3 (2026-01-02)
 **Status**: ✅ Committed & Pushed
