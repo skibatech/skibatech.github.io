@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.17'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.18'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3791,6 +3791,119 @@ function showAddTask(bucketId, bucketName) {
 
 function closeAddTaskModal() {
     document.getElementById('addTaskModal').classList.remove('show');
+}
+
+function showBugReportModal() {
+    document.getElementById('bugReportModal').classList.add('show');
+    document.getElementById('bugTitle').value = '';
+    document.getElementById('bugPriority').value = '3'; // Default to Important
+    document.getElementById('bugDescription').value = '';
+    document.getElementById('bugTitle').focus();
+}
+
+function closeBugReportModal() {
+    document.getElementById('bugReportModal').classList.remove('show');
+}
+
+async function submitBugReport() {
+    const title = document.getElementById('bugTitle').value.trim();
+    if (!title) {
+        alert('Please enter a bug title');
+        return;
+    }
+
+    const priority = parseInt(document.getElementById('bugPriority').value);
+    const description = document.getElementById('bugDescription').value.trim();
+
+    // Find or create "BUG: Planner Pro" bucket
+    let bugBucket = allBuckets.find(b => b.name === 'BUG: Planner Pro');
+    
+    try {
+        document.getElementById('submitBugBtn').disabled = true;
+        document.getElementById('submitBugBtn').textContent = 'Submitting...';
+
+        // If bucket doesn't exist, create it
+        if (!bugBucket) {
+            const createBucketResponse = await fetchGraph('https://graph.microsoft.com/v1.0/planner/buckets', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'BUG: Planner Pro',
+                    planId: planId,
+                    orderHint: ' !'
+                })
+            });
+
+            if (!createBucketResponse.ok) {
+                throw new Error('Failed to create BUG bucket');
+            }
+
+            bugBucket = await createBucketResponse.json();
+            allBuckets.push(bugBucket);
+        }
+
+        // Create the bug task
+        const taskBody = {
+            planId: planId,
+            bucketId: bugBucket.id,
+            title: title,
+            percentComplete: 0,
+            priority: priority,
+            appliedCategories: {
+                'category2': true  // Maintain Upgrades & Bug Fixes theme
+            }
+        };
+
+        // Assign to current user
+        if (currentUserId) {
+            taskBody.assignments = {
+                [currentUserId]: { '@odata.type': '#microsoft.graph.plannerAssignment', orderHint: ' !' }
+            };
+        }
+
+        const response = await fetchGraph('https://graph.microsoft.com/v1.0/planner/tasks', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(taskBody)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create bug report task');
+        }
+
+        const newTask = await response.json();
+
+        // Add description if provided
+        if (description) {
+            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    'If-Match': newTask['@odata.etag']
+                },
+                body: JSON.stringify({
+                    description: description
+                })
+            });
+        }
+
+        closeBugReportModal();
+        alert('Bug report submitted successfully!');
+        loadTasks();
+    } catch (error) {
+        console.error('Error submitting bug report:', error);
+        alert('Error submitting bug report: ' + error.message);
+    } finally {
+        document.getElementById('submitBugBtn').disabled = false;
+        document.getElementById('submitBugBtn').textContent = 'Submit Bug Report';
+    }
 }
 
 async function createTaskFromModal() {

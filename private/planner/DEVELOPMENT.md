@@ -4,12 +4,26 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.16
-**Last Commit**: "v3.2.16: Fix Goals table column resizing functionality"
+**Last Committed Version**: 3.2.17
+**Last Commit**: "v3.2.17: Increase Goals view max-width for wider table display"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.17 (ready to commit)
+**Current Working Version**: 3.2.18 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.18 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Added "🐛 Report Bug" button in header toolbar (red background for visibility)
+- Created Bug Report modal with simplified form (title, priority, description)
+- Added showBugReportModal(), closeBugReportModal(), and submitBugReport() functions
+- submitBugReport() creates "BUG: Planner Pro" bucket if it doesn't exist
+- Bug tasks auto-assigned to currentUserId (whoever submits the bug)
+- Bug tasks auto-tagged with category2 ("Maintain Upgrades & Bug Fixes" theme)
+- Available to all users, creates consistent bug reports in same bucket
+- Default priority: Important (value 3)
+- No start/due dates set on submission
 
 ### v3.2.17 (2026-01-02)
 **Status**: 🔄 Ready to Commit

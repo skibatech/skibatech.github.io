@@ -5,6 +5,16 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.18] - 2026-01-02
+
+### Added
+- Bug report button (🐛 Report Bug) in header toolbar
+- Bug submission modal with title, priority, and description fields
+- Auto-creates "BUG: Planner Pro" bucket if it doesn't exist
+- Auto-assigns bug reports to current user
+- Auto-applies "Maintain Upgrades & Bug Fixes" theme (category2)
+- Available to all users with consistent behavior
+
 ## [3.2.17] - 2026-01-02
 
 ### Changed

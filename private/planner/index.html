@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <title>Planner Pro</title>
-    <link rel="stylesheet" href="css/planner.css?v=3.2.17">
+    <link rel="stylesheet" href="css/planner.css?v=3.2.18">
 </head>
 <body class="unauthenticated">
     <div class="header">
@@ -50,6 +50,7 @@
                 <div class="header-divider" style="display:none;"></div>
                 
                 <button onclick="showAddTask(null, null)" class="primary-btn">+New Task</button>
+                <button onclick="showBugReportModal()" class="primary-btn" style="background: #ef5350;" title="Report a bug with Planner Pro">🐛 Report Bug</button>
                 <button id="gridEditModeBtn" onclick="toggleGridEditMode()" class="primary-btn" style="display:none;" title="Toggle inline grid editing mode">
                     📝 Grid Edit
                 </button>
@@ -442,6 +443,41 @@
         </div>
     </div>
 
+    <!-- Bug Report Modal -->
+    <div id="bugReportModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🐛 Report Bug - Planner Pro</span>
+                <button class="cancel-btn" onclick="closeBugReportModal()" style="padding: 4px 8px; font-size: 18px; line-height: 1;">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Bug Title *</label>
+                <input type="text" id="bugTitle" class="task-input" placeholder="Brief description of the bug">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Priority *</label>
+                <select id="bugPriority" class="task-input">
+                    <option value="9">Low</option>
+                    <option value="5">Medium</option>
+                    <option value="3" selected>Important</option>
+                    <option value="1">Urgent</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea id="bugDescription" class="task-input" placeholder="Describe what happened, steps to reproduce, expected behavior, etc." style="min-height: 150px;"></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeBugReportModal()">Cancel</button>
+                <button id="submitBugBtn" onclick="submitBugReport()" style="background: #ef5350;">Submit Bug Report</button>
+            </div>
+        </div>
+    </div>
+
     <div id="taskDetailsModal" class="modal">
         <div class="modal-content" style="max-width: 750px; max-height: 95vh; overflow-y: auto;">
             <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -775,7 +811,7 @@
         </div>
     </div>
 
-    <script src="js/planner.js?v=3.2.17"></script></script></script></script></script></script></script></script></script></script>
+    <script src="js/planner.js?v=3.2.18"></script></script></script></script></script></script></script></script></script></script>
     <div id="cardMenu" class="card-menu" style="display:none"></div>
 </body>
 </html>
