@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.28'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.29'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3134,6 +3134,8 @@ function renderTask(task) {
         const done = task.percentComplete === 100;
         const rolePill = task.compassRole ? `<span class="label-badge compass-role-pill">${escapeHtml(task.compassRole)}</span>` : '';
         const assigneeName = currentUserName || 'Me';
+        const startDate = formatDateForDisplay(task.startDateTime);
+        const dueDate = formatDateForDisplay(task.dueDateTime);
         return `
             <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass" data-role-index="${task.roleIndex}" data-rock-index="${task.rockIndex}">
                 <input type="checkbox" class="task-checkbox" disabled>
@@ -3143,8 +3145,8 @@ function renderTask(task) {
                     ${rolePill}
                 </div>
                 <div class="task-assignee col-assigned">${assigneeName}</div>
-                <div class="task-date col-start-date"><span class="placeholder">--</span></div>
-                <div class="task-date col-due-date"><span class="placeholder">--</span></div>
+                <div class="task-date col-start-date">${startDate || '<span class="placeholder">--</span>'}</div>
+                <div class="task-date col-due-date">${dueDate || '<span class="placeholder">--</span>'}</div>
                 <div class="task-progress col-progress" onclick="toggleCompassTaskFromGrid(${task.roleIndex}, ${task.rockIndex})" style="cursor: pointer;" title="Click to toggle completion">
                     <span class="progress-dot ${done ? 'completed' : 'not-started'}"></span>
                     ${done ? 'Completed' : 'Not started'}
@@ -4882,13 +4884,10 @@ function refreshCompassTasksFromData(shouldRender = false) {
     let startDateTime = null;
     let dueDateTime = null;
     if (compassData.dateRange) {
-        console.log('[Compass] Parsing date range:', compassData.dateRange);
         const dateRangeParts = compassData.dateRange.split(' - ');
-        console.log('[Compass] Date parts:', dateRangeParts);
         if (dateRangeParts.length === 2) {
             const startDate = new Date(dateRangeParts[0]);
             const endDate = new Date(dateRangeParts[1]);
-            console.log('[Compass] Parsed dates:', { startDate, endDate, startValid: !isNaN(startDate.getTime()), endValid: !isNaN(endDate.getTime()) });
             if (!isNaN(startDate.getTime())) {
                 startDateTime = startDate.toISOString();
             }
@@ -4897,7 +4896,6 @@ function refreshCompassTasksFromData(shouldRender = false) {
                 endDate.setHours(23, 59, 59, 999);
                 dueDateTime = endDate.toISOString();
             }
-            console.log('[Compass] Final ISO dates:', { startDateTime, dueDateTime });
         }
     }
     

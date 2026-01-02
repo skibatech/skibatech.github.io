@@ -5,6 +5,12 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.29] - 2026-01-02
+
+### Fixed
+- Fixed Weekly Compass tasks not displaying start and due dates in grid view
+- Dates now correctly show based on date range (start = first date, due = last date)
+
 ## [3.0.28] - 2026-01-02
 
 ### Added
