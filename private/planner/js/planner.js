@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.3'; // Test version for Update Available badge verification
+const APP_VERSION = '3.3.4'; // Enhanced version check logging for debugging
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1150,7 +1150,11 @@ async function checkForVersionUpdate() {
         const latestVersion = match[1];
         latestAvailableVersion = latestVersion;
         const updateBadge = document.getElementById('updateBadge');
-        if (!updateBadge) return;
+        console.log('[version-check] updateBadge element', updateBadge ? 'found' : 'NOT FOUND');
+        if (!updateBadge) {
+            console.log('[version-check] ERROR: updateBadge element not found in DOM');
+            return;
+        }
 
         if (latestVersion === APP_VERSION) {
             updateBadge.style.display = 'none';

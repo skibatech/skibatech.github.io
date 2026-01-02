@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.4] - 2026-01-02
+
+### Fixed
+- Enhanced version check logging to diagnose Update Available badge issues
+
 ## [3.3.3] - 2026-01-02
 
 ### Changed
