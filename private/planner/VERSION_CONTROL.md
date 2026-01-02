@@ -20,9 +20,13 @@
 2. Update version in planner.js (APP_VERSION constant)
 3. Update cache-bust versions in index.html (CSS and JS)
 4. Update CHANGELOG.md with new version entry
-5. Update DEVELOPMENT.md with new version entry (Status: "Ready to Commit", Commit: "TBD")
-6. **Immediately commit and push** - DEVELOPMENT.md edit signals everything is ready
-7. **ONE commit only** - do not make a second commit to update commit hash
+5. Update DEVELOPMENT.md with new version entry:
+   - Update "Current Status" section with new version as "ready to commit"
+   - Add new version history entry with Status: "Ready to Commit", Commit: "TBD"
+   - Leave commit hash as "TBD" - DO NOT update it after committing
+6. **Immediately commit and push** - Single commit only
+7. **NEVER make a second commit** - Leave DEVELOPMENT.md with "TBD" for commit hash
+8. The commit hash can be looked up in git history if needed; no need to track it in DEVELOPMENT.md
 
 ### Git Commands
 

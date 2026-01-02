@@ -4,15 +4,15 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.23
-**Last Commit**: "v3.2.23: Add interactive Goals table - clickable bucket and task counts"
+**Last Committed Version**: 3.2.24
+**Last Commit**: "v3.2.24: Fix bucket selector modal positioning and filter Goals bucket"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.24 (ready to commit)
+**Current Working Version**: 3.2.24 (clean)
 
 ## Version History (Most Recent First)
 
 ### v3.2.24 (2026-01-02)
-**Status**: 🔄 Ready to Commit
+**Status**: ✅ Committed and Pushed
 **Commit**: `TBD`
 **Changes**:
 - Fixed bucket selector modal positioning issue
