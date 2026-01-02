@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.31'; // Hide task controls on Goals/Dashboard tabs
+const APP_VERSION = '3.2.32'; // Fix bulk edit: Add missing clearSelection function
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -4935,6 +4935,26 @@ function updateBulkEditSidebar() {
     } else {
         sidebar.style.display = 'none';
     }
+}
+
+function clearSelection() {
+    selectedTasks.clear();
+    const sidebar = document.getElementById('bulkEditSidebar');
+    if (sidebar) sidebar.style.display = 'none';
+    // Reset all form inputs
+    const assigneeSelect = document.getElementById('bulkAssigneeSelect');
+    const bucketSelect = document.getElementById('bulkBucketSelect');
+    const prioritySelect = document.getElementById('bulkPrioritySelect');
+    const progressSelect = document.getElementById('bulkProgressSelect');
+    const startDate = document.getElementById('bulkStartDate');
+    const dueDate = document.getElementById('bulkDueDate');
+    if (assigneeSelect) assigneeSelect.value = '';
+    if (bucketSelect) bucketSelect.value = '';
+    if (prioritySelect) prioritySelect.value = '';
+    if (progressSelect) progressSelect.value = '';
+    if (startDate) startDate.value = '';
+    if (dueDate) dueDate.value = '';
+    applyFilters(); // Re-render to update checkboxes
 }
 
 async function bulkApplyAllChanges() {

@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.30
-**Last Commit**: "v3.2.30: Fix bucket expansion regex for goal task navigation"
+**Last Committed Version**: 3.2.31
+**Last Commit**: "v3.2.31: Hide task controls on Goals/Dashboard tabs"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.31 (ready to commit)
+**Current Working Version**: 3.2.32 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.32 (2026-01-02)
+**Changes**:
+- Fixed critical bug in bulk edit functionality
+- Added missing clearSelection() function that was being called but not defined
+- Function clears selectedTasks Set, hides bulk edit sidebar, and resets all form inputs
+- Resolves "clearSelection is not defined" error when applying bulk changes
 
 ### v3.2.31 (2026-01-02)
 **Changes**:
