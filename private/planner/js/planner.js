@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.37'; // Fix bucket selector modal width - override modal-content max-width
+const APP_VERSION = '3.2.38'; // Hide Weekly Compass from bucket assignment dialog
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -7014,7 +7014,7 @@ async function showBucketSelectorForGoal(goalId) {
                 <div class="modal-body">
                     <div class="bucket-selector-list">
                         ${allBuckets
-                            .filter(bucket => bucket.name !== GOALS_BUCKET_NAME)
+                            .filter(bucket => !bucket.isCompass && bucket.name !== GOALS_BUCKET_NAME)
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map(bucket => {
                                 const isChecked = currentBuckets.includes(bucket.id);

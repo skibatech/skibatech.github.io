@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.36
-**Last Commit**: "v3.2.36: Improve bucket selector modal button styling"
+**Last Committed Version**: 3.2.37
+**Last Commit**: "v3.2.37: Fix bucket selector modal width - override modal-content max-width"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.37 (ready to commit)
+**Current Working Version**: 3.2.38 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.38 (2026-01-02)
+**Changes**:
+- Filtered Weekly Compass bucket from goal bucket assignment dialog
+- Added !bucket.isCompass condition to filter in showBucketSelectorForGoal
+- Weekly Compass is personal/non-project bucket so shouldn't be assignable to goals
+- Now consistent with other bucket selectors that filter compass bucket
 
 ### v3.2.37 (2026-01-02)
 **Changes**:
