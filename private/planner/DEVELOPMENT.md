@@ -10,12 +10,18 @@
   - `index.html`: Both cache-bust URLs (`v=X.X.X` for CSS and JS)
   - `CHANGELOG.md`: New entry at top with date and changes
   - `DEVELOPMENT.md`: New entry at top with date and changes
-- **Before committing**: Make sure to update CHANGELOG.md and DEVELOPMENT.md as needed
-- **Git pattern**: Combine all file staging, removal, commit, and push on one line:
+- **Workflow (IMPORTANT - Single Commit Rule)**:
+  1. Make all code changes first
+  2. Update version in planner.js (APP_VERSION constant)
+  3. Update cache-bust versions in index.html (CSS and JS)
+  4. Update CHANGELOG.md with new version entry
+  5. Update DEVELOPMENT.md with new version entry (Status: "Ready to Commit", Commit: "TBD")
+  6. **Immediately commit and push** - DEVELOPMENT.md edit signals everything is ready
+  7. **ONE commit only** - do not make a second commit to update commit hash
+- **Git pattern**: Combine all file staging, commit, and push on one line:
   ```powershell
   git add <files>; git commit -m "vX.X.X: <description>"; git push origin main
   ```
-  - If removing files: `git rm <file>` before `git add`
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
