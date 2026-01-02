@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.29'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.30'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3136,13 +3136,13 @@ function renderTask(task) {
         const assigneeName = currentUserName || 'Me';
         const startDate = formatDateForDisplay(task.startDateTime);
         const dueDate = formatDateForDisplay(task.dueDateTime);
+        const taskTitle = task.compassRole ? `${escapeHtml(task.compassRole)}: ${escapeHtml(task.title)}` : escapeHtml(task.title);
         return `
             <div class="task-row compass-task-row" data-task-id="${task.id}" data-source="compass" data-role-index="${task.roleIndex}" data-rock-index="${task.rockIndex}">
                 <input type="checkbox" class="task-checkbox" disabled>
                 <div class="task-id col-id">${displayId}</div>
                 <div class="task-title col-task-name" style="cursor: pointer;" onclick="openCompassTaskDetail(${task.roleIndex}, ${task.rockIndex})">
-                    ${escapeHtml(task.title)}
-                    ${rolePill}
+                    ${taskTitle}
                 </div>
                 <div class="task-assignee col-assigned">${assigneeName}</div>
                 <div class="task-date col-start-date">${startDate || '<span class="placeholder">--</span>'}</div>

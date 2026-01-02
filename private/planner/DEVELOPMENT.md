@@ -20,9 +20,14 @@
 **Last Committed Version**: 3.0.29
 **Last Commit**: "v3.0.29: Fix compass task date display"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.29 (stable)
+**Current Working Version**: 3.0.30 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.0.30 (2026-01-02)
+**Status**: ✅ Ready to commit
+**Changes**:
+- Changed compass task display format from "Task (Role)" to "Role: Task" (e.g., "Father: Send devotionals")
 
 ### v3.0.29 (2026-01-02)
 **Status**: ✅ Committed & Pushed
