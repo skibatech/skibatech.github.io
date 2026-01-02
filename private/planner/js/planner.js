@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.46'; // Fix changeGrouping() error when clicking goal task counts
+const APP_VERSION = '3.2.47'; // Improve Update Available badge visual separation
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
