@@ -1,34 +1,13 @@
 # Planner Pro Development Tracking
 
-**This file is the source of truth for version history and development workflow.**
-**Update this BEFORE each commit. Regenerated conversation summaries reference this.**
-
-## Version Control Rules
-- **Every commit bumps version**: Even small changes increment version (e.g., 2.1.48 → 2.1.49)
-- **Version appears in**: 
-  - `planner.js`: `const APP_VERSION = 'X.X.X';` (line ~1)
-  - `index.html`: Both cache-bust URLs (`v=X.X.X` for CSS and JS)
-  - `CHANGELOG.md`: New entry at top with date and changes
-  - `DEVELOPMENT.md`: New entry at top with date and changes
-- **Workflow (IMPORTANT - Single Commit Rule)**:
-  1. Make all code changes first
-  2. Update version in planner.js (APP_VERSION constant)
-  3. Update cache-bust versions in index.html (CSS and JS)
-  4. Update CHANGELOG.md with new version entry
-  5. Update DEVELOPMENT.md with new version entry (Status: "Ready to Commit", Commit: "TBD")
-  6. **Immediately commit and push** - DEVELOPMENT.md edit signals everything is ready
-  7. **ONE commit only** - do not make a second commit to update commit hash
-- **Git pattern**: Combine all file staging, commit, and push on one line:
-  ```powershell
-  git add <files>; git commit -m "vX.X.X: <description>"; git push origin main
-  ```
-  - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
+**This file tracks version history and current development status.**
+**For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.13
-**Last Commit**: "v3.2.13: Fix By Goal view showing all tasks as No goal"
+**Last Committed Version**: 3.2.14
+**Last Commit**: "v3.2.14: Apply goal colors to goal banners in all views"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.14 (ready to commit)
+**Current Working Version**: 3.2.14 (stable)
 
 ## Version History (Most Recent First)
 
@@ -557,27 +536,12 @@ git add private/planner/planner.js private/planner/index.html private/planner/CH
 ### v2.1.29-2.1.37 (Committed ✅)
 - Fixed assignee names showing as "Assigned" or GUIDs (root cause: missing Directory.Read.All admin consent)
 
-## Next Steps Template
-When resuming work:
-1. Read this file to know current version and last commit
-2. Increment version in planner.js and index.html cache-bust URLs
-3. Make code changes
-4. Update CHANGELOG.md with new version entry
-5. Run git command from above, replacing vX.X.X and description as needed
-6. Update this file's "Current Status" and "Version History" sections
+---
 
-## Key File Locations
-- Main app: `private/planner/js/planner.js`
-- Styling: `private/planner/css/planner.css`
-- HTML: `private/planner/index.html`
-- Config: `private/planner/config.json`
-- Changelog: `private/planner/CHANGELOG.md`
-- CSV data: `private/planner/csv/` (saw-suggestions.csv)
-- Admin page: `private/planner/admin.html`
-- Admin logic: `private/planner/js/admin-core.js`
+## Reference Documentation
 
-## Important Notes
-- **Graph API**: Requires Directory.Read.All scope + admin consent in Azure for assignee name lookup
-- **Company branding**: Controlled by `companyName` in config.json, used in updateBrandingFromConfig()
-- **localStorage keys**: plannerDefaultView, plannerShowCompleted, plannerCompassPosition, plannerCompassVisible, plannerUpdateCheckInterval, plannerCardVisuals
-- **Chart types**: CARD_VISUAL_OPTIONS array in planner.js defines available charts
+For additional documentation, see:
+- **[VERSION_CONTROL.md](VERSION_CONTROL.md)** - Version control workflow, git patterns, and development process
+- **[CHANGELOG.md](CHANGELOG.md)** - User-facing changelog of all releases
+- **[README.md](README.md)** - Project overview and setup instructions
+
