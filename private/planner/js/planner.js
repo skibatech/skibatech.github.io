@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.1.2'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.1.3'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -5169,9 +5169,14 @@ async function loadCompassData() {
                 }
             } else if (title.startsWith('COMPASS_ROLE_')) {
                 try {
-                    // Role metadata: just the role name
+                    // Role metadata: just the role name (new format)
                     const roleData = JSON.parse(body);
-                    compassData.roles.push(roleData);
+                    // Only load if it's new format (just has 'name' property, no 'rocks')
+                    if (roleData.name && !roleData.rocks) {
+                        compassData.roles.push(roleData);
+                    } else {
+                        console.warn('Ignoring old-format COMPASS_ROLE entry:', title);
+                    }
                 } catch (e) {
                     console.error('Failed to parse role metadata:', e);
                 }
@@ -5360,8 +5365,9 @@ async function saveCompassData(showAlert = true) {
         await upsertMetadata('COMPASS_DATERANGE', compassData.dateRange || '');
         await upsertMetadata('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
         
-        // Delete ALL existing COMPASS_ROLE_X tasks (including duplicates)
+        // Delete ALL existing COMPASS_ROLE_X tasks (including duplicates and old format)
         const oldRoleTasks = metadataTasks.filter(task => task.title.startsWith('COMPASS_ROLE_'));
+        console.log(`[Compass Save] Deleting ${oldRoleTasks.length} old COMPASS_ROLE tasks`);
         await Promise.all(oldRoleTasks.map(task =>
             fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
                 method: 'DELETE',
@@ -5370,6 +5376,7 @@ async function saveCompassData(showAlert = true) {
         ));
         
         // Create fresh role metadata tasks
+        console.log(`[Compass Save] Creating ${compassData.roles.length} new COMPASS_ROLE tasks`);
         for (let i = 0; i < compassData.roles.length; i++) {
             const roleTitle = `COMPASS_ROLE_${i}`;
             const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {

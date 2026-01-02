@@ -17,12 +17,20 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.2
-**Last Commit**: "v3.1.2: Fix duplicate COMPASS_ROLE cleanup"
+**Last Committed Version**: 3.1.3
+**Last Commit**: "v3.1.3: Better old-format cleanup and logging"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.2 (stable)
+**Current Working Version**: 3.1.3 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.3 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- loadCompassData now ignores old-format COMPASS_ROLE entries (ones with rocks property)
+- Added console logging to debug save process
+- Prevents old format from being re-loaded and mixed with new format
 
 ### v3.1.2 (2026-01-02)
 **Status**: ✅ Committed & Pushed
