@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.18'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.19'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3881,17 +3881,30 @@ async function submitBugReport() {
 
         // Add description if provided
         if (description) {
-            await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
-                method: 'PATCH',
+            // First GET the task details to get its etag
+            const detailsResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                    'If-Match': newTask['@odata.etag']
-                },
-                body: JSON.stringify({
-                    description: description
-                })
+                    'Authorization': `Bearer ${accessToken}`
+                }
             });
+
+            if (detailsResponse.ok) {
+                const details = await detailsResponse.json();
+                
+                // Now PATCH with the correct etag
+                await fetchGraph(`https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': details['@odata.etag']
+                    },
+                    body: JSON.stringify({
+                        description: description
+                    })
+                });
+            }
         }
 
         closeBugReportModal();

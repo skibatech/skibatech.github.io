@@ -5,6 +5,12 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.19] - 2026-01-02
+
+### Fixed
+- Bug report descriptions now save correctly
+- Fixed etag retrieval for task details updates
+
 ## [3.2.18] - 2026-01-02
 
 ### Added

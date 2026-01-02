@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.17
-**Last Commit**: "v3.2.17: Increase Goals view max-width for wider table display"
+**Last Committed Version**: 3.2.18
+**Last Commit**: "v3.2.18: Add bug report submission feature with dedicated button and modal"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.18 (ready to commit)
+**Current Working Version**: 3.2.19 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.19 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Fixed bug report description not saving
+- Issue: Was using task etag instead of task details etag
+- Solution: GET task details first to retrieve correct etag, then PATCH with description
+- Task details have separate etag from task itself (Graph API requirement)
 
 ### v3.2.18 (2026-01-02)
 **Status**: 🔄 Ready to Commit
