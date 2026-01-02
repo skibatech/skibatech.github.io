@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.29
-**Last Commit**: "v3.2.29: Filter Goals bucket from all task bucket dropdowns"
+**Last Committed Version**: 3.2.30
+**Last Commit**: "v3.2.30: Fix bucket expansion regex for goal task navigation"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.30 (ready to commit)
+**Current Working Version**: 3.2.31 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.31 (2026-01-02)
+**Changes**:
+- Fixed STE-93: Task controls now properly hidden on Goals and Dashboard tabs
+- View, Group by, Filter, Show completed checkbox, and Grid Edit button only visible on Tasks tab
+- Prevents confusion when refreshing page while on Goals or Dashboard tab
+- Improves UI clarity by showing only relevant controls for each tab
 
 ### v3.2.30 (2026-01-02)
 **Changes**:

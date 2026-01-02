@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.30'; // Fix bucket expansion regex for goal task navigation
+const APP_VERSION = '3.2.31'; // Hide task controls on Goals/Dashboard tabs
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2610,6 +2610,13 @@ function switchTab(tab) {
     
     if (!tasksView || !dashboardView || !goalsView || !tasksBtn || !dashBtn || !goalsBtn) return;
     
+    // Get task control elements
+    const gridEditBtn = document.getElementById('gridEditBtn');
+    const viewSelect = document.getElementById('viewSelect');
+    const groupByContainer = document.getElementById('groupByContainer');
+    const filterSelect = document.getElementById('filterSelect');
+    const showCompletedCheckbox = document.getElementById('showCompletedCheckbox');
+    
     // Hide all views
     tasksView.style.display = 'none';
     dashboardView.style.display = 'none';
@@ -2618,18 +2625,36 @@ function switchTab(tab) {
     dashBtn.classList.remove('active');
     goalsBtn.classList.remove('active');
     
-    // Show selected view
+    // Show selected view and appropriate controls
     if (tab === 'dashboard') {
         dashboardView.style.display = 'block';
         dashBtn.classList.add('active');
+        // Hide task controls on Dashboard
+        if (gridEditBtn) gridEditBtn.style.display = 'none';
+        if (viewSelect && viewSelect.parentElement) viewSelect.parentElement.style.display = 'none';
+        if (groupByContainer) groupByContainer.style.display = 'none';
+        if (filterSelect && filterSelect.parentElement) filterSelect.parentElement.style.display = 'none';
+        if (showCompletedCheckbox && showCompletedCheckbox.parentElement) showCompletedCheckbox.parentElement.style.display = 'none';
         renderDashboard();
     } else if (tab === 'goals') {
         goalsView.style.display = 'block';
         goalsBtn.classList.add('active');
+        // Hide task controls on Goals
+        if (gridEditBtn) gridEditBtn.style.display = 'none';
+        if (viewSelect && viewSelect.parentElement) viewSelect.parentElement.style.display = 'none';
+        if (groupByContainer) groupByContainer.style.display = 'none';
+        if (filterSelect && filterSelect.parentElement) filterSelect.parentElement.style.display = 'none';
+        if (showCompletedCheckbox && showCompletedCheckbox.parentElement) showCompletedCheckbox.parentElement.style.display = 'none';
         renderGoalsView();
     } else {
         tasksView.style.display = 'block';
         tasksBtn.classList.add('active');
+        // Show task controls on Tasks view
+        if (gridEditBtn) gridEditBtn.style.display = '';
+        if (viewSelect && viewSelect.parentElement) viewSelect.parentElement.style.display = '';
+        if (groupByContainer) groupByContainer.style.display = '';
+        if (filterSelect && filterSelect.parentElement) filterSelect.parentElement.style.display = '';
+        if (showCompletedCheckbox && showCompletedCheckbox.parentElement) showCompletedCheckbox.parentElement.style.display = '';
     }
 }
 

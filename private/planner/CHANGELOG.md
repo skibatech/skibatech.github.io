@@ -5,6 +5,13 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.31] - 2026-01-02
+
+### Fixed
+- Fixed STE-93: Task controls (View, Group by, Filter, Show completed, Grid Edit) now properly hidden when on Goals or Dashboard tabs
+- Controls now only visible on Tasks tab where they're relevant
+- Improves UI clarity when switching between tabs
+
 ## [3.2.30] - 2026-01-02
 
 ### Fixed
