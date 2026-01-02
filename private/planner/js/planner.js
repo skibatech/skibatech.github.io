@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.47'; // Improve Update Available badge visual separation
+const APP_VERSION = '3.3.0'; // Added Pomodoro Timer feature with active countdown
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1073,6 +1073,9 @@ async function updateAuthUI(isAuthenticated) {
         authRequired.style.display = 'none';
         mainWrapper.style.display = 'flex';
         document.body.classList.remove('unauthenticated');
+        
+        // Initialize Pomodoro Timer
+        initPomodoro();
         
         // Fetch and display user info
         try {

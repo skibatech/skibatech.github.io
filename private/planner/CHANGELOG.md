@@ -5,6 +5,21 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-01-02
+
+### Added
+- **Pomodoro Timer** feature with active countdown in header
+  - 25-minute focus sessions
+  - 5-minute short breaks
+  - 15-minute long breaks (after 4 focus sessions)
+  - Visual countdown timer in MM:SS format
+  - Session counter tracking completed pomodoros (🍅)
+  - Play, pause, and reset controls
+  - Auto-advances to break/focus after completion
+  - Browser notifications when sessions complete
+  - Document title updates with countdown when running
+  - Session count persisted in localStorage
+
 ## [3.2.47] - 2026-01-02
 
 ### Changed
