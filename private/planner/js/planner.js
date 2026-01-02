@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.12'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.13'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2347,13 +2347,12 @@ function groupTasksBy(tasks, buckets, groupBy) {
                 
                 if (taskGoals.length > 0) {
                     // Add task to each goal group
-                    taskGoals.forEach(goalId => {
-                        const goal = getGoalById(goalId);
+                    taskGoals.forEach(goal => {
                         if (goal) {
-                            if (!groups[goalId]) {
-                                groups[goalId] = { id: goalId, name: goal.name, tasks: [] };
+                            if (!groups[goal.id]) {
+                                groups[goal.id] = { id: goal.id, name: goal.name, tasks: [] };
                             }
-                            groups[goalId].tasks.push(task);
+                            groups[goal.id].tasks.push(task);
                         }
                     });
                     return; // Skip the default grouping logic below

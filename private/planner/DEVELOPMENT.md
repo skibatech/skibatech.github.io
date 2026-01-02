@@ -25,12 +25,22 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.11
-**Last Commit**: "v3.2.11: Exclude Weekly Compass tasks from Theme view"
+**Last Committed Version**: 3.2.12
+**Last Commit**: "v3.2.12: Extend compass exclusion to Group by Theme"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.12 (ready to commit)
+**Current Working Version**: 3.2.13 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.13 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Fixed "By Goal" view showing all tasks as "No goal" instead of grouping under actual goals
+- Bug in groupTasksBy(): getGoalsForBucket() returns goal objects, not IDs
+- Changed taskGoals.forEach(goalId => ...) to taskGoals.forEach(goal => ...)
+- Removed unnecessary getGoalById() call since goal object is already available
+- Tasks now correctly group under their assigned goals
 
 ### v3.2.12 (2026-01-02)
 **Status**: 🔄 Ready to Commit
