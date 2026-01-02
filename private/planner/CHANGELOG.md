@@ -5,6 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.29] - 2026-01-02
+
+### Fixed
+- Goals system bucket no longer appears in task bucket dropdowns
+- Filtered out Goals bucket from new task modal
+- Filtered out Goals bucket from task details modal
+- Filtered out Goals bucket from bulk edit sidebar
+
 ## [3.2.28] - 2026-01-02
 
 ### Fixed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.28'; // Fix Goals task count navigation using switchTab()
+const APP_VERSION = '3.2.29'; // Filter Goals bucket from all task bucket dropdowns
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -3813,6 +3813,7 @@ function showAddTask(bucketId, bucketName) {
     const bucketSelect = document.getElementById('newTaskBucket');
     bucketSelect.innerHTML = allBuckets
         .slice()
+        .filter(b => b.name !== GOALS_BUCKET_NAME)
         .sort((a, b) => a.name.localeCompare(b.name))
         .map(b => 
             `<option value="${b.id}" ${b.id === bucketId ? 'selected' : ''}>${b.name}</option>`
@@ -4181,7 +4182,7 @@ async function openTaskDetail(taskId) {
         const bucketSelect = document.getElementById('detailTaskBucket');
         bucketSelect.innerHTML = allBuckets
             .slice()
-            .filter(b => !b.isCompass)
+            .filter(b => !b.isCompass && b.name !== GOALS_BUCKET_NAME)
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(b => 
                 `<option value="${b.id}" ${b.id === task.bucketId ? 'selected' : ''}>${b.name}</option>`
@@ -4899,7 +4900,7 @@ function updateBulkEditSidebar() {
         
         // Populate bucket dropdown if we haven't already
         if (bucketSelect && bucketSelect.options.length === 1) { // Only "No change" option exists
-            (allBuckets || []).slice().filter(b => !b.isCompass).sort((a, b) => a.name.localeCompare(b.name)).forEach(b => {
+            (allBuckets || []).slice().filter(b => !b.isCompass && b.name !== GOALS_BUCKET_NAME).sort((a, b) => a.name.localeCompare(b.name)).forEach(b => {
                 const opt = document.createElement('option');
                 opt.value = b.id;
                 opt.textContent = b.name;

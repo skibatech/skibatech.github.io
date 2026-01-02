@@ -4,12 +4,20 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.27
-**Last Commit**: "v3.2.27: Fix bucket selector modal button positioning"
+**Last Committed Version**: 3.2.28
+**Last Commit**: "v3.2.28: Fix Goals task count navigation using switchTab()"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.28 (ready to commit)
+**Current Working Version**: 3.2.29 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.29 (2026-01-02)
+**Changes**:
+- Fixed STE-90: Goals bucket no longer appears in task edit dropdowns
+- Filtered Goals bucket from new task modal bucket dropdown
+- Filtered Goals bucket from task details modal bucket dropdown
+- Filtered Goals bucket from bulk edit sidebar bucket dropdown
+- Users can no longer accidentally assign tasks to the Goals system bucket
 
 ### v3.2.28 (2026-01-02)
 **Changes**:
