@@ -5,6 +5,15 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.42] - 2026-01-02
+
+### Changed
+- Restructured Update Available badge as separate bubble outside version pill
+- Version number now in its own bubble, Update Available in adjacent bubble
+- Reduced spacing to 8px between bubbles for cleaner visual separation
+- Increased badge padding slightly (3px 8px) for better appearance as standalone element
+- Eliminates visual confusion of badge appearing inside/outside version pill
+
 ## [3.2.41] - 2026-01-02
 
 ### Fixed

@@ -4,12 +4,20 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.40
-**Last Commit**: "v3.2.40: Fix description textarea heights with inline style updates"
+**Last Committed Version**: 3.2.41
+**Last Commit**: "v3.2.41: Increase Update Available badge margin from 12px to 16px"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.41 (ready to commit)
+**Current Working Version**: 3.2.42 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.42 (2026-01-02)
+**Changes**:
+- Fixed visual confusion with Update Available badge placement
+- Moved updateBadge outside of version-pill span - now separate bubbles
+- Version: its own bubble, Update Available: adjacent bubble with 8px gap
+- Increased badge padding to 3px 8px (was 2px 6px) for standalone appearance
+- Cleaner visual separation eliminates optical illusion of being inside/outside
 
 ### v3.2.41 (2026-01-02)
 **Changes**:
