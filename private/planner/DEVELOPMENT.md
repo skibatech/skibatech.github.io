@@ -17,12 +17,26 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.6
-**Last Commit**: "v3.1.6: Fix compass sorting in renderGroup function"
+**Last Committed Version**: 3.2.0
+**Last Commit**: "v3.2.0: Migrate goals to Planner plan details for team sharing"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.6 (stable)
+**Current Working Version**: 3.2.0 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.0 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- MAJOR CHANGE: Migrated goals storage from Microsoft To Do to Planner plan details
+- Goals now stored in plan's sharedWith.goalsData field (shared across team)
+- Removed goalsListId variable and To Do list initialization
+- Updated loadGoalsData() to read from plan details API
+- Updated saveGoal() to write to plan details
+- Updated deleteGoal() to update plan details
+- Updated saveBucketGoalMapping() to use plan details
+- Added saveGoalsToPlanner() helper function
+- Goals now visible to all team members with plan access
 
 ### v3.1.6 (2026-01-02)
 **Status**: ✅ Committed & Pushed

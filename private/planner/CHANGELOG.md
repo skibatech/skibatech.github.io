@@ -5,6 +5,18 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-01-02
+
+### Changed
+- **BREAKING**: Goals now stored in Planner plan details instead of Microsoft To Do
+- Goals are now shared with all team members who have access to the plan
+- Removed dependency on personal To Do lists for goals storage
+- Goals data stored in plan's `sharedWith.goalsData` field
+
+### Migration
+- Existing goals in To Do will need to be recreated in the Goals tab
+- All team members will see the same goals
+
 ## [3.1.6] - 2026-01-02
 
 ### Fixed
