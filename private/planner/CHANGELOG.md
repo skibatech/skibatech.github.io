@@ -5,6 +5,12 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.46] - 2026-01-02
+
+### Fixed
+- Fixed "changeGrouping is not defined" error when clicking task counts in Goals view
+- Corrected function name from changeGrouping() to changeGroupBy()
+
 ## [3.2.45] - 2026-01-02
 
 ### Fixed

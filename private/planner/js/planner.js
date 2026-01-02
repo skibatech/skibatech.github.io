@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.45'; // Fix view/groupby not respecting stored defaults on refresh
+const APP_VERSION = '3.2.46'; // Fix changeGrouping() error when clicking goal task counts
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -7108,7 +7108,7 @@ function navigateToGoalTasks(goalId) {
     
     // Change view and render
     changeView();
-    changeGrouping();
+    changeGroupBy();
 }
 
 function confirmDeleteGoalFromCard(goalId) {
