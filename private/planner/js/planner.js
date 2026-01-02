@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.5'; // Add cache control headers to prevent HTML caching
+const APP_VERSION = '3.3.6'; // Create Update Available badge dynamically to handle cached HTML
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1149,11 +1149,23 @@ async function checkForVersionUpdate() {
 
         const latestVersion = match[1];
         latestAvailableVersion = latestVersion;
-        const updateBadge = document.getElementById('updateBadge');
-        console.log('[version-check] updateBadge element', updateBadge ? 'found' : 'NOT FOUND');
+        
+        // Get or create the update badge (handles cached HTML without badge)
+        let updateBadge = document.getElementById('updateBadge');
         if (!updateBadge) {
-            console.log('[version-check] ERROR: updateBadge element not found in DOM');
-            return;
+            console.log('[version-check] Badge element not found, creating dynamically');
+            const h1 = document.getElementById('dashboardTitle');
+            if (!h1) {
+                console.log('[version-check] Cannot create badge - no dashboard title found');
+                return;
+            }
+            updateBadge = document.createElement('span');
+            updateBadge.id = 'updateBadge';
+            updateBadge.textContent = 'UPDATE AVAILABLE';
+            updateBadge.onclick = doHardRefresh;
+            updateBadge.title = 'Click to update';
+            updateBadge.style.cssText = 'display:none; margin-left: 12px; background: #b4373b; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2);';
+            h1.appendChild(updateBadge);
         }
 
         if (latestVersion === APP_VERSION) {
