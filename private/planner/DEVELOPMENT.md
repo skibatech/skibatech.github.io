@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.34
-**Last Commit**: "v3.2.34: Fix bucket selector modal text/button widths"
+**Last Committed Version**: 3.2.35
+**Last Commit**: "v3.2.35: Fix By Goal view showing No goal on page load"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.35 (ready to commit)
+**Current Working Version**: 3.2.36 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.36 (2026-01-02)
+**Changes**:
+- Enhanced bucket selector modal button appearance
+- Added comprehensive button styling: padding, font-size, font-weight, border-radius
+- Increased button gap from 8px to 12px for better spacing
+- Added .btn, .btn-secondary, and .btn-primary styles
+- Buttons now have proper colors and hover states
+- Secondary button uses tertiary background, Primary uses brand color
 
 ### v3.2.35 (2026-01-02)
 **Changes**:

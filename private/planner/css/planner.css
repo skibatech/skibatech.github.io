@@ -2141,7 +2141,35 @@ body.dark-mode .editable-cell.editing {
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 12px;
+}
+
+.bucket-selector-modal .btn {
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.bucket-selector-modal .btn-secondary {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.bucket-selector-modal .btn-secondary:hover {
+    background-color: var(--bg-hover);
+}
+
+.bucket-selector-modal .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.bucket-selector-modal .btn-primary:hover {
+    background-color: var(--primary-hover);
 }
 
 .bucket-selector-list {

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.35'; // Fix By Goal view showing No goal on page load
+const APP_VERSION = '3.2.36'; // Improve bucket selector modal button styling
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
