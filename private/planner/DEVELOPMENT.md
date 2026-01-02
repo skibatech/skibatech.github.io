@@ -22,9 +22,18 @@
 **Last Committed Version**: 3.2.9
 **Last Commit**: "v3.2.9: Add sortable columns to Goals table"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.9 (stable)
+**Current Working Version**: 3.2.10 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.10 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Fixed Goals tab displaying blank when page refreshed with Goals tab selected
+- Added renderGoalsView() call in initializeGoals() after data loads
+- Ensures Goals view renders properly when it's the active tab during initialization
+- Timing issue: switchTab() was called before goals data loaded from API
 
 ### v3.2.9 (2026-01-02)
 **Status**: ✅ Committed & Pushed

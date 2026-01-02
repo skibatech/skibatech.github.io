@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.9'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.10'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -5964,6 +5964,11 @@ async function initializeGoals() {
         
         // Load goals from bucket tasks
         await loadGoalsData();
+        
+        // If Goals tab is active, render the view now that data is loaded
+        if (currentTab === 'goals') {
+            renderGoalsView();
+        }
     } catch (err) {
         console.error('Error initializing goals:', err);
     }

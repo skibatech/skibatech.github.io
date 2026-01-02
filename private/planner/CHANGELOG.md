@@ -5,6 +5,13 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.10] - 2026-01-02
+
+### Fixed
+- Fixed Goals tab showing blank on page refresh
+- Goals view now renders after data is loaded during initialization
+- Added render call in initializeGoals() when Goals tab is active
+
 ## [3.2.9] - 2026-01-02
 
 ### Added
