@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.43'; // Add My tasks filter to show only tasks assigned to current user
+const APP_VERSION = '3.2.44'; // Alphabetize SAW suggestions in picker tool
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -4572,7 +4572,10 @@ function showSawSuggestions(category) {
     ul.className = 'saw-suggestions-list';
     ul.style.cssText = 'list-style: none; padding-left: 0; color: var(--compass-text); margin: 0;';
 
-    suggestions.forEach((s) => {
+    // Sort suggestions alphabetically
+    const sortedSuggestions = [...suggestions].sort((a, b) => a.localeCompare(b));
+
+    sortedSuggestions.forEach((s) => {
         const t = truncateToWords(s, 6);
         const li = document.createElement('li');
         li.className = 'saw-suggestion-item';

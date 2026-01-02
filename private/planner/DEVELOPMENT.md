@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.42
-**Last Commit**: "v3.2.42: Make Update Available badge a separate bubble outside version pill"
+**Last Committed Version**: 3.2.43
+**Last Commit**: "v3.2.43: Add My tasks filter to show only tasks assigned to current user"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.43 (ready to commit)
+**Current Working Version**: 3.2.44 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.44 (2026-01-02)
+**Changes**:
+- Alphabetized SAW suggestions in showSawSuggestions() function
+- Created sorted copy of suggestions array using spread operator and localeCompare
+- Makes it easier to find specific suggestions when editing Weekly Compass
+- Applies to Physical, Mental, Social/Emotional, and Spiritual categories
 
 ### v3.2.43 (2026-01-02)
 **Changes**:
