@@ -17,12 +17,19 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.4
-**Last Commit**: "v3.2.4: Fix goal date timezone issue"
+**Last Committed Version**: 3.2.5
+**Last Commit**: "v3.2.5: Enhance date picker UX for goal target date"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.4 (stable)
+**Current Working Version**: 3.2.5 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.5 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Added cursor: pointer to goal target date input
+- Confirmed date picker already functional (uses HTML5 native date input)
 
 ### v3.2.4 (2026-01-02)
 **Status**: ✅ Committed & Pushed
