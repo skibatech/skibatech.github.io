@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.6'; // Create Update Available badge dynamically to handle cached HTML
+const APP_VERSION = '3.3.7'; // Fix notification permission violation in Pomodoro timer
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },

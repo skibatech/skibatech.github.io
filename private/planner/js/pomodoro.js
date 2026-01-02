@@ -23,6 +23,11 @@ function initPomodoro() {
 }
 
 function startPomodoro() {
+    // Request notification permission on first use (not on page load)
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+    
     pomodoroIsRunning = true;
     document.getElementById('pomodoroStart').style.display = 'none';
     document.getElementById('pomodoroPause').style.display = 'inline-block';
@@ -117,9 +122,4 @@ function updatePomodoroDisplay() {
 
 function updatePomodoroSessionDisplay() {
     document.getElementById('pomodoroSessions').textContent = `🍅 ${pomodoroSessionCount}`;
-}
-
-// Request notification permission on page load
-if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
 }
