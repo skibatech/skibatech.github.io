@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.7'; // Fix notification permission violation in Pomodoro timer
+const APP_VERSION = '3.3.8'; // Fix CodeQL security findings
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1547,12 +1547,10 @@ async function loadTasks() {
                 }
                 
                 // Individual fetch fallback (limited by permission)
-                if (batchFailed) {
-                    for (const userId of chunk) {
-                        const user = await fetchUserById(userId);
-                        if (user && user.displayName) {
-                            userDetailsMap[user.id] = user.displayName;
-                        }
+                for (const userId of chunk) {
+                    const user = await fetchUserById(userId);
+                    if (user && user.displayName) {
+                        userDetailsMap[user.id] = user.displayName;
                     }
                 }
             }
@@ -1748,6 +1746,7 @@ function renderTasks(buckets, tasks) {
 }
 
 function renderByBucket(container, buckets, tasks) {
+    let groups;
     if (currentGroupBy === 'bucket') {
         // Sort buckets alphabetically by name
         groups = buckets.slice().sort((a, b) => a.name.localeCompare(b.name)).map(bucket => ({

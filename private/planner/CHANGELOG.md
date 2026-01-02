@@ -5,6 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.8] - 2026-01-02
+
+### Fixed
+- Fixed CodeQL security findings: removed useless conditional, declared missing variable, removed unused code
+- Removed unnecessary batchFailed check (line 1550)
+- Added proper let declaration for groups variable (line 1753)
+- Removed unused synced variable in admin-core.js (line 489)
+
 ## [3.3.7] - 2026-01-02
 
 ### Fixed

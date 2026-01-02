@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.43
-**Last Commit**: "v3.2.43: Add My tasks filter to show only tasks assigned to current user"
+**Last Committed Version**: 3.3.8
+**Last Commit**: "v3.3.8: Fix CodeQL security findings"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.44 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.3.8 (2026-01-02)
+**Changes**:
+- Fixed CodeQL security findings identified by GitHub Actions scan
+- Removed useless conditional check for batchFailed (always true at that point)
+- Added proper let declaration for groups variable in renderByBucket()
+- Removed unused synced variable in admin-core.js
+- Set up GitHub Actions CodeQL workflow for automated security scanning
 
 ### v3.2.44 (2026-01-02)
 **Changes**:

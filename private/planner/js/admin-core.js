@@ -486,7 +486,7 @@ async function saveAdminSettings() {
         taskIdPrefix: prefix || 'STE'
     };
 
-    const synced = await syncThemesToPlanner(updatedThemes);
+    await syncThemesToPlanner(updatedThemes);
     
     // Show config.json content in modal for easy copying
     const configJson = JSON.stringify(newConfig, null, 2);
