@@ -17,12 +17,20 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.4
-**Last Commit**: "v3.1.4: Add detailed task listing for debugging"
+**Last Committed Version**: 3.1.5
+**Last Commit**: "v3.1.5: Fix Weekly Compass task sorting"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.4 (stable)
+**Current Working Version**: 3.1.5 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.5 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Added default alphabetical sort by title for Weekly Compass bucket
+- Tasks now appear in alphabetical order by role name (Brother, Father, Friend, etc.)
+- Sort uses full "Role: Task" title format
 
 ### v3.1.4 (2026-01-02)
 **Status**: ✅ Committed & Pushed

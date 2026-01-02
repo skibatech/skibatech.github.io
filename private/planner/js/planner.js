@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.1.4'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.1.5'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1687,6 +1687,9 @@ function renderByBucket(container, buckets, tasks) {
         const sort = sortState[group.id];
         if (sort) {
             groupTasks = sortTasks(groupTasks, sort.column, sort.direction);
+        } else if (group.id === COMPASS_BUCKET_ID) {
+            // Default sort for Weekly Compass: alphabetical by title (includes role prefix)
+            groupTasks = sortTasks(groupTasks, 'title', 'asc');
         }
         
         const bucketDiv = document.createElement('div');
