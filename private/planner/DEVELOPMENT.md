@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.14
-**Last Commit**: "v3.2.14: Apply goal colors to goal banners in all views"
+**Last Committed Version**: 3.2.15
+**Last Commit**: "v3.2.15: Goals table improvements - alphabetical sort, resizable columns, wider layout"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.15 (ready to commit)
+**Current Working Version**: 3.2.16 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.16 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Fixed Goals table column resizing functionality
+- Added startGoalsResize(), handleGoalsResize(), stopGoalsResize() functions
+- Goals table uses table layout (width) instead of flexbox, needed separate resize logic
+- Updated all resize-handle elements to call startGoalsResize() instead of startResize()
 
 ### v3.2.15 (2026-01-02)
 **Status**: 🔄 Ready to Commit

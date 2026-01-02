@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.15'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.16'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -409,6 +409,47 @@ function stopResize() {
         isResizing = false;
         document.removeEventListener('click', blockClickDuringResize, true);
     }, 50);
+}
+
+// Goals table resize functions (for table layout, not flex)
+let goalsResizingColumn = null;
+let goalsResizeStartX = 0;
+let goalsResizeStartWidth = 0;
+
+function startGoalsResize(event, columnClass) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    goalsResizingColumn = columnClass;
+    goalsResizeStartX = event.clientX;
+    
+    // Get current width from the th element
+    const th = event.target.closest('th');
+    if (th) {
+        goalsResizeStartWidth = th.offsetWidth;
+    }
+    
+    document.addEventListener('mousemove', handleGoalsResize);
+    document.addEventListener('mouseup', stopGoalsResize);
+}
+
+function handleGoalsResize(event) {
+    if (!goalsResizingColumn) return;
+    
+    const diff = event.clientX - goalsResizeStartX;
+    const newWidth = Math.max(50, goalsResizeStartWidth + diff);
+    
+    // Update the column width directly
+    const th = document.querySelector(`.${goalsResizingColumn}`);
+    if (th) {
+        th.style.width = `${newWidth}px`;
+    }
+}
+
+function stopGoalsResize() {
+    goalsResizingColumn = null;
+    document.removeEventListener('mousemove', handleGoalsResize);
+    document.removeEventListener('mouseup', stopGoalsResize);
 }
 
 function applyColumnWidths() {
@@ -6555,23 +6596,23 @@ function renderGoalsView() {
                         <th class="col-goal-color" style="width: 40px;"></th>
                         <th class="col-goal-name" style="width: 35%; cursor: pointer;" onclick="sortGoalsTable('name')">
                             Goal Name ${goalsSortColumn === 'name' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
-                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-name')"></div>
+                            <div class="resize-handle" onmousedown="startGoalsResize(event, 'col-goal-name')"></div>
                         </th>
                         <th class="col-goal-date" style="width: 180px; cursor: pointer;" onclick="sortGoalsTable('date')">
                             Target Date ${goalsSortColumn === 'date' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
-                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-date')"></div>
+                            <div class="resize-handle" onmousedown="startGoalsResize(event, 'col-goal-date')"></div>
                         </th>
                         <th class="col-goal-buckets" style="width: 120px; cursor: pointer;" onclick="sortGoalsTable('buckets')">
                             Buckets ${goalsSortColumn === 'buckets' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
-                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-buckets')"></div>
+                            <div class="resize-handle" onmousedown="startGoalsResize(event, 'col-goal-buckets')"></div>
                         </th>
                         <th class="col-goal-tasks" style="width: 120px; cursor: pointer;" onclick="sortGoalsTable('tasks')">
                             Tasks ${goalsSortColumn === 'tasks' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
-                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-tasks')"></div>
+                            <div class="resize-handle" onmousedown="startGoalsResize(event, 'col-goal-tasks')"></div>
                         </th>
                         <th class="col-goal-progress" style="width: 180px; cursor: pointer;" onclick="sortGoalsTable('progress')">
                             Progress ${goalsSortColumn === 'progress' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
-                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-progress')"></div>
+                            <div class="resize-handle" onmousedown="startGoalsResize(event, 'col-goal-progress')"></div>
                         </th>
                         <th class="col-goal-actions" style="width: 100px;">Actions</th>
                     </tr>
