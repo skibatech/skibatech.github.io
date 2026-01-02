@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.34'; // Fix bucket selector modal text/button widths
+const APP_VERSION = '3.2.35'; // Fix By Goal view showing No goal on page load
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6252,6 +6252,11 @@ async function initializeGoals() {
         // If Goals tab is active, render the view now that data is loaded
         if (currentTab === 'goals') {
             renderGoalsView();
+        }
+        
+        // If Tasks view is using goal-based view/grouping, re-render with loaded goals
+        if (currentTab === 'tasks' && (currentView === 'goal' || currentGroupBy === 'goal')) {
+            applyFilters();
         }
     } catch (err) {
         console.error('Error initializing goals:', err);

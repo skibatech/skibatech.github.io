@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.33
-**Last Commit**: "v3.2.33: Fix priority filters - Correct urgent/important values"
+**Last Committed Version**: 3.2.34
+**Last Commit**: "v3.2.34: Fix bucket selector modal text/button widths"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.34 (ready to commit)
+**Current Working Version**: 3.2.35 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.35 (2026-01-02)
+**Changes**:
+- Fixed By Goal view rendering issue on page load/refresh
+- Tasks were rendering before goals data loaded, showing everything under "No goal"
+- Added logic in initializeGoals() to re-render tasks after goals load
+- Now checks if currentView === 'goal' OR currentGroupBy === 'goal'
+- Calls applyFilters() to re-render with proper goal associations
+- Resolves issue where Update Available refresh showed incorrect goal grouping
 
 ### v3.2.34 (2026-01-02)
 **Changes**:
