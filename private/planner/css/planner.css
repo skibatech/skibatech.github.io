@@ -597,6 +597,16 @@ textarea.task-input {
     resize: vertical;
 }
 
+/* Date input calendar icon visibility in dark mode */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0);
+}
+
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
 .modal-actions {
     display: flex;
     gap: 10px;

@@ -17,12 +17,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.5
-**Last Commit**: "v3.2.5: Enhance date picker UX for goal target date"
+**Last Committed Version**: 3.2.6
+**Last Commit**: "v3.2.6: Fix date picker calendar icon visibility in dark mode"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.5 (stable)
+**Current Working Version**: 3.2.6 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.6 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed calendar icon visibility in dark mode for date inputs
+- Added CSS for ::-webkit-calendar-picker-indicator pseudo-element
+- Applied filter: invert(1) for dark mode to make black icon visible
+- Light mode uses filter: invert(0) (no change)
 
 ### v3.2.5 (2026-01-02)
 **Status**: ✅ Committed & Pushed
