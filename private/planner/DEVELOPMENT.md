@@ -9,6 +9,8 @@
   - `planner.js`: `const APP_VERSION = 'X.X.X';` (line ~1)
   - `index.html`: Both cache-bust URLs (`v=X.X.X` for CSS and JS)
   - `CHANGELOG.md`: New entry at top with date and changes
+  - `DEVELOPMENT.md`: New entry at top with date and changes
+- **Before committing**: Make sure to update CHANGELOG.md and DEVELOPMENT.md as needed
 - **Git pattern**: Combine all file staging, removal, commit, and push on one line:
   ```powershell
   git add <files>; git commit -m "vX.X.X: <description>"; git push origin main
