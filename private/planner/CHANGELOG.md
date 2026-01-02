@@ -5,6 +5,13 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.14] - 2026-01-02
+
+### Changed
+- Goal banners now use the goal's assigned color
+- Applied to both "View: By Goal" and "Group by: Goal" scenarios
+- Goal colors now visible in primary and secondary group headers
+
 ## [3.2.13] - 2026-01-02
 
 ### Fixed

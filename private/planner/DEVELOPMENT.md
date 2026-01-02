@@ -25,12 +25,22 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.12
-**Last Commit**: "v3.2.12: Extend compass exclusion to Group by Theme"
+**Last Committed Version**: 3.2.13
+**Last Commit**: "v3.2.13: Fix By Goal view showing all tasks as No goal"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.13 (ready to commit)
+**Current Working Version**: 3.2.14 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.14 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Goal banners now display using the goal's assigned color
+- Added goal color support to renderGroup() function (already existed for View: By Goal)
+- Added goal color support to renderNestedView() for both primary and secondary headers
+- Works in "View: By Goal" and any "Group by: Goal" combination
+- Goal colors applied with white text for readability
 
 ### v3.2.13 (2026-01-02)
 **Status**: 🔄 Ready to Commit

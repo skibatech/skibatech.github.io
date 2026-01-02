@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.13'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.14'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1964,6 +1964,12 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             }
             // Use prefixed theme name for display
             primaryDisplayName = getThemeDisplayNameWithPrefix(primaryGrp.id);
+        } else if (primaryGroup === 'goal') {
+            const goal = getGoalById(primaryGrp.id);
+            if (goal && goal.color) {
+                primaryHeader.style.background = goal.color;
+                primaryHeader.style.color = 'white';
+            }
         }
         
         primaryHeader.innerHTML = `
@@ -2015,6 +2021,12 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
                 }
                 // Use prefixed theme name for display
                 secondaryDisplayName = getThemeDisplayNameWithPrefix(secondaryGrp.id);
+            } else if (secondaryGroup === 'goal') {
+                const goal = getGoalById(secondaryGrp.id);
+                if (goal && goal.color) {
+                    bucketHeader.style.background = goal.color;
+                    bucketHeader.style.color = 'white';
+                }
             }
             
             bucketHeader.innerHTML = `
