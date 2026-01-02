@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.0'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.1'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -162,8 +162,11 @@ let draggedCard = null; // Store the dragged card element
 let draggedColumnElement = null; // Store the dragged column header element
 const COMPASS_BUCKET_ID = 'weekly-compass-bucket';
 const COMPASS_BUCKET_NAME = 'Weekly Compass';
+const GOALS_BUCKET_ID = 'goals-bucket';
+const GOALS_BUCKET_NAME = '📊 Goals';
 let compassTasks = [];
 let compassTaskIds = new Set();
+let goalsBucketRealId = null; // Real Planner bucket ID for goals storage
 let columnWidths = {
     'col-id': 90,
     'col-task-name': 300,
@@ -2421,7 +2424,9 @@ function changeGroupBy() {
 }
 
 function getFilteredTasks(includeCompass = false) {
-    const pool = includeCompass ? [...allTasks, ...compassTasks] : [...allTasks];
+    // Filter out goals bucket tasks from normal views
+    const tasksWithoutGoals = allTasks.filter(t => t.bucketId !== goalsBucketRealId);
+    const pool = includeCompass ? [...tasksWithoutGoals, ...compassTasks] : [...tasksWithoutGoals];
     if (pool.length === 0) return [];
     currentFilter = document.getElementById('filterSelect').value;
     showCompleted = document.getElementById('showCompletedCheckbox').checked;
@@ -5946,18 +5951,24 @@ window.saveCompassTaskDetails = saveCompassTaskDetails;
 async function initializeGoals() {
     try {
         if (!accessToken || !planId) return;
+        
+        // Ensure goals bucket exists
+        await ensureGoalsBucket();
+        
+        // Load goals from bucket tasks
         await loadGoalsData();
     } catch (err) {
         console.error('Error initializing goals:', err);
     }
 }
 
-async function loadGoalsData() {
+async function ensureGoalsBucket() {
     if (!planId || !accessToken) return;
     
     try {
-        const response = await fetchGraph(
-            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/details`,
+        // Check if goals bucket already exists
+        const bucketsResponse = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/buckets`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
@@ -5965,25 +5976,126 @@ async function loadGoalsData() {
             }
         );
         
-        if (!response.ok) {
-            console.error('Failed to load plan details for goals:', response.status);
+        if (!bucketsResponse.ok) {
+            console.error('Failed to fetch buckets for goals:', bucketsResponse.status);
             return;
         }
         
-        const planDetails = await response.json();
+        const bucketsData = await bucketsResponse.json();
+        let goalsBucket = bucketsData.value.find(b => b.name === GOALS_BUCKET_NAME);
         
-        // Goals are stored in sharedWith field as JSON
-        try {
-            const goalsData = JSON.parse(planDetails.sharedWith?.goalsData || '{}');
-            allGoals = goalsData.goals || [];
-            bucketGoalMap = goalsData.bucketGoalMap || {};
-        } catch (err) {
-            // No goals data yet, start fresh
-            allGoals = [];
-            bucketGoalMap = {};
+        if (!goalsBucket) {
+            // Create the goals bucket
+            const createResponse = await fetchGraph(
+                'https://graph.microsoft.com/v1.0/planner/buckets',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: GOALS_BUCKET_NAME,
+                        planId: planId,
+                        orderHint: ' !'
+                    })
+                }
+            );
+            
+            if (!createResponse.ok) {
+                console.error('Failed to create goals bucket:', createResponse.status);
+                return;
+            }
+            
+            goalsBucket = await createResponse.json();
+            console.log('✅ Created goals bucket:', goalsBucket.id);
         }
         
-        console.log('Loaded goals from plan details:', allGoals.length);
+        goalsBucketRealId = goalsBucket.id;
+    } catch (err) {
+        console.error('Error ensuring goals bucket:', err);
+    }
+}
+
+async function loadGoalsData() {
+    if (!goalsBucketRealId || !accessToken) return;
+    
+    try {
+        // Fetch all tasks in the goals bucket
+        const tasksResponse = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            }
+        );
+        
+        if (!tasksResponse.ok) {
+            console.error('Failed to load tasks for goals:', tasksResponse.status);
+            return;
+        }
+        
+        const tasksData = await tasksResponse.json();
+        const goalsTasks = tasksData.value.filter(t => t.bucketId === goalsBucketRealId);
+        
+        allGoals = [];
+        bucketGoalMap = {};
+        
+        for (const task of goalsTasks) {
+            if (task.title === 'BUCKET_GOAL_MAPPINGS') {
+                // This task stores bucket-to-goal mappings
+                try {
+                    const detailsResponse = await fetchGraph(
+                        `https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`
+                            }
+                        }
+                    );
+                    
+                    if (detailsResponse.ok) {
+                        const details = await detailsResponse.json();
+                        const parsed = JSON.parse(details.description || '{}');
+                        bucketGoalMap = parsed.bucketGoalMap || {};
+                    }
+                } catch (err) {
+                    console.error('Error loading bucket-goal mappings:', err);
+                }
+            } else {
+                // Regular goal task
+                try {
+                    const detailsResponse = await fetchGraph(
+                        `https://graph.microsoft.com/v1.0/planner/tasks/${task.id}/details`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`
+                            }
+                        }
+                    );
+                    
+                    if (detailsResponse.ok) {
+                        const details = await detailsResponse.json();
+                        const parsed = JSON.parse(details.description || '{}');
+                        
+                        allGoals.push({
+                            id: task.id,
+                            name: task.title,
+                            description: parsed.description || '',
+                            color: parsed.color || '#0078d4',
+                            targetDate: parsed.targetDate || task.dueDateTime || null,
+                            etag: task['@odata.etag'],
+                            detailsEtag: details['@odata.etag']
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error loading goal details:', err);
+                }
+            }
+        }
+        
+        console.log('✅ Loaded goals from bucket:', allGoals.length);
     } catch (err) {
         console.error('Error loading goals data:', err);
         allGoals = [];
@@ -5992,25 +6104,118 @@ async function loadGoalsData() {
 }
 
 async function saveGoal(goal) {
-    if (!planId || !accessToken) return null;
+    if (!goalsBucketRealId || !accessToken) return null;
     
     try {
-        // Generate ID if new goal
-        if (!goal.id) {
-            goal.id = 'goal-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const goalData = {
+            description: goal.description || '',
+            color: goal.color || '#0078d4',
+            targetDate: goal.targetDate || null
+        };
+        
+        if (!goal.id || goal.id.startsWith('goal-')) {
+            // New goal - create task
+            const taskResponse = await fetchGraph(
+                'https://graph.microsoft.com/v1.0/planner/tasks',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        planId: planId,
+                        bucketId: goalsBucketRealId,
+                        title: goal.name,
+                        dueDateTime: goal.targetDate || null
+                    })
+                }
+            );
+            
+            if (!taskResponse.ok) {
+                const errorText = await taskResponse.text();
+                console.error('Failed to create goal task:', errorText);
+                throw new Error('Failed to create goal task');
+            }
+            
+            const newTask = await taskResponse.json();
+            
+            // Update task details with JSON data
+            const detailsResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': newTask['@odata.etag']
+                    },
+                    body: JSON.stringify({
+                        description: JSON.stringify(goalData)
+                    })
+                }
+            );
+            
+            if (!detailsResponse.ok) {
+                console.warn('Failed to update goal details, but task created');
+            }
+            
+            await loadGoalsData();
+            return newTask.id;
+            
+        } else if (goal.id) {
+            // Existing goal - update task
+            const existingGoal = allGoals.find(g => g.id === goal.id);
+            if (!existingGoal) {
+                throw new Error('Goal not found');
+            }
+            
+            // Update task title and due date
+            const taskResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${goal.id}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': existingGoal.etag
+                    },
+                    body: JSON.stringify({
+                        title: goal.name,
+                        dueDateTime: goal.targetDate || null
+                    })
+                }
+            );
+            
+            if (!taskResponse.ok) {
+                throw new Error('Failed to update goal task');
+            }
+            
+            // Update task details
+            const detailsResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${goal.id}/details`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': existingGoal.detailsEtag
+                    },
+                    body: JSON.stringify({
+                        description: JSON.stringify(goalData)
+                    })
+                }
+            );
+            
+            if (!detailsResponse.ok) {
+                console.warn('Failed to update goal details');
+            }
+            
+            await loadGoalsData();
+            return goal.id;
         }
         
-        // Update or add goal to array
-        const existingIndex = allGoals.findIndex(g => g.id === goal.id);
-        if (existingIndex >= 0) {
-            allGoals[existingIndex] = { ...goal };
-        } else {
-            allGoals.push({ ...goal });
-        }
-        
-        // Save to plan details
-        await saveGoalsToPlanner();
-        return goal.id;
+        return null;
     } catch (err) {
         console.error('Error saving goal:', err);
         alert('Failed to save goal: ' + err.message);
@@ -6019,19 +6224,37 @@ async function saveGoal(goal) {
 }
 
 async function deleteGoal(goalId) {
-    if (!planId || !accessToken || !goalId) return false;
+    if (!goalsBucketRealId || !accessToken || !goalId) return false;
     
     try {
-        // Remove from allGoals array
-        allGoals = allGoals.filter(g => g.id !== goalId);
+        const existingGoal = allGoals.find(g => g.id === goalId);
+        if (!existingGoal) {
+            throw new Error('Goal not found');
+        }
         
-        // Remove from bucket mappings
+        // Delete the Planner task
+        const response = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/planner/tasks/${goalId}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'If-Match': existingGoal.etag
+                }
+            }
+        );
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete goal task');
+        }
+        
+        // Remove from bucket mappings and save
         for (const bucketId in bucketGoalMap) {
             bucketGoalMap[bucketId] = bucketGoalMap[bucketId].filter(id => id !== goalId);
         }
+        await saveBucketGoalMappings();
         
-        // Save to plan details
-        await saveGoalsToPlanner();
+        await loadGoalsData();
         return true;
     } catch (err) {
         console.error('Error deleting goal:', err);
@@ -6041,11 +6264,11 @@ async function deleteGoal(goalId) {
 }
 
 async function saveBucketGoalMapping(bucketId, goalIds) {
-    if (!planId || !accessToken) return false;
+    if (!goalsBucketRealId || !accessToken) return false;
     
     try {
         bucketGoalMap[bucketId] = goalIds;
-        await saveGoalsToPlanner();
+        await saveBucketGoalMappings();
         return true;
     } catch (err) {
         console.error('Error saving bucket-goal mapping:', err);
@@ -6053,48 +6276,117 @@ async function saveBucketGoalMapping(bucketId, goalIds) {
     }
 }
 
-async function saveGoalsToPlanner() {
-    if (!planId || !accessToken) return false;
+async function saveBucketGoalMappings() {
+    if (!goalsBucketRealId || !accessToken) return false;
     
     try {
-        const goalsData = JSON.stringify({
-            goals: allGoals,
-            bucketGoalMap: bucketGoalMap
-        });
-        
-        const response = await fetchGraph(
-            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/details`,
+        // Find or create the BUCKET_GOAL_MAPPINGS task
+        const tasksResponse = await fetchGraph(
+            `https://graph.microsoft.com/v1.0/planner/plans/${planId}/tasks`,
             {
-                method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                    'If-Match': planDetailsEtag
-                },
-                body: JSON.stringify({
-                    sharedWith: {
-                        goalsData: goalsData
-                    }
-                })
+                    'Authorization': `Bearer ${accessToken}`
+                }
             }
         );
         
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Failed to save goals to plan details:', response.status, errorText);
-            throw new Error('Failed to save goals');
+        if (!tasksResponse.ok) {
+            throw new Error('Failed to fetch tasks');
         }
         
-        // Update etag
-        const newEtag = response.headers.get('etag') || response.headers.get('ETag');
-        if (newEtag) {
-            planDetailsEtag = newEtag;
+        const tasksData = await tasksResponse.json();
+        const mappingTask = tasksData.value.find(t => 
+            t.bucketId === goalsBucketRealId && t.title === 'BUCKET_GOAL_MAPPINGS'
+        );
+        
+        const mappingData = {
+            bucketGoalMap: bucketGoalMap
+        };
+        
+        if (mappingTask) {
+            // Update existing mapping task
+            const detailsResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${mappingTask.id}/details`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                }
+            );
+            
+            if (!detailsResponse.ok) {
+                throw new Error('Failed to fetch mapping details');
+            }
+            
+            const details = await detailsResponse.json();
+            
+            const updateResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${mappingTask.id}/details`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': details['@odata.etag']
+                    },
+                    body: JSON.stringify({
+                        description: JSON.stringify(mappingData)
+                    })
+                }
+            );
+            
+            if (!updateResponse.ok) {
+                throw new Error('Failed to update mapping task');
+            }
+        } else {
+            // Create new mapping task
+            const createResponse = await fetchGraph(
+                'https://graph.microsoft.com/v1.0/planner/tasks',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        planId: planId,
+                        bucketId: goalsBucketRealId,
+                        title: 'BUCKET_GOAL_MAPPINGS'
+                    })
+                }
+            );
+            
+            if (!createResponse.ok) {
+                throw new Error('Failed to create mapping task');
+            }
+            
+            const newTask = await createResponse.json();
+            
+            // Update details with mapping data
+            const updateResponse = await fetchGraph(
+                `https://graph.microsoft.com/v1.0/planner/tasks/${newTask.id}/details`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                        'If-Match': newTask['@odata.etag']
+                    },
+                    body: JSON.stringify({
+                        description: JSON.stringify(mappingData)
+                    })
+                }
+            );
+            
+            if (!updateResponse.ok) {
+                console.warn('Failed to update mapping details');
+            }
         }
         
-        console.log('✅ Goals saved to plan details');
+        console.log('✅ Saved bucket-goal mappings');
         return true;
     } catch (err) {
-        console.error('Error saving goals to planner:', err);
+        console.error('Error saving bucket-goal mappings:', err);
         throw err;
     }
 }

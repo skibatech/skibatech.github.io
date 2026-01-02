@@ -17,12 +17,29 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.0
-**Last Commit**: "v3.2.0: Migrate goals to Planner plan details for team sharing"
+**Last Committed Version**: 3.2.1
+**Last Commit**: "v3.2.1: Implement goals as tasks in special bucket"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.0 (stable)
+**Current Working Version**: 3.2.1 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.1 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed goals storage approach - now uses Planner bucket instead of plan details
+- Created "📊 Goals" bucket to store goal tasks
+- Added GOALS_BUCKET_ID and GOALS_BUCKET_NAME constants
+- Added goalsBucketRealId variable to track bucket ID
+- Updated getFilteredTasks() to exclude goals bucket from normal views
+- Implemented ensureGoalsBucket() to create bucket if missing
+- Rewrote loadGoalsData() to read from bucket tasks
+- Rewrote saveGoal() to create/update Planner tasks
+- Rewrote deleteGoal() to delete Planner tasks
+- Added saveBucketGoalMappings() to store mappings in special task
+- Goals stored as: task title = goal name, task description = JSON metadata
+- Resolves API error from v3.2.0 (sharedWith field has restricted schema)
 
 ### v3.2.0 (2026-01-02)
 **Status**: ✅ Committed & Pushed

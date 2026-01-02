@@ -5,6 +5,19 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.1] - 2026-01-02
+
+### Changed
+- Goals now stored as tasks in a special "📊 Goals" Planner bucket
+- Goals bucket hidden from normal task views but visible in Goals tab
+- Each goal is a real Planner task with metadata in description
+- Bucket-goal mappings stored in special BUCKET_GOAL_MAPPINGS task
+- More reliable than plan details sharedWith field approach
+
+### Fixed
+- Resolved API error when trying to save goals to plan details
+- Goals now properly shared with all team members
+
 ## [3.2.0] - 2026-01-02
 
 ### Changed
