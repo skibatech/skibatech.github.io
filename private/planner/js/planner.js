@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.7'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.8'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6443,11 +6443,11 @@ function getGoalById(goalId) {
 // ========================================
 
 function renderGoalsView() {
-    const grid = document.getElementById('goalsGrid');
+    const container = document.getElementById('goalsGrid');
     const empty = document.getElementById('goalsEmpty');
     
     if (!allGoals || allGoals.length === 0) {
-        grid.innerHTML = '';
+        container.innerHTML = '';
         empty.style.display = 'block';
         return;
     }
@@ -6461,8 +6461,13 @@ function renderGoalsView() {
             bucketGoalMap[bucketId].includes(goal.id)
         );
         
-        // Get tasks from those buckets
-        const goalTasks = allTasks.filter(task => bucketIds.includes(task.bucketId));
+        // Get tasks from those buckets (exclude goals bucket tasks)
+        const goalTasks = allTasks.filter(task => {
+            if (goalsBucketRealId && task.bucketId === goalsBucketRealId) return false;
+            const bucket = allBuckets.find(b => b.id === task.bucketId);
+            if (bucket && bucket.name === GOALS_BUCKET_NAME) return false;
+            return bucketIds.includes(task.bucketId);
+        });
         const totalTasks = goalTasks.length;
         const completedTasks = goalTasks.filter(t => t.percentComplete === 100).length;
         const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -6472,51 +6477,79 @@ function renderGoalsView() {
             bucketCount: bucketIds.length,
             taskCount: totalTasks,
             completedTasks,
-            progress
+            progress,
+            bucketIds
         };
     });
     
-    grid.innerHTML = goalsWithProgress.map(goal => {
-        const targetDate = goal.targetDate ? new Date(goal.targetDate).toLocaleDateString() : 'No target date';
-        const daysRemaining = goal.targetDate ? Math.ceil((new Date(goal.targetDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-        
-        return `
-            <div class="goal-card" style="border-left-color: ${goal.color}" onclick="editGoal('${goal.id}')">
-                <div class="goal-card-header">
-                    <div>
-                        <div class="goal-card-title">${escapeHtml(goal.name)}</div>
-                    </div>
-                    <div class="goal-card-actions">
-                        <button class="goal-card-btn" onclick="event.stopPropagation(); editGoal('${goal.id}')" title="Edit">✏️</button>
-                        <button class="goal-card-btn" onclick="event.stopPropagation(); confirmDeleteGoalFromCard('${goal.id}')" title="Delete">🗑️</button>
-                    </div>
-                </div>
-                
-                ${goal.description ? `<div class="goal-card-description">${escapeHtml(goal.description)}</div>` : ''}
-                
-                <div class="goal-card-meta">
-                    <div class="goal-card-meta-item">
-                        <span>📊</span>
-                        <span>${goal.bucketCount} bucket${goal.bucketCount !== 1 ? 's' : ''} • ${goal.taskCount} task${goal.taskCount !== 1 ? 's' : ''}</span>
-                    </div>
-                    <div class="goal-card-meta-item">
-                        <span>📅</span>
-                        <span>${targetDate}${daysRemaining !== null ? ` (${daysRemaining} days)` : ''}</span>
-                    </div>
-                </div>
-                
-                <div class="goal-card-progress">
-                    <div class="goal-progress-bar">
-                        <div class="goal-progress-fill" style="width: ${goal.progress}%; background: ${goal.color};"></div>
-                    </div>
-                    <div class="goal-progress-text">
-                        <span>${goal.completedTasks} of ${goal.taskCount} tasks complete</span>
-                        <span>${goal.progress}%</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
+    // Sort goals by target date (closest first), then by name
+    goalsWithProgress.sort((a, b) => {
+        const aDate = a.targetDate ? new Date(a.targetDate).getTime() : Infinity;
+        const bDate = b.targetDate ? new Date(b.targetDate).getTime() : Infinity;
+        if (aDate !== bDate) return aDate - bDate;
+        return a.name.localeCompare(b.name);
+    });
+    
+    container.innerHTML = `
+        <div class="goals-table-wrapper">
+            <table class="goals-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;"></th>
+                        <th style="width: 40%;">Goal Name</th>
+                        <th style="width: 120px;">Target Date</th>
+                        <th style="width: 100px;">Buckets</th>
+                        <th style="width: 100px;">Tasks</th>
+                        <th style="width: 150px;">Progress</th>
+                        <th style="width: 80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${goalsWithProgress.map(goal => {
+                        const targetDate = goal.targetDate ? new Date(goal.targetDate).toLocaleDateString() : 'None';
+                        const daysRemaining = goal.targetDate ? Math.ceil((new Date(goal.targetDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                        const daysText = daysRemaining !== null ? 
+                            (daysRemaining > 0 ? `${daysRemaining} days left` : daysRemaining === 0 ? 'Today' : `${Math.abs(daysRemaining)} days overdue`) 
+                            : '';
+                        
+                        return `
+                            <tr class="goal-row" onclick="editGoal('${goal.id}')">
+                                <td><div class="goal-color-indicator" style="background: ${goal.color};"></div></td>
+                                <td>
+                                    <div class="goal-name-cell">
+                                        <div class="goal-name-text">${escapeHtml(goal.name)}</div>
+                                        ${goal.description ? `<div class="goal-description-text">${escapeHtml(goal.description)}</div>` : ''}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="goal-date-cell">
+                                        <div>${targetDate}</div>
+                                        ${daysText ? `<div class="goal-days-text ${daysRemaining < 0 ? 'overdue' : ''}">${daysText}</div>` : ''}
+                                    </div>
+                                </td>
+                                <td class="goal-count-cell">${goal.bucketCount} bucket${goal.bucketCount !== 1 ? 's' : ''}</td>
+                                <td class="goal-count-cell">${goal.taskCount} task${goal.taskCount !== 1 ? 's' : ''}</td>
+                                <td>
+                                    <div class="goal-progress-cell">
+                                        <div class="goal-progress-bar-small">
+                                            <div class="goal-progress-fill-small" style="width: ${goal.progress}%; background: ${goal.color};"></div>
+                                        </div>
+                                        <div class="goal-progress-percentage">${goal.progress}%</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="goal-actions-cell">
+                                        <button class="goal-action-btn" onclick="event.stopPropagation(); editGoal('${goal.id}')" title="Edit Goal">✏️</button>
+                                        <button class="goal-action-btn" onclick="event.stopPropagation(); confirmDeleteGoalFromCard('${goal.id}')" title="Delete Goal">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
 function showGoalModal(goalId = null) {

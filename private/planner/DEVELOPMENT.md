@@ -20,9 +20,21 @@
 **Last Committed Version**: 3.2.7
 **Last Commit**: "v3.2.7: Fix Goals tasks appearing in Unassigned group on load"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.7 (stable)
+**Current Working Version**: 3.2.8 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.8 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Converted Goals view from card grid layout to table/list format
+- Added structured columns: color, name+description, target date, bucket count, task count, progress bar, actions
+- Goals sorted by target date (closest deadline first), then alphabetically
+- Added days remaining calculation with overdue highlighting in red
+- Task counts properly exclude Goals bucket tasks to avoid confusion
+- New CSS styling for table rows, hover effects, and responsive layout
+- Improves scanability and makes it easier to compare goals at a glance
 
 ### v3.2.7 (2026-01-02)
 **Status**: ✅ Committed & Pushed

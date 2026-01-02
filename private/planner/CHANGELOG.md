@@ -5,6 +5,16 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.8] - 2026-01-02
+
+### Changed
+- Converted Goals view from card grid to table/list format
+- Added columns: color indicator, name, description, target date, bucket count, task count, progress, actions
+- Goals sorted by target date (closest first), then by name
+- Added days remaining calculation with overdue highlighting
+- Task counts exclude Goals bucket tasks
+- Improved visual layout for easier scanning and sorting
+
 ## [3.2.7] - 2026-01-02
 
 ### Fixed
