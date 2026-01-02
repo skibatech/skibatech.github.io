@@ -5,6 +5,16 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.25] - 2026-01-02
+
+### Changed
+- Reduced font sizes in bucket selector modal for more compact display
+- Modal header now 14px instead of 18px
+- Bucket list items now 13px with tighter padding
+- Checkbox inputs sized to 16x16px for consistency
+- Modal sections have appropriate padding and borders
+- Each bucket item now fits on a single line
+
 ## [3.2.24] - 2026-01-02
 
 ### Fixed

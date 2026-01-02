@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.24'; // Fix bucket selector modal positioning and filter Goals bucket
+const APP_VERSION = '3.2.25'; // Reduce bucket selector modal font sizes for compact display
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },

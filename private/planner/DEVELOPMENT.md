@@ -7,9 +7,22 @@
 **Last Committed Version**: 3.2.24
 **Last Commit**: "v3.2.24: Fix bucket selector modal positioning and filter Goals bucket"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.24 (clean)
+**Current Working Version**: 3.2.25 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.25 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Cosmetic improvements to bucket selector modal
+- Reduced modal header font size from 18px to 14px
+- Reduced bucket list item font size to 13px
+- Decreased padding on checkbox items (6px vertical, 8px horizontal)
+- Set checkbox size to 16x16px for consistency
+- Added proper padding and borders to modal sections
+- Goal names and bucket names now fit on single lines
+- More compact, professional appearance
 
 ### v3.2.24 (2026-01-02)
 **Status**: ✅ Committed and Pushed

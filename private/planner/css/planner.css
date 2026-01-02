@@ -2087,6 +2087,33 @@ body.dark-mode .editable-cell.editing {
     width: 90%;
 }
 
+.bucket-selector-modal .modal-header {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bucket-selector-modal .modal-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.bucket-selector-modal .modal-body {
+    padding: 16px;
+}
+
+.bucket-selector-modal .modal-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
 .bucket-selector-list {
     display: flex;
     flex-direction: column;
@@ -2099,7 +2126,7 @@ body.dark-mode .editable-cell.editing {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px;
+    padding: 6px 8px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -2111,10 +2138,15 @@ body.dark-mode .editable-cell.editing {
 
 .bucket-checkbox-item input[type="checkbox"] {
     cursor: pointer;
+    width: 16px;
+    height: 16px;
+    margin: 0;
 }
 
 .bucket-checkbox-item span {
     flex: 1;
+    font-size: 13px;
+    line-height: 1.4;
 }
 
 .goal-progress-cell {
