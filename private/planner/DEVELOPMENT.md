@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.39
-**Last Commit**: "v3.2.39: Increase description textarea height from 80px to 120px"
+**Last Committed Version**: 3.2.40
+**Last Commit**: "v3.2.40: Fix description textarea heights with inline style updates"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.40 (ready to commit)
+**Current Working Version**: 3.2.41 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.41 (2026-01-02)
+**Changes**:
+- Fixed STE-88: Update Available badge spacing
+- Increased left margin from 12px to 16px
+- Badge now has better visual separation from version number
+- Resolves issue where badge appeared too close to version text
 
 ### v3.2.40 (2026-01-02)
 **Changes**:

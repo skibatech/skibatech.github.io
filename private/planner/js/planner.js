@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.40'; // Fix description textarea heights with inline style updates
+const APP_VERSION = '3.2.41'; // Increase Update Available badge margin from 12px to 16px
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
