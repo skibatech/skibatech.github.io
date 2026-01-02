@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.38'; // Hide Weekly Compass from bucket assignment dialog
+const APP_VERSION = '3.2.39'; // Increase description textarea height from 80px to 120px
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },

@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.37
-**Last Commit**: "v3.2.37: Fix bucket selector modal width - override modal-content max-width"
+**Last Committed Version**: 3.2.38
+**Last Commit**: "v3.2.38: Hide Weekly Compass from bucket assignment dialog"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.38 (ready to commit)
+**Current Working Version**: 3.2.39 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.39 (2026-01-02)
+**Changes**:
+- Increased description textarea min-height from 80px to 120px
+- Applies to textarea.task-input CSS class
+- Gives more vertical space for task descriptions in new/edit task modals
+- Textarea remains resizable (resize: vertical still enabled)
 
 ### v3.2.38 (2026-01-02)
 **Changes**:

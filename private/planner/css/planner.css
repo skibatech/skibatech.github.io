@@ -593,7 +593,7 @@ body.dark-mode .label-badge {
 }
 
 textarea.task-input {
-    min-height: 80px;
+    min-height: 120px;
     resize: vertical;
 }
 
