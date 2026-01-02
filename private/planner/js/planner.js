@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.44'; // Alphabetize SAW suggestions in picker tool
+const APP_VERSION = '3.2.45'; // Fix view/groupby not respecting stored defaults on refresh
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1567,8 +1567,9 @@ async function loadTasks() {
         allTasks = tasks;
         injectCompassBucket();
 
-        // Set view dropdown to match current view
+        // Set view and groupby dropdowns to match stored settings
         document.getElementById('viewSelect').value = currentView;
+        document.getElementById('groupBySelect').value = currentGroupBy;
         
         // Sync show completed checkbox with saved setting
         document.getElementById('showCompletedCheckbox').checked = showCompleted;

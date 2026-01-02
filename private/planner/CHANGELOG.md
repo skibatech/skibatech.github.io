@@ -5,6 +5,12 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.45] - 2026-01-02
+
+### Fixed
+- Fixed view and group by dropdowns not respecting stored defaults on page refresh
+- Both dropdowns now properly restore last selected view/groupby from localStorage
+
 ## [3.2.44] - 2026-01-02
 
 ### Changed
