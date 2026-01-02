@@ -4,11 +4,24 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.3.8
-**Last Commit**: "v3.3.8: Fix CodeQL security findings"
+**Last Committed Version**: 3.3.9
+**Last Commit**: "v3.3.9: Fix XSS vulnerabilities (DOM text reinterpreted as HTML)"
 **Last Push**: ✅ Pushed to main
 
 ## Version History (Most Recent First)
+
+### v3.3.9 (2026-01-02)
+**Changes**:
+- Fixed 4 HIGH severity XSS vulnerabilities identified by CodeQL
+- Added escapeHtml() security function to prevent XSS attacks
+- Escaped user-controlled data in innerHTML contexts:
+  * Line 1801: group.name in bucket headers
+  * Line 2088: primaryDisplayName in group headers  
+  * Line 2145: secondaryDisplayName in bucket headers
+  * Line 3423: task.title in task rows
+  * Line 3428: assignee names in task rows
+  * Line 3399: theme display names in category badges
+- All user-facing text now sanitized before DOM insertion
 
 ### v3.3.8 (2026-01-02)
 **Changes**:

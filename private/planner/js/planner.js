@@ -1,5 +1,17 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.8'; // Fix CodeQL security findings
+const APP_VERSION = '3.3.9'; // Fix XSS vulnerabilities (DOM text reinterpreted as HTML)
+
+// Security: Escape HTML to prevent XSS attacks
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return unsafe;
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1802,7 +1814,7 @@ function renderByBucket(container, buckets, tasks) {
             <div class="bucket-header" onclick="toggleBucket(this)">
                 <div class="bucket-title">
                     <span class="expand-icon">▶</span>
-                    ${group.name}
+                    ${escapeHtml(group.name)}
                     <span class="task-count">${groupTasks.length}</span>
                 </div>
             </div>
@@ -2087,7 +2099,7 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
         
         primaryHeader.innerHTML = `
             <span class="collapse-icon">${isExpanded ? '▼' : '▶'}</span>
-            <strong>${primaryDisplayName}</strong> (${primaryGrp.tasks.length} tasks)
+            <strong>${escapeHtml(primaryDisplayName)}</strong> (${primaryGrp.tasks.length} tasks)
         `;
         primaryHeader.onclick = (e) => {
             e.stopPropagation();
@@ -2144,7 +2156,7 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
             
             bucketHeader.innerHTML = `
                 <span class="collapse-icon">${bucketExpanded ? '▼' : '▶'}</span>
-                <span>${secondaryDisplayName}</span> (${secondaryGrp.tasks.length} tasks)
+                <span>${escapeHtml(secondaryDisplayName)}</span> (${secondaryGrp.tasks.length} tasks)
             `;
             bucketHeader.onclick = (e) => {
                 e.stopPropagation();
@@ -3385,7 +3397,7 @@ function renderTask(task) {
             'category25': '#212121'
         };
         
-        return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${getThemeDisplayName(cat)}</span>`;
+        return `<span class="label-badge" style="background: ${colors[cat]}; color: white;">${escapeHtml(getThemeDisplayName(cat))}</span>`;
     }).join('');
 
     // Determine if cells should be editable
@@ -3407,13 +3419,13 @@ function renderTask(task) {
                 data-field="title" 
                 data-task-id="${task.id}"
                 ${titleClickHandler}>
-                <span>${task.title}</span>
+                <span>${escapeHtml(task.title)}</span>
             </div>
             <div class="task-assignee col-assigned ${editableClass}" 
                 data-field="assignments" 
                 data-task-id="${task.id}"
                 ${assigneeClickHandler}>
-                ${assignee || '<span class="placeholder">Unassigned</span>'}
+                ${escapeHtml(assignee) || '<span class="placeholder">Unassigned</span>'}
             </div>
             <div class="task-date col-start-date ${editableClass}" 
                 data-field="startDateTime" 

@@ -5,6 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.9] - 2026-01-02
+
+### Security
+- Fixed 4 HIGH severity XSS vulnerabilities (DOM text reinterpreted as HTML)
+- Added escapeHtml() function to sanitize user-controlled data before inserting into DOM
+- Escaped group names, display names, task titles, assignee names, and theme names
+- Prevents malicious scripts from executing through user-controlled content
+
 ## [3.3.8] - 2026-01-02
 
 ### Fixed
