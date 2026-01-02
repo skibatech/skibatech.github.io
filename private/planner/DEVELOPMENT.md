@@ -20,10 +20,15 @@
 **Last Committed Version**: 3.0.23
 **Last Commit**: "v3.0.23: Progressive task loading for faster startup"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.24 (in progress)
+**Current Working Version**: 3.0.25 (in progress)
 
 ## Version History (Most Recent First)
- 
+
+### v3.0.25 (In Progress)
+**Status**: In progress
+**Changes**:
+- Removed "+ Add task" buttons from all bucket and group views (renderByBucket, renderSingleView, renderNestedView, inline theme/goal rendering)
+
 ### v3.0.24 (In Progress)
 **Status**: In progress
 **Changes**:

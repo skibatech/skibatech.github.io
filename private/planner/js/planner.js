@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.24'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.25'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -1737,7 +1737,6 @@ function renderByBucket(container, buckets, tasks) {
                     <div class="col-labels">Themes</div>
                 </div>
                 ${groupTasks.map(task => renderTask(task)).join('')}
-                    ${isCompassBucket ? '' : `<button class="add-task-btn" onclick="showAddTask('${group.id}', '${group.name.replace(/'/g, "\\'")}')">+ Add task</button>`}
             </div>
         `;
         
@@ -1871,20 +1870,6 @@ function renderByAssignedBucket(container, buckets, tasks) {
                 taskDiv.innerHTML = renderTask(task);
                 taskList.appendChild(taskDiv.firstElementChild);
             });
-            
-            const isCompassBucket = buckets.some(b => b.name === bucketName && b.isCompass);
-            if (!isCompassBucket) {
-                const addTaskBtn = document.createElement('button');
-                addTaskBtn.className = 'add-task-btn';
-                addTaskBtn.textContent = '+ Add task';
-                addTaskBtn.onclick = () => {
-                    const bucket = buckets.find(b => b.name === bucketName);
-                    if (bucket) {
-                        showAddTask(bucket.id, bucket.name);
-                    }
-                };
-                taskList.appendChild(addTaskBtn);
-            }
             
             bucketDiv.appendChild(bucketHeader);
             bucketDiv.appendChild(taskList);
@@ -2080,26 +2065,6 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
                 taskList.appendChild(taskDiv.firstElementChild);
             });
             
-            // Add \"Add task\" button
-            const isCompassBucket = secondaryGroup === 'bucket' && buckets.some(b => b.name === secondaryGrp.name && b.isCompass);
-            if (!isCompassBucket) {
-                const addTaskBtn = document.createElement('button');
-                addTaskBtn.className = 'add-task-btn';
-                addTaskBtn.textContent = '+ Add task';
-                addTaskBtn.onclick = () => {
-                    // Find bucket ID if secondary group is bucket
-                    if (secondaryGroup === 'bucket') {
-                        const bucket = buckets.find(b => b.name === secondaryGrp.name);
-                        if (bucket) {
-                            showAddTask(bucket.id, bucket.name);
-                        }
-                    } else {
-                        showAddTask(null, null);
-                    }
-                };
-                taskList.appendChild(addTaskBtn);
-            }
-            
             bucketDiv.appendChild(bucketHeader);
             bucketDiv.appendChild(taskList);
             primaryContent.appendChild(bucketDiv);
@@ -2232,7 +2197,6 @@ function renderGroup(container, group, buckets, isNested = false) {
                 <div class=\"col-labels\">Themes</div>
             </div>
             ${groupTasks.map(task => renderTask(task)).join('')}
-            <button class=\"add-task-btn\" onclick=\"showAddTask('${group.id}', '${group.name.replace(/'/g, "\\\\'")}')\">+ Add task</button>
         </div>
     `;
     
