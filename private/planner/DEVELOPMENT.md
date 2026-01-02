@@ -17,15 +17,22 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.23
-**Last Commit**: "v3.0.23: Progressive task loading for faster startup"
+**Last Committed Version**: 3.0.25
+**Last Commit**: "v3.0.25: Remove Add task buttons from UI"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.25 (in progress)
+**Current Working Version**: 3.0.26 (in progress)
 
 ## Version History (Most Recent First)
 
-### v3.0.25 (In Progress)
+### v3.0.26 (In Progress)
 **Status**: In progress
+**Changes**:
+- Weekly Compass tasks now set startDateTime and dueDateTime based on date range (first date = start, last date = due)
+- Dates automatically update when date range changes
+
+### v3.0.25 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `8883edd`
 **Changes**:
 - Removed "+ Add task" buttons from all bucket and group views (renderByBucket, renderSingleView, renderNestedView, inline theme/goal rendering)
 

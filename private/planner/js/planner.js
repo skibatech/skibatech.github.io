@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.25'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.26'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -4856,6 +4856,26 @@ function injectCompassBucket() {
 
 function refreshCompassTasksFromData(shouldRender = false) {
     if (!compassData || !compassData.roles) return;
+    
+    // Parse date range to get start and due dates
+    let startDateTime = null;
+    let dueDateTime = null;
+    if (compassData.dateRange) {
+        const dateRangeParts = compassData.dateRange.split(' - ');
+        if (dateRangeParts.length === 2) {
+            const startDate = new Date(dateRangeParts[0]);
+            const endDate = new Date(dateRangeParts[1]);
+            if (!isNaN(startDate.getTime())) {
+                startDateTime = startDate.toISOString();
+            }
+            if (!isNaN(endDate.getTime())) {
+                // Set due date to end of day
+                endDate.setHours(23, 59, 59, 999);
+                dueDateTime = endDate.toISOString();
+            }
+        }
+    }
+    
     const tasks = [];
     (compassData.roles || []).forEach((role, roleIndex) => {
         const rocks = role.rocks || [];
@@ -4878,8 +4898,8 @@ function refreshCompassTasksFromData(shouldRender = false) {
                 title: rockObj.text,
                 percentComplete: rockObj.done ? 100 : 0,
                 priority: 5,
-                startDateTime: null,
-                dueDateTime: null,
+                startDateTime: startDateTime,
+                dueDateTime: dueDateTime,
                 assignments: assignments,
                 appliedCategories: {},
                 compassRole: role.name || `Role ${roleIndex + 1}`,
