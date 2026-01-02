@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.28
-**Last Commit**: "v3.2.28: Fix Goals task count navigation using switchTab()"
+**Last Committed Version**: 3.2.29
+**Last Commit**: "v3.2.29: Filter Goals bucket from all task bucket dropdowns"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.29 (ready to commit)
+**Current Working Version**: 3.2.30 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.30 (2026-01-02)
+**Changes**:
+- Fixed STE-92 fully: Buckets now expand when clicking goal task count
+- Corrected regex from /\\s+/g to /\s+/g in renderNestedView
+- Escaped backslash was preventing proper bucket ID matching
+- All buckets under the selected goal now properly expand to show tasks
 
 ### v3.2.29 (2026-01-02)
 **Changes**:

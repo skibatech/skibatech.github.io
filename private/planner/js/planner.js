@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.29'; // Filter Goals bucket from all task bucket dropdowns
+const APP_VERSION = '3.2.30'; // Fix bucket expansion regex for goal task navigation
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2095,7 +2095,7 @@ function renderNestedView(container, buckets, tasks, primaryGroup, secondaryGrou
         });
         
         secondaryGroups.forEach(secondaryGrp => {
-            const bucketId = secondaryGrp.name.toLowerCase().replace(/\\s+/g, '-') + '-' + primaryId;
+            const bucketId = secondaryGrp.name.toLowerCase().replace(/\s+/g, '-') + '-' + primaryId;
             const bucketExpanded = expandedBuckets.has(bucketId);
             
             const bucketDiv = document.createElement('div');
