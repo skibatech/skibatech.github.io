@@ -5,6 +5,16 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-01-02
+
+### Changed
+- **MAJOR**: Weekly Compass now uses real Microsoft To Do tasks instead of JSON storage
+- Created separate "Weekly Compass" To Do list for storing rocks as actual tasks
+- PlannerCompass_Data now only stores metadata (roles, quote, date range, sharpen saw)
+- Each rock is now a real To Do task with format "Role: Task name"
+- Tasks include proper due dates, completion status, and can be managed in To Do app
+- Rocks are personal tasks in To Do, keeping them separate from team Planner data
+
 ## [3.0.31] - 2026-01-02
 
 ### Fixed

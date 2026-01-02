@@ -17,12 +17,23 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.31
-**Last Commit**: "v3.0.31: Fix compass save duplicates"
+**Last Committed Version**: 3.1.0
+**Last Commit**: "v3.1.0: Weekly Compass real tasks architecture"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.31 (stable)
+**Current Working Version**: 3.1.0 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.0 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- MAJOR REFACTOR: Weekly Compass now uses real Microsoft To Do tasks
+- Created "Weekly Compass" To Do list for rocks (actual tasks)
+- PlannerCompass_Data stores metadata only (roles, quote, date range, sharpen saw)
+- Tasks have format "Role: Task" with proper due dates and completion
+- Works natively in To Do mobile app
+- Keeps personal compass data separate from team Planner
 
 ### v3.0.31 (2026-01-02)
 **Status**: ✅ Committed & Pushed

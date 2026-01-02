@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.31'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.1.0'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -4859,7 +4859,8 @@ let compassData = {
     },
     roles: []
 };
-let compassListId = null;
+let compassListId = null; // PlannerCompass_Data - stores metadata
+let compassTasksListId = null; // Weekly Compass - stores actual tasks
 let optionsListId = null;
 const storedCompassVisible = localStorage.getItem('plannerCompassVisible');
 let compassVisible = storedCompassVisible === null ? true : storedCompassVisible === 'true';
@@ -4968,9 +4969,10 @@ async function initializeCompass() {
         
         const listsData = await listsResponse.json();
         let compassList = listsData.value.find(list => list.displayName === 'PlannerCompass_Data');
+        let compassTasksList = listsData.value.find(list => list.displayName === 'Weekly Compass');
         
         if (!compassList) {
-            // Create the list if it doesn't exist
+            // Create the metadata list if it doesn't exist
             const createResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
                 method: 'POST',
                 headers: {
@@ -4983,14 +4985,36 @@ async function initializeCompass() {
             });
             
             if (!createResponse.ok) {
-                console.error('Failed to create compass list:', createResponse.status);
+                console.error('Failed to create compass metadata list:', createResponse.status);
                 return;
             }
             
             compassList = await createResponse.json();
         }
         
+        if (!compassTasksList) {
+            // Create the tasks list if it doesn't exist
+            const createResponse = await fetchGraph('https://graph.microsoft.com/v1.0/me/todo/lists', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    displayName: 'Weekly Compass'
+                })
+            });
+            
+            if (!createResponse.ok) {
+                console.error('Failed to create Weekly Compass list:', createResponse.status);
+                return;
+            }
+            
+            compassTasksList = await createResponse.json();
+        }
+        
         compassListId = compassList.id;
+        compassTasksListId = compassTasksList.id;
         await loadCompassData();
         await initializeGoals(); // Initialize goals list and data
         await initializeOptions();
@@ -5097,7 +5121,7 @@ async function loadOptionsData() {
 }
 
 async function loadCompassData() {
-    if (!compassListId || !accessToken) return;
+    if (!compassListId || !compassTasksListId || !accessToken) return;
     
     try {
         // Reset local cache before loading
@@ -5113,36 +5137,28 @@ async function loadCompassData() {
             roles: []
         };
 
-        const response = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+        // Load metadata from PlannerCompass_Data
+        const metadataResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
         
-        if (!response.ok) {
-            console.error('Failed to load compass tasks:', response.status);
+        if (!metadataResponse.ok) {
+            console.error('Failed to load compass metadata:', metadataResponse.status);
             return;
         }
         
-        const tasksData = await response.json();
-        const tasks = (tasksData.value || []).slice();
-        // Ensure roles keep entered order by sorting on the numeric suffix
-        tasks.sort((a, b) => {
-            const getIdx = (title) => {
-                if (!title || !title.startsWith('COMPASS_ROLE_')) return Number.MAX_SAFE_INTEGER;
-                const num = parseInt(title.replace('COMPASS_ROLE_', ''), 10);
-                return isNaN(num) ? Number.MAX_SAFE_INTEGER : num;
-            };
-            return getIdx(a.title) - getIdx(b.title);
-        });
+        const metadataData = await metadataResponse.json();
+        const metadataTasks = metadataData.value || [];
         
-        // Parse compass data from To Do tasks
-        tasks.forEach(task => {
+        // Parse metadata
+        metadataTasks.forEach(task => {
             const title = task.title;
             const body = task.body?.content || '';
             
             if (title === 'COMPASS_QUOTE') {
-                // Skip loading quote from To Do; always generate fresh
+                // Skip loading quote; always generate fresh
             } else if (title === 'COMPASS_DATERANGE') {
                 compassData.dateRange = body;
             } else if (title === 'COMPASS_SAW') {
@@ -5153,10 +5169,47 @@ async function loadCompassData() {
                 }
             } else if (title.startsWith('COMPASS_ROLE_')) {
                 try {
+                    // Role metadata: just the role name
                     const roleData = JSON.parse(body);
                     compassData.roles.push(roleData);
                 } catch (e) {
-                    console.error('Failed to parse role:', e);
+                    console.error('Failed to parse role metadata:', e);
+                }
+            }
+        });
+        
+        // Load actual tasks from Weekly Compass list
+        const tasksResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassTasksListId}/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (!tasksResponse.ok) {
+            console.error('Failed to load compass tasks:', tasksResponse.status);
+            return;
+        }
+        
+        const tasksData = await tasksResponse.json();
+        const realTasks = tasksData.value || [];
+        
+        // Parse tasks and assign to roles based on title prefix
+        realTasks.forEach(task => {
+            const title = task.title || '';
+            const colonIndex = title.indexOf(':');
+            if (colonIndex > 0) {
+                const roleName = title.substring(0, colonIndex).trim();
+                const taskText = title.substring(colonIndex + 1).trim();
+                
+                // Find matching role
+                const role = compassData.roles.find(r => r.name === roleName);
+                if (role) {
+                    if (!role.rocks) role.rocks = [];
+                    role.rocks.push({
+                        text: taskText,
+                        done: task.status === 'completed',
+                        taskId: task.id // Store To Do task ID
+                    });
                 }
             }
         });
@@ -5165,7 +5218,7 @@ async function loadCompassData() {
         compassData.roles = compassData.roles.map(role => {
             const rocks = (role.rocks || []).map(r => {
                 if (typeof r === 'string') return { text: r, done: false };
-                return { text: r?.text || '', done: !!r?.done };
+                return { text: r?.text || '', done: !!r?.done, taskId: r?.taskId || null };
             });
             return { ...role, rocks };
         });
@@ -5228,37 +5281,48 @@ function captureCompassInputs() {
 }
 
 async function saveCompassData(showAlert = true) {
-    if (!compassListId || !accessToken) return;
+    if (!compassListId || !compassTasksListId || !accessToken) return;
     
     try {
         // Capture unsaved UI changes before persisting
         captureCompassInputs();
         
-        // Fetch existing tasks
-        const existingResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+        // Parse date range for task due dates
+        let dueDate = null;
+        if (compassData.dateRange) {
+            const dateRangeParts = compassData.dateRange.split(' - ');
+            if (dateRangeParts.length === 2) {
+                const endDate = new Date(dateRangeParts[1]);
+                if (!isNaN(endDate.getTime())) {
+                    dueDate = endDate.toISOString();
+                }
+            }
+        }
+        
+        // 1. Save metadata to PlannerCompass_Data
+        const metadataResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        if (!existingResponse.ok) {
-            console.error('Failed to fetch existing tasks:', existingResponse.status);
-            if (showAlert) alert('Failed to save compass data: unable to fetch existing items.');
+        if (!metadataResponse.ok) {
+            console.error('Failed to fetch metadata:', metadataResponse.status);
+            if (showAlert) alert('Failed to save compass data: unable to fetch metadata.');
             return;
         }
-        const existingData = await existingResponse.json();
-        const existingTasks = existingData.value || [];
+        const metadataData = await metadataResponse.json();
+        const metadataTasks = metadataData.value || [];
         
-        // Build map of existing tasks by title
-        const existingTaskMap = {};
-        existingTasks.forEach(task => {
-            existingTaskMap[task.title] = task;
+        // Build map of existing metadata tasks
+        const metadataMap = {};
+        metadataTasks.forEach(task => {
+            metadataMap[task.title] = task;
         });
 
-        // Helper to update or create a task
-        const upsertTask = async (title, body) => {
-            const existing = existingTaskMap[title];
+        // Helper to update or create a metadata task
+        const upsertMetadata = async (title, body) => {
+            const existing = metadataMap[title];
             if (existing) {
-                // Update existing task
                 const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${existing.id}`, {
                     method: 'PATCH',
                     headers: {
@@ -5269,10 +5333,9 @@ async function saveCompassData(showAlert = true) {
                         body: { contentType: 'text', content: body }
                     })
                 });
-                if (!resp.ok) throw new Error(`Update failed for ${title} (${resp.status})`);
+                if (!resp.ok) throw new Error(`Update metadata failed for ${title} (${resp.status})`);
                 return resp;
             } else {
-                // Create new task
                 const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
                     method: 'POST',
                     headers: {
@@ -5284,39 +5347,108 @@ async function saveCompassData(showAlert = true) {
                         body: { contentType: 'text', content: body }
                     })
                 });
-                if (!resp.ok) throw new Error(`Create failed for ${title} (${resp.status})`);
+                if (!resp.ok) throw new Error(`Create metadata failed for ${title} (${resp.status})`);
                 return resp;
             }
         };
 
-        try {
-            await upsertTask('COMPASS_QUOTE', compassData.quote);
-            await upsertTask('COMPASS_DATERANGE', compassData.dateRange || '');
-            await upsertTask('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
-            
-            // Track which role tasks we've updated
-            const updatedRoleTitles = new Set();
-            for (let i = 0; i < compassData.roles.length; i++) {
-                const roleTitle = `COMPASS_ROLE_${i}`;
-                await upsertTask(roleTitle, JSON.stringify(compassData.roles[i]));
-                updatedRoleTitles.add(roleTitle);
+        await upsertMetadata('COMPASS_QUOTE', compassData.quote);
+        await upsertMetadata('COMPASS_DATERANGE', compassData.dateRange || '');
+        await upsertMetadata('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
+        
+        // Save role names (without rocks data)
+        const updatedRoleTitles = new Set();
+        for (let i = 0; i < compassData.roles.length; i++) {
+            const roleTitle = `COMPASS_ROLE_${i}`;
+            await upsertMetadata(roleTitle, JSON.stringify({ name: compassData.roles[i].name }));
+            updatedRoleTitles.add(roleTitle);
+        }
+        
+        // Delete any extra COMPASS_ROLE_X metadata tasks
+        const metadataToDelete = metadataTasks.filter(task => 
+            task.title.startsWith('COMPASS_ROLE_') && !updatedRoleTitles.has(task.title)
+        );
+        await Promise.all(metadataToDelete.map(task =>
+            fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            })
+        ));
+        
+        // 2. Save actual tasks to Weekly Compass list
+        const tasksResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassTasksListId}/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
             }
-            
-            // Delete any extra COMPASS_ROLE_X tasks that are no longer needed
-            const tasksToDelete = existingTasks.filter(task => 
-                task.title.startsWith('COMPASS_ROLE_') && !updatedRoleTitles.has(task.title)
-            );
-            await Promise.all(tasksToDelete.map(task =>
-                fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                })
-            ));
-        } catch (err) {
-            console.error('Failed to save compass items:', err);
-            if (showAlert) alert('Failed to save compass data: ' + err.message);
+        });
+        if (!tasksResponse.ok) {
+            console.error('Failed to fetch compass tasks:', tasksResponse.status);
+            if (showAlert) alert('Failed to save compass tasks.');
             return;
         }
+        const tasksData = await tasksResponse.json();
+        const existingTasks = tasksData.value || [];
+        
+        // Build map of existing tasks by title
+        const existingTaskMap = {};
+        existingTasks.forEach(task => {
+            existingTaskMap[task.title] = task;
+        });
+        
+        // Track which tasks we've created/updated
+        const processedTaskTitles = new Set();
+        
+        // Create/update tasks for each role's rocks
+        for (const role of compassData.roles) {
+            const rocks = role.rocks || [];
+            for (const rock of rocks) {
+                if (!rock.text) continue;
+                
+                const taskTitle = `${role.name}: ${rock.text}`;
+                processedTaskTitles.add(taskTitle);
+                
+                const existing = existingTaskMap[taskTitle] || (rock.taskId ? existingTasks.find(t => t.id === rock.taskId) : null);
+                
+                if (existing) {
+                    // Update existing task
+                    await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassTasksListId}/tasks/${existing.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            title: taskTitle,
+                            status: rock.done ? 'completed' : 'notStarted',
+                            dueDateTime: dueDate ? { dateTime: dueDate, timeZone: 'UTC' } : null
+                        })
+                    });
+                } else {
+                    // Create new task
+                    await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassTasksListId}/tasks`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            title: taskTitle,
+                            status: rock.done ? 'completed' : 'notStarted',
+                            dueDateTime: dueDate ? { dateTime: dueDate, timeZone: 'UTC' } : null
+                        })
+                    });
+                }
+            }
+        }
+        
+        // Delete tasks that no longer exist in compass data
+        const tasksToDelete = existingTasks.filter(task => !processedTaskTitles.has(task.title));
+        await Promise.all(tasksToDelete.map(task =>
+            fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassTasksListId}/tasks/${task.id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            })
+        ));
 
         refreshCompassTasksFromData(true);
         if (showAlert) alert('Weekly Compass saved successfully!');
