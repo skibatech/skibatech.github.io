@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.39'; // Increase description textarea height from 80px to 120px
+const APP_VERSION = '3.2.40'; // Fix description textarea heights with inline style updates
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },

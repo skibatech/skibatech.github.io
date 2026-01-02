@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.38
-**Last Commit**: "v3.2.38: Hide Weekly Compass from bucket assignment dialog"
+**Last Committed Version**: 3.2.39
+**Last Commit**: "v3.2.39: Increase description textarea height from 80px to 120px"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.39 (ready to commit)
+**Current Working Version**: 3.2.40 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.40 (2026-01-02)
+**Changes**:
+- Fixed textarea height increases that weren't working
+- Problem: inline styles in HTML were overriding CSS changes
+- Updated inline style attributes directly in index.html
+- detailTaskDescription: 100px → 150px (50% increase)
+- newTaskNotes: 120px → 150px (25% increase)
+- bugDescription: 150px → 180px (20% increase)
 
 ### v3.2.39 (2026-01-02)
 **Changes**:
