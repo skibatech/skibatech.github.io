@@ -5,6 +5,15 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.22] - 2026-01-02
+
+### Fixed
+- **Critical**: Session expiration now detected and handled gracefully
+- Added 401 Unauthorized detection in fetchGraph function
+- User-friendly message shown when session expires
+- Automatic page reload and re-authentication prompt
+- Prevents cryptic errors from API calls with expired tokens
+
 ## [3.2.21] - 2026-01-02
 
 ### Fixed

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.21'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.22'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -281,6 +281,21 @@ async function fetchGraph(url, options = {}, attempt = 0) {
     } finally {
         releaseGraphSlot();
     }
+    
+    // Handle expired token (401 Unauthorized)
+    if (res.status === 401) {
+        console.error('Access token expired or invalid');
+        setStatus('Your session has expired. Please refresh to log in again.', '#b00020');
+        // Clear expired token
+        localStorage.removeItem('accessToken');
+        // Show alert after a brief delay so user sees the status message
+        setTimeout(() => {
+            alert('Your session has expired. Click OK to log in again.');
+            window.location.reload();
+        }, 1000);
+        return res;
+    }
+    
     if (res.status === 429 || res.status === 503) {
         if (attempt >= GRAPH_MAX_RETRIES) {
             setStatus('Too many requests - try again later', '#b00020');

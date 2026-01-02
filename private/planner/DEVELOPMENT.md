@@ -4,12 +4,27 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.20
-**Last Commit**: "v3.2.20: Add submitter tracking to bug reports"
+**Last Committed Version**: 3.2.21
+**Last Commit**: "v3.2.21: Fix Goals table column widths persisting when sorting"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.21 (ready to commit)
+**Current Working Version**: 3.2.22 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.22 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- **CRITICAL BUG FIX**: Graceful session expiration handling
+- Added 401 Unauthorized detection in fetchGraph() function
+- When token expires (after 1 hour idle), app now:
+  1. Detects 401 response from Microsoft Graph API
+  2. Shows status message: "Your session has expired. Please refresh to log in again."
+  3. Clears expired token from localStorage
+  4. Shows alert dialog
+  5. Reloads page to trigger re-authentication
+- Prevents weird errors like "Failed to update task" with expired tokens
+- User experience: Clear message and automatic re-login prompt instead of cryptic failures
 
 ### v3.2.21 (2026-01-02)
 **Status**: 🔄 Ready to Commit
