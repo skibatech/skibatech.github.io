@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.1.1'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.1.2'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -5360,24 +5360,31 @@ async function saveCompassData(showAlert = true) {
         await upsertMetadata('COMPASS_DATERANGE', compassData.dateRange || '');
         await upsertMetadata('COMPASS_SAW', JSON.stringify(compassData.sharpenSaw));
         
-        // Save role names (without rocks data)
-        const updatedRoleTitles = new Set();
-        for (let i = 0; i < compassData.roles.length; i++) {
-            const roleTitle = `COMPASS_ROLE_${i}`;
-            await upsertMetadata(roleTitle, JSON.stringify({ name: compassData.roles[i].name }));
-            updatedRoleTitles.add(roleTitle);
-        }
-        
-        // Delete any extra COMPASS_ROLE_X metadata tasks
-        const metadataToDelete = metadataTasks.filter(task => 
-            task.title.startsWith('COMPASS_ROLE_') && !updatedRoleTitles.has(task.title)
-        );
-        await Promise.all(metadataToDelete.map(task =>
+        // Delete ALL existing COMPASS_ROLE_X tasks (including duplicates)
+        const oldRoleTasks = metadataTasks.filter(task => task.title.startsWith('COMPASS_ROLE_'));
+        await Promise.all(oldRoleTasks.map(task =>
             fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks/${task.id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             })
         ));
+        
+        // Create fresh role metadata tasks
+        for (let i = 0; i < compassData.roles.length; i++) {
+            const roleTitle = `COMPASS_ROLE_${i}`;
+            const resp = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassListId}/tasks`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: roleTitle,
+                    body: { contentType: 'text', content: JSON.stringify({ name: compassData.roles[i].name }) }
+                })
+            });
+            if (!resp.ok) throw new Error(`Create role metadata failed for ${roleTitle} (${resp.status})`);
+        }
         
         // 2. Save actual tasks to Weekly Compass list
         const tasksResponse = await fetchGraph(`https://graph.microsoft.com/v1.0/me/todo/lists/${compassTasksListId}/tasks`, {

@@ -17,12 +17,19 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.1.1
-**Last Commit**: "v3.1.1: Better error handling for compass initialization"
+**Last Committed Version**: 3.1.2
+**Last Commit**: "v3.1.2: Fix duplicate COMPASS_ROLE cleanup"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.1.1 (stable)
+**Current Working Version**: 3.1.2 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.1.2 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Changed role metadata save to delete ALL old COMPASS_ROLE_X tasks first, then create fresh ones
+- Fixes issue where duplicate role entries accumulated in PlannerCompass_Data
 
 ### v3.1.1 (2026-01-02)
 **Status**: ✅ Committed & Pushed  
