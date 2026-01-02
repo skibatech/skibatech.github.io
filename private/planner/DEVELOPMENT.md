@@ -17,12 +17,20 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.2
-**Last Commit**: "v3.2.2: Fix goals etag errors and date saving"
+**Last Committed Version**: 3.2.3
+**Last Commit**: "v3.2.3: Hide Goals bucket from task views"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.2 (stable)
+**Current Working Version**: 3.2.3 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.3 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed Goals bucket appearing in task views
+- Updated applyFilters() to filter out goalsBucketRealId from bucketsToRender
+- Goals bucket now only visible in Goals tab, not in task lists
 
 ### v3.2.2 (2026-01-02)
 **Status**: ✅ Committed & Pushed
