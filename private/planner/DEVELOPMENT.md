@@ -7,9 +7,16 @@
 **Last Committed Version**: 3.2.25
 **Last Commit**: "v3.2.25: Reduce bucket selector modal font sizes for compact display"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.25 (clean)
+**Current Working Version**: 3.2.26 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.26 (2026-01-02)
+**Changes**:
+- Increased bucket selector modal width from 500px to 700px
+- Shortened modal title from "Manage Buckets for Goal:" to "Assign Buckets:"
+- Buckets now sorted alphabetically in the selector list
+- Improves readability and makes buckets easier to find
 
 ### v3.2.25 (2026-01-02)
 **Changes**:

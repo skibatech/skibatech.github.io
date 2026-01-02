@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.25'; // Reduce bucket selector modal font sizes for compact display
+const APP_VERSION = '3.2.26'; // Wider bucket selector modal with shorter title and alphabetical sort
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6957,13 +6957,14 @@ async function showBucketSelectorForGoal(goalId) {
         <div class="modal-dialog bucket-selector-modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Manage Buckets for Goal: ${escapeHtml(goal.name)}</h2>
+                    <h2>Assign Buckets: ${escapeHtml(goal.name)}</h2>
                     <button class="close-btn" onclick="closeBucketSelector()">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="bucket-selector-list">
                         ${allBuckets
                             .filter(bucket => bucket.name !== GOALS_BUCKET_NAME)
+                            .sort((a, b) => a.name.localeCompare(b.name))
                             .map(bucket => {
                                 const isChecked = currentBuckets.includes(bucket.id);
                                 return `
