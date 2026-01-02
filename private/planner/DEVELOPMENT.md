@@ -20,9 +20,21 @@
 **Last Committed Version**: 3.2.8
 **Last Commit**: "v3.2.8: Convert Goals view from cards to table format"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.8 (stable)
+**Current Working Version**: 3.2.9 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.9 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Added column sorting functionality to Goals table
+- All columns sortable: Goal Name, Target Date, Buckets, Tasks, Progress
+- Click column header to sort, click again to reverse direction
+- Visual indicators (↑↓) show active sort column and direction
+- Added hover effects to sortable headers
+- Maintains sort state across table re-renders
+- Default sort: Target Date ascending (closest deadline first)
 
 ### v3.2.8 (2026-01-02)
 **Status**: ✅ Committed & Pushed

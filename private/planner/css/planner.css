@@ -1946,6 +1946,16 @@ body.dark-mode .editable-cell.editing {
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    user-select: none;
+}
+
+.goals-table th[onclick] {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.goals-table th[onclick]:hover {
+    background: var(--bg-hover);
 }
 
 .goals-table tbody tr {

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.8'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.9'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6442,6 +6442,20 @@ function getGoalById(goalId) {
 // Goals UI Functions
 // ========================================
 
+// Track goals table sort state
+let goalsSortColumn = 'date';
+let goalsSortDirection = 'asc';
+
+function sortGoalsTable(column) {
+    if (goalsSortColumn === column) {
+        goalsSortDirection = goalsSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        goalsSortColumn = column;
+        goalsSortDirection = 'asc';
+    }
+    renderGoalsView();
+}
+
 function renderGoalsView() {
     const container = document.getElementById('goalsGrid');
     const empty = document.getElementById('goalsEmpty');
@@ -6482,12 +6496,38 @@ function renderGoalsView() {
         };
     });
     
-    // Sort goals by target date (closest first), then by name
+    // Sort goals based on current sort column and direction
     goalsWithProgress.sort((a, b) => {
-        const aDate = a.targetDate ? new Date(a.targetDate).getTime() : Infinity;
-        const bDate = b.targetDate ? new Date(b.targetDate).getTime() : Infinity;
-        if (aDate !== bDate) return aDate - bDate;
-        return a.name.localeCompare(b.name);
+        let aVal, bVal;
+        
+        switch(goalsSortColumn) {
+            case 'name':
+                aVal = a.name.toLowerCase();
+                bVal = b.name.toLowerCase();
+                break;
+            case 'date':
+                aVal = a.targetDate ? new Date(a.targetDate).getTime() : Infinity;
+                bVal = b.targetDate ? new Date(b.targetDate).getTime() : Infinity;
+                break;
+            case 'buckets':
+                aVal = a.bucketCount;
+                bVal = b.bucketCount;
+                break;
+            case 'tasks':
+                aVal = a.taskCount;
+                bVal = b.taskCount;
+                break;
+            case 'progress':
+                aVal = a.progress;
+                bVal = b.progress;
+                break;
+            default:
+                return 0;
+        }
+        
+        if (aVal < bVal) return goalsSortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return goalsSortDirection === 'asc' ? 1 : -1;
+        return 0;
     });
     
     container.innerHTML = `
@@ -6496,11 +6536,21 @@ function renderGoalsView() {
                 <thead>
                     <tr>
                         <th style="width: 30px;"></th>
-                        <th style="width: 40%;">Goal Name</th>
-                        <th style="width: 120px;">Target Date</th>
-                        <th style="width: 100px;">Buckets</th>
-                        <th style="width: 100px;">Tasks</th>
-                        <th style="width: 150px;">Progress</th>
+                        <th style="width: 40%; cursor: pointer;" onclick="sortGoalsTable('name')">
+                            Goal Name ${goalsSortColumn === 'name' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style="width: 120px; cursor: pointer;" onclick="sortGoalsTable('date')">
+                            Target Date ${goalsSortColumn === 'date' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style="width: 100px; cursor: pointer;" onclick="sortGoalsTable('buckets')">
+                            Buckets ${goalsSortColumn === 'buckets' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style="width: 100px; cursor: pointer;" onclick="sortGoalsTable('tasks')">
+                            Tasks ${goalsSortColumn === 'tasks' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style="width: 150px; cursor: pointer;" onclick="sortGoalsTable('progress')">
+                            Progress ${goalsSortColumn === 'progress' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                        </th>
                         <th style="width: 80px;">Actions</th>
                     </tr>
                 </thead>
