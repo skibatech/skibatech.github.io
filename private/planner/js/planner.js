@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.14'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.15'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6460,7 +6460,7 @@ function getGoalById(goalId) {
 // ========================================
 
 // Track goals table sort state
-let goalsSortColumn = 'date';
+let goalsSortColumn = 'name';
 let goalsSortDirection = 'asc';
 
 function sortGoalsTable(column) {
@@ -6552,23 +6552,28 @@ function renderGoalsView() {
             <table class="goals-table">
                 <thead>
                     <tr>
-                        <th style="width: 30px;"></th>
-                        <th style="width: 40%; cursor: pointer;" onclick="sortGoalsTable('name')">
+                        <th class="col-goal-color" style="width: 40px;"></th>
+                        <th class="col-goal-name" style="width: 35%; cursor: pointer;" onclick="sortGoalsTable('name')">
                             Goal Name ${goalsSortColumn === 'name' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-name')"></div>
                         </th>
-                        <th style="width: 120px; cursor: pointer;" onclick="sortGoalsTable('date')">
+                        <th class="col-goal-date" style="width: 180px; cursor: pointer;" onclick="sortGoalsTable('date')">
                             Target Date ${goalsSortColumn === 'date' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-date')"></div>
                         </th>
-                        <th style="width: 100px; cursor: pointer;" onclick="sortGoalsTable('buckets')">
+                        <th class="col-goal-buckets" style="width: 120px; cursor: pointer;" onclick="sortGoalsTable('buckets')">
                             Buckets ${goalsSortColumn === 'buckets' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-buckets')"></div>
                         </th>
-                        <th style="width: 100px; cursor: pointer;" onclick="sortGoalsTable('tasks')">
+                        <th class="col-goal-tasks" style="width: 120px; cursor: pointer;" onclick="sortGoalsTable('tasks')">
                             Tasks ${goalsSortColumn === 'tasks' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-tasks')"></div>
                         </th>
-                        <th style="width: 150px; cursor: pointer;" onclick="sortGoalsTable('progress')">
+                        <th class="col-goal-progress" style="width: 180px; cursor: pointer;" onclick="sortGoalsTable('progress')">
                             Progress ${goalsSortColumn === 'progress' ? (goalsSortDirection === 'asc' ? '↑' : '↓') : ''}
+                            <div class="resize-handle" onmousedown="startResize(event, 'col-goal-progress')"></div>
                         </th>
-                        <th style="width: 80px;">Actions</th>
+                        <th class="col-goal-actions" style="width: 100px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

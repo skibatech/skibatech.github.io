@@ -7,9 +7,20 @@
 **Last Committed Version**: 3.2.14
 **Last Commit**: "v3.2.14: Apply goal colors to goal banners in all views"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.14 (stable)
+**Current Working Version**: 3.2.15 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.15 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Goals table now sorts alphabetically by goal name by default (was date)
+- Changed goalsSortColumn initial value from 'date' to 'name'
+- Added column resizing to all Goals table columns using resize handles
+- Widened columns: color (30→40px), date (120→180px), buckets (100→120px), tasks (100→120px), progress (150→180px), actions (80→100px)
+- Added col-goal-* CSS classes for column targeting
+- Added .resize-handle styling with hover effect to Goals table headers
 
 ### v3.2.14 (2026-01-02)
 **Status**: 🔄 Ready to Commit

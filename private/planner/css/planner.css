@@ -1947,6 +1947,22 @@ body.dark-mode .editable-cell.editing {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     user-select: none;
+    position: relative;
+}
+
+.goals-table th .resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background: transparent;
+    z-index: 1;
+}
+
+.goals-table th .resize-handle:hover {
+    background: var(--border-color);
 }
 
 .goals-table th[onclick] {

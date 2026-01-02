@@ -5,6 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.15] - 2026-01-02
+
+### Changed
+- Goals table now sorts alphabetically by goal name by default
+- Added column resizing to all Goals table columns
+- Widened columns for better readability (especially target date: 120px → 180px)
+- Added resize handles with hover effect
+
 ## [3.2.14] - 2026-01-02
 
 ### Changed
