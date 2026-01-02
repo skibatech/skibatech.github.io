@@ -17,12 +17,21 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.6
-**Last Commit**: "v3.2.6: Fix date picker calendar icon visibility in dark mode"
+**Last Committed Version**: 3.2.7
+**Last Commit**: "v3.2.7: Fix Goals tasks appearing in Unassigned group on load"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.6 (stable)
+**Current Working Version**: 3.2.7 (stable)
 
 ## Version History (Most Recent First)
+
+### v3.2.7 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `TBD`
+**Changes**:
+- Fixed issue where Goals bucket tasks appeared in "Unassigned" group on initial load
+- Enhanced getFilteredTasks() to check both goalsBucketRealId and bucket name
+- Added fallback to filter by GOALS_BUCKET_NAME constant when ID not yet set
+- Prevents goals tasks from leaking into task views during initialization
 
 ### v3.2.6 (2026-01-02)
 **Status**: ✅ Committed & Pushed

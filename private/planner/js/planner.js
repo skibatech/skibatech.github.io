@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.6'; // Weekly Compass now uses real To Do tasks
+const APP_VERSION = '3.2.7'; // Weekly Compass now uses real To Do tasks
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2424,8 +2424,14 @@ function changeGroupBy() {
 }
 
 function getFilteredTasks(includeCompass = false) {
-    // Filter out goals bucket tasks from normal views
-    const tasksWithoutGoals = allTasks.filter(t => t.bucketId !== goalsBucketRealId);
+    // Filter out goals bucket tasks from normal views (check both ID and name for safety)
+    const tasksWithoutGoals = allTasks.filter(t => {
+        if (goalsBucketRealId && t.bucketId === goalsBucketRealId) return false;
+        // Also check bucket name in case ID isn't set yet
+        const bucket = allBuckets.find(b => b.id === t.bucketId);
+        if (bucket && bucket.name === GOALS_BUCKET_NAME) return false;
+        return true;
+    });
     const pool = includeCompass ? [...tasksWithoutGoals, ...compassTasks] : [...tasksWithoutGoals];
     if (pool.length === 0) return [];
     currentFilter = document.getElementById('filterSelect').value;
