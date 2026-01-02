@@ -17,15 +17,16 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.28
-**Last Commit**: "v3.0.28: Add live countdown timer for rate limits"
+**Last Committed Version**: 3.0.29
+**Last Commit**: "v3.0.29: Fix compass task date display"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.29 (in progress)
+**Current Working Version**: 3.0.29 (stable)
 
 ## Version History (Most Recent First)
 
-### v3.0.29 (In Progress)
-**Status**: In progress
+### v3.0.29 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `87762e0`
 **Changes**:
 - Fixed compass task rendering to display actual start and due dates instead of hardcoded "--"
 - Removed debug logging from date parsing
