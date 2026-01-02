@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.42'; // Make Update Available badge a separate bubble outside version pill
+const APP_VERSION = '3.2.43'; // Add My tasks filter to show only tasks assigned to current user
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -2547,6 +2547,9 @@ function getFilteredTasks(includeCompass = false) {
         switch(currentFilter) {
             case 'all':
                 return true;
+            case 'my-tasks':
+                if (!currentUserId) return false;
+                return task.assignments && task.assignments[currentUserId];
             case 'urgent':
                 return task.priority === 1;
             case 'important':

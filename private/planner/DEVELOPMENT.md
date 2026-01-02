@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.41
-**Last Commit**: "v3.2.41: Increase Update Available badge margin from 12px to 16px"
+**Last Committed Version**: 3.2.42
+**Last Commit**: "v3.2.42: Make Update Available badge a separate bubble outside version pill"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.42 (ready to commit)
+**Current Working Version**: 3.2.43 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.43 (2026-01-02)
+**Changes**:
+- Added "My tasks" filter option in filter dropdown
+- Positioned directly after "All tasks" option
+- Filters tasks to show only those assigned to current user
+- Uses currentUserId to check task.assignments[currentUserId]
+- Returns false if currentUserId not available (not logged in)
+- Provides quick personal task view without changing main view/grouping
 
 ### v3.2.42 (2026-01-02)
 **Changes**:

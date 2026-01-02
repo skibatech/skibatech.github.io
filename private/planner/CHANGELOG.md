@@ -5,6 +5,14 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.43] - 2026-01-02
+
+### Added
+- Added "My tasks" filter option positioned after "All tasks" in filter dropdown
+- Shows only tasks assigned to the currently logged-in user
+- Filters based on currentUserId in task assignments
+- Provides quick way to see personal task list
+
 ## [3.2.42] - 2026-01-02
 
 ### Changed
