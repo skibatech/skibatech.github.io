@@ -2399,73 +2399,63 @@ body.dark-mode .editable-cell.editing {
 
 .pomodoro-timer {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap: 8px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 8px 12px;
+    border-radius: 6px;
+    padding: 6px 10px;
     margin-right: 12px;
-    box-shadow: 0 2px 4px var(--shadow);
-}
-
-.pomodoro-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 6px;
-}
-
-.pomodoro-mode {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
+    box-shadow: 0 1px 3px var(--shadow);
 }
 
 .pomodoro-time {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     font-family: 'Courier New', monospace;
     color: var(--text-primary);
-    line-height: 1;
+    min-width: 45px;
+}
+
+.pomodoro-mode {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    min-width: 55px;
 }
 
 .pomodoro-session-count {
-    font-size: 11px;
-    margin-top: 4px;
+    font-size: 12px;
     color: var(--text-secondary);
     font-weight: 600;
+    margin-right: 4px;
 }
 
-.pomodoro-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.pomodoro-controls button {
+.pomodoro-timer button {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
     transition: all 0.2s;
     color: var(--text-primary);
+    padding: 0;
 }
 
-.pomodoro-controls button:hover {
+.pomodoro-timer button:hover {
     background: var(--bg-hover);
     border-color: var(--link-color);
 }
 
-.pomodoro-controls button:active {
+.pomodoro-timer button:active {
     transform: scale(0.95);
 }
 

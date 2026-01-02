@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.3.0'; // Added Pomodoro Timer feature with active countdown
+const APP_VERSION = '3.3.1'; // Redesign Pomodoro Timer to horizontal layout
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
