@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.2.23'; // Goals table interactivity
+const APP_VERSION = '3.2.24'; // Fix bucket selector modal positioning and filter Goals bucket
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -6962,15 +6962,17 @@ async function showBucketSelectorForGoal(goalId) {
                 </div>
                 <div class="modal-body">
                     <div class="bucket-selector-list">
-                        ${allBuckets.map(bucket => {
-                            const isChecked = currentBuckets.includes(bucket.id);
-                            return `
-                                <label class="bucket-checkbox-item">
-                                    <input type="checkbox" value="${bucket.id}" ${isChecked ? 'checked' : ''}>
-                                    <span>${escapeHtml(bucket.name)}</span>
-                                </label>
-                            `;
-                        }).join('')}
+                        ${allBuckets
+                            .filter(bucket => bucket.name !== GOALS_BUCKET_NAME)
+                            .map(bucket => {
+                                const isChecked = currentBuckets.includes(bucket.id);
+                                return `
+                                    <label class="bucket-checkbox-item">
+                                        <input type="checkbox" value="${bucket.id}" ${isChecked ? 'checked' : ''}>
+                                        <span>${escapeHtml(bucket.name)}</span>
+                                    </label>
+                                `;
+                            }).join('')}
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -7,9 +7,21 @@
 **Last Committed Version**: 3.2.23
 **Last Commit**: "v3.2.23: Add interactive Goals table - clickable bucket and task counts"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.23 (clean)
+**Current Working Version**: 3.2.24 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.24 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Fixed bucket selector modal positioning issue
+- Added proper z-index (2000-2002) for modal overlay
+- Modal now appears centered on screen above all content
+- No longer appears under Weekly Compass or other UI elements
+- Filtered out Goals system bucket (📊 Goals) from bucket selector
+- Only shows user-created buckets in management modal
+- Added CSS for #bucketSelectorModal, .modal-backdrop, .modal-dialog
 
 ### v3.2.23 (2026-01-02)
 **Status**: ✅ Committed and Pushed
