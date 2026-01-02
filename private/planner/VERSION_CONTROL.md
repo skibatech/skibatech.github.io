@@ -20,13 +20,12 @@
 2. Update version in planner.js (APP_VERSION constant)
 3. Update cache-bust versions in index.html (CSS and JS)
 4. Update CHANGELOG.md with new version entry
-5. Update DEVELOPMENT.md with new version entry:
-   - Update "Current Status" section with new version as "ready to commit"
-   - Add new version history entry with Status: "Ready to Commit", Commit: "TBD"
-   - Leave commit hash as "TBD" - DO NOT update it after committing
+5. Update DEVELOPMENT.md:
+   - Update "Current Status" section with new version and commit message
+   - Add new version history entry with Status: "✅ Committed and Pushed"
+   - DO NOT include commit hash - it's redundant with git history
 6. **Immediately commit and push** - Single commit only
-7. **NEVER make a second commit** - Leave DEVELOPMENT.md with "TBD" for commit hash
-8. The commit hash can be looked up in git history if needed; no need to track it in DEVELOPMENT.md
+7. **NEVER make a second commit** - All documentation updates happen before the commit
 
 ### Git Commands
 
@@ -46,8 +45,10 @@ git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; 
 # 1. Make code changes in planner.js, planner.css, etc.
 
 # 2-5. Update all version references and documentation
+# In DEVELOPMENT.md, set status to "✅ Committed and Pushed" (not "Ready to Commit")
+# This saves time since we commit immediately after updating docs
 
-# 6-7. Single commit with all changes
+# 6. Single commit with all changes
 git add private/planner/js/planner.js private/planner/css/planner.css private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v3.2.15: Add new feature"; git push origin main
 ```
 

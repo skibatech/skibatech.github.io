@@ -4,16 +4,15 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.24
-**Last Commit**: "v3.2.24: Fix bucket selector modal positioning and filter Goals bucket"
+**Last Committed Version**: 3.2.25
+**Last Commit**: "v3.2.25: Reduce bucket selector modal font sizes for compact display"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.25 (ready to commit)
+**Current Working Version**: 3.2.25 (clean)
 
 ## Version History (Most Recent First)
 
 ### v3.2.25 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed and Pushed
 **Changes**:
 - Cosmetic improvements to bucket selector modal
 - Reduced modal header font size from 18px to 14px
@@ -26,7 +25,6 @@
 
 ### v3.2.24 (2026-01-02)
 **Status**: ✅ Committed and Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed bucket selector modal positioning issue
 - Added proper z-index (2000-2002) for modal overlay
@@ -38,7 +36,6 @@
 
 ### v3.2.23 (2026-01-02)
 **Status**: ✅ Committed and Pushed
-**Commit**: `a65cf53`
 **Changes**:
 - Added interactive functionality to Goals table
 - **Bucket Count Column**: Now clickable with visual hover effect
@@ -60,8 +57,7 @@
 - Updated CHANGELOG.md with new features
 
 ### v3.2.22 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed and Pushed
 **Changes**:
 - **CRITICAL BUG FIX**: Graceful session expiration handling
 - Added 401 Unauthorized detection in fetchGraph() function
@@ -75,8 +71,7 @@
 - User experience: Clear message and automatic re-login prompt instead of cryptic failures
 
 ### v3.2.21 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed and Pushed
 **Changes**:
 - Fixed Goals table column resizing persistence issue
 - Added goalsColumnWidths object to store custom column widths
@@ -86,8 +81,7 @@
 - Widths now persist when sorting columns or refreshing view
 
 ### v3.2.20 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed and Pushed
 **Changes**:
 - Bug reports now automatically record submitter information
 - Added header to description with: submitter name, email, and submission date/time
@@ -96,8 +90,7 @@
 - Uses currentUserName and currentUserEmail variables (captured at login)
 
 ### v3.2.19 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed and Pushed
 **Changes**:
 - Fixed bug report description not saving
 - Issue: Was using task etag instead of task details etag
@@ -106,7 +99,6 @@
 
 ### v3.2.18 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Added "🐛 Report Bug" button in header toolbar (red background for visibility)
 - Created Bug Report modal with simplified form (title, priority, description)
@@ -120,14 +112,12 @@
 
 ### v3.2.17 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Increased .goals-wrapper max-width from 1200px to 1600px
 - Goals table now uses more available screen space
 
 ### v3.2.16 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Fixed Goals table column resizing functionality
 - Added startGoalsResize(), handleGoalsResize(), stopGoalsResize() functions
@@ -136,7 +126,6 @@
 
 ### v3.2.15 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Goals table now sorts alphabetically by goal name by default (was date)
 - Changed goalsSortColumn initial value from 'date' to 'name'
@@ -147,7 +136,6 @@
 
 ### v3.2.14 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Goal banners now display using the goal's assigned color
 - Added goal color support to renderGroup() function (already existed for View: By Goal)
@@ -157,7 +145,6 @@
 
 ### v3.2.13 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Fixed "By Goal" view showing all tasks as "No goal" instead of grouping under actual goals
 - Bug in groupTasksBy(): getGoalsForBucket() returns goal objects, not IDs
@@ -167,7 +154,6 @@
 
 ### v3.2.12 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Extended compass task exclusion to "Group by: Theme" option
 - Modified applyFilters() to check both currentView and currentGroupBy for 'theme'
@@ -176,7 +162,6 @@
 
 ### v3.2.11 (2026-01-02)
 **Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
 **Changes**:
 - Excluded Weekly Compass tasks from Theme view
 - Modified applyFilters() to set includeCompass = false when currentView === 'theme'
@@ -185,7 +170,6 @@
 
 ### v3.2.10 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `67bfa9d`
 **Changes**:
 - Fixed Goals tab displaying blank when page refreshed with Goals tab selected
 - Added renderGoalsView() call in initializeGoals() after data loads
@@ -194,7 +178,6 @@
 
 ### v3.2.9 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `b6dd62e`
 **Changes**:
 - Added column sorting functionality to Goals table
 - All columns sortable: Goal Name, Target Date, Buckets, Tasks, Progress
@@ -206,7 +189,6 @@
 
 ### v3.2.8 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `dacdbe8`
 **Changes**:
 - Converted Goals view from card grid layout to table/list format
 - Added structured columns: color, name+description, target date, bucket count, task count, progress bar, actions
@@ -218,7 +200,6 @@
 
 ### v3.2.7 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed issue where Goals bucket tasks appeared in "Unassigned" group on initial load
 - Enhanced getFilteredTasks() to check both goalsBucketRealId and bucket name
@@ -227,7 +208,6 @@
 
 ### v3.2.6 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed calendar icon visibility in dark mode for date inputs
 - Added CSS for ::-webkit-calendar-picker-indicator pseudo-element
@@ -236,14 +216,12 @@
 
 ### v3.2.5 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Added cursor: pointer to goal target date input
 - Confirmed date picker already functional (uses HTML5 native date input)
 
 ### v3.2.4 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed timezone issue where goal dates shifted by one day
 - Changed from local midnight (T00:00:00) to UTC noon (T12:00:00Z)
@@ -252,7 +230,6 @@
 
 ### v3.2.3 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed Goals bucket appearing in task views
 - Updated applyFilters() to filter out goalsBucketRealId from bucketsToRender
@@ -260,7 +237,6 @@
 
 ### v3.2.2 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed 412 Precondition Failed errors by fetching task details first before PATCH
 - Applied fix to both goal creation and mapping task creation
@@ -272,7 +248,6 @@
 
 ### v3.2.1 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed goals storage approach - now uses Planner bucket instead of plan details
 - Created "📊 Goals" bucket to store goal tasks
@@ -289,7 +264,6 @@
 
 ### v3.2.0 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - MAJOR CHANGE: Migrated goals storage from Microsoft To Do to Planner plan details
 - Goals now stored in plan's sharedWith.goalsData field (shared across team)
@@ -303,7 +277,6 @@
 
 ### v3.1.6 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed missing default sort in renderGroup function
 - Weekly Compass now sorts alphabetically in all view modes and grouping options
@@ -311,7 +284,6 @@
 
 ### v3.1.5 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Added default alphabetical sort by title for Weekly Compass bucket
 - Tasks now appear in alphabetical order by role name (Brother, Father, Friend, etc.)
@@ -319,14 +291,12 @@
 
 ### v3.1.4 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Added logging to list all task titles found in PlannerCompass_Data
 - Helps debug why duplicates aren't being detected
 
 ### v3.1.3 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - loadCompassData now ignores old-format COMPASS_ROLE entries (ones with rocks property)
 - Added console logging to debug save process
@@ -334,21 +304,18 @@
 
 ### v3.1.2 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Changed role metadata save to delete ALL old COMPASS_ROLE_X tasks first, then create fresh ones
 - Fixes issue where duplicate role entries accumulated in PlannerCompass_Data
 
 ### v3.1.1 (2026-01-02)
 **Status**: ✅ Committed & Pushed  
-**Commit**: `TBD`
 **Changes**:
 - Added better initialization checks in saveCompassData
 - Improved error messages for debugging
 
 ### v3.1.0 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - MAJOR REFACTOR: Weekly Compass now uses real Microsoft To Do tasks
 - Created "Weekly Compass" To Do list for rocks (actual tasks)
@@ -359,7 +326,6 @@
 
 ### v3.0.31 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `TBD`
 **Changes**:
 - Fixed saveCompassData to update existing tasks instead of create+delete (prevents duplicates)
 - Only deletes extra COMPASS_ROLE_X tasks when roles are removed
@@ -371,14 +337,12 @@
 
 ### v3.0.29 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `87762e0`
 **Changes**:
 - Fixed compass task rendering to display actual start and due dates instead of hardcoded "--"
 - Removed debug logging from date parsing
 
 ### v3.0.28 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `6dbc70f`
 **Changes**:
 - Added live countdown timer for 429 rate limit errors (updates every 100ms)
 - Applied countdown to both fetchGraph retry logic and edit queue processing
@@ -390,14 +354,12 @@
 
 ### v3.0.26 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `10c6f38`
 **Changes**:
 - Weekly Compass tasks now set startDateTime and dueDateTime based on date range (first date = start, last date = due)
 - Dates automatically update when date range changes
 
 ### v3.0.25 (2026-01-02)
 **Status**: ✅ Committed & Pushed
-**Commit**: `8883edd`
 **Changes**:
 - Removed "+ Add task" buttons from all bucket and group views (renderByBucket, renderSingleView, renderNestedView, inline theme/goal rendering)
 
