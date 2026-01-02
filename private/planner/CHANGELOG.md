@@ -5,6 +5,11 @@ All notable changes to the Planner Pro application will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.17] - 2026-01-02
+
+### Changed
+- Goals view max-width increased from 1200px to 1600px for wider table display
+
 ## [3.2.16] - 2026-01-02
 
 ### Fixed

@@ -4,12 +4,19 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.15
-**Last Commit**: "v3.2.15: Goals table improvements - alphabetical sort, resizable columns, wider layout"
+**Last Committed Version**: 3.2.16
+**Last Commit**: "v3.2.16: Fix Goals table column resizing functionality"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.16 (ready to commit)
+**Current Working Version**: 3.2.17 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.17 (2026-01-02)
+**Status**: 🔄 Ready to Commit
+**Commit**: `TBD`
+**Changes**:
+- Increased .goals-wrapper max-width from 1200px to 1600px
+- Goals table now uses more available screen space
 
 ### v3.2.16 (2026-01-02)
 **Status**: 🔄 Ready to Commit
