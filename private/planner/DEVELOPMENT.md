@@ -19,16 +19,16 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.9
-**Last Commit**: "v3.2.9: Add sortable columns to Goals table"
+**Last Committed Version**: 3.2.10
+**Last Commit**: "v3.2.10: Fix Goals tab showing blank on refresh"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.10 (ready to commit)
+**Current Working Version**: 3.2.10 (stable)
 
 ## Version History (Most Recent First)
 
 ### v3.2.10 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed & Pushed
+**Commit**: `67bfa9d`
 **Changes**:
 - Fixed Goals tab displaying blank when page refreshed with Goals tab selected
 - Added renderGoalsView() call in initializeGoals() after data loads
