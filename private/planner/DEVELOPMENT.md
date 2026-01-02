@@ -17,15 +17,27 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.0.25
-**Last Commit**: "v3.0.25: Remove Add task buttons from UI"
+**Last Committed Version**: 3.0.26
+**Last Commit**: "v3.0.26: Auto-set compass task dates from date range"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.0.26 (in progress)
+**Current Working Version**: 3.0.28 (in progress)
 
 ## Version History (Most Recent First)
 
-### v3.0.26 (In Progress)
+### v3.0.28 (In Progress)
 **Status**: In progress
+**Changes**:
+- Added live countdown timer for 429 rate limit errors (updates every 100ms)
+- Applied countdown to both fetchGraph retry logic and edit queue processing
+
+### v3.0.27 (Debug)
+**Status**: Debug version (not documented in CHANGELOG)
+**Changes**:
+- Added console logging for date range parsing
+
+### v3.0.26 (2026-01-02)
+**Status**: ✅ Committed & Pushed
+**Commit**: `10c6f38`
 **Changes**:
 - Weekly Compass tasks now set startDateTime and dueDateTime based on date range (first date = start, last date = due)
 - Dates automatically update when date range changes

@@ -1,5 +1,5 @@
 // Application Version - Update this with each change
-const APP_VERSION = '3.0.27'; // Major Goals release: strategic planning layer above buckets/epics
+const APP_VERSION = '3.0.28'; // Major Goals release: strategic planning layer above buckets/epics
 const CARD_VISUAL_OPTIONS = [
     { id: 'bar', label: 'Horizontal Bars' },
     { id: 'vertical', label: 'Vertical Bars' },
@@ -289,9 +289,18 @@ async function fetchGraph(url, options = {}, attempt = 0) {
             ? retryAfter * 1000
             : Math.min(16000, GRAPH_BASE_DELAY_MS * Math.pow(2, attempt)) + Math.floor(Math.random() * 250);
         
-        // Show throttling status
-        const waitSeconds = Math.ceil(backoff / 1000);
-        setStatus(`Too Many Requests (429) - Retrying (${attempt + 1}/${GRAPH_MAX_RETRIES}) in ${waitSeconds}s`, '#ff9800');
+        // Show countdown timer for rate limit
+        const startTime = Date.now();
+        const endTime = startTime + backoff;
+        const updateCountdown = () => {
+            const remaining = Math.max(0, endTime - Date.now());
+            const seconds = Math.ceil(remaining / 1000);
+            if (remaining > 0) {
+                setStatus(`Rate limited - Retrying in ${seconds}s (${attempt + 1}/${GRAPH_MAX_RETRIES})`, '#ff9800');
+                setTimeout(updateCountdown, 100);
+            }
+        };
+        updateCountdown();
         
         await sleep(backoff);
         return fetchGraph(url, options, attempt + 1);
@@ -3551,7 +3560,19 @@ async function processEditQueue() {
                     // Calculate exponential backoff
                     const delayMs = Math.min(EDIT_CACHE_DELAY_MS * Math.pow(2, consecutiveErrors), MAX_RETRY_DELAY_MS);
                     console.warn(`⚠️ 429 rate limit - retrying in ${delayMs}ms (${editQueue.length} items in queue)`);
-                    setStatus(`Syncing paused (${editQueue.length} pending) - retry in ${Math.round(delayMs/1000)}s`, 'orange');
+                    
+                    // Show countdown timer for queue rate limit
+                    const startTime = Date.now();
+                    const endTime = startTime + delayMs;
+                    const updateCountdown = () => {
+                        const remaining = Math.max(0, endTime - Date.now());
+                        const seconds = Math.ceil(remaining / 1000);
+                        if (remaining > 0) {
+                            setStatus(`Syncing paused (${editQueue.length} pending) - retry in ${seconds}s`, 'orange');
+                            setTimeout(updateCountdown, 100);
+                        }
+                    };
+                    updateCountdown();
                     
                     // Wait before retrying
                     await sleep(delayMs);
