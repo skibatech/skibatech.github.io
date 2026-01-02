@@ -4,12 +4,21 @@
 **For version control workflow and rules, see [VERSION_CONTROL.md](VERSION_CONTROL.md).**
 
 ## Current Status
-**Last Committed Version**: 3.2.35
-**Last Commit**: "v3.2.35: Fix By Goal view showing No goal on page load"
+**Last Committed Version**: 3.2.36
+**Last Commit**: "v3.2.36: Improve bucket selector modal button styling"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.36 (ready to commit)
+**Current Working Version**: 3.2.37 (ready to commit)
 
 ## Version History (Most Recent First)
+
+### v3.2.37 (2026-01-02)
+**Changes**:
+- Fixed root cause of bucket selector modal width problems
+- General .modal-content CSS had max-width: 500px limiting modal width
+- Added specific .bucket-selector-modal .modal-content override
+- Set max-width: none and width: 100% to allow full 700px width
+- Removed padding from modal-content (now handled by sections)
+- Modal now properly displays at intended width with buttons correctly positioned
 
 ### v3.2.36 (2026-01-02)
 **Changes**:
