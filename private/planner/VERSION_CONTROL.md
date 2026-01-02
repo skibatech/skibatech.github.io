@@ -22,8 +22,8 @@
 4. Update CHANGELOG.md with new version entry
 5. Update DEVELOPMENT.md:
    - Update "Current Status" section with new version and commit message
-   - Add new version history entry with Status: "✅ Committed and Pushed"
-   - DO NOT include commit hash - it's redundant with git history
+   - Add new version history entry with just date and changes list
+   - DO NOT include status or commit hash - redundant with git history
 6. **Immediately commit and push** - Single commit only
 7. **NEVER make a second commit** - All documentation updates happen before the commit
 
@@ -45,8 +45,8 @@ git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; 
 # 1. Make code changes in planner.js, planner.css, etc.
 
 # 2-5. Update all version references and documentation
-# In DEVELOPMENT.md, set status to "✅ Committed and Pushed" (not "Ready to Commit")
-# This saves time since we commit immediately after updating docs
+# In DEVELOPMENT.md, just add version entry with date and changes
+# No need for status field - if it's in the file, it's committed!
 
 # 6. Single commit with all changes
 git add private/planner/js/planner.js private/planner/css/planner.css private/planner/index.html private/planner/CHANGELOG.md private/planner/DEVELOPMENT.md; git commit -m "v3.2.15: Add new feature"; git push origin main
