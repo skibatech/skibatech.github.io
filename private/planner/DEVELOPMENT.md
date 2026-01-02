@@ -17,16 +17,16 @@
   - If removing files: `git add <files>; git rm <removed-files>; git commit -m "vX.X.X: <description>"; git push origin main`
 
 ## Current Status
-**Last Committed Version**: 3.2.7
-**Last Commit**: "v3.2.7: Fix Goals tasks appearing in Unassigned group on load"
+**Last Committed Version**: 3.2.8
+**Last Commit**: "v3.2.8: Convert Goals view from cards to table format"
 **Last Push**: ✅ Pushed to main
-**Current Working Version**: 3.2.8 (ready to commit)
+**Current Working Version**: 3.2.8 (stable)
 
 ## Version History (Most Recent First)
 
 ### v3.2.8 (2026-01-02)
-**Status**: 🔄 Ready to Commit
-**Commit**: `TBD`
+**Status**: ✅ Committed & Pushed
+**Commit**: `dacdbe8`
 **Changes**:
 - Converted Goals view from card grid layout to table/list format
 - Added structured columns: color, name+description, target date, bucket count, task count, progress bar, actions
