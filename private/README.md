@@ -2,6 +2,8 @@
 
 This directory contains internal tools and dashboards that require authentication.
 
+> **Note**: Planner Pro has been moved to its own repository: [skibatech.plannerpro](https://github.com/skibatech/skibatech.plannerpro)
+
 ## Security Features
 
 ### 1. Application-Level Authentication
