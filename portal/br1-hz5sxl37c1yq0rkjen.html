@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Consignment Portal — Skiba's Collectable Corner</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#161d2e; --panel2:#1d2740; --ink:#eaf0fb; --muted:#9fb0cc;
+    --line:#283452; --accent:#3ea6ff; --green:#39d98a; --amber:#ffc857; --sold:#7c8aa8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 18px 60px}
+  header{background:linear-gradient(135deg,#16223f,#0f1420);border-bottom:1px solid var(--line)}
+  .hd{max-width:1040px;margin:0 auto;padding:22px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:42px;height:42px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#7b61ff);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#fff}
+  .brand h1{margin:0;font-size:18px;letter-spacing:.2px}
+  .brand .sub{color:var(--muted);font-size:12.5px}
+  .who{text-align:right;color:var(--muted);font-size:12.5px}
+  .who b{color:var(--ink);font-size:15px;display:block}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .stat .n{font-size:26px;font-weight:800}
+  .stat .l{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.6px}
+  h2{font-size:15px;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);margin:30px 0 10px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .tools{display:flex;gap:10px;margin:8px 0 12px;flex-wrap:wrap}
+  input[type=search]{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 12px;font-size:14px}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);font-size:14px}
+  th{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:var(--panel2)}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .card-name{font-weight:600}
+  a.lnk{color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(62,166,255,.5)}
+  a.lnk:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  td.sku{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:13px}
+  .card-sub{color:var(--muted);font-size:12.5px}
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid}
+  .b-live{color:var(--green);border-color:#1f5a40;background:#11241b}
+  .b-soon{color:var(--amber);border-color:#5a4a1f;background:#241f11}
+  .price{font-weight:700}
+  .mkt{color:var(--muted)}
+  .empty{color:var(--muted);padding:18px;text-align:center}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:36px;line-height:1.7}
+  .note{background:#241f11;border:1px solid #5a4a1f;color:var(--amber);border-radius:10px;padding:10px 14px;font-size:13px;margin:18px 0}
+  @media(max-width:620px){
+    .stats{grid-template-columns:1fr 1fr}
+    .hide-sm{display:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="brand">
+      <div class="logo">SCC</div>
+      <div><h1>Skiba's Collectable Corner</h1><div class="sub">Consignment Portal</div></div>
+    </div>
+    <div class="who"><b id="who">Consignor</b><span id="updated"></span></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="sActive">—</div><div class="l">Cards listed</div></div>
+    <div class="stat"><div class="n" id="sSold">—</div><div class="l">Cards sold</div></div>
+    <div class="stat"><div class="n" id="sTotal">—</div><div class="l">Total sold</div></div>
+  </div>
+
+  <h2>Your cards</h2>
+  <div class="tools"><input type="search" id="q" placeholder="Search your cards…"></div>
+  <table id="activeTable">
+    <thead><tr>
+      <th data-k="name">Card</th>
+      <th data-k="sku" class="hide-sm">SKU</th>
+      <th data-k="status" class="hide-sm">Status</th>
+      <th data-k="list" class="num">List price</th>
+    </tr></thead>
+    <tbody id="activeBody"></tbody>
+  </table>
+
+  <h2>Sold</h2>
+  <table id="soldTable">
+    <thead><tr>
+      <th data-k="date">Date</th>
+      <th data-k="name">Card</th>
+      <th data-k="sku" class="hide-sm">SKU</th>
+      <th data-k="price" class="num">Sold for</th>
+    </tr></thead>
+    <tbody id="soldBody"></tbody>
+  </table>
+
+  <footer>
+    Skiba's Collectable Corner — consignment for <span id="who2"></span>.<br>
+    Prices reflect current eBay listings and may change. Questions? Reply to the message that shared this link.
+  </footer>
+</div>
+
+<script>
+/* ===== DATA: replaced wholesale by Export-SCCConsignorPortal.ps1 ===== */
+const DATA = {
+  "consignor": "Brady",
+  "updated": "June 20, 2026",
+  "active": [
+    {
+      "name": "Artis Gilmore",
+      "set": "2017-18 Donruss Optic",
+      "num": "HD-AG",
+      "parallel": "Hall Dominators",
+      "status": "live",
+      "sku": "SCC-BR1-0036",
+      "item": "178234939422",
+      "list": 32.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2013-14 Panini Titanium",
+      "num": "95",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0014",
+      "item": "178236842450",
+      "list": 25.0,
+      "qty": 1
+    },
+    {
+      "name": "Deyonta Davis",
+      "set": "2016-17 Panini",
+      "num": "ND-DD",
+      "parallel": "Rookie Autograph",
+      "status": "live",
+      "sku": "SCC-BR1-0023",
+      "item": "178234938003",
+      "list": 17.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2018-19 Panini Court Kings",
+      "num": "37",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0019",
+      "item": "178234937908",
+      "list": 15.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2018-19 Panini Prizm",
+      "num": "222",
+      "parallel": "Red White Blue",
+      "status": "live",
+      "sku": "SCC-BR1-0009",
+      "item": "178234937578",
+      "list": 12.5,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2017-18 Donruss Optic",
+      "num": "46-CI",
+      "parallel": "Blue Cracked Ice",
+      "status": "live",
+      "sku": "SCC-BR1-0018",
+      "item": "178234925563",
+      "list": 12.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2011-12 Panini Season Update",
+      "num": "167",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0003",
+      "item": "178234539594",
+      "list": 11.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2017-18 Panini Prizm",
+      "num": "41",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0007",
+      "item": "178234539755",
+      "list": 10.5,
+      "qty": 4
+    },
+    {
+      "name": "Kevin Love",
+      "set": "2011-12 Panini Season Update",
+      "num": "200",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0027",
+      "item": "178236849504",
+      "list": 10.0,
+      "qty": 1
+    },
+    {
+      "name": "Reggie Bush",
+      "set": "2006 Upper Deck",
+      "num": "SHS-BU",
+      "parallel": "Event-Worn Relic",
+      "status": "live",
+      "sku": "SCC-BR1-0033",
+      "item": "178234934397",
+      "list": 10.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2016-17 Panini Prizm",
+      "num": "281",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0015",
+      "item": "178236842566",
+      "list": 9.5,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2013-14 Panini Pinnacle",
+      "num": "10",
+      "parallel": "Behind the Numbers",
+      "status": "live",
+      "sku": "SCC-BR1-0004",
+      "item": "178234539630",
+      "list": 9.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2016-17 Donruss",
+      "num": "8",
+      "parallel": "Dimes",
+      "status": "live",
+      "sku": "SCC-BR1-0013",
+      "item": "178234937636",
+      "list": 9.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2020-21 Panini Prizm",
+      "num": "159",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0010",
+      "item": "178234937616",
+      "list": 5.5,
+      "qty": 1
+    },
+    {
+      "name": "David Robinson",
+      "set": "1996 Upper Deck USA",
+      "num": "56",
+      "parallel": "Portraits of Power",
+      "status": "live",
+      "sku": "SCC-BR1-0028",
+      "item": "178234938410",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Grant Hill",
+      "set": "2014-15 Panini Prizm",
+      "num": "248",
+      "parallel": "Blue & Green Mosaic",
+      "status": "live",
+      "sku": "SCC-BR1-0032",
+      "item": "178234939030",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Jason Kidd",
+      "set": "1994-95 Topps Stadium Club",
+      "num": "190",
+      "parallel": "Draft Pick '94",
+      "status": "live",
+      "sku": "SCC-BR1-0024",
+      "item": "178234938054",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Kevin Durant",
+      "set": "2019-20 Panini Hoops Premium",
+      "num": "61",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0035",
+      "item": "178234939238",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Kristaps Porzingis",
+      "set": "2019-20 Panini Prizm",
+      "num": "76",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0031",
+      "item": "178234938858",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Kyrie Irving",
+      "set": "2013-14 Panini Titanium",
+      "num": "15",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0025",
+      "item": "178234938176",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Magic Johnson / Larry Bird",
+      "set": "1994 SkyBox",
+      "num": "MB1",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0030",
+      "item": "178234938642",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Manu Ginobili",
+      "set": "2017-18 Panini Prizm",
+      "num": "297",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0029",
+      "item": "178234938607",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Reggie Miller",
+      "set": "1995 Fleer",
+      "num": "C-of-12",
+      "parallel": "Insert (6 of 12)",
+      "status": "live",
+      "sku": "SCC-BR1-0034",
+      "item": "178234930462",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Scottie Pippen",
+      "set": "1997 Upper Deck",
+      "num": "SA19",
+      "parallel": "Star Attractions",
+      "status": "live",
+      "sku": "SCC-BR1-0026",
+      "item": "178234938245",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2011-12 Panini Hoops",
+      "num": "20",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0001",
+      "item": "178234254735",
+      "list": 5.0,
+      "qty": 2
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2016-17 Panini Complete",
+      "num": "3",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0005",
+      "item": "178234539672",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2016-17 Donruss",
+      "num": "2",
+      "parallel": "Elite Series",
+      "status": "live",
+      "sku": "SCC-BR1-0006",
+      "item": "178234539714",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2013-14 Panini Hoops",
+      "num": "12",
+      "parallel": "Courtside",
+      "status": "live",
+      "sku": "SCC-BR1-0016",
+      "item": "178234937767",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2017-18 Donruss Optic",
+      "num": "35",
+      "parallel": "Court Kings",
+      "status": "live",
+      "sku": "SCC-BR1-0017",
+      "item": "178234937873",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2017-18 Donruss Optic",
+      "num": "46",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0020",
+      "item": "178234937931",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2018-19 Donruss",
+      "num": "15",
+      "parallel": "Winner Stays",
+      "status": "live",
+      "sku": "SCC-BR1-0021",
+      "item": "178234937952",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Stephen Curry",
+      "set": "2013-14 Panini",
+      "num": "14",
+      "parallel": "Knight School",
+      "status": "live",
+      "sku": "SCC-BR1-0022",
+      "item": "178234937976",
+      "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "1960 Topps 63 Ollie Matson EX COND",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0043",
+      "item": "176471547269",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "1966 Philadelphia - #119 Rosey Brown VG",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0037",
+      "item": "176470207460",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "1991 Topps - #339 Larry Walker",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0039",
+      "item": "176470461532",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "2008-09 Upper Deck First Edition LeBron James #33 Cavaliers",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0046",
+      "item": "176471581292",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "2018-19 Donruss Optic Rated Rookie Miles Bridges #172 Charlotte Hornets",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0044",
+      "item": "176471554805",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "2020-21 Panini Prizm Zion Williamson New Orleans Pelicans #185",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0047",
+      "item": "176471558440",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "2021 Topps Chrome - #40 Kris Bryant",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0042",
+      "item": "176471543919",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "2021 Topps Chrome - 1986 Topps Baseball #86BC-13 Casey Mize (RC)",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0040",
+      "item": "176470465976",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "2021 Topps Chrome - 1986 Topps Baseball #86BC-25 Brady Singer (RC)",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0041",
+      "item": "176470471747",
+      "list": 3.4,
+      "qty": 1
+    },
+    {
+      "name": "Topps Pokemon TCG Alakazam #65 Blue Logo TV Animation Edition",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0045",
+      "item": "176471578280",
+      "list": 2.89,
+      "qty": 1
+    },
+    {
+      "name": "1982 Fleer - #608 Danny Ainge VG READ DESCRIPTION",
+      "set": "(see title)",
+      "num": "",
+      "parallel": "",
+      "status": "live",
+      "sku": "SCC-BR1-0038",
+      "item": "176470437534",
+      "list": 2.04,
+      "qty": 1
+    }
+  ],
+  "sold": [
+    {
+      "date": "2026-06-19",
+      "name": "Stephen Curry",
+      "set": "2016-17 Donruss",
+      "num": "8",
+      "parallel": "",
+      "sku": "SCC-BR1-0013",
+      "item": "178234937636",
+      "price": 7.0
+    }
+  ]
+};
+/* ===== end DATA ===== */
+
+const money = n => (n==null ? "—" : "$"+Number(n).toFixed(2));
+const esc = s => String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function cardLabel(c){
+  const bits=[c.set, c.num?("#"+c.num):"", c.parallel].filter(Boolean).join(" · ");
+  const q = c.qty>1 ? ` ×${c.qty}` : "";
+  const nm = esc(c.name)+q;
+  const head = c.item
+    ? `<a class="card-name lnk" href="https://www.ebay.com/itm/${esc(c.item)}" target="_blank" rel="noopener">${nm} ↗</a>`
+    : `<span class="card-name">${nm}</span>`;
+  return `${head}<div class="card-sub">${esc(bits)}</div>`;
+}
+const badge = s => s==="soon"
+  ? '<span class="badge b-soon">Coming soon</span>'
+  : '<span class="badge b-live">Listed</span>';
+
+let activeSort={k:"list",dir:-1};
+function renderActive(){
+  const q=(document.getElementById('q').value||"").toLowerCase();
+  let rows=DATA.active.filter(c=>(c.name+" "+c.set+" "+c.parallel+" "+c.num+" "+(c.sku||"")).toLowerCase().includes(q));
+  const {k,dir}=activeSort;
+  rows.sort((a,b)=>{
+    let av=k==="name"?a.name+a.set:a[k], bv=k==="name"?b.name+b.set:b[k];
+    if(av==null)av=-1; if(bv==null)bv=-1;
+    return (av>bv?1:av<bv?-1:0)*dir;
+  });
+  const b=document.getElementById('activeBody');
+  b.innerHTML = rows.length ? rows.map(c=>`<tr>
+    <td>${cardLabel(c)}</td>
+    <td class="sku hide-sm">${esc(c.sku||'')}</td>
+    <td class="hide-sm">${badge(c.status==="soon"?"soon":"live")}</td>
+    <td class="num price">${money(c.list)}</td></tr>`).join("")
+    : `<tr><td colspan="4" class="empty">No cards match “${esc(q)}”.</td></tr>`;
+}
+function renderSold(){
+  const rows=[...DATA.sold].sort((a,b)=>a.date<b.date?1:-1);
+  const b=document.getElementById('soldBody');
+  b.innerHTML = rows.length ? rows.map(s=>`<tr>
+    <td>${esc(s.date)}</td>
+    <td>${cardLabel(s)}</td>
+    <td class="sku hide-sm">${esc(s.sku||'')}</td>
+    <td class="num price">${money(s.price)}</td></tr>`).join("")
+    : `<tr><td colspan="4" class="empty">Nothing sold yet.</td></tr>`;
+}
+function init(){
+  document.getElementById('who').textContent=DATA.consignor+"'s cards";
+  document.getElementById('who2').textContent=DATA.consignor;
+  document.getElementById('updated').textContent="Updated "+DATA.updated;
+  document.getElementById('sActive').textContent=DATA.active.reduce((n,c)=>n+(c.qty||1),0);
+  document.getElementById('sSold').textContent=DATA.sold.length;
+  document.getElementById('sTotal').textContent=money(DATA.sold.reduce((n,s)=>n+(s.price||0),0));
+  document.getElementById('q').addEventListener('input',renderActive);
+  document.querySelectorAll('#activeTable th').forEach(th=>th.addEventListener('click',()=>{
+    const k=th.dataset.k; activeSort.dir=(activeSort.k===k)?-activeSort.dir:1; activeSort.k=k; renderActive();
+  }));
+  renderActive(); renderSold();
+}
+init();
+</script>
+</body>
+</html>
