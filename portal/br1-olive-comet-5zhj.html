@@ -70,6 +70,7 @@
     <div class="stat"><div class="n" id="sActive">—</div><div class="l">Cards listed</div></div>
     <div class="stat"><div class="n" id="sSold">—</div><div class="l">Cards sold</div></div>
     <div class="stat"><div class="n" id="sTotal">—</div><div class="l">Total sold</div></div>
+    <div class="stat"><div class="n" id="sPayout">—</div><div class="l">Your earnings</div></div>
   </div>
 
   <h2>Your cards</h2>
@@ -90,7 +91,8 @@
       <th data-k="date">Date</th>
       <th data-k="name">Card</th>
       <th data-k="sku" class="hide-sm">SKU</th>
-      <th data-k="price" class="num">Sold for</th>
+      <th data-k="price" class="num hide-sm">Sold for</th>
+      <th data-k="payout" class="num">Your cut</th>
     </tr></thead>
     <tbody id="soldBody"></tbody>
   </table>
@@ -581,18 +583,7 @@ const DATA = {
       "qty": 1
     }
   ],
-  "sold": [
-    {
-      "date": "2026-06-19",
-      "name": "Stephen Curry",
-      "set": "2016-17 Donruss",
-      "num": "8",
-      "parallel": "",
-      "sku": "SCC-BR1-0013",
-      "item": "178234937636",
-      "price": 7.0
-    }
-  ]
+  "sold": []
 };
 /* ===== end DATA ===== */
 
@@ -636,8 +627,9 @@ function renderSold(){
     <td>${esc(s.date)}</td>
     <td>${cardLabel(s)}</td>
     <td class="sku hide-sm">${esc(s.sku||'')}</td>
-    <td class="num price">${money(s.price)}</td></tr>`).join("")
-    : `<tr><td colspan="4" class="empty">Nothing sold yet.</td></tr>`;
+    <td class="num hide-sm">${money(s.price)}</td>
+    <td class="num price">${s.payout!=null?money(s.payout):'—'}</td></tr>`).join("")
+    : `<tr><td colspan="5" class="empty">Nothing sold yet.</td></tr>`;
 }
 function init(){
   document.getElementById('who').textContent=DATA.consignor+"'s cards";
@@ -646,6 +638,7 @@ function init(){
   document.getElementById('sActive').textContent=DATA.active.reduce((n,c)=>n+(c.qty||1),0);
   document.getElementById('sSold').textContent=DATA.sold.length;
   document.getElementById('sTotal').textContent=money(DATA.sold.reduce((n,s)=>n+(s.price||0),0));
+  document.getElementById('sPayout').textContent=money(DATA.sold.reduce((n,s)=>n+(s.payout||0),0));
   document.getElementById('q').addEventListener('input',renderActive);
   document.querySelectorAll('#activeTable th').forEach(th=>th.addEventListener('click',()=>{
     const k=th.dataset.k; activeSort.dir=(activeSort.k===k)?-activeSort.dir:1; activeSort.k=k; renderActive();
