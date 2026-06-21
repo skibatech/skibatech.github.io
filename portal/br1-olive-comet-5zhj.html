@@ -90,8 +90,11 @@
     <thead><tr>
       <th data-k="date">Date</th>
       <th data-k="name">Card</th>
-      <th data-k="sku" class="hide-sm">SKU</th>
-      <th data-k="price" class="num hide-sm">Sold for</th>
+      <th data-k="price" class="num hide-sm">Item</th>
+      <th data-k="buyer_shipping" class="num hide-sm">+ Shipping</th>
+      <th data-k="shipping" class="num hide-sm">− Label</th>
+      <th data-k="ebay_fee" class="num hide-sm">− eBay fee</th>
+      <th data-k="net" class="num hide-sm">= Net</th>
       <th data-k="payout" class="num">Your cut</th>
     </tr></thead>
     <tbody id="soldBody"></tbody>
@@ -107,7 +110,7 @@
 /* ===== DATA: replaced wholesale by Export-SCCConsignorPortal.ps1 ===== */
 const DATA = {
   "consignor": "Brady",
-  "updated": "June 20, 2026",
+  "updated": "June 21, 2026",
   "active": [
     {
       "name": "Artis Gilmore",
@@ -596,6 +599,8 @@ const DATA = {
       "shipping": 1.03,
       "ebay_fee": 1.48,
       "ad_fee": 0.0,
+      "buyer_shipping": 2.0,
+      "net": 6.49,
       "payout": 3.25
     }
   ]
@@ -641,10 +646,13 @@ function renderSold(){
   b.innerHTML = rows.length ? rows.map(s=>`<tr>
     <td>${esc(s.date)}</td>
     <td>${cardLabel(s)}</td>
-    <td class="sku hide-sm">${esc(s.sku||'')}</td>
     <td class="num hide-sm">${money(s.price)}</td>
+    <td class="num hide-sm">${s.buyer_shipping?'+'+money(s.buyer_shipping):'—'}</td>
+    <td class="num hide-sm">${s.shipping?'−'+money(s.shipping):'—'}</td>
+    <td class="num hide-sm">${s.ebay_fee?'−'+money(s.ebay_fee):'—'}</td>
+    <td class="num hide-sm">${s.net!=null?money(s.net):'—'}</td>
     <td class="num price">${s.payout!=null?money(s.payout):'—'}</td></tr>`).join("")
-    : `<tr><td colspan="5" class="empty">Nothing sold yet.</td></tr>`;
+    : `<tr><td colspan="8" class="empty">Nothing sold yet.</td></tr>`;
 }
 function init(){
   document.getElementById('who').textContent=DATA.consignor+"'s cards";
