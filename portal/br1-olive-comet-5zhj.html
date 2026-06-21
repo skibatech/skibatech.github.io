@@ -616,7 +616,8 @@ function cardLabel(c){
   const head = c.item
     ? `<a class="card-name lnk" href="https://www.ebay.com/itm/${esc(c.item)}" target="_blank" rel="noopener">${nm} ↗</a>`
     : `<span class="card-name">${nm}</span>`;
-  return `${head}<div class="card-sub">${esc(bits)}</div>`;
+  const sub = bits && bits.toLowerCase() !== '(see title)' ? `<div class="card-sub">${esc(bits)}</div>` : '';
+  return `${head}${sub}`;
 }
 const badge = s => s==="soon"
   ? '<span class="badge b-soon">Coming soon</span>'
