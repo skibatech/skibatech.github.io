@@ -93,7 +93,7 @@
       <th data-k="price" class="num hide-sm">Item</th>
       <th data-k="buyer_shipping" class="num hide-sm">+ Shipping</th>
       <th data-k="shipping" class="num hide-sm">− Label</th>
-      <th data-k="ebay_fee" class="num hide-sm">− eBay fee</th>
+      <th data-k="fees" class="num hide-sm">− Fees</th>
       <th data-k="net" class="num hide-sm">Net</th>
       <th data-k="payout" class="num">Your cut</th>
     </tr></thead>
@@ -143,17 +143,6 @@ const DATA = {
       "sku": "SCC-BR1-0023",
       "item": "178234938003",
       "list": 17.0,
-      "qty": 1
-    },
-    {
-      "name": "Stephen Curry",
-      "set": "2018-19 Panini Court Kings",
-      "num": "37",
-      "parallel": "",
-      "status": "live",
-      "sku": "SCC-BR1-0019",
-      "item": "178234937908",
-      "list": 15.0,
       "qty": 1
     },
     {
@@ -588,6 +577,22 @@ const DATA = {
   ],
   "sold": [
     {
+      "date": "2026-06-22",
+      "name": "Stephen Curry",
+      "set": "2018-19 Panini Court Kings",
+      "num": "37",
+      "parallel": "",
+      "sku": "SCC-BR1-0019",
+      "item": "178234937908",
+      "price": 10.0,
+      "shipping": 1.03,
+      "ebay_fee": 1.99,
+      "ad_fee": 1.93,
+      "buyer_shipping": 2.0,
+      "net": 7.05,
+      "payout": 3.53
+    },
+    {
       "date": "2026-06-19",
       "name": "Stephen Curry",
       "set": "2016-17 Donruss",
@@ -608,6 +613,10 @@ const DATA = {
 /* ===== end DATA ===== */
 
 const money = n => (n==null ? "—" : "$"+Number(n).toFixed(2));
+// If any sold row is missing buyer shipping or label (shipping), totals should be TBA
+const soldHasAllShippingAndLabel = Array.isArray(DATA.sold) && DATA.sold.length>0 && DATA.sold.every(s => s.buyer_shipping != null && s.shipping != null);
+// For payout totals we require all pieces present (buyer_shipping, shipping, ebay_fee, ad_fee, payout)
+const soldHasAllPayoutPieces = Array.isArray(DATA.sold) && DATA.sold.length>0 && DATA.sold.every(s => s.payout != null && s.ebay_fee != null && s.ad_fee != null && s.buyer_shipping != null && s.shipping != null);
 const esc = s => String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 function cardLabel(c){
   const bits=[c.set, c.num?("#"+c.num):"", c.parallel].filter(Boolean).join(" · ");
@@ -644,15 +653,23 @@ function renderActive(){
 function renderSold(){
   const rows=[...DATA.sold].sort((a,b)=>a.date<b.date?1:-1);
   const b=document.getElementById('soldBody');
-  b.innerHTML = rows.length ? rows.map(s=>`<tr>
+  b.innerHTML = rows.length ? rows.map(s=>{
+    const missingShippingOrLabel = (s.buyer_shipping == null) || (s.shipping == null);
+    const payoutCell = (s.payout != null && !missingShippingOrLabel && s.ebay_fee != null && s.ad_fee != null) ? money(s.payout) : 'TBA';
+    const buyerShipCell = (s.buyer_shipping == null) ? 'TBA' : ('+'+money(s.buyer_shipping));
+    const labelCell = (s.shipping == null) ? 'TBA' : (s.shipping ? '−'+money(s.shipping) : '—');
+    const feesMissing = (s.ebay_fee == null) || (s.ad_fee == null);
+    const feesCell = feesMissing ? 'TBA' : ('−'+money((s.ebay_fee||0)+(s.ad_fee||0)));
+    const netCell = (s.net == null || missingShippingOrLabel) ? 'TBA' : money(s.net);
+    return `<tr>
     <td>${esc(s.date)}</td>
     <td>${cardLabel(s)}</td>
     <td class="num hide-sm">${money(s.price)}</td>
-    <td class="num hide-sm">${s.buyer_shipping?'+'+money(s.buyer_shipping):'—'}</td>
-    <td class="num hide-sm">${s.shipping?'−'+money(s.shipping):'—'}</td>
-    <td class="num hide-sm">${s.ebay_fee?'−'+money(s.ebay_fee):'—'}</td>
-    <td class="num hide-sm">${s.net!=null?money(s.net):'—'}</td>
-    <td class="num price">${s.payout!=null?money(s.payout):'—'}</td></tr>`).join("")
+    <td class="num hide-sm">${buyerShipCell}</td>
+    <td class="num hide-sm">${labelCell}</td>
+    <td class="num hide-sm">${feesCell}</td>
+    <td class="num hide-sm">${netCell}</td>
+    <td class="num price">${payoutCell}</td></tr>`}).join("")
     : `<tr><td colspan="8" class="empty">Nothing sold yet.</td></tr>`;
 }
 function init(){
@@ -661,8 +678,8 @@ function init(){
   document.getElementById('updated').textContent="Updated "+DATA.updated;
   document.getElementById('sActive').textContent=DATA.active.reduce((n,c)=>n+(c.qty||1),0);
   document.getElementById('sSold').textContent=DATA.sold.length;
-  document.getElementById('sTotal').textContent=money(DATA.sold.reduce((n,s)=>n+(s.price||0),0));
-  document.getElementById('sPayout').textContent=money(DATA.sold.reduce((n,s)=>n+(s.payout||0),0));
+  document.getElementById('sTotal').textContent = soldHasAllShippingAndLabel ? money(DATA.sold.reduce((n,s)=>n+(s.price||0),0)) : 'TBA';
+  document.getElementById('sPayout').textContent = soldHasAllPayoutPieces ? money(DATA.sold.reduce((n,s)=>n+(s.payout||0),0)) : 'TBA';
   document.getElementById('q').addEventListener('input',renderActive);
   document.querySelectorAll('#activeTable th').forEach(th=>th.addEventListener('click',()=>{
     const k=th.dataset.k; activeSort.dir=(activeSort.k===k)?-activeSort.dir:1; activeSort.k=k; renderActive();
