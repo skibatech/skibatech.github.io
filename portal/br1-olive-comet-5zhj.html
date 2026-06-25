@@ -65,6 +65,9 @@
 </header>
 
 <div class="wrap">
+<div class="note" id="previewNote" style="background:#fffbe6;border:1px solid #e6c84a;border-radius:6px;padding:12px 16px;margin:0 0 16px 0;font-size:.9em;color:#7a5c00;">
+  ⚠️ <strong>Preview template</strong> — not a live portal. Run <code>Export-SCCConsignorPortal.ps1 -Consignor BR1</code> to generate the real portal.
+</div>
 
   <div class="stats">
     <div class="stat"><div class="n" id="sActive">—</div><div class="l">Cards listed</div></div>
@@ -110,7 +113,7 @@
 /* ===== DATA: replaced wholesale by Export-SCCConsignorPortal.ps1 ===== */
 const DATA = {
   "consignor": "Brady",
-  "updated": "June 24, 2026",
+  "updated": "June 25, 2026",
   "active": [
     {
       "name": "Artis Gilmore",
@@ -146,6 +149,17 @@ const DATA = {
       "qty": 1
     },
     {
+      "name": "Stefon Diggs",
+      "set": "Panini Rookies & Stars Crusade",
+      "num": "CR38",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0074",
+      "item": "178253396844",
+      "list": 12.5,
+      "qty": 1
+    },
+    {
       "name": "Stephen Curry",
       "set": "2018-19 Panini Prizm",
       "num": "222",
@@ -176,6 +190,17 @@ const DATA = {
       "sku": "SCC-BR1-0003",
       "item": "178234539594",
       "list": 11.0,
+      "qty": 1
+    },
+    {
+      "name": "Nikola Jokic",
+      "set": "Panini Donruss Basketball",
+      "num": "90",
+      "parallel": "Press Proof Orange",
+      "status": "live",
+      "sku": "SCC-BR1-0076",
+      "item": "178253397640",
+      "list": 10.5,
       "qty": 1
     },
     {
@@ -267,14 +292,69 @@ const DATA = {
       "qty": 1
     },
     {
-      "name": "Rod Carew",
-      "set": "1968 Topps",
-      "num": "363",
+      "name": "Russell Westbrook",
+      "set": "Panini Crusade Basketball",
+      "num": "195",
       "parallel": "Base",
       "status": "live",
-      "sku": "SCC-BR1-0052",
-      "item": "178252227224",
-      "list": 7.0,
+      "sku": "SCC-BR1-0063",
+      "item": null,
+      "list": null,
+      "qty": 1
+    },
+    {
+      "name": "Brett Hull",
+      "set": "O-Pee-Chee Premier",
+      "num": "49",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0069",
+      "item": "178253394929",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "DeAndre Hopkins",
+      "set": "Panini Prizm Football Rookie Impact",
+      "num": "13",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0070",
+      "item": "178253395363",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Deyonta Davis",
+      "set": "Panini Select Basketball",
+      "num": "22",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0075",
+      "item": "178253397301",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Grant Hill",
+      "set": "Fleer",
+      "num": "195",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0054",
+      "item": "178252227518",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Jalen Rose",
+      "set": "Totally Certified Basketball",
+      "num": "21",
+      "parallel": "Totally Red",
+      "status": "live",
+      "sku": "SCC-BR1-0071",
+      "item": "178253395662",
+      "list": 8.0,
       "qty": 1
     },
     {
@@ -285,18 +365,117 @@ const DATA = {
       "status": "live",
       "sku": "SCC-BR1-0049",
       "item": "178252226913",
-      "list": 6.5,
+      "list": 8.0,
       "qty": 1
     },
     {
-      "name": "Kyrie Irving",
-      "set": "Panini Threads Storm the Castle",
-      "num": "4",
+      "name": "Julius Erving",
+      "set": "Panini Prizm Basketball",
+      "num": "95",
+      "parallel": "Red White & Blue Prizm",
+      "status": "live",
+      "sku": "SCC-BR1-0072",
+      "item": "178253395907",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Kevin Porter Jr.",
+      "set": "Prizm Draft Picks",
+      "num": "94",
+      "parallel": "Pink Mosaic",
+      "status": "live",
+      "sku": "SCC-BR1-0053",
+      "item": "178252227384",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "LaMarcus Aldridge",
+      "set": "Panini Crown Royale Basketball",
+      "num": "164",
+      "parallel": "Blue /25",
+      "status": "live",
+      "sku": "SCC-BR1-0068",
+      "item": "178253394518",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Lawrence Taylor",
+      "set": "Topps",
+      "num": "28",
       "parallel": "Base",
       "status": "live",
-      "sku": "SCC-BR1-0057",
-      "item": "178252228676",
-      "list": 6.0,
+      "sku": "SCC-BR1-0056",
+      "item": "178252227757",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Magic Johnson",
+      "set": "Panini NBA Hoops Legends of the Ball",
+      "num": "LEG-4",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0067",
+      "item": "178253393943",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Rajon Rondo",
+      "set": "Fleer Retro Basketball",
+      "num": "127",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0048",
+      "item": "178252226812",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Rod Carew",
+      "set": "1968 Topps",
+      "num": "363",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0052",
+      "item": "178252227224",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Stefon Diggs",
+      "set": "Panini Rookies & Stars Football",
+      "num": "161",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0073",
+      "item": "178253396384",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Steve Smith",
+      "set": "SkyBox E-X",
+      "num": "43",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0051",
+      "item": "178252227126",
+      "list": 8.0,
+      "qty": 1
+    },
+    {
+      "name": "Kevin Durant",
+      "set": "Panini Excalibur Basketball - Crusade",
+      "num": "3",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0061",
+      "item": null,
+      "list": null,
       "qty": 1
     },
     {
@@ -308,6 +487,17 @@ const DATA = {
       "sku": "SCC-BR1-0010",
       "item": "178234937616",
       "list": 5.5,
+      "qty": 1
+    },
+    {
+      "name": "Rajon Rondo",
+      "set": "Upper Deck Star Rookies",
+      "num": "220",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0059",
+      "item": null,
+      "list": null,
       "qty": 1
     },
     {
@@ -329,17 +519,6 @@ const DATA = {
       "status": "live",
       "sku": "SCC-BR1-0032",
       "item": "178234939030",
-      "list": 5.0,
-      "qty": 1
-    },
-    {
-      "name": "Grant Hill",
-      "set": "Fleer",
-      "num": "195",
-      "parallel": "Base",
-      "status": "live",
-      "sku": "SCC-BR1-0054",
-      "item": "178252227518",
       "list": 5.0,
       "qty": 1
     },
@@ -366,17 +545,6 @@ const DATA = {
       "qty": 1
     },
     {
-      "name": "Kevin Porter Jr.",
-      "set": "Prizm Draft Picks",
-      "num": "94",
-      "parallel": "Pink Mosaic",
-      "status": "live",
-      "sku": "SCC-BR1-0053",
-      "item": "178252227384",
-      "list": 5.0,
-      "qty": 1
-    },
-    {
       "name": "Kristaps Porzingis",
       "set": "2019-20 Panini Prizm",
       "num": "76",
@@ -395,17 +563,6 @@ const DATA = {
       "status": "live",
       "sku": "SCC-BR1-0025",
       "item": "178234938176",
-      "list": 5.0,
-      "qty": 1
-    },
-    {
-      "name": "Lawrence Taylor",
-      "set": "Topps",
-      "num": "28",
-      "parallel": "Base",
-      "status": "live",
-      "sku": "SCC-BR1-0056",
-      "item": "178252227757",
       "list": 5.0,
       "qty": 1
     },
@@ -432,17 +589,6 @@ const DATA = {
       "qty": 1
     },
     {
-      "name": "Rajon Rondo",
-      "set": "Fleer Retro Basketball",
-      "num": "127",
-      "parallel": "Base",
-      "status": "live",
-      "sku": "SCC-BR1-0048",
-      "item": "178252226812",
-      "list": 5.0,
-      "qty": 1
-    },
-    {
       "name": "Reggie Miller",
       "set": "1995 Fleer",
       "num": "C-of-12",
@@ -451,6 +597,17 @@ const DATA = {
       "sku": "SCC-BR1-0034",
       "item": "178234930462",
       "list": 5.0,
+      "qty": 1
+    },
+    {
+      "name": "Russell Westbrook",
+      "set": "Panini Excalibur Crusade",
+      "num": "5",
+      "parallel": "Silver (Base Crusade)",
+      "status": "live",
+      "sku": "SCC-BR1-0062",
+      "item": null,
+      "list": null,
       "qty": 1
     },
     {
@@ -553,14 +710,14 @@ const DATA = {
       "qty": 1
     },
     {
-      "name": "Steve Smith",
-      "set": "SkyBox E-X",
-      "num": "43",
+      "name": "Kawhi Leonard",
+      "set": "Panini Grand Reserve Basketball",
+      "num": "71",
       "parallel": "Base",
       "status": "live",
-      "sku": "SCC-BR1-0051",
-      "item": "178252227126",
-      "list": 5.0,
+      "sku": "SCC-BR1-0065",
+      "item": null,
+      "list": null,
       "qty": 1
     },
     {
@@ -663,6 +820,17 @@ const DATA = {
       "qty": 1
     },
     {
+      "name": "Kevin Durant",
+      "set": "Panini Prestige Franchise Favorites",
+      "num": "21",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0060",
+      "item": null,
+      "list": null,
+      "qty": 1
+    },
+    {
       "name": "Topps Pokemon TCG Alakazam #65 Blue Logo TV Animation Edition",
       "set": "Pokémon Topps Series 1",
       "num": "65",
@@ -683,9 +851,58 @@ const DATA = {
       "item": "176470437534",
       "list": 2.04,
       "qty": 1
+    },
+    {
+      "name": "Markelle Fultz",
+      "set": "Panini Prizm Basketball",
+      "num": "1",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0066",
+      "item": null,
+      "list": null,
+      "qty": 1
+    },
+    {
+      "name": "Derrick Coleman",
+      "set": "Topps Finest City Legends",
+      "num": "101",
+      "parallel": "Base",
+      "status": "live",
+      "sku": "SCC-BR1-0064",
+      "item": null,
+      "list": null,
+      "qty": 1
+    },
+    {
+      "name": "Luka Don─ìi─ç",
+      "set": "Panini Contenders",
+      "num": "73",
+      "parallel": "Season Ticket",
+      "status": "live",
+      "sku": "SCC-BR1-0058",
+      "item": null,
+      "list": null,
+      "qty": 1
     }
   ],
   "sold": [
+    {
+      "date": "2026-06-24",
+      "name": "Kyrie Irving",
+      "set": "Panini Threads Storm the Castle",
+      "num": "4",
+      "parallel": "",
+      "sku": "SCC-BR1-0057",
+      "item": "178252228676",
+      "price": 6.0,
+      "shipping": 0.0,
+      "ebay_fee": 0.8,
+      "ad_fee": 0.0,
+      "buyer_shipping": null,
+      "net": 5.2,
+      "payout": 2.6
+    },
     {
       "date": "2026-06-22",
       "name": "Stephen Curry",
@@ -800,3 +1017,4 @@ init();
 </script>
 </body>
 </html>
+
