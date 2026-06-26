@@ -22,6 +22,8 @@
   .who{text-align:right;color:var(--muted);font-size:12.5px}
   .who b{color:var(--ink);font-size:15px;display:block}
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+  .stat-owed .n{color:var(--amber)}
+  .stat-paid .n{color:var(--green)}
   .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
   .stat .n{font-size:26px;font-weight:800}
   .stat .l{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.6px}
@@ -75,6 +77,8 @@
     <div class="stat"><div class="n" id="sSold">—</div><div class="l">Cards sold</div></div>
     <div class="stat"><div class="n" id="sTotal">—</div><div class="l">Total sold</div></div>
     <div class="stat"><div class="n" id="sPayout">—</div><div class="l">Your earnings</div></div>
+    <div class="stat stat-owed"><div class="n" id="sOwed">—</div><div class="l">Outstanding</div></div>
+    <div class="stat stat-paid"><div class="n" id="sPaid">—</div><div class="l">Paid out</div></div>
   </div>
 
   <h2>Your cards</h2>
@@ -1131,6 +1135,10 @@ function init(){
   document.getElementById('sSold').textContent=DATA.sold.length;
   document.getElementById('sTotal').textContent = soldHasAllShippingAndLabel ? money(DATA.sold.reduce((n,s)=>n+(s.price||0),0)) : 'TBA';
   document.getElementById('sPayout').textContent = soldHasAllPayoutPieces ? money(DATA.sold.reduce((n,s)=>n+(s.payout||0),0)) : 'TBA';
+  const owedRows = DATA.sold.filter(s=>!s.paid && s.payout!=null);
+  const paidRows = DATA.sold.filter(s=> s.paid && s.payout!=null);
+  document.getElementById('sOwed').textContent = owedRows.length ? money(owedRows.reduce((n,s)=>n+(s.payout||0),0)) : '$0.00';
+  document.getElementById('sPaid').textContent = paidRows.length ? money(paidRows.reduce((n,s)=>n+(s.payout||0),0)) : '$0.00';
   document.getElementById('q').addEventListener('input',renderActive);
   document.querySelectorAll('#activeTable th').forEach(th=>th.addEventListener('click',()=>{
     const k=th.dataset.k; activeSort.dir=(activeSort.k===k)?-activeSort.dir:1; activeSort.k=k; renderActive();
