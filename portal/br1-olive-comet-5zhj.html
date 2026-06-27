@@ -1101,12 +1101,12 @@ const DATA = {
       "sku": "SCC-BR1-0076",
       "item": "178253397640",
       "price": 10.5,
-      "shipping": 0.0,
-      "ebay_fee": 1.39,
+      "shipping": 1.03,
+      "ebay_fee": 2.02,
       "ad_fee": 0.0,
-      "buyer_shipping": null,
-      "net": 9.11,
-      "payout": 4.56,
+      "buyer_shipping": 2.0,
+      "net": 9.45,
+      "payout": 4.73,
       "paid": false
     },
     {
@@ -1182,7 +1182,7 @@ const DATA = {
 /* ===== end DATA ===== */
 
 const money = n => (n==null ? "—" : "$"+Number(n).toFixed(2));
-// If any sold row is missing buyer shipping or label (shipping), totals should be TBA
+// If any sold row is missing buyer shipping or label (shipping), totals should be TBD
 const soldHasAllShippingAndLabel = Array.isArray(DATA.sold) && DATA.sold.length>0 && DATA.sold.every(s => s.buyer_shipping != null && s.shipping != null);
 // For payout totals we require all pieces present (buyer_shipping, shipping, ebay_fee, ad_fee, payout)
 const soldHasAllPayoutPieces = Array.isArray(DATA.sold) && DATA.sold.length>0 && DATA.sold.every(s => s.payout != null && s.ebay_fee != null && s.ad_fee != null && s.buyer_shipping != null && s.shipping != null);
@@ -1224,12 +1224,12 @@ function renderSold(){
   const b=document.getElementById('soldBody');
   b.innerHTML = rows.length ? rows.map(s=>{
     const missingShippingOrLabel = (s.buyer_shipping == null) || (s.shipping == null);
-    const payoutCell = (s.payout != null && !missingShippingOrLabel && s.ebay_fee != null && s.ad_fee != null) ? money(s.payout) : 'TBA';
-    const buyerShipCell = (s.buyer_shipping == null) ? 'TBA' : ('+'+money(s.buyer_shipping));
-    const labelCell = (s.shipping == null) ? 'TBA' : (s.shipping ? '−'+money(s.shipping) : '—');
+    const payoutCell = (s.payout != null && !missingShippingOrLabel && s.ebay_fee != null && s.ad_fee != null) ? money(s.payout) : 'TBD';
+    const buyerShipCell = (s.buyer_shipping == null) ? 'TBD' : ('+'+money(s.buyer_shipping));
+    const labelCell = (s.shipping == null) ? 'TBD' : (s.shipping ? '−'+money(s.shipping) : '—');
     const feesMissing = (s.ebay_fee == null) || (s.ad_fee == null);
-    const feesCell = feesMissing ? 'TBA' : ('−'+money((s.ebay_fee||0)+(s.ad_fee||0)));
-    const netCell = (s.net == null || missingShippingOrLabel) ? 'TBA' : money(s.net);
+    const feesCell = feesMissing ? 'TBD' : ('−'+money((s.ebay_fee||0)+(s.ad_fee||0)));
+    const netCell = (s.net == null || missingShippingOrLabel) ? 'TBD' : money(s.net);
     return `<tr>
     <td>${esc(s.date)}</td>
     <td>${cardLabel(s)}</td>
@@ -1249,12 +1249,12 @@ function init(){
   document.getElementById('updated').textContent="Updated "+DATA.updated;
   document.getElementById('sActive').textContent=DATA.active.reduce((n,c)=>n+(c.qty||1),0);
   document.getElementById('sSold').textContent=DATA.sold.length;
-  document.getElementById('sTotal').textContent = soldHasAllShippingAndLabel ? money(DATA.sold.reduce((n,s)=>n+(s.price||0),0)) : 'TBA';
-  document.getElementById('sPayout').textContent = soldHasAllPayoutPieces ? money(DATA.sold.reduce((n,s)=>n+(s.payout||0),0)) : 'TBA';
+  document.getElementById('sTotal').textContent = soldHasAllShippingAndLabel ? money(DATA.sold.reduce((n,s)=>n+(s.price||0),0)) : 'TBD';
+  document.getElementById('sPayout').textContent = soldHasAllPayoutPieces ? money(DATA.sold.reduce((n,s)=>n+(s.payout||0),0)) : 'TBD';
   const owedRows = DATA.sold.filter(s=>!s.paid && s.payout!=null);
   const paidRows = DATA.sold.filter(s=> s.paid && s.payout!=null);
-  document.getElementById('sOwed').textContent = owedRows.length ? money(owedRows.reduce((n,s)=>n+(s.payout||0),0)) : '$0.00';
-  document.getElementById('sPaid').textContent = paidRows.length ? money(paidRows.reduce((n,s)=>n+(s.payout||0),0)) : '$0.00';
+  document.getElementById('sOwed').textContent = !soldHasAllPayoutPieces ? 'TBD' : (owedRows.length ? money(owedRows.reduce((n,s)=>n+(s.payout||0),0)) : '$0.00');
+  document.getElementById('sPaid').textContent = !soldHasAllPayoutPieces ? 'TBD' : (paidRows.length ? money(paidRows.reduce((n,s)=>n+(s.payout||0),0)) : '$0.00');
   document.getElementById('q').addEventListener('input',renderActive);
   document.querySelectorAll('#activeTable th').forEach(th=>th.addEventListener('click',()=>{
     const k=th.dataset.k; activeSort.dir=(activeSort.k===k)?-activeSort.dir:1; activeSort.k=k; renderActive();
