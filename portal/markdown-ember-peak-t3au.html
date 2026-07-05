@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SCC â€” Markdown History</title>
+<title>SCC &mdash; Markdown History</title>
 <style>
   :root{--bg:#0f1117;--panel:#1a1d27;--ink:#e8eaf0;--muted:#7c8aa8;--line:#283452;--accent:#3ea6ff;--green:#39d98a;--amber:#ffc857;--red:#ff6b6b}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -46,17 +46,17 @@
   <div class="hd">
     <div style="display:flex;align-items:center;gap:12px">
       <div class="logo">SCC</div>
-      <div><h1>Markdown History</h1><div class="sub">Auto price-adjust log Â· Mark only</div></div>
+      <div><h1>Markdown History</h1><div class="sub">Auto price-adjust log &middot; Mark only</div></div>
     </div>
     <div class="sub" id="updated"></div>
   </div>
 </header>
 <div class="wrap">
   <div class="stats">
-    <div class="stat"><div class="n" id="sApplied">â€”</div><div class="l">Markdowns applied</div></div>
-    <div class="stat"><div class="n" id="sRuns">â€”</div><div class="l">Runs total</div></div>
-    <div class="stat"><div class="n" id="sCooldown">â€”</div><div class="l">In cooldown</div></div>
-    <div class="stat"><div class="n" id="sAvg">â€”</div><div class="l">Avg drop %</div></div>
+    <div class="stat"><div class="n" id="sApplied">&mdash;</div><div class="l">Markdowns applied</div></div>
+    <div class="stat"><div class="n" id="sRuns">&mdash;</div><div class="l">Runs total</div></div>
+    <div class="stat"><div class="n" id="sCooldown">&mdash;</div><div class="l">In cooldown</div></div>
+    <div class="stat"><div class="n" id="sAvg">&mdash;</div><div class="l">Avg drop %</div></div>
   </div>
 
   <h2>Run history</h2>
@@ -84,7 +84,7 @@
 
   <h2>Full log</h2>
   <div class="tools">
-    <input type="search" id="q" placeholder="Search cardsâ€¦">
+    <input type="search" id="q" placeholder="Search cards&hellip;">
     <select id="statusFilter">
       <option value="">All statuses</option>
       <option value="applied">Applied</option>
@@ -108,7 +108,7 @@
 
 <script>
 const DATA = {
-    "updated":  "July 5, 2026 6:55 PM",
+    "updated":  "July 5, 2026 7:02 PM",
     "stats":  {
                   "applied":  187,
                   "runs":  3,
@@ -6297,7 +6297,7 @@ const DATA = {
 };
 /* ===== end DATA ===== */
 
-const money = n => n==null ? 'â€”' : '\$'+Number(n).toFixed(2);
+const money = n => n==null ? '\u2014' : '\$'+Number(n).toFixed(2);
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function statusBadge(s){
@@ -6309,8 +6309,8 @@ function statusBadge(s){
 }
 
 function cardLink(r){
-  return r.item ? `<a class="lnk" href="https://www.ebay.com/itm/${esc(r.item)}" target="_blank" rel="noopener">${esc(r.title)||esc(r.sku)||r.item} â†—</a>`
-                : `<span>${esc(r.title)||esc(r.sku)||'â€”'}</span>`;
+  return r.item ? `<a class="lnk" href="https://www.ebay.com/itm/${esc(r.item)}" target="_blank" rel="noopener">${esc(r.title)||esc(r.sku)||r.item} \u2197</a>`
+                : `<span>${esc(r.title)||esc(r.sku)||'\u2014'}</span>`;
 }
 
 function renderRuns(){
@@ -6320,7 +6320,7 @@ function renderRuns(){
     <td class="num">${r.applied}</td>
     <td class="num hide-sm">${r.skipped}</td>
     <td class="num hide-sm">${r.failed}</td>
-    <td class="num hide-sm">${r.avg_pct!=null?r.avg_pct+'%':'â€”'}</td>
+    <td class="num hide-sm">${r.avg_pct!=null?r.avg_pct+'%':'\u2014'}</td>
   </tr>`).join('') : `<tr><td colspan="5" class="empty">No runs yet.</td></tr>`;
 }
 
@@ -6337,7 +6337,7 @@ function renderCooldown(){
       <td><div style="font-weight:600;color:var(--amber)">${r.days_left}d</div>
           <div class="cool-bar"><div class="cool-fill" style="width:${pct}%"></div></div></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="4" class="empty">No cards in cooldown â€” all eligible.</td></tr>`;
+  }).join('') : `<tr><td colspan="4" class="empty">No cards in cooldown \u2014 all eligible.</td></tr>`;
 }
 
 function renderLog(){
@@ -6356,7 +6356,7 @@ function renderLog(){
     <td>${cardLink(r)}${r.sku?`<div style="color:var(--muted);font-size:12px">${esc(r.sku)}</div>`:''}</td>
     <td class="num hide-sm">${money(r.from)}</td>
     <td class="num hide-sm">${money(r.to)}</td>
-    <td class="num pct-drop">${r.pct!=null?(r.pct>0?'+':'')+r.pct+'%':'â€”'}</td>
+    <td class="num pct-drop">${r.pct!=null?(r.pct>0?'+':'')+r.pct+'%':'\u2014'}</td>
     <td class="hide-sm">${statusBadge(r.status)}</td>
     <td class="hide-sm" style="color:var(--muted);font-size:12px">${esc(r.note)}</td>
   </tr>`).join('') : `<tr><td colspan="7" class="empty">No entries match.</td></tr>`;
