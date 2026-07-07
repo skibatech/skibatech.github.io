@@ -1376,12 +1376,12 @@ const DATA = {
       "sku": "SCC-BR1-0022",
       "item": "178234937976",
       "price": 3.0,
-      "shipping": 0.0,
-      "ebay_fee": 0.4,
+      "shipping": 1.03,
+      "ebay_fee": 0.95,
       "ad_fee": 0.0,
-      "buyer_shipping": null,
-      "net": 2.6,
-      "payout": 1.3,
+      "buyer_shipping": 2.0,
+      "net": 3.02,
+      "payout": 1.51,
       "paid": false
     },
     {
@@ -1534,7 +1534,7 @@ function renderSold(){
   b.innerHTML = rows.length ? rows.map(s=>{
     const missingShippingOrLabel = (s.buyer_shipping == null) || (s.shipping == null);
     const payoutCell = (s.payout != null && !missingShippingOrLabel && s.ebay_fee != null && s.ad_fee != null) ? money(s.payout) : 'TBD';
-    const buyerShipCell = (s.buyer_shipping == null) ? 'TBD' : ('+'+money(s.buyer_shipping));
+    const buyerShipCell = (s.buyer_shipping == null) ? 'TBD' : (s.buyer_shipping ? '+'+money(s.buyer_shipping) : '—');
     const labelCell = (s.shipping == null) ? 'TBD' : (s.shipping ? '−'+money(s.shipping) : '—');
     const feesMissing = (s.ebay_fee == null) || (s.ad_fee == null);
     const feesCell = feesMissing ? 'TBD' : ('−'+money((s.ebay_fee||0)+(s.ad_fee||0)));
