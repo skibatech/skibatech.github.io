@@ -8,7 +8,7 @@
 			"args": [
 				"-NoProfile",
 				"-Command",
-				"Get-Content \"c:\\src\\skibatech.github.io\\private\\planner\\planner.css\" -TotalCount 200 | Out-String"
+				"Get-Content \"c:\\src\\teams\\development\\projects\\skibatech.github.io\\private\\planner\\planner.css\" -TotalCount 200 | Out-String"
 			]
 		},
 		{
@@ -19,8 +19,8 @@
 				"-NoProfile",
 				"-Command",
 				"$ErrorActionPreference = 'Stop';",
-				"(Get-Content \"c:\\src\\skibatech.github.io\\private\\planner\\planner.js\") -replace \"const APP_VERSION = '2.0.34'\", \"const APP_VERSION = '2.0.35'\" | Set-Content \"c:\\src\\skibatech.github.io\\private\\planner\\planner.js\";",
-				"Add-Content \"c:\\src\\skibatech.github.io\\private\\planner\\CHANGELOG.md\" \"`n## [2.0.35] - 2025-12-29`n`n### Fixed`n- **Sharpen the Saw Labels**: Clickable styling and tooltip now only shown in edit mode; in read-only, labels are non-clickable and show no hint.\""
+				"(Get-Content \"c:\\src\\teams\\development\\projects\\skibatech.github.io\\private\\planner\\planner.js\") -replace \"const APP_VERSION = '2.0.34'\", \"const APP_VERSION = '2.0.35'\" | Set-Content \"c:\\src\\teams\\development\\projects\\skibatech.github.io\\private\\planner\\planner.js\";",
+				"Add-Content \"c:\\src\\teams\\development\\projects\\skibatech.github.io\\private\\planner\\CHANGELOG.md\" \"`n## [2.0.35] - 2025-12-29`n`n### Fixed`n- **Sharpen the Saw Labels**: Clickable styling and tooltip now only shown in edit mode; in read-only, labels are non-clickable and show no hint.\""
 			]
 		}
 	]
