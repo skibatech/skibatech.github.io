@@ -93,8 +93,13 @@ section h2{font-size:24px;margin:0 0 16px}
 .lightbox.active{display:flex; align-items:center; justify-content:center}
 .lightbox-content{position:relative; max-width:90%; max-height:90vh; display:flex; align-items:center; justify-content:center}
 .lightbox-content img{max-width:100%; max-height:90vh; border-radius:8px}
+.lightbox-trigger{display:block; width:100%; margin:0; padding:0; border:0; background:none; color:inherit; font:inherit; cursor:pointer}
+.lightbox-trigger img{display:block}
+.lightbox-trigger:focus-visible{outline:3px solid var(--brand); outline-offset:3px; border-radius:8px}
 .lightbox-close{position:absolute; top:20px; right:30px; color:#fff; font-size:40px; font-weight:bold; cursor:pointer; z-index:1001}
+button.lightbox-close{background:none; border:0; padding:0 8px; line-height:1; font-family:inherit}
 .lightbox-close:hover{color:#ccc}
+.lightbox-close:focus-visible{outline:3px solid #fff; outline-offset:2px}
 @keyframes fadeIn{from{opacity:0} to{opacity:1}}
 footer{border-top:1px solid var(--border); padding:28px 0; color:var(--muted); text-align:center}
 .i{display:inline-block; width:16px; height:16px; border-radius:3px}
