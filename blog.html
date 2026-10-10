@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,22 +7,24 @@
 		<link rel="stylesheet" href="/assets/site.css">
 	</head>
 	<body>
-		<nav class='nav'>
+		<a class="skip-link" href="#main">Skip to main content</a>
+		<nav class='nav' aria-label="Main">
 			<div class='container nav-inner'>
 				<a class="brand" href='/'><img src="/assets/images/skibatech-narrow-logo.png" alt="SkibaTech"></a>
 				<div><a href='/portfolio.html'>Portfolio</a><a href='/skills.html'>Skills</a><a href='/blog.html'>Blog</a><a href='/contact.html'>Contact</a></div>
 			</div>
 		</nav>
 
+	<main id="main">
 	<section class='container' style='padding-top:40px'>
-		<h2>Blog</h2>
+		<h1 class="page-title">Blog</h1>
 		<p>Insights, tips, and updates on infrastructure automation, Configuration Manager, PowerShell, and modern endpoint management.</p>
 
 		<div class="blog-layout" style="margin-top:32px">
 		<!-- Sidebar with Recent Posts -->
 		<aside class="blog-sidebar">
-			<h4 style="margin:0 0 16px; font-size:14px; text-transform:uppercase; color:var(--muted)">Recent Posts</h4>
-			<nav class="blog-nav">
+			<p style="margin:0 0 16px; font-size:14px; text-transform:uppercase; color:var(--muted)">Recent Posts</p>
+			<nav class="blog-nav" aria-label="Recent posts">
 				<a href="/blog/coding-tools-tips-lessons-learned.html" style="display:block; margin-bottom:8px; font-size:13px; color:var(--text)">Coding Tools: Tips & Lessons Learned</a>
 				<a href="/blog/msignite-2025-whats-new-intune.html" style="display:block; margin-bottom:8px; font-size:13px; color:var(--text)">What's New in Microsoft Intune – Microsoft Ignite 2025</a>
 				<a href="/blog/msignite-2025-key-announcements.html" style="display:block; margin-bottom:8px; font-size:13px; color:var(--text)">Microsoft Ignite 2025 – Key Announcements by Technical Area</a>
@@ -35,49 +37,51 @@
 		<!-- Main Content -->
 		<div class="blog-posts">
 			<article class="blog-post-card" style="padding:24px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:24px">
-				<h3 style="margin:0 0 8px; font-size:18px">Coding Tools: Tips & Lessons Learned from 30 Days of AI-Assisted Development</h3>
+				<h2 style="margin:0 0 8px; font-size:18px">Coding Tools: Tips & Lessons Learned from 30 Days of AI-Assisted Development</h2>
 				<p style="color:var(--muted); font-size:13px; margin:4px 0 12px">January 8, 2025 • 12 min read</p>
 				<p style="margin:0; font-size:14px">How I rebuilt my workflow around GitHub Copilot—one-line Git commits, solution-first coding, Copilot chat prompts, pricing/premium request tips, and the Intune → Azure SQL → Power BI pipeline.</p>
 				<a href="/blog/coding-tools-tips-lessons-learned.html" style="display:inline-block; margin-top:12px; font-size:14px; color:var(--brand)">Read More →</a>
 			</article>
 
 			<article class="blog-post-card" style="padding:24px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:24px">
-				<h3 style="margin:0 0 8px; font-size:18px">What's New in Microsoft Intune – Microsoft Ignite 2025</h3>
+				<h2 style="margin:0 0 8px; font-size:18px">What's New in Microsoft Intune – Microsoft Ignite 2025</h2>
 				<p style="color:var(--muted); font-size:13px; margin:4px 0 12px">November 24, 2025 • 12 min read</p>
 				<p style="margin:0; font-size:14px">Comprehensive overview of all Intune-related announcements from Microsoft Ignite 2025, including AI-powered Security Copilot agents, remote recovery, enhanced admin controls, and more.</p>
 				<a href="/blog/msignite-2025-whats-new-intune.html" style="display:inline-block; margin-top:12px; font-size:14px; color:var(--brand)">Read More →</a>
 			</article>
 
 			<article class="blog-post-card" style="padding:24px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:24px">
-				<h3 style="margin:0 0 8px; font-size:18px">Microsoft Ignite 2025 – Key Announcements by Technical Area</h3>
+				<h2 style="margin:0 0 8px; font-size:18px">Microsoft Ignite 2025 – Key Announcements by Technical Area</h2>
 				<p style="color:var(--muted); font-size:13px; margin:4px 0 12px">November 21, 2025 • 15 min read</p>
 				<p style="margin:0; font-size:14px">Comprehensive summary of the most significant announcements from Microsoft Ignite 2025, organized by technical area including Windows 365, Intune, AI & Copilot, Azure Arc, Security, and more.</p>
 				<a href="/blog/msignite-2025-key-announcements.html" style="display:inline-block; margin-top:12px; font-size:14px; color:var(--brand)">Read More →</a>
 			</article>
 
 			<article class="blog-post-card" style="padding:24px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:24px">
-				<h3 style="margin:0 0 8px; font-size:18px">Microsoft Ignite 2025 – Virtual Attendance Schedule</h3>
+				<h2 style="margin:0 0 8px; font-size:18px">Microsoft Ignite 2025 – Virtual Attendance Schedule</h2>
 				<p style="color:var(--muted); font-size:13px; margin:4px 0 12px">November 16, 2025 • 5 min read</p>
 				<p style="margin:0; font-size:14px">The BIG LIST of sessions I'm interested in reviewing from Microsoft Ignite 2025. All sessions include times, course IDs, and direct links to recordings.</p>
 				<a href="/blog/msignite-2025-favorites-biglist.html" style="display:inline-block; margin-top:12px; font-size:14px; color:var(--brand)">Read More →</a>
 			</article>
 			
 			<article class="blog-post-card" style="padding:24px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:24px">
-					<h3 style="margin:0 0 8px; font-size:18px">The Practical Modernization of Configuration Manager</h3>
+					<h2 style="margin:0 0 8px; font-size:18px">The Practical Modernization of Configuration Manager</h2>
 					<p style="color:var(--muted); font-size:13px; margin:4px 0 12px">November 14, 2025 • 8 min read</p>
 					<p style="margin:0; font-size:14px">Without modifying core code, could there be a way to practically modernize Configuration Manager? Exploring Power BI integration, hybrid DevOps tools, CMG, and co-management strategies for organizations still running ConfigMgr.</p>
 					<a href="/blog/practical-modernization-configmgr.html" style="display:inline-block; margin-top:12px; font-size:14px; color:var(--brand)">Read More →</a>
 				</article>
 				
 				<article class="blog-post-card" style="padding:24px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:24px">
-					<h3 style="margin:0 0 8px; font-size:18px">Configuration Manager Abbreviations & Acronyms</h3>
+					<h2 style="margin:0 0 8px; font-size:18px">Configuration Manager Abbreviations & Acronyms</h2>
 					<p style="color:var(--muted); font-size:13px; margin:4px 0 12px">November 14, 2025 • 3 min read</p>
 					<p style="margin:0; font-size:14px">A comprehensive alphabetical list of common abbreviations and acronyms used in Microsoft Configuration Manager (formerly SCCM/MECM).</p>
 					<a href="/blog/configmgr-abbreviations-acronyms.html" style="display:inline-block; margin-top:12px; font-size:14px; color:var(--brand)">Read More →</a>
 				</article>
 			</div>
 		</div>
-	</section>		<footer>
+	</section>
+		</main>
+		<footer>
 			<div class='container'>© SkibaTech</div>
 		</footer>
 	</body>

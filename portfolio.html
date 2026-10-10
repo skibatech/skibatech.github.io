@@ -7,23 +7,25 @@
 		<link rel="stylesheet" href="/assets/site.css">
 	</head>
 	<body>
-		<nav class="nav">
+		<a class="skip-link" href="#main">Skip to main content</a>
+			<nav class="nav" aria-label="Main">
 			<div class="container nav-inner">
 				<a class="brand" href="/"><img src="/assets/images/skibatech-narrow-logo.png" alt="SkibaTech"></a>
 				<div><a href="/portfolio.html">Portfolio</a><a href="/skills.html">Skills</a><a href="/blog.html">Blog</a><a href="/contact.html">Contact</a></div>
 			</div>
 		</nav>
 
+	<main id="main">
 	<section class="container" style="padding-top:40px; padding-bottom:40px">
-		<h2>Work Portfolio</h2>
+		<h1 class="page-title">Work Portfolio</h1>
 		<p>Examples of work and technologies from my professional experience.</p>
 
 	<!-- AI / GPT Examples Section -->
-	<h3 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">AI / GPT Examples</h3>
+	<h2 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">AI / GPT Examples</h2>
 	
 	<div class="grid-3">
 		<article class="card">
-			<h4 style="margin:0 0 8px; font-size:16px">The Resolute Guide</h4>
+			<h3 style="margin:0 0 8px; font-size:16px">The Resolute Guide</h3>
 			<p style="font-size:14px; margin:0 0 16px">Custom GPT built on ChatGPT providing mentor and leadership guidance with thoughtful advice and insights for professional development, decision-making, career growth, and navigating workplace challenges effectively.</p>
 			<div class="gallery" data-gallery="ai-example1">
 				<div class="gallery-container">
@@ -36,7 +38,7 @@
 		</article>
 		
 		<article class="card">
-			<h4 style="margin:0 0 8px; font-size:16px">MCM Engineering Assistant</h4>
+			<h3 style="margin:0 0 8px; font-size:16px">MCM Engineering Assistant</h3>
 			<p style="font-size:14px; margin:0 0 16px">Custom GPT designed to help engineers manage, troubleshoot, and automate SCCM and Intune environments, providing expert guidance on client installations, PowerShell scripting, co-management workflows, and boundary group optimization.</p>
 			<div class="gallery" data-gallery="ai-example2">
 				<div class="gallery-container">
@@ -49,7 +51,7 @@
 		</article>
 
 		<article class="card">
-			<h4 style="margin:0 0 8px; font-size:16px">Sports Card Companion</h4>
+			<h3 style="margin:0 0 8px; font-size:16px">Sports Card Companion</h3>
 			<p style="font-size:14px; margin:0 0 16px">Custom GPT providing PSA APR-only pricing data mirroring official last sale and average by grade information, helping collectors make informed buying and selling decisions for their sports card investments and portfolio management strategies.</p>
 			<div class="gallery" data-gallery="ai-example3">
 				<div class="gallery-container">
@@ -61,10 +63,10 @@
 			<p style="font-size:12px; color:var(--muted); margin-top:12px; margin-bottom:0">Click to try Sports Card Companion</p>
 		</article>
 	</div>		<!-- Microsoft Configuration Manager Section -->
-			<h3 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">Microsoft Configuration Manager</h3>
+			<h2 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">Microsoft Configuration Manager</h2>
 			<div class="grid-3">
 				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">ConfigMgr Health Report</h4>
+					<h3 style="margin:0 0 8px; font-size:16px">ConfigMgr Health Report</h3>
 					<p style="font-size:14px">PowerShell driven Configuration Manager health monitoring report delivering insights into infrastructure status, disk usage, component health, and backup operations—enabling proactive issue detection and system optimization.</p>
 					<div class="gallery" data-gallery="configmgr">
 						<div class="gallery-container">
@@ -81,7 +83,7 @@
 				</article>
 
 				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Documentation</h4>
+					<h3 style="margin:0 0 8px; font-size:16px">Documentation</h3>
 					<p style="font-size:14px">Technical documentation written on Configuration Manager implementation, best practices, and operational procedures demonstrating clear communication of complex technical processes and step-by-step guidance for system administration.</p>
 					<div class="gallery" data-gallery="configmgr-docs">
 						<div class="gallery-container">
@@ -100,7 +102,7 @@
 				</article>
 
 		<article class="card">
-			<h4 style="margin:0 0 8px; font-size:16px">Integration & Monitoring Tools</h4>
+			<h3 style="margin:0 0 8px; font-size:16px">Integration & Monitoring Tools</h3>
 			<p style="font-size:14px">Integration of third-party and Microsoft tooling with Configuration Manager including Patch My PC for automated application updates, Recast Software Right Click Tools for administrative capabilities, and MEM Assessment for environment health scanning.</p>
 		<div class="gallery" data-gallery="thirdparty">
 			<div class="gallery-container">
@@ -118,10 +120,10 @@
 			</div>
 
 			<!-- Microsoft Power BI Section -->
-			<h3 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">Microsoft Power BI Dashboards/Reports</h3>
+			<h2 style="margin-top:40px; margin-bottom:24px; font-size:20px; color:var(--text)">Microsoft Power BI Dashboards/Reports</h2>
 			<div class="grid-3">
 				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Custom Application Dashboard</h4>
+					<h3 style="margin:0 0 8px; font-size:16px">Custom Application Dashboard</h3>
 					<p style="font-size:14px">Custom Power BI report connecting directly to ConfigMgr database tables to provide real-time visibility into application inventory across devices, including version, install date, and operating system with interactive filtering capabilities.</p>
 					<div class="gallery" data-gallery="powerbi-appdash">
 						<div class="gallery-container">
@@ -133,7 +135,7 @@
 				</article>
 
 			<article class="card">
-				<h4 style="margin:0 0 8px; font-size:16px">Custom Office Location Map</h4>
+				<h3 style="margin:0 0 8px; font-size:16px">Custom Office Location Map</h3>
 				<p style="font-size:14px">Custom Power BI report using ArcGIS mapping functionality to visualize office locations and related business data across geographic regions, providing interactive location-based analytics and insights for organizational planning and resource allocation.</p>
 			<div class="gallery" data-gallery="powerbi-officeloc">
 					<div class="gallery-container">
@@ -145,7 +147,7 @@
 				</article>
 
 				<article class="card">
-					<h4 style="margin:0 0 8px; font-size:16px">Coming Soon</h4>
+					<h3 style="margin:0 0 8px; font-size:16px">Coming Soon</h3>
 					<p style="font-size:14px; color:var(--muted)">Additional Power BI project coming soon.</p>
 					<div style="background: #0a0a0a; border: 1px solid #333; border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; margin: 16px 0; color: #666;">
 						[Placeholder]
@@ -153,6 +155,7 @@
 				</article>
 			</div>
 		</section>
+		</main>
 
 		<footer>
 			<div class='container'>© SkibaTech</div>

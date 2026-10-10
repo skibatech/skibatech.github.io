@@ -35,8 +35,8 @@ function generateBlogSidebar() {
 	if (!sidebar) return;
 	
 	let html = `
-		<h4 style="margin:0 0 16px; font-size:14px; text-transform:uppercase; color:var(--muted)">All Posts</h4>
-		<nav class="blog-nav">
+		<p style="margin:0 0 16px; font-size:14px; text-transform:uppercase; color:var(--muted)">All Posts</p>
+		<nav class="blog-nav" aria-label="Blog posts">
 			<a href="/blog.html" style="display:block; margin-bottom:12px; font-size:14px">← Back to Blog</a>
 			<div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border)">
 	`;
