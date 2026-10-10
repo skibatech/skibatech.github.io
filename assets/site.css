@@ -100,7 +100,6 @@ button.lightbox-close{background:none; border:0; padding:0 8px; line-height:1; f
 footer{border-top:1px solid var(--border); padding:28px 0; color:var(--muted); text-align:center}
 .footer-links{margin-left:16px}
 .footer-links a{margin:0 8px}
-.draft-banner{background:#3a2f00; border:1px solid #b38f00; color:#ffe58a; padding:10px 14px; border-radius:8px; margin:0 0 20px; font-weight:600}
 .i{display:inline-block; width:16px; height:16px; border-radius:3px}
 .blog-layout{display:grid; grid-template-columns:240px 1fr; gap:32px; margin-top:32px}
 .blog-sidebar{position:sticky; top:80px; height:fit-content}
